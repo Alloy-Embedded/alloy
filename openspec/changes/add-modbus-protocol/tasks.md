@@ -4,17 +4,25 @@ Tasks are ordered. Each phase leaves the tree in a working state and is independ
 mergeable. Host-only tests cover every phase that does not require hardware.
 
 ## 1. Library skeleton
-- [ ] 1.1 Create `drivers/protocol/modbus/{include,src,tests}/` with a CMake
+- [x] 1.1 Create `drivers/protocol/modbus/{include,src,tests}/` with a CMake
       integration that registers the static library `alloy::modbus` and wires its
-      tests into `ctest` when `ALLOY_BUILD_TESTS=ON`.
-- [ ] 1.2 Add a `drivers/protocol/modbus/README.md` linking to the user guide and
-      describing the layer split.
+      tests into `ctest` when `ALLOY_BUILD_TESTS=ON`. The lib links against
+      `Alloy::hal` (which republishes the `core::Result` include path); the
+      pre-existing `drivers/CMakeLists.txt` reference to `alloy::alloy` was
+      header-only and untested -- the modbus lib is the first real driver
+      consumer of the runtime export so a working alias was needed.
+- [x] 1.2 Add `drivers/protocol/modbus/README.md` listing the implemented and
+      pending layers; cross-links to the OpenSpec change.
 
 ## 2. PDU codec (pure)
-- [ ] 2.1 Implement `pdu.hpp` / `pdu.cpp`: function-code enum, encode/decode for
-      FCs 0x01-0x06, 0x0F-0x10, 0x17, plus exception responses.
-- [ ] 2.2 Cover with `tests/pdu_codec_test.cpp`: round-trip encode/decode, exception
-      paths, malformed-input rejection. Pure host, no I/O.
+- [x] 2.1 Implement `pdu.hpp` / `pdu.cpp`: function-code and exception enums,
+      typed request/response views, encode/decode for FCs 0x01-0x06, 0x0F-0x10,
+      0x17, plus exception responses. Spec quantity caps enforced on encode and
+      decode. No allocation. `noexcept` throughout.
+- [x] 2.2 `tests/test_pdu.cpp`: 21 cases covering reference-frame round-trips
+      (Modbus Application Protocol Spec section 6), bound checks, truncation,
+      buffer-too-small, exception encode/decode, and FC dispatch. 84 assertions
+      pass on host.
 
 ## 3. RTU framing
 - [ ] 3.1 Implement `rtu_frame.hpp`: CRC-16 (0xA001 polynomial, 256-entry table in

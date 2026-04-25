@@ -12,3 +12,10 @@ target_include_directories(alloy-drivers INTERFACE
 )
 
 target_link_libraries(alloy-drivers INTERFACE alloy::alloy)
+
+# Protocol drivers may carry implementation files (state machines, codecs) and
+# therefore live as proper static libraries below. The interface target above
+# stays for the header-only seed drivers.
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/protocol/modbus/CMakeLists.txt")
+    add_subdirectory(protocol/modbus)
+endif()
