@@ -6,10 +6,35 @@ This is the shortest supported path from clone to a visible `blink` or runtime v
 
 Use one of these public flows:
 
-- `python3 scripts/alloyctl.py ...` for board-oriented configure, build, flash, monitor, and validation
-- `cmake --preset ...`, `cmake --build --preset ...`, and `cmake --workflow --preset ...` for explicit preset-oriented validation
+- `alloy ...` (preferred) -- the `alloy-cli` package, installable via `pipx`. See [Installing the CLI](#installing-the-cli) below.
+- `python3 scripts/alloyctl.py ...` -- the in-tree script, equivalent to `alloy` while we phase the new CLI in.
+- `cmake --preset ...`, `cmake --build --preset ...`, and `cmake --workflow --preset ...` for explicit preset-oriented validation.
 
 If a flow is not documented here or in [BOARD_TOOLING.md](BOARD_TOOLING.md), it is not part of the supported product story.
+
+## Installing the CLI
+
+```bash
+pipx install --editable tools/alloy-cli
+# or, with uv:
+uv tool install --editable tools/alloy-cli
+```
+
+Verify:
+
+```bash
+alloy --version
+alloy --help
+```
+
+The CLI auto-detects the Alloy runtime checkout when run from inside the repo. To run it from outside the repo, set `ALLOY_ROOT`:
+
+```bash
+export ALLOY_ROOT="$HOME/code/alloy"
+alloy doctor
+```
+
+A future release replaces this lookup with a versioned cache under `~/.alloy/sdk/`; see [`openspec/changes/add-project-scaffolding-cli`](../openspec/changes/add-project-scaffolding-cli/proposal.md).
 
 ## Fastest Path To Blink
 
