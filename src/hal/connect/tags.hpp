@@ -6,6 +6,24 @@ namespace alloy::hal::connection {
 
 namespace detail {
 
+template <typename T = device::SignalId>
+consteval auto miso_default_signal_id() -> device::SignalId {
+    if constexpr (requires { T::signal_miso; }) {
+        return T::signal_miso;
+    } else {
+        return T::none;
+    }
+}
+
+template <typename T = device::SignalId>
+consteval auto mosi_default_signal_id() -> device::SignalId {
+    if constexpr (requires { T::signal_mosi; }) {
+        return T::signal_mosi;
+    } else {
+        return T::none;
+    }
+}
+
 enum class role_id : unsigned char {
     tx,
     rx,
@@ -45,12 +63,12 @@ struct sck_role {
 
 struct miso_role {
     static constexpr auto id = role_id::miso;
-    static constexpr auto default_signal_id = device::SignalId::signal_miso;
+    static constexpr auto default_signal_id = miso_default_signal_id();
 };
 
 struct mosi_role {
     static constexpr auto id = role_id::mosi;
-    static constexpr auto default_signal_id = device::SignalId::signal_mosi;
+    static constexpr auto default_signal_id = mosi_default_signal_id();
 };
 
 struct scl_role {

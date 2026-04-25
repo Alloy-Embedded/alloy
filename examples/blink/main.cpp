@@ -45,6 +45,8 @@
     #include "nucleo_f401re/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
     #include "nucleo_f722ze/board.hpp"
+#elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+    #include "raspberry_pi_pico/board.hpp"
 #else
     #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
 #endif
@@ -59,6 +61,8 @@
     #include "nucleo_g071rb/board_uart.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "nucleo_f401re/board_uart.hpp"
+#elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+    #include "raspberry_pi_pico/board_uart.hpp"
 #endif
 
 #include "../common/uart_console.hpp"

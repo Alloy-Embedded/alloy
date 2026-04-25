@@ -27,15 +27,22 @@ static_assert(alloy::hal::dma::BindingTraits<PeripheralId::USART1, SignalId::sig
 using UartTxDma = alloy::hal::dma::channel_handle<PeripheralId::USART1, SignalId::signal_TX>;
 using UartTxDmaClaim = alloy::hal::claim::dma_claim<PeripheralId::USART1, SignalId::signal_TX>;
 constexpr auto kDmaConfig = alloy::hal::dma::Config{.channel_index = 0};
+    #elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+// RP2040: DMA bindings exist; DMA semantic traits not yet fully generated
+static_assert(alloy::hal::dma::BindingTraits<PeripheralId::UART0, SignalId::signal_TX>::kPresent);
+static_assert(alloy::hal::dma::BindingTraits<PeripheralId::UART0, SignalId::signal_RX>::kPresent);
     #endif
 
+// Full semantic-layer assertions — only for boards with complete DMA semantics
+#if !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
 static_assert(UartTxDma::valid);
 static_assert(UartTxDma::descriptor().request_line_id != alloy::hal::dma::DmaRequestLineId::none);
 static_assert(UartTxDmaClaim::request_line_id != alloy::hal::dma::DmaRequestLineId::none);
 #endif
+#endif
 
 int main() {
-#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     [[maybe_unused]] auto dma =
         alloy::hal::dma::open<UartTxDma::peripheral_id, UartTxDma::signal_id>(kDmaConfig);
     [[maybe_unused]] const auto configure_result = dma.configure();

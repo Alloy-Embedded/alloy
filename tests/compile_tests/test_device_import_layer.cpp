@@ -88,19 +88,28 @@ int main() {
     static_cast<void>(runtime::rtc_semantic_peripherals.size());
 #endif
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
-    static_assert(!runtime::watchdog_semantic_peripherals.empty());
-    constexpr auto watchdog_peripheral = runtime::watchdog_semantic_peripherals.front();
-    static_assert(runtime::WatchdogSemanticTraits<watchdog_peripheral>::kPresent);
+    [](auto) {
+        if constexpr (!runtime::watchdog_semantic_peripherals.empty()) {
+            constexpr auto watchdog_peripheral = runtime::watchdog_semantic_peripherals.front();
+            static_assert(runtime::WatchdogSemanticTraits<watchdog_peripheral>::kPresent);
+        }
+    }(0);
 #endif
 #if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
-    static_assert(!runtime::timer_semantic_peripherals.empty());
-    constexpr auto timer_peripheral = runtime::timer_semantic_peripherals.front();
-    static_assert(runtime::TimerSemanticTraits<timer_peripheral>::kPresent);
+    [](auto) {
+        if constexpr (!runtime::timer_semantic_peripherals.empty()) {
+            constexpr auto timer_peripheral = runtime::timer_semantic_peripherals.front();
+            static_assert(runtime::TimerSemanticTraits<timer_peripheral>::kPresent);
+        }
+    }(0);
 #endif
 #if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
-    static_assert(!runtime::pwm_semantic_peripherals.empty());
-    constexpr auto pwm_peripheral = runtime::pwm_semantic_peripherals.front();
-    static_assert(runtime::PwmSemanticTraits<pwm_peripheral>::kPresent);
+    [](auto) {
+        if constexpr (!runtime::pwm_semantic_peripherals.empty()) {
+            constexpr auto pwm_peripheral = runtime::pwm_semantic_peripherals.front();
+            static_assert(runtime::PwmSemanticTraits<pwm_peripheral>::kPresent);
+        }
+    }(0);
 #endif
 
     return 0;

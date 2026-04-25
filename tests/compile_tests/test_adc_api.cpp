@@ -11,13 +11,17 @@ using Adc = alloy::hal::adc::handle<PeripheralId::ADC1>;
 using Adc = alloy::hal::adc::handle<PeripheralId::ADC1>;
 #elif defined(ALLOY_BOARD_SAME70_XPLD) || defined(ALLOY_BOARD_SAME70_XPLAINED)
 using Adc = alloy::hal::adc::handle<PeripheralId::AFEC0>;
+#elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+using Adc = alloy::hal::adc::handle<PeripheralId::ADC>;
 #endif
 
+#if !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
 static_assert(Adc::valid);
+#endif
 #endif
 
 int main() {
-#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
+#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     auto adc = alloy::hal::adc::open<Adc::peripheral_id>(
         alloy::hal::adc::Config{.enable_on_configure = true});
     [[maybe_unused]] const auto configure_result = adc.configure();

@@ -18,7 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Alloy configuration variables
 set(ALLOY_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Alloy framework root directory")
-set(ALLOY_BOARD "host" CACHE STRING "Target board (host, same70_xplained, nucleo_f401re, nucleo_g071rb, nucleo_g0b1re)")
+set(ALLOY_BOARD "host" CACHE STRING "Target board (host, same70_xplained, nucleo_f401re, nucleo_g071rb, nucleo_g0b1re, raspberry_pi_pico, avr128da32_curiosity_nano, esp32c3_devkitm, esp32s3_devkitc)")
 set(ALLOY_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(ALLOY_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
 
@@ -30,11 +30,15 @@ set(ALLOY_PLATFORM "" CACHE STRING "HAL platform (same70, linux, stm32f4, stm32g
 # Board options
 set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "host"
-    "same70_xplained"    # Atmel/Microchip SAME70 Xplained Ultra
-    "same70_xpld"        # Atmel SAME70 Xplained (alias)
-    "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
-    "nucleo_g071rb"      # STM32 Nucleo-G071RB
-    "nucleo_f401re"      # STM32 Nucleo-F401RE
+    "same70_xplained"             # Atmel/Microchip SAME70 Xplained Ultra
+    "same70_xpld"                 # Atmel SAME70 Xplained (alias)
+    "nucleo_g0b1re"               # STM32 Nucleo-G0B1RE
+    "nucleo_g071rb"               # STM32 Nucleo-G071RB
+    "nucleo_f401re"               # STM32 Nucleo-F401RE
+    "raspberry_pi_pico"           # Raspberry Pi Pico (RP2040)
+    "avr128da32_curiosity_nano"   # Microchip AVR128DA32 Curiosity Nano
+    "esp32c3_devkitm"             # Espressif ESP32-C3-DevKitM-1
+    "esp32s3_devkitc"             # Espressif ESP32-S3-DevKitC-1
 )
 
 # Build type
@@ -411,7 +415,7 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
     add_subdirectory(examples/time_probe)
 endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE)
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/analog_probe)
 endif()
 
@@ -432,15 +436,17 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
 endif()
 
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND
-   ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE)
+   ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/timer_pwm_probe)
 endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE)
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE AND
+   ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/rtc_probe)
 endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE)
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE AND
+   ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/watchdog_probe)
 endif()
 

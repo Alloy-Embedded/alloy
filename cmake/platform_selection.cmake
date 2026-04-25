@@ -32,6 +32,10 @@ set(ALLOY_SUPPORTED_PLATFORMS
     "linux"     # Linux/POSIX (for host-based testing)
     "stm32g0"   # STMicroelectronics STM32G0 (ARM Cortex-M0+)
     "stm32f4"   # STMicroelectronics STM32F4 (ARM Cortex-M4)
+    "rp2040"    # Raspberry Pi RP2040 (ARM Cortex-M0+)
+    "avr-da"    # Microchip AVR-DA family (AVR8)
+    "esp32c3"   # Espressif ESP32-C3 (RISC-V RV32IMC)
+    "esp32s3"   # Espressif ESP32-S3 (Xtensa LX7)
 )
 
 # ------------------------------------------------------------------------------

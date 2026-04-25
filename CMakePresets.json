@@ -69,6 +69,58 @@
         "ALLOY_BUILD_TESTS": "ON",
         "ALLOY_ENABLE_RENODE_TESTS": "ON"
       }
+    },
+    {
+      "name": "review-rp2040",
+      "displayName": "Raspberry Pi Pico (RP2040)",
+      "description": "Compile-validation build for Raspberry Pi Pico — Cortex-M0+, 125 MHz.",
+      "binaryDir": "${sourceDir}/build/review-rp2040",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+        "ALLOY_BOARD": "raspberry_pi_pico",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "review-avr128da32",
+      "displayName": "Microchip AVR128DA32 Curiosity Nano",
+      "description": "Compile-validation build for AVR128DA32 Curiosity Nano — AVR® DA, 24 MHz.",
+      "binaryDir": "${sourceDir}/build/review-avr128da32",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/avr-gcc.cmake",
+        "ALLOY_BOARD": "avr128da32_curiosity_nano",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "review-esp32c3",
+      "displayName": "Espressif ESP32-C3-DevKitM-1",
+      "description": "Compile-validation build for ESP32-C3 DevKitM-1 — RISC-V, 160 MHz.",
+      "binaryDir": "${sourceDir}/build/review-esp32c3",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/riscv32-esp-elf.cmake",
+        "ALLOY_BOARD": "esp32c3_devkitm",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "review-esp32s3",
+      "displayName": "Espressif ESP32-S3-DevKitC-1",
+      "description": "Compile-validation build for ESP32-S3 DevKitC-1 — Xtensa LX7, 240 MHz.",
+      "binaryDir": "${sourceDir}/build/review-esp32s3",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/xtensa-esp32s3-elf.cmake",
+        "ALLOY_BOARD": "esp32s3_devkitc",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
     }
   ],
   "buildPresets": [

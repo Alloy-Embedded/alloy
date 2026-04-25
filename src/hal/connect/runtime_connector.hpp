@@ -19,6 +19,15 @@ namespace route = alloy::hal::detail::route;
 template <typename>
 inline constexpr bool kDependentFalse = false;
 
+template <typename ClassId>
+[[nodiscard]] consteval auto peripheral_class_is_gpio(ClassId id) -> bool {
+    if constexpr (requires { ClassId::class_gpio; }) {
+        return id == ClassId::class_gpio;
+    } else {
+        return false;
+    }
+}
+
 struct EmptyRequirements {
     [[nodiscard]] constexpr auto size() const -> std::size_t { return 0u; }
 };
@@ -132,7 +141,7 @@ template <std::size_t... Index>
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
         using traits = device::PeripheralInstanceTraits<peripheral_id>;
-        if constexpr (traits::kPresent && traits::kPeripheralClassId == PeripheralClassId::class_gpio) {
+        if constexpr (traits::kPresent && peripheral_class_is_gpio(traits::kPeripheralClassId)) {
             if (resolved == PeripheralId::none &&
                 traits::kInstance == target_instance) {
                 resolved = peripheral_id;

@@ -11,13 +11,17 @@ using Pwm = alloy::hal::pwm::handle<PeripheralId::TIM1, 0u>;
 using Pwm = alloy::hal::pwm::handle<PeripheralId::TIM1, 0u>;
 #elif defined(ALLOY_BOARD_SAME70_XPLD) || defined(ALLOY_BOARD_SAME70_XPLAINED)
 using Pwm = alloy::hal::pwm::handle<PeripheralId::PWM0, 0u>;
+#elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+using Pwm = alloy::hal::pwm::handle<PeripheralId::PWM, 0u>;
 #endif
 
+#if !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
 static_assert(Pwm::valid);
+#endif
 #endif
 
 int main() {
-#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     auto pwm = alloy::hal::pwm::open<Pwm::peripheral_id, Pwm::channel_index>(
         alloy::hal::pwm::Config{
             .period = 1000u, .apply_period = true, .duty_cycle = 500u, .apply_duty_cycle = true});

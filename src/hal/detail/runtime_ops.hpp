@@ -49,6 +49,15 @@ inline constexpr auto kInvalidIndexedFieldRef = device::invalid_indexed_field_re
     return ch >= 'A' && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch;
 }
 
+template <typename ClassId>
+[[nodiscard]] consteval auto peripheral_class_is_gpio(ClassId id) -> bool {
+    if constexpr (requires { ClassId::class_gpio; }) {
+        return id == ClassId::class_gpio;
+    } else {
+        return false;
+    }
+}
+
 [[nodiscard]] constexpr auto ascii_iequals(std::string_view lhs, std::string_view rhs) -> bool {
     if (lhs.size() != rhs.size()) {
         return false;
@@ -452,7 +461,7 @@ template <std::size_t... Index>
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
         using traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
         if constexpr (traits::kPresent &&
-                      traits::kPeripheralClassId == device::runtime::PeripheralClassId::class_gpio) {
+                      peripheral_class_is_gpio(traits::kPeripheralClassId)) {
             if (resolved == device::runtime::PeripheralId::none &&
                 traits::kInstance == target_instance) {
                 resolved = peripheral_id;
@@ -795,8 +804,7 @@ inline auto apply_clock_gate_typed() -> core::Result<void, core::ErrorCode> {
     } else if constexpr (gate_traits::kFieldId != device::runtime::FieldId::none) {
         return modify_field(field_ref<gate_traits::kFieldId>(), 1u);
     } else if constexpr (gate_traits::kRegisterId != device::runtime::RegisterId::none &&
-                         peripheral_traits::kPeripheralClassId ==
-                             device::runtime::PeripheralClassId::class_gpio &&
+                         peripheral_class_is_gpio(peripheral_traits::kPeripheralClassId) &&
                          peripheral_traits::kInstance >= 0) {
         return modify_register_bit(register_ref<gate_traits::kRegisterId>(),
                                    static_cast<std::uint32_t>(peripheral_traits::kInstance), true);
@@ -826,8 +834,7 @@ inline auto release_reset_typed() -> core::Result<void, core::ErrorCode> {
         constexpr auto inactive_value = active_high ? 0u : 1u;
         return modify_field(field_ref<reset_traits::kFieldId>(), inactive_value);
     } else if constexpr (reset_traits::kRegisterId != device::runtime::RegisterId::none &&
-                         peripheral_traits::kPeripheralClassId ==
-                             device::runtime::PeripheralClassId::class_gpio &&
+                         peripheral_class_is_gpio(peripheral_traits::kPeripheralClassId) &&
                          peripheral_traits::kInstance >= 0) {
         return modify_register_bit(register_ref<reset_traits::kRegisterId>(),
                                    static_cast<std::uint32_t>(peripheral_traits::kInstance),
@@ -870,8 +877,7 @@ inline auto enable_gpio_port_runtime() -> core::Result<void, core::ErrorCode> {
     using peripheral_traits = device::runtime::PeripheralInstanceTraits<PeripheralId>;
 
     if constexpr (!peripheral_traits::kPresent ||
-                  peripheral_traits::kPeripheralClassId !=
-                      device::runtime::PeripheralClassId::class_gpio) {
+                  !peripheral_class_is_gpio(peripheral_traits::kPeripheralClassId)) {
         return core::Err(core::ErrorCode::NotSupported);
     } else {
         return enable_peripheral_runtime_typed<PeripheralId>();
@@ -888,7 +894,7 @@ inline auto enable_gpio_port_runtime_impl(
     auto match = [&]<device::runtime::PeripheralId Candidate>() {
         using traits = device::runtime::PeripheralInstanceTraits<Candidate>;
         if constexpr (traits::kPresent &&
-                      traits::kPeripheralClassId == device::runtime::PeripheralClassId::class_gpio) {
+                      peripheral_class_is_gpio(traits::kPeripheralClassId)) {
             if (resolved.is_err() && peripheral_id == Candidate) {
                 resolved = enable_gpio_port_runtime<Candidate>();
             }

@@ -11,13 +11,17 @@ using Timer = alloy::hal::timer::handle<PeripheralId::TIM1>;
 using Timer = alloy::hal::timer::handle<PeripheralId::TIM1>;
 #elif defined(ALLOY_BOARD_SAME70_XPLD) || defined(ALLOY_BOARD_SAME70_XPLAINED)
 using Timer = alloy::hal::timer::handle<PeripheralId::TC0>;
+#elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
+using Timer = alloy::hal::timer::handle<PeripheralId::TIMER>;
 #endif
 
+#if !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
 static_assert(Timer::valid);
+#endif
 #endif
 
 int main() {
-#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
+#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     auto timer = alloy::hal::timer::open<Timer::peripheral_id>(
         alloy::hal::timer::Config{.period = 1000u, .apply_period = true});
     [[maybe_unused]] const auto configure_result = timer.configure();

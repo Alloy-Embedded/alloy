@@ -31,6 +31,15 @@ namespace detail {
 
 namespace rt = alloy::hal::detail::runtime;
 
+template <typename ClassId>
+[[nodiscard]] consteval auto peripheral_class_is_gpio(ClassId id) -> bool {
+    if constexpr (requires { ClassId::class_gpio; }) {
+        return id == ClassId::class_gpio;
+    } else {
+        return false;
+    }
+}
+
 using RuntimeRegisterRef = rt::RegisterRef;
 using RuntimeFieldRef = rt::FieldRef;
 using RuntimePinId = device::PinId;
@@ -141,7 +150,7 @@ template <std::size_t... Index>
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
         using traits = device::PeripheralInstanceTraits<peripheral_id>;
         if constexpr (traits::kPresent &&
-                      traits::kPeripheralClassId == device::PeripheralClassId::class_gpio) {
+                      peripheral_class_is_gpio(traits::kPeripheralClassId)) {
             if (resolved == RuntimePeripheralId::none && traits::kInstance == target_instance) {
                 resolved = peripheral_id;
             }

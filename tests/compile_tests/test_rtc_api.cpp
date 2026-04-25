@@ -2,14 +2,14 @@
 
 static_assert(alloy::device::SelectedRuntimeDescriptors::available);
 
-#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
 using PeripheralId = alloy::hal::rtc::PeripheralId;
 using Rtc = alloy::hal::rtc::handle<PeripheralId::RTC>;
 static_assert(Rtc::valid);
 #endif
 
 int main() {
-#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE && !defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     auto rtc = alloy::hal::rtc::open<Rtc::peripheral_id>(
         alloy::hal::rtc::Config{
             .enable_write_access = true, .enter_init_mode = true, .enable_alarm_interrupt = true});

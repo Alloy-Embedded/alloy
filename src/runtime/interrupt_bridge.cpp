@@ -132,6 +132,7 @@ inline auto bridge_dma_transfer_complete_if_set() -> void {
     static_cast<void>(rt::write_register(clear_field.reg, rt::field_mask(clear_field)));
 }
 
+#if defined(ALLOY_PLATFORM_STM32G0)
 template <typename FieldEnum>
 inline auto bridge_stm32g0_dma_channel1() -> void {
     if constexpr (has_dma1_isr_tcif1_v<FieldEnum> && has_dma1_ifcr_ctcif1_v<FieldEnum>) {
@@ -151,7 +152,9 @@ inline auto bridge_stm32g0_dma_channel2() -> void {
                                             hal::dma::SignalId::signal_TX>();
     }
 }
+#endif  // ALLOY_PLATFORM_STM32G0
 
+#if defined(ALLOY_PLATFORM_STM32F4)
 template <typename FieldEnum>
 inline auto bridge_stm32f4_dma_stream5() -> void {
     if constexpr (has_dma1_hisr_tcif5_v<FieldEnum> && has_dma1_hifcr_ctcif5_v<FieldEnum>) {
@@ -171,9 +174,11 @@ inline auto bridge_stm32f4_dma_stream6() -> void {
                                             hal::dma::SignalId::signal_TX>();
     }
 }
+#endif  // ALLOY_PLATFORM_STM32F4
 
 }  // namespace alloy::runtime::detail
 
+#if defined(ALLOY_PLATFORM_STM32G0)
 extern "C" void DMA_Channel1_IRQHandler() {
 #if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
     if constexpr (alloy::runtime::detail::has_dma_channel1_interrupt_v<
@@ -195,7 +200,9 @@ extern "C" void DMA_Channel2_3_IRQHandler() {
     }
 #endif
 }
+#endif  // ALLOY_PLATFORM_STM32G0
 
+#if defined(ALLOY_PLATFORM_STM32F4)
 extern "C" void DMA1_Stream5_IRQHandler() {
 #if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
     if constexpr (alloy::runtime::detail::has_dma1_stream5_interrupt_v<
@@ -217,7 +224,9 @@ extern "C" void DMA1_Stream6_IRQHandler() {
     }
 #endif
 }
+#endif  // ALLOY_PLATFORM_STM32F4
 
+#if defined(ALLOY_PLATFORM_STM32G0) || defined(ALLOY_PLATFORM_STM32F4)
 extern "C" void USART1_IRQHandler() {
 #if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
     if constexpr (alloy::runtime::detail::has_usart1_interrupt_v<
@@ -227,6 +236,7 @@ extern "C" void USART1_IRQHandler() {
     }
 #endif
 }
+#endif  // ALLOY_PLATFORM_STM32G0 || ALLOY_PLATFORM_STM32F4
 
 extern "C" void XDMAC_IRQHandler() {
 #if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
