@@ -73,6 +73,7 @@ add_link_options(
 
 add_compile_definitions(
     STM32F4
+    ALLOY_PLATFORM_STM32F4
     ARM_MATH_CM4
     __FPU_PRESENT=1
 )

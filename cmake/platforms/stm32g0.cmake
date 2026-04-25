@@ -75,6 +75,7 @@ message(STATUS "  FPU: None (software floating point)")
 # STM32 specific defines
 add_compile_definitions(
     STM32G0B1xx                 # Specific variant
+    ALLOY_PLATFORM_STM32G0
     ARM_MATH_CM0PLUS            # ARM CMSIS DSP library support for M0+
 )
 
