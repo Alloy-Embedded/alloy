@@ -67,20 +67,20 @@ working state. Do not start a phase before the previous phase is reviewed and me
 - [x] 5.4 Validate `<vendor>/<family>/<device>` against `alloy-devices/<sdk>/devices`
       before scaffolding; fail fast with a pointer to `alloy-devices` if the descriptor
       is missing
-- [ ] 5.5 Document the supported set and the custom-board recipe in
+- [x] 5.5 Document the supported set and the custom-board recipe in
       `docs/SUPPORT_MATRIX.md` and reference `docs/CUSTOM_BOARDS.md`
-      (custom-board recipe already documented; SUPPORT_MATRIX update deferred to phase 6)
 - [x] 5.6 Tests: scaffold for `--board nucleo_g071rb`, `--mcu STM32G071RBT6` (catalog
       alias), `--mcu STM32G474RET6` (descriptor-only with full memory data), and an
       `--mcu` whose descriptor lacks memory regions (warning path); 56 tests total
 
 ## 6. Documentation and migration
-- [ ] 6.1 Rewrite `docs/QUICKSTART.md` to lead with `pipx install alloy-cli` and `alloy new`
-- [ ] 6.2 Update `docs/CMAKE_CONSUMPTION.md` to describe the scaffolded project layout as
+- [x] 6.1 Rewrite `docs/QUICKSTART.md` to lead with `pipx install alloy-cli` and `alloy new`
+- [x] 6.2 Update `docs/CMAKE_CONSUMPTION.md` to describe the scaffolded project layout as
       the recommended downstream consumption path
-- [ ] 6.3 Update `docs/BOARD_TOOLING.md` with the new flash/monitor entry points
-- [ ] 6.4 Add `docs/CLI.md` describing the full subcommand surface
-- [ ] 6.5 Mark `scripts/alloyctl.py` as deprecated alias; print a one-line notice on use
+- [x] 6.3 Update `docs/BOARD_TOOLING.md` with the new flash/monitor entry points
+- [x] 6.4 Add `docs/CLI.md` describing the full subcommand surface
+- [x] 6.5 Mark `scripts/alloyctl.py` as deprecated alias; print a one-line notice on use
+      (the notice is suppressed when alloy-cli delegates internally)
 
 ## 7. Installer and distribution
 - [ ] 7.1 Publish `alloy-cli` to PyPI (resolve naming question first)

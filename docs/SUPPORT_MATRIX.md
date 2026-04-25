@@ -27,6 +27,24 @@ Notes:
 - `host` is a validation target, not a shipping board tier
 - additional board packages may exist in `boards/`, but they do not inherit a release claim until they appear here and in the release manifest
 
+## CLI Scaffolding Coverage
+
+`alloy new` supports two project shapes:
+
+- **Foundational board copy** (`alloy new --board <name>` or `alloy new --mcu <part>` when
+  the catalog matches): copies an in-tree board into `<project>/board/`. Available for
+  every entry in the table above plus the experimental boards still cadastered in
+  [`tools/alloy-cli/src/alloy_cli/_boards.toml`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/tools/alloy-cli/src/alloy_cli/_boards.toml).
+- **Custom-board skeleton** (`alloy new --mcu <part>` without a catalog match): generates
+  a board skeleton from the `alloy-devices` descriptor. Available for any vendor/family/
+  device tuple that ships a descriptor in the active SDK; the foundational descriptor set
+  is whichever `alloy-devices` ref is pinned for the active runtime release.
+
+The scaffolder never invents a board: if no descriptor matches `--mcu`, it fails with a
+pointer to `alloy-devices` so the missing facts can be added there first. See
+[CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) for the runtime contract every scaffolded project
+relies on.
+
 ## Peripheral Class Tiers
 
 | Peripheral class | Tier | Current evidence |

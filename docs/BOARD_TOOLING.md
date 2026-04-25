@@ -1,14 +1,18 @@
 # Board Tooling
 
+The user-facing entry point is the `alloy` command (see [CLI.md](CLI.md) and
+[QUICKSTART.md](QUICKSTART.md) for installation):
+
+```bash
+alloy <command> ...
+```
+
 For boards outside the in-tree foundational set, declare a custom board in your downstream
 project; see [CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) for the runtime contract and a working
 recipe. The CLI shortcut is `alloy new --mcu <part>`.
 
-Use one entrypoint:
-
-```bash
-python3 scripts/alloyctl.py <command> ...
-```
+Inside the runtime checkout the legacy `python3 scripts/alloyctl.py <command> ...` form
+remains a working alias during the transition; new docs and examples should use `alloy`.
 
 This is the supported board-oriented UX for:
 

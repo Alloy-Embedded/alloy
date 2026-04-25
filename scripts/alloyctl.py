@@ -1224,7 +1224,24 @@ def cmd_diff(args: argparse.Namespace) -> None:
     )
 
 
+def _maybe_warn_deprecated_invocation() -> None:
+    """Warn once when invoked directly as `python scripts/alloyctl.py ...`.
+
+    `alloy-cli` re-uses this module by importing it and setting ``sys.argv[0] = "alloy"``
+    before calling :func:`main`; in that case we skip the warning so the user only sees it
+    when they reach for the legacy script themselves.
+    """
+    invoked = Path(sys.argv[0]).name if sys.argv else ""
+    if invoked == "alloy":
+        return
+    sys.stderr.write(
+        "alloyctl.py is a deprecated alias for the `alloy` CLI; "
+        "prefer `pipx install alloy-cli` and `alloy <command> ...` (see docs/CLI.md).\n"
+    )
+
+
 def main() -> int:
+    _maybe_warn_deprecated_invocation()
     p = argparse.ArgumentParser(prog="alloyctl", description="Board-aware Alloy helper")
     sub = p.add_subparsers(dest="cmd", required=True)
 

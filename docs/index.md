@@ -9,8 +9,10 @@ code and vendor silicon is explicit and testable.
 
 ## Start Here
 
-- [Quickstart](QUICKSTART.md) — clone to visible `blink` in under a minute
-- [Board Tooling](BOARD_TOOLING.md) — the full `alloyctl` board-oriented UX
+- [Quickstart](QUICKSTART.md) — `pipx install alloy-cli`, scaffold a project, build and flash
+- [CLI Reference](CLI.md) — every `alloy` subcommand and flag
+- [Custom Boards](CUSTOM_BOARDS.md) — the `ALLOY_BOARD=custom` runtime contract every scaffolded project rides on
+- [Board Tooling](BOARD_TOOLING.md) — probe and flashing notes per board
 - [Cookbook](COOKBOOK.md) — canonical examples for the active runtime path
 - [Support Matrix](SUPPORT_MATRIX.md) — what is foundational, representative, or experimental today
 
