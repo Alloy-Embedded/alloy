@@ -10,6 +10,7 @@
 
 set(_alloy_modbus_sources
     src/pdu.cpp
+    src/rtu_frame.cpp
 )
 
 add_library(alloy-modbus STATIC ${_alloy_modbus_sources})

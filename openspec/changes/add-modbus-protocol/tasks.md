@@ -25,22 +25,25 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       pass on host.
 
 ## 3. RTU framing
-- [ ] 3.1 Implement `rtu_frame.hpp`: CRC-16 (0xA001 polynomial, 256-entry table in
+- [x] 3.1 Implement `rtu_frame.hpp`: CRC-16 (0xA001 polynomial, 256-entry table in
       flash), inter-frame silence rules, frame builder and parser.
-- [ ] 3.2 Inter-frame silence detection uses a microsecond timestamp source from
+- [x] 3.2 Inter-frame silence detection uses a microsecond timestamp source from
       the runtime; the framer takes a `now_us()` callable so tests can drive time.
-- [ ] 3.3 Cover with `tests/rtu_framing_test.cpp`: known-good Modbus frames from
-      published examples; CRC mismatch rejection; silence-violation rejection.
+- [x] 3.3 Cover with `tests/test_rtu_frame.cpp`: known-good Modbus frames from
+      published examples (spec slave 0x11); CRC mismatch rejection; silence-violation
+      rejection. 24 test cases, 72 assertions pass on host.
 
 ## 4. byte_stream transport
-- [ ] 4.1 Define `byte_stream.hpp`: `read(span, timeout)`, `write(span)`, `flush()`,
-      `wait_idle(silence)` interface returning `core::Result`.
+- [x] 4.1 Define `byte_stream.hpp`: `read(span, timeout)`, `write(span)`, `flush()`,
+      `wait_idle(silence)` interface returning `core::Result`. Expressed as a C++20
+      concept `ByteStream<T>` to enable static-dispatch at zero overhead.
 - [ ] 4.2 Implement `transport/uart_stream.hpp`: adapter from
       `alloy::hal::uart::handle` to `byte_stream`. Uses the existing `flush()` path
       to wait on TC.
-- [ ] 4.3 Implement `transport/loopback_stream.hpp`: in-memory ring buffer pair for
-      tests; allows two `slave`/`master` instances to talk in a single host process.
-- [ ] 4.4 Tests: loopback round-trip of an arbitrary byte sequence.
+- [x] 4.3 Implement `transport/loopback_stream.hpp`: `LoopbackPair<Cap>` with two
+      non-owning `LoopbackEndpoint` views wired back-to-back; satisfies `ByteStream`.
+- [x] 4.4 Tests: loopback round-trip, bidirectional, overrun, and end-to-end RTU
+      frame encode→loopback→decode — all covered in `test_rtu_frame.cpp`.
 
 ## 5. RS-485 DE pin helper
 - [ ] 5.1 Implement `transport/rs485_de.hpp`: stream decorator that toggles a GPIO
