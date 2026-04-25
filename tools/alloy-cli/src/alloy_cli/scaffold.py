@@ -36,7 +36,7 @@ else:  # pragma: no cover
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-from . import sdk, toolchains
+from . import toolchains
 
 
 class ScaffoldError(RuntimeError):
@@ -255,17 +255,33 @@ class Preflight:
 
 
 def _resolve_alloy_root(explicit: Path | None) -> Path:
+    """Resolve the alloy runtime checkout to scaffold against.
+
+    Resolution order matches the rest of the CLI's runtime locator:
+      1. ``--alloy-root`` flag
+      2. ``ALLOY_ROOT`` environment variable
+      3. walk-up from the current working directory (lets contributors run
+         ``alloy new`` from anywhere inside an alloy clone)
+      4. the SDK version selected with ``alloy sdk use``
+    """
     if explicit is not None:
         if not (explicit / "CMakeLists.txt").is_file():
             raise ScaffoldError(f"--alloy-root {explicit} is not an Alloy checkout")
         return explicit.resolve()
-    active = sdk.active_runtime_path()
-    if active is None:
+
+    # Reuse the runtime locator the delegated commands already use, so `alloy
+    # new` behaves the same as `alloy doctor` / `alloy build` w.r.t. where it
+    # finds the runtime.
+    from . import runtime
+
+    try:
+        return runtime.find_runtime_root()
+    except runtime.RuntimeNotFoundError as exc:
         raise ScaffoldError(
-            "no active SDK selected; run `alloy sdk install <version>` first, "
-            "or pass --alloy-root <path>"
-        )
-    return active
+            f"could not locate an Alloy runtime: {exc}. "
+            "Run `alloy sdk install <version>`, set ALLOY_ROOT, run from inside "
+            "a checkout, or pass --alloy-root <path>."
+        ) from exc
 
 
 def _resolve_toolchain(toolchain_name: str) -> tuple[Path | None, str]:

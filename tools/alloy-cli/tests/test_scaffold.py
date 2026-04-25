@@ -240,7 +240,10 @@ def test_scaffold_with_mcu_aliases_to_known_board(installed_sdk, tmp_path):
 # --- --mcu raw (no in-tree board) ------------------------------------------------------
 
 
-def test_scaffold_raw_mcu_generates_skeleton(installed_sdk, tmp_path):
+def test_scaffold_raw_mcu_generates_skeleton(installed_sdk, tmp_path, monkeypatch):
+    # chdir outside any real alloy checkout so walk-up does not shadow the
+    # synthetic SDK (which is the only place our raw MCU descriptor lives).
+    monkeypatch.chdir(tmp_path)
     dest = tmp_path / "g474proj"
     result = scaffold.scaffold(mcu="STM32G474RET6", destination=dest)
 
@@ -259,7 +262,10 @@ def test_scaffold_raw_mcu_generates_skeleton(installed_sdk, tmp_path):
     assert "0x08000000" in ld and "512K" in ld
 
 
-def test_scaffold_raw_mcu_warns_when_descriptor_lacks_memory(installed_sdk, tmp_path):
+def test_scaffold_raw_mcu_warns_when_descriptor_lacks_memory(
+    installed_sdk, tmp_path, monkeypatch
+):
+    monkeypatch.chdir(tmp_path)
     dest = tmp_path / "u575proj"
     result = scaffold.scaffold(mcu="STM32U575XX", destination=dest)
     assert any("did not declare memory regions" in w for w in result.warnings)
@@ -267,7 +273,8 @@ def test_scaffold_raw_mcu_warns_when_descriptor_lacks_memory(installed_sdk, tmp_
     assert "TODO" in ld
 
 
-def test_scaffold_raw_mcu_unknown_to_devices(installed_sdk, tmp_path):
+def test_scaffold_raw_mcu_unknown_to_devices(installed_sdk, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
     dest = tmp_path / "noproject"
     with pytest.raises(scaffold.ScaffoldError, match="no descriptor"):
         scaffold.scaffold(mcu="MADEUP9999", destination=dest)
@@ -302,9 +309,11 @@ def test_scaffold_rejects_non_empty_destination(installed_sdk, tmp_path):
         scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
 
 
-def test_preflight_requires_sdk_or_explicit_root(alloy_home, tmp_path):
+def test_preflight_requires_sdk_or_explicit_root(alloy_home, tmp_path, monkeypatch):
+    """When no SDK, no env var, and no walk-up succeed, scaffold must fail clearly."""
+    monkeypatch.chdir(tmp_path)  # outside any alloy checkout
     dest = tmp_path / "x"
-    with pytest.raises(scaffold.ScaffoldError, match="no active SDK"):
+    with pytest.raises(scaffold.ScaffoldError, match="could not locate an Alloy runtime"):
         scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
 
 
@@ -325,7 +334,8 @@ def test_cli_new_with_mcu_known(installed_sdk, tmp_path, capsys):
     assert (dest / "board" / "STM32G071RBT6.ld").is_file()
 
 
-def test_cli_new_with_mcu_raw(installed_sdk, tmp_path, capsys):
+def test_cli_new_with_mcu_raw(installed_sdk, tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
     dest = tmp_path / "rawmcu"
     rc = cli_main(["new", str(dest), "--mcu", "STM32G474RET6"])
     assert rc == 0
