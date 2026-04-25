@@ -19,3 +19,8 @@ target_link_libraries(alloy-drivers INTERFACE alloy::alloy)
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/protocol/modbus/CMakeLists.txt")
     add_subdirectory(protocol/modbus)
 endif()
+
+# Network abstraction layer: concept headers + optional lwIP integration.
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/net/CMakeLists.txt")
+    add_subdirectory(net)
+endif()

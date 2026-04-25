@@ -199,7 +199,10 @@ const TcpFrame& f = dec.unwrap();
 // f.transaction_id, f.unit_id, f.pdu (zero-copy subspan)
 ```
 
-TCP transport integration is pending the network HAL.
+TCP transport integration is available via `alloy::net::TcpStream` and
+`alloy::net::LwipAdapter`. See [NETWORK.md](NETWORK.md) for setup and
+[examples/modbus_tcp_slave/](../examples/modbus_tcp_slave/) for a complete
+working example on the SAME70 Xplained Ultra.
 
 ## Common gotchas
 
@@ -227,5 +230,6 @@ is recomputed consistently on both master and slave.
 | `modbus_slave_basic`     | 10-var slave (int16/float/bool mix), poll loop   |
 | `modbus_slave_rich`      | 30-var slave with full `VarMeta` + discovery FC  |
 | `modbus_master_poll`     | Master polling 3 vars at mixed intervals         |
+| `modbus_tcp_slave`       | Same 10-var slave over Modbus TCP port 502       |
 
 See `examples/modbus_*/README.md` for per-example wiring and test scripts.

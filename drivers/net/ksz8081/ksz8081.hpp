@@ -25,6 +25,7 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "drivers/net/phy_driver.hpp"
 
 namespace alloy::drivers::net::ksz8081 {
 
@@ -199,9 +200,52 @@ public:
         return bus_->read(cfg_.phy_address, reg::kPhyId2);
     }
 
+    // -----------------------------------------------------------------------
+    // alloy::net::PhyDriver concept adapters
+    // -----------------------------------------------------------------------
+
+    // reset() — thin alias for soft_reset().
+    [[nodiscard]] ResultVoid reset() { return soft_reset(); }
+
+    // auto_negotiate() — restart auto-negotiation (non-blocking; caller polls
+    // link_status() to check completion).
+    [[nodiscard]] ResultVoid auto_negotiate() { return restart_auto_negotiation(); }
+
+    // link_status() — non-failing poll; absorbs MDIO errors (returns down state).
+    [[nodiscard]] alloy::net::LinkStatus link_status() noexcept {
+        auto r = read_link_status();
+        if (r.is_err()) return {};
+        const auto& s = r.unwrap();
+        return alloy::net::LinkStatus{
+            .up          = s.up,
+            .full_duplex = s.full_duplex,
+            .speed_mbps  = s.speed_mbps,
+        };
+    }
+
 private:
     MdioBus* bus_;
     Config cfg_;
 };
 
 }  // namespace alloy::drivers::net::ksz8081
+
+// KSZ8081 satisfies the alloy::net::PhyDriver concept when paired with any
+// MdioBus. The static_assert uses a forward-declared fake bus to keep the
+// check header-only (no concrete bus dependency in this header).
+namespace alloy::drivers::net::ksz8081::_detail {
+struct _FakeBus {
+    [[nodiscard]] alloy::core::Result<std::uint16_t, alloy::core::ErrorCode>
+    read(std::uint8_t, std::uint8_t) const noexcept {
+        return alloy::core::Ok(std::uint16_t{0u});
+    }
+    [[nodiscard]] alloy::core::Result<void, alloy::core::ErrorCode>
+    write(std::uint8_t, std::uint8_t, std::uint16_t) noexcept {
+        return alloy::core::Ok();
+    }
+};
+}  // namespace alloy::drivers::net::ksz8081::_detail
+
+static_assert(alloy::net::PhyDriver<
+    alloy::drivers::net::ksz8081::Device<
+        alloy::drivers::net::ksz8081::_detail::_FakeBus>>);

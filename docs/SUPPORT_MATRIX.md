@@ -69,7 +69,9 @@ relies on.
 | `dac` | `representative` | descriptor smoke + SAME70 hardware spot-check (`analog_probe` DAC-active banner) |
 | `low-power` | `representative` | descriptor smoke + isolated SAME70 host-MMIO wakeup path |
 | `can` | `experimental` | descriptor smoke + SAME70 bring-up spot-check (`can_probe` boot/loop banner); no deterministic traffic assertion yet |
-| `modbus` | `representative` | host loopback tests pass (634 assertions / 113 cases): PDU codec, RTU framing, RS-485 DE, variable registry, slave (FC01–17), master scheduler, discovery FC 0x65, TCP MBAP framing. UART stream adapter (task 4.2) and hardware spot-check pending. See [MODBUS.md](MODBUS.md). |
+| `modbus` | `representative` | host loopback tests pass (634 assertions / 113 cases): PDU codec, RTU framing, RS-485 DE, variable registry, slave (FC01–17), master scheduler, discovery FC 0x65, TCP MBAP framing. UART stream adapter and hardware spot-check pending. See [MODBUS.md](MODBUS.md). |
+| `ethernet` | `representative` | concept checks pass (MdioBus, EthernetMac, NetworkInterface, PhyDriver, TcpStream/ByteStream); Same70Mdio + Same70Gmac + KSZ8081 wired via EthernetInterface; lwIP host loopback test (TcpStream round-trip). SAME70 Xplained hardware spot-check pending (`ethernet_basic` + `modbus_tcp_slave`). See [NETWORK.md](NETWORK.md). |
+| `wifi` | `scaffolded` | W5500Interface and EspAtInterface satisfy NetworkInterface concept (compile checks pass); full SPI/UART driver implementation is deferred to a follow-on change. |
 
 ## Maintenance Rules
 

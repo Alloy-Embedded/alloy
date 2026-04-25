@@ -7,15 +7,9 @@
 // on PD8/PD9. The PHY address strap on this carrier is 0, RMII is selected,
 // and the reference clock is fed by GTXCK.
 //
-// Since alloy does not yet ship an in-tree MDIO HAL, this example embeds a
-// small `Same70GmacMdio` adapter that drives the SAME70 GMAC's management
-// interface directly (GMAC_NCR / GMAC_NCFGR / GMAC_NSR / GMAC_MAN). That
-// adapter satisfies the MdioBus contract that the PHY driver is templated on:
-//
-//   auto read(uint8_t phy, uint8_t reg) const
-//       -> Result<uint16_t, ErrorCode>;
-//   auto write(uint8_t phy, uint8_t reg, uint16_t value) const
-//       -> Result<void, ErrorCode>;
+// Uses the formal alloy::hal::mdio::Same70Mdio driver (via board_ethernet.hpp)
+// rather than the hand-rolled Same70GmacMdio adapter used in earlier versions.
+// The MdioBus concept contract is the same; only the concrete type changes.
 //
 // What the probe does, in order:
 //   1. Initialises the board debug UART (115200-8-N-1).
@@ -68,6 +62,7 @@
 
 #include BOARD_UART_HEADER
 
+#include "boards/same70_xplained/board_ethernet.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
@@ -124,54 +119,6 @@ constexpr std::uint32_t kNcfgrClkMask = 0x7u << kNcfgrClkShift;
     return 5u;
 }
 
-// ---- SAME70 GMAC MDIO adapter (implements MdioBus contract) ---------------
-
-struct Same70GmacMdio {
-    using ResultU16 = alloy::core::Result<std::uint16_t, alloy::core::ErrorCode>;
-    using ResultVoid = alloy::core::Result<void, alloy::core::ErrorCode>;
-
-    static constexpr std::uint32_t kPollMax = 200'000u;
-
-    [[nodiscard]] static auto wait_idle() -> bool {
-        for (std::uint32_t i = 0; i < kPollMax; ++i) {
-            if ((reg32(kGmacNsr) & kNsrIdle) != 0) return true;
-        }
-        return false;
-    }
-
-    [[nodiscard]] auto read(std::uint8_t phy, std::uint8_t reg) const -> ResultU16 {
-        if (!wait_idle()) {
-            return alloy::core::Err(alloy::core::ErrorCode::Timeout);
-        }
-        // SOF=01 (bit 30), OP=10=read (bits 29:28), PHYA (27:23), REGA (22:18),
-        // CODE=10 (bits 17:16), DATA=0.
-        const std::uint32_t man = (1u << 30) | (2u << 28) |
-                                  ((phy & 0x1Fu) << 23) | ((reg & 0x1Fu) << 18) |
-                                  (2u << 16);
-        reg32(kGmacMan) = man;
-        if (!wait_idle()) {
-            return alloy::core::Err(alloy::core::ErrorCode::Timeout);
-        }
-        return alloy::core::Ok(static_cast<std::uint16_t>(reg32(kGmacMan) & 0xFFFFu));
-    }
-
-    [[nodiscard]] auto write(std::uint8_t phy, std::uint8_t reg, std::uint16_t value) const
-        -> ResultVoid {
-        if (!wait_idle()) {
-            return alloy::core::Err(alloy::core::ErrorCode::Timeout);
-        }
-        // OP=01=write (bits 29:28), DATA = value (15:0).
-        const std::uint32_t man = (1u << 30) | (1u << 28) |
-                                  ((phy & 0x1Fu) << 23) | ((reg & 0x1Fu) << 18) |
-                                  (2u << 16) | value;
-        reg32(kGmacMan) = man;
-        if (!wait_idle()) {
-            return alloy::core::Err(alloy::core::ErrorCode::Timeout);
-        }
-        return alloy::core::Ok();
-    }
-};
-
 // ---- Bring-up helpers ------------------------------------------------------
 
 void enable_pmc_clocks() {
@@ -200,15 +147,6 @@ void release_phy_reset() {
     for (volatile std::uint32_t i = 0; i < 200'000u; ++i) { __asm__ volatile("nop"); }
     reg32(pio_sodr(kPiocBase)) = kPc10;   // drive high
     for (volatile std::uint32_t i = 0; i < 2'000'000u; ++i) { __asm__ volatile("nop"); }
-}
-
-void gmac_enable_management() {
-    const std::uint32_t clk = ncfgr_clk_for_mck(
-        board::same70_xplained::ClockConfig::pclk_freq_hz);
-    std::uint32_t ncfgr = reg32(kGmacNcfgr);
-    ncfgr = (ncfgr & ~kNcfgrClkMask) | (clk << kNcfgrClkShift);
-    reg32(kGmacNcfgr) = ncfgr;
-    reg32(kGmacNcr) = reg32(kGmacNcr) | kNcrMpe;
 }
 
 template <typename Uart>
@@ -247,9 +185,10 @@ int main() {
     enable_pmc_clocks();
     mux_mdio_pins();
     release_phy_reset();
-    gmac_enable_management();
 
-    Same70GmacMdio mdio{};
+    // Use the formal MDIO HAL instead of the hand-rolled adapter.
+    auto mdio = board::make_mdio();
+    mdio.enable_management();
 
     // Pre-read PHY_ID so a bad wiring shows up on UART before Device::init()
     // short-circuits the run.
