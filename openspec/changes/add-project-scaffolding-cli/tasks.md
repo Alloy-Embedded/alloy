@@ -37,20 +37,21 @@ working state. Do not start a phase before the previous phase is reviewed and me
       paths land in `~/.alloy/toolchains/...`
 
 ## 4. Project scaffolding (`alloy new`)
-- [ ] 4.1 Replace the body of `alloy new` with a templated generator that emits:
+- [x] 4.1 Replace the body of `alloy new` with a templated (Jinja2) generator that emits:
       `CMakeLists.txt`, `CMakePresets.json`, `src/main.cpp`, `.gitignore`, `README.md`
-- [ ] 4.2 The generated `CMakeLists.txt` consumes Alloy through `find_package(Alloy CONFIG)`
-      using the active SDK path; no `-DALLOY_ROOT` hand-edit required
-- [ ] 4.3 The generated `CMakePresets.json` references the pinned toolchain path from the
-      toolchain manager
-- [ ] 4.4 Generate `.vscode/{settings.json,tasks.json,launch.json}`:
-      - clangd settings pointing at `build/<preset>/compile_commands.json`
-      - tasks for `alloy build`, `alloy flash`, `alloy monitor`
-      - launch config for OpenOCD (and J-Link where the board manifest declares it)
-- [ ] 4.5 `alloy new` validates that the active SDK and required toolchain are present and
-      offers to install them when missing
-- [ ] 4.6 Tests: scaffold a project for at least three boards (one ST, one Microchip, one
-      RPi), configure and build them in CI, run their host-test counterparts where available
+- [x] 4.2 The generated `CMakeLists.txt` consumes Alloy through
+      `add_subdirectory(${ALLOY_ROOT})` with the active SDK path baked in
+      (find_package migration deferred until pinned toolchain SHAs land; see design.md)
+- [x] 4.3 The generated `CMakePresets.json` references the pinned toolchain bin dir on
+      PATH when the toolchain is installed; otherwise defers to the user's environment
+- [x] 4.4 Generate `.vscode/{settings.json,tasks.json,launch.json}`:
+      clangd settings, build/flash/monitor tasks, OpenOCD launch when the board declares one
+- [x] 4.5 `alloy new` validates that the active SDK is present and reports missing
+      toolchain with the exact `alloy toolchain install` command (auto-install gated until
+      sha256 pins are validated)
+- [ ] 4.6 CI: scaffold a project for ST, Microchip, and RPi boards and configure them
+      against the in-tree alloy checkout (deferred to a follow-up; requires pinned
+      toolchains in CI)
 
 ## 5. Raw-MCU scaffolding
 - [ ] 5.1 Extend `alloy new` to accept `--mcu <part-number>` instead of `--board`

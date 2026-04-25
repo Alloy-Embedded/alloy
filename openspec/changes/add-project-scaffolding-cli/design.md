@@ -109,6 +109,15 @@ Non-Goals:
 
 ## Resolved Questions
 - PyPI distribution name is `alloy-cli`. The console script is `alloy`.
+- Scaffolded projects consume the runtime via `add_subdirectory(${ALLOY_ROOT})` rather
+  than `find_package(Alloy CONFIG)` for the first iteration. `find_package` requires the
+  runtime to be pre-built with a real toolchain, which creates a bootstrap chicken-and-egg
+  problem until the toolchain SHAs in `_toolchain_pins.toml` are validated. The scaffolder
+  bakes the active SDK path into the generated `CMakeLists.txt` so the user does not pass
+  `-DALLOY_ROOT` by hand. Migration to `find_package` becomes mechanical once toolchain
+  pins land.
+- Templates use Jinja2 (one runtime dependency). Inline f-strings do not scale past the
+  five+ files we generate per project.
 
 ## Open Questions
 - Lockfile format for vendored mode: TOML, JSON, or reuse `CMakePresets.json` machinery?
