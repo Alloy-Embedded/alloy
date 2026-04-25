@@ -40,11 +40,11 @@ Notes:
 | `dma` | `foundational` | descriptor smoke + host-MMIO DMA coverage + canonical `dma_probe` |
 | `i2c` | `representative` | descriptor smoke + SAME70 hardware spot-check (`i2c_scan`) |
 | `spi` | `representative` | descriptor smoke + SAME70 hardware spot-check (`spi_probe`) |
-| `timer` | `representative` | descriptor smoke + SAME70 hardware spot-check (`timer_pwm_probe`) + STM32F4/G0 hardware spot-check |
-| `pwm` | `representative` | descriptor smoke + SAME70 zero-overhead gate + SAME70 hardware spot-check (`timer_pwm_probe`) |
-| `rtc` | `representative` | descriptor smoke + host-MMIO SAME70 path + SAME70/STM32F4/G0 hardware spot-check (`rtc_probe`) |
-| `watchdog` | `representative` | descriptor smoke + host-MMIO SAME70 path + SAME70/STM32F4/G0 hardware spot-check (`watchdog_probe`) |
-| `adc` | `representative` | descriptor smoke + SAME70/STM32F4/G0 hardware spot-check (`analog_probe`) |
+| `timer` | `foundational` | descriptor smoke + host-MMIO (TC0 path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `timer_pwm_probe` all pass |
+| `pwm` | `foundational` | descriptor smoke + host-MMIO (PWM0 path) + zero-overhead gate + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `timer_pwm_probe` all pass |
+| `rtc` | `foundational` | descriptor smoke + host-MMIO (RTC path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `rtc_probe` all pass |
+| `watchdog` | `foundational` | descriptor smoke + host-MMIO (WDT path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `watchdog_probe` all pass |
+| `adc` | `foundational` | descriptor smoke + host-MMIO (AFEC path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `analog_probe` all pass |
 | `dac` | `representative` | descriptor smoke + SAME70 hardware spot-check (`analog_probe` DAC-active banner) |
 | `low-power` | `representative` | descriptor smoke + isolated SAME70 host-MMIO wakeup path |
 | `can` | `experimental` | descriptor smoke + SAME70 bring-up spot-check (`can_probe` boot/loop banner); no deterministic traffic assertion yet |

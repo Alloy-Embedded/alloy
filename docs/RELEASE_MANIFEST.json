@@ -203,42 +203,55 @@
       ]
     },
     "timer": {
-      "tier": "representative",
+      "tier": "foundational",
       "required_gates": [
         "descriptor-contract-smoke",
-        "hardware-spot-check"
-      ]
+        "host-mmio",
+        "hardware-spot-check",
+        "foundational-example-coverage"
+      ],
+      "notes": "Promoted: descriptor smoke + host-MMIO (TC0 path in same70 bringup) + 3-board hardware spot-check (SAME70/STM32G0/STM32F4 timer_pwm_probe all pass)."
     },
     "pwm": {
-      "tier": "representative",
+      "tier": "foundational",
       "required_gates": [
         "descriptor-contract-smoke",
+        "host-mmio",
         "same70-zero-overhead",
-        "hardware-spot-check"
-      ]
+        "hardware-spot-check",
+        "foundational-example-coverage"
+      ],
+      "notes": "Promoted: descriptor smoke + host-MMIO (PWM0 path in same70 bringup) + zero-overhead gate + 3-board hardware spot-check (SAME70/STM32G0/STM32F4 timer_pwm_probe all pass)."
     },
     "rtc": {
-      "tier": "representative",
+      "tier": "foundational",
       "required_gates": [
         "descriptor-contract-smoke",
         "host-mmio",
-        "hardware-spot-check"
-      ]
+        "hardware-spot-check",
+        "foundational-example-coverage"
+      ],
+      "notes": "Promoted: descriptor smoke + host-MMIO (RTC path in same70 bringup) + 3-board hardware spot-check (SAME70/STM32G0/STM32F4 rtc_probe all pass)."
     },
     "watchdog": {
-      "tier": "representative",
+      "tier": "foundational",
       "required_gates": [
         "descriptor-contract-smoke",
         "host-mmio",
-        "hardware-spot-check"
-      ]
+        "hardware-spot-check",
+        "foundational-example-coverage"
+      ],
+      "notes": "Promoted: descriptor smoke + host-MMIO (WDT path in same70 bringup) + 3-board hardware spot-check (SAME70/STM32G0/STM32F4 watchdog_probe all pass)."
     },
     "adc": {
-      "tier": "representative",
+      "tier": "foundational",
       "required_gates": [
         "descriptor-contract-smoke",
-        "hardware-spot-check"
-      ]
+        "host-mmio",
+        "hardware-spot-check",
+        "foundational-example-coverage"
+      ],
+      "notes": "Promoted: descriptor smoke + host-MMIO (AFEC path in same70 bringup) + 3-board hardware spot-check (SAME70/STM32G0/STM32F4 analog_probe all pass)."
     },
     "dac": {
       "tier": "representative",
