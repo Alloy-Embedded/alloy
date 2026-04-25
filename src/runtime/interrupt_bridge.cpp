@@ -9,6 +9,11 @@
 #include "hal/dma.hpp"
 #include "hal/detail/runtime_ops.hpp"
 
+// Anchor symbol: forces this object file to be extracted from the static archive
+// when the linker processes -u _alloy_interrupt_bridge_anchor. Without this,
+// startup.cpp's weak ISR stubs satisfy all references and this object is skipped.
+extern "C" __attribute__((used)) void _alloy_interrupt_bridge_anchor() {}
+
 namespace alloy::runtime::detail {
 
 namespace rt = alloy::hal::detail::runtime;

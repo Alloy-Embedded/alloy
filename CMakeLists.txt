@@ -338,6 +338,11 @@ if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP
 
     add_library(alloy-hal STATIC ${HAL_SOURCES})
 
+    # Force interrupt_bridge.cpp.obj to be extracted from the archive at link time.
+    # startup.cpp's weak ISR stubs would otherwise satisfy all references, causing
+    # the linker to skip interrupt_bridge.cpp.obj and leave the strong ISR overrides unused.
+    target_link_options(alloy-hal INTERFACE -u _alloy_interrupt_bridge_anchor)
+
     message(STATUS "Created STATIC alloy-hal library with platform sources")
 else()
     # Platform is header-only (templates) - create INTERFACE library

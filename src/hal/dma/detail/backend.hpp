@@ -104,6 +104,15 @@ inline auto enable_runtime_dependencies() -> core::Result<void, core::ErrorCode>
         }
     }
 
+    // Enable NVIC interrupt for this DMA channel/stream so the ISR fires on completion.
+    // kNvicIrq >= 0 only for embedded device specializations; base template uses -1.
+    if constexpr (ChannelHandle::semantic_traits::kNvicIrq >= 0) {
+        constexpr auto irqn = static_cast<std::uint32_t>(ChannelHandle::semantic_traits::kNvicIrq);
+        // ARM Cortex-M NVIC ISER: base 0xE000E100, 32 IRQs per register
+        volatile auto* nvic_iser = reinterpret_cast<volatile std::uint32_t*>(0xE000E100u);
+        nvic_iser[irqn / 32u] |= (1u << (irqn % 32u));
+    }
+
     return core::Ok();
 }
 
