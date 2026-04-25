@@ -98,11 +98,24 @@
     },
     {
       "name": "review-esp32c3",
-      "displayName": "Espressif ESP32-C3-DevKitM-1",
-      "description": "Compile-validation build for ESP32-C3 DevKitM-1 — RISC-V, 160 MHz.",
+      "displayName": "Espressif ESP32-C3-DevKitM-1 (compile review)",
+      "description": "Compile-validation build for ESP32-C3 DevKitM-1 — RISC-V, direct boot.",
       "binaryDir": "${sourceDir}/build/review-esp32c3",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/riscv32-esp-elf.cmake",
+        "ALLOY_BOARD": "esp32c3_devkitm",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "hw-esp32c3",
+      "displayName": "Espressif ESP32-C3-DevKitM-1 (hardware)",
+      "description": "Hardware build — direct boot, Release, output in build/hw/esp32c3.",
+      "binaryDir": "${sourceDir}/build/hw/esp32c3",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/riscv32-esp-elf.cmake",
         "ALLOY_BOARD": "esp32c3_devkitm",
         "ALLOY_BUILD_TESTS": "OFF",

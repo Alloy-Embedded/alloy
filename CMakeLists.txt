@@ -388,6 +388,7 @@ else()
 endif()
 
 add_library(Alloy::hal ALIAS alloy-hal)
+add_library(alloy::alloy ALIAS alloy-hal)   # lowercase alias used by drivers/examples
 set_target_properties(alloy-hal PROPERTIES EXPORT_NAME hal)
 
 # Export HAL library for use by examples and tests
@@ -493,6 +494,10 @@ if(ALLOY_BUILD_EXAMPLES)
     if(ALLOY_BOARD STREQUAL "nucleo_g071rb")
         add_subdirectory(examples/early_boot_probe)
         add_subdirectory(examples/clock_boot_probe)
+    endif()
+
+    if(ALLOY_BOARD STREQUAL "esp32c3_devkitm")
+        add_subdirectory(examples/hello_esp32c3)
     endif()
 endif()
 

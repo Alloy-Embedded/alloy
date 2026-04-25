@@ -34,6 +34,7 @@ class BoardConfig:
     uart_globs: tuple[str, ...]
     uart_baud: int
     stm32_programmer_supported: bool = False
+    esptool_chip: str = ""   # non-empty => use esptool instead of openocd
 
 
 @dataclass(frozen=True)
@@ -87,9 +88,28 @@ BOARDS: dict[str, BoardConfig] = {
         115200,
         True,
     ),
+    "esp32c3_devkitm": BoardConfig(
+        "esp32c3_devkitm",
+        ROOT / "build" / "hw" / "esp32c3",
+        "hello_esp32c3",
+        ("hello_esp32c3",),
+        (),   # no openocd
+        ("/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"),
+        115200,
+        esptool_chip="esp32c3",
+    ),
 }
 
 BOARD_INSIGHTS: dict[str, BoardInsight] = {
+    "esp32c3_devkitm": BoardInsight(
+        display_name="ESP32-C3-DevKitM-1",
+        clock_summary="ROM default (40 MHz crystal); no PLL configured in bare-metal bring-up",
+        debug_uart_summary="UART0 @ 115200 8N1 on GPIO21(TX)/GPIO20(RX) — USB-serial adapter required",
+        connectors=(
+            ConnectorInfo("debug-uart", "UART0", ("GPIO21 -> TX", "GPIO20 -> RX"),
+                          "USB-serial adapter; ROM pre-configures at 115200"),
+        ),
+    ),
     "same70_xplained": BoardInsight(
         display_name="SAME70 Xplained Ultra",
         clock_summary="clock_config::plla_150mhz (external 12 MHz crystal -> 150 MHz SYSCLK/HCLK/PCLK)",
@@ -214,6 +234,8 @@ def run_soft(cmd: list[str]) -> int:
 def select_flash_backend(cfg: BoardConfig, requested_backend: str, recover: bool) -> str:
     if requested_backend != "auto":
         return requested_backend
+    if cfg.esptool_chip:
+        return "esptool"
     if recover and cfg.stm32_programmer_supported and find_stm32_programmer_cli():
         return "stm32cube"
     return "openocd"
@@ -227,6 +249,17 @@ def flash_plan_lines(cfg: BoardConfig, target: str, backend: str, recover: bool)
         f"action: {action}",
         f"selected-backend: {backend}",
     ]
+
+    if backend == "esptool":
+        lines.extend([
+            "supported-flow: esptool.py direct-boot write_flash 0x0",
+            "planned-steps:",
+            "  - convert ELF to raw binary (objcopy -O binary)",
+            "  - esptool.py --chip esp32c3 write_flash 0x0 <target>.bin",
+        ])
+        if recover:
+            lines.append("  - --before default_reset --after hard_reset")
+        return lines
 
     if backend == "stm32cube":
         lines.extend(
@@ -542,6 +575,23 @@ def cmd_flash(args: argparse.Namespace) -> None:
 
     if args.dry_run:
         format_lines(flash_plan_lines(cfg, args.target, backend, args.recover))
+        return
+
+    if backend == "esptool":
+        require_tool("esptool.py")
+        elf = artifact(cfg, args.target)
+        bin_path = elf.with_suffix(".bin")
+        objcopy = shutil.which("riscv32-esp-elf-objcopy") or "riscv32-esp-elf-objcopy"
+        run([objcopy, "-O", "binary", str(elf), str(bin_path)])
+        port = getattr(args, "port", None) or auto_port(cfg)
+        cmd = [
+            "esptool.py",
+            "--chip", cfg.esptool_chip,
+            "--port", port,
+            "--baud", "460800",
+            "write_flash", "0x0", str(bin_path),
+        ]
+        run(cmd)
         return
 
     if backend == "stm32cube":
