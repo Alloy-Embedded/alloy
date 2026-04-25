@@ -135,12 +135,18 @@ mergeable. Host-only tests cover every phase that does not require hardware.
 - [ ] 10.3 Document in the user guide that TCP transport is pending the network HAL.
 
 ## 11. Examples
-- [ ] 11.1 `examples/modbus_slave_basic`: 10 vars (mix of int16/int32/float), RTU
-      slave on board UART, foundational board only.
-- [ ] 11.2 `examples/modbus_slave_rich`: 30 vars with full metadata + discovery FC
-      enabled. Demonstrates dashboard auto-build path.
-- [ ] 11.3 `examples/modbus_master_poll`: master polling 3 vars from the slave
-      example over a loopback wire (or two boards back to back).
+- [x] 11.1 `examples/modbus_slave_basic`: 10 vars (uint16/int16/float/int32/
+      uint32/bool mix), RTU slave on board UART. Compile-time Var<T> descriptors,
+      bind() to runtime storage, cooperative poll() loop. Slave ID overridable
+      via -DSLAVE_ID=0x02. Pending uart_stream.hpp (task 4.2).
+- [x] 11.2 `examples/modbus_slave_rich`: 30 vars (4 groups: environmental, power,
+      control, diagnostics) with full VarMeta (unit, desc, range). Discovery FC
+      0x65 enabled by default. README shows Python discovery probe snippet.
+      Pending uart_stream.hpp (task 4.2).
+- [x] 11.3 `examples/modbus_master_poll`: Master<UartStream, 3, NowFn> polling
+      temperature (float, 500 ms), status_word (uint16, 200 ms), position (int32,
+      1 s) from slave 0x01. stale callback, poll_once() loop. Wiring diagram and
+      RS-485 note in README. Pending uart_stream.hpp (task 4.2).
 
 ## 12. Documentation
 - [ ] 12.1 `docs/MODBUS.md`: user guide -- slave quickstart, master quickstart,
