@@ -85,16 +85,12 @@ inline volatile std::uint32_t& reg32(std::uintptr_t addr) {
     return *reinterpret_cast<volatile std::uint32_t*>(addr);
 }
 
-// PMC — enable peripheral clocks (PID 0..31 via PCER0, PID 32..63 via PCER1).
-constexpr std::uintptr_t kPmcPcer0 = 0x400E0610u;
-constexpr std::uintptr_t kPmcPcer1 = 0x400E0700u;
-constexpr std::uint32_t kPidPiod = 16;   // PCER0 bit 16
-constexpr std::uint32_t kPidGmac = 39;   // PCER1 bit 7 (39 - 32)
-
 // PIOC — host for the KSZ8081 nRESET strap (PC10 on SAME70 Xplained Ultra).
-constexpr std::uintptr_t kPiocBase = 0x400E1200u;
+constexpr std::uintptr_t kPiocBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOC>();
 // PIOD — peripheral multiplex for PD0 (GTXCK), PD8 (GMDC), PD9 (GMDIO).
-constexpr std::uintptr_t kPiodBase = 0x400E1400u;
+constexpr std::uintptr_t kPiodBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOD>();
 constexpr std::uintptr_t kPioPdr = kPiodBase + 0x04;     // peripheral disable PIO
 constexpr std::uintptr_t kPioAbcdsr1 = kPiodBase + 0x70;
 constexpr std::uintptr_t kPioAbcdsr2 = kPiodBase + 0x74;
@@ -104,7 +100,6 @@ inline std::uintptr_t pio_per(std::uintptr_t base)  { return base + 0x00; }
 inline std::uintptr_t pio_oer(std::uintptr_t base)  { return base + 0x10; }
 inline std::uintptr_t pio_sodr(std::uintptr_t base) { return base + 0x30; }
 inline std::uintptr_t pio_codr(std::uintptr_t base) { return base + 0x34; }
-constexpr std::uint32_t kPidPioc = 12;
 
 // GMAC — management interface. Base address comes from the generated device
 // contract so a probe author can't type the wrong literal. (An earlier hand-
@@ -187,12 +182,9 @@ struct Same70GmacMdio {
 // ---- Bring-up helpers ------------------------------------------------------
 
 void enable_pmc_clocks() {
-    // GMAC goes through the typed clock helper; PIOC / PIOD are not published
-    // as peripherals on this device, so they stay on the raw PCER write until
-    // the contract exposes them.
     alloy::clock::enable<alloy::device::PeripheralId::GMAC>();
+    alloy::clock::enable<alloy::device::PeripheralId::GPIOC>();
     alloy::clock::enable<alloy::device::PeripheralId::GPIOD>();
-    reg32(kPmcPcer0) = (1u << kPidPioc);
 }
 
 void mux_mdio_pins() {

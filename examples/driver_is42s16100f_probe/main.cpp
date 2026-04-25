@@ -57,6 +57,7 @@
 #include BOARD_UART_HEADER
 
 #include "drivers/memory/is42s16100f/is42s16100f.hpp"
+#include "device/runtime.hpp"
 #include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
 
@@ -75,15 +76,12 @@ inline volatile std::uint8_t& reg8(std::uintptr_t addr) {
 }
 
 // PMC -----------------------------------------------------------------------
-constexpr std::uintptr_t kPmcPcer0 = 0x400E0610u;
+// SDRAMC is not yet exposed as a PeripheralId by the runtime contract; once it
+// is, the raw PCER1 write below should switch to alloy::clock::enable<SDRAMC>().
 constexpr std::uintptr_t kPmcPcer1 = 0x400E0700u;
-constexpr std::uint32_t kPidPioa = 10;
-constexpr std::uint32_t kPidPioc = 12;
-constexpr std::uint32_t kPidPiod = 16;
-constexpr std::uint32_t kPidPioe = 17;
 constexpr std::uint32_t kPidSdramc = 62;  // PCER1 bit 30
 
-// MATRIX --------------------------------------------------------------------
+// MATRIX (system controller) — not published as a PeripheralId; raw literal.
 constexpr std::uintptr_t kMatrixCcfgSmcnfcs = 0x40088124u;
 constexpr std::uint32_t kCcfgSdramen = 1u << 4;
 
@@ -104,10 +102,14 @@ constexpr std::uint32_t kSdramcModeAutoRefresh = 4;
 constexpr std::uintptr_t kSdramcWindow = 0x70000000u;
 
 // PIO ------------------------------------------------------------------------
-constexpr std::uintptr_t kPioaBase = 0x400E0E00u;
-constexpr std::uintptr_t kPiocBase = 0x400E1200u;
-constexpr std::uintptr_t kPiodBase = 0x400E1400u;
-constexpr std::uintptr_t kPioeBase = 0x400E1600u;
+constexpr std::uintptr_t kPioaBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOA>();
+constexpr std::uintptr_t kPiocBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOC>();
+constexpr std::uintptr_t kPiodBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOD>();
+constexpr std::uintptr_t kPioeBase =
+    alloy::device::base<alloy::device::PeripheralId::GPIOE>();
 inline std::uintptr_t pio_pdr(std::uintptr_t base)     { return base + 0x04; }
 inline std::uintptr_t pio_abcdsr1(std::uintptr_t base) { return base + 0x70; }
 inline std::uintptr_t pio_abcdsr2(std::uintptr_t base) { return base + 0x74; }
@@ -166,8 +168,12 @@ void mux_sdram_pins() {
 }
 
 void enable_pmc_clocks() {
-    reg32(kPmcPcer0) = (1u << kPidPioa) | (1u << kPidPioc) |
-                      (1u << kPidPiod) | (1u << kPidPioe);
+    using PId = alloy::device::PeripheralId;
+    alloy::clock::enable<PId::GPIOA>();
+    alloy::clock::enable<PId::GPIOC>();
+    alloy::clock::enable<PId::GPIOD>();
+    alloy::clock::enable<PId::GPIOE>();
+    // SDRAMC has no PeripheralId yet; raw PCER1 write until codegen exposes it.
     reg32(kPmcPcer1) = (1u << (kPidSdramc - 32));
 }
 
