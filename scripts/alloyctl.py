@@ -93,14 +93,33 @@ BOARDS: dict[str, BoardConfig] = {
         ROOT / "build" / "hw" / "esp32c3",
         "hello_esp32c3",
         ("hello_esp32c3",),
-        (),   # no openocd
+        (),
         ("/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"),
         115200,
         esptool_chip="esp32c3",
     ),
+    "esp32_devkit": BoardConfig(
+        "esp32_devkit",
+        ROOT / "build" / "hw" / "esp32",
+        "hello_esp32",
+        ("hello_esp32",),
+        (),
+        ("/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"),
+        115200,
+        esptool_chip="esp32",
+    ),
 }
 
 BOARD_INSIGHTS: dict[str, BoardInsight] = {
+    "esp32_devkit": BoardInsight(
+        display_name="ESP32-DevKit",
+        clock_summary="80 MHz APB (set by ESP-IDF bootloader); app can raise to 240 MHz",
+        debug_uart_summary="UART0 @ 115200 8N1 on GPIO1(TX)/GPIO3(RX) via onboard CP2102",
+        connectors=(
+            ConnectorInfo("debug-uart", "UART0", ("GPIO1 -> TX", "GPIO3 -> RX"),
+                          "onboard CP2102 USB-serial — same port as flashing"),
+        ),
+    ),
     "esp32c3_devkitm": BoardInsight(
         display_name="ESP32-C3-DevKitM-1",
         clock_summary="ROM default (40 MHz crystal); no PLL configured in bare-metal bring-up",

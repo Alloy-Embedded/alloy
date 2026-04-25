@@ -18,7 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Alloy configuration variables
 set(ALLOY_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Alloy framework root directory")
-set(ALLOY_BOARD "host" CACHE STRING "Target board (host, same70_xplained, nucleo_f401re, nucleo_g071rb, nucleo_g0b1re, raspberry_pi_pico, avr128da32_curiosity_nano, esp32c3_devkitm, esp32s3_devkitc)")
+set(ALLOY_BOARD "host" CACHE STRING "Target board (host, same70_xplained, nucleo_f401re, nucleo_g071rb, nucleo_g0b1re, raspberry_pi_pico, avr128da32_curiosity_nano, esp32c3_devkitm, esp32s3_devkitc, esp32_devkit)")
 set(ALLOY_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(ALLOY_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
 
@@ -39,6 +39,7 @@ set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "avr128da32_curiosity_nano"   # Microchip AVR128DA32 Curiosity Nano
     "esp32c3_devkitm"             # Espressif ESP32-C3-DevKitM-1
     "esp32s3_devkitc"             # Espressif ESP32-S3-DevKitC-1
+    "esp32_devkit"                # Espressif ESP32-DevKit (Xtensa LX6)
 )
 
 # Build type
@@ -170,6 +171,8 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "stm32g0")
     elseif(ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD MATCHES "^nucleo_f4")
         set(ALLOY_PLATFORM "stm32f4")
+    elseif(ALLOY_BOARD STREQUAL "esp32_devkit")
+        set(ALLOY_PLATFORM "esp32")
     else()
         message(WARNING "Could not auto-detect ALLOY_PLATFORM from ALLOY_BOARD='${ALLOY_BOARD}'. Using 'linux' as fallback.")
         set(ALLOY_PLATFORM "linux")
@@ -201,6 +204,12 @@ if(DEFINED BOARD_HEADER_PATH)
     string(REPLACE "board.hpp" "startup.cpp" _board_startup_path "${BOARD_HEADER_PATH}")
     if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_startup_path}")
         set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/${_board_startup_path}")
+    else()
+        # Some boards (Xtensa) provide startup.S instead of startup.cpp
+        string(REPLACE "board.hpp" "startup.S" _board_startup_asm "${BOARD_HEADER_PATH}")
+        if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_startup_asm}")
+            set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/${_board_startup_asm}")
+        endif()
     endif()
 
     # Define BOARD_HEADER as a macro that expands to the header path
@@ -336,6 +345,13 @@ if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP
     # Include platform sources + startup code (if board defines one)
     set(HAL_SOURCES ${ALLOY_PLATFORM_SOURCES} ${ALLOY_CORE_SOURCES})
     list(APPEND HAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/runtime/interrupt_bridge.cpp)
+
+    # Cooperative coroutine scheduler (runtime-tasks). avr-gcc 13.x does not
+    # implement C++20 coroutines, so the scheduler refuses to build on that
+    # architecture. See openspec/specs/runtime-tasks/spec.md.
+    if(NOT ALLOY_BOARD_DEVICE_ARCH STREQUAL "avr")
+        list(APPEND HAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/runtime/tasks/scheduler.cpp)
+    endif()
     if(ALLOY_ACTIVE_STARTUP_SOURCE AND EXISTS "${ALLOY_ACTIVE_STARTUP_SOURCE}")
         list(APPEND HAL_SOURCES ${ALLOY_ACTIVE_STARTUP_SOURCE})
     endif()
@@ -441,6 +457,12 @@ if(ALLOY_BUILD_EXAMPLES)
     if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
         add_subdirectory(examples/blink)
         add_subdirectory(examples/time_probe)
+        # Cooperative coroutine scheduler demo. avr-gcc 13.x lacks C++20
+        # coroutines, so skip on that arch (the runtime-tasks library refuses
+        # to build there too).
+        if(NOT ALLOY_BOARD_DEVICE_ARCH STREQUAL "avr")
+            add_subdirectory(examples/tasks_blink_uart)
+        endif()
     endif()
 
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
@@ -498,6 +520,10 @@ if(ALLOY_BUILD_EXAMPLES)
 
     if(ALLOY_BOARD STREQUAL "esp32c3_devkitm")
         add_subdirectory(examples/hello_esp32c3)
+    endif()
+
+    if(ALLOY_BOARD STREQUAL "esp32_devkit")
+        add_subdirectory(examples/hello_esp32)
     endif()
 endif()
 

@@ -36,6 +36,7 @@ set(ALLOY_SUPPORTED_PLATFORMS
     "avr-da"    # Microchip AVR-DA family (AVR8)
     "esp32c3"   # Espressif ESP32-C3 (RISC-V RV32IMC)
     "esp32s3"   # Espressif ESP32-S3 (Xtensa LX7)
+    "esp32"     # Espressif ESP32 (Xtensa LX6)
 )
 
 # ------------------------------------------------------------------------------

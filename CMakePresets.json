@@ -110,6 +110,19 @@
       }
     },
     {
+      "name": "hw-esp32",
+      "displayName": "Espressif ESP32-DevKit (hardware)",
+      "description": "Hardware build — ESP-IDF bootloader flow, Release, output in build/hw/esp32.",
+      "binaryDir": "${sourceDir}/build/hw/esp32",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/xtensa-esp32-elf.cmake",
+        "ALLOY_BOARD": "esp32_devkit",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
       "name": "hw-esp32c3",
       "displayName": "Espressif ESP32-C3-DevKitM-1 (hardware)",
       "description": "Hardware build — direct boot, Release, output in build/hw/esp32c3.",

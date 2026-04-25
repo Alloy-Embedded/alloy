@@ -1,0 +1,21 @@
+#pragma once
+
+// ESP32-DevKit board support — Xtensa LX6, ESP-IDF bootloader, 80 MHz APB clock.
+//
+// LED : GPIO2 (built-in blue LED, active HIGH)
+// UART0: GPIO1 TX / GPIO3 RX, pre-configured by bootloader at 115200-8-N-1
+
+#include <cstdint>
+
+namespace board {
+
+namespace led {
+void init();
+void on();
+void off();
+void toggle();
+}  // namespace led
+
+void init();
+
+}  // namespace board
