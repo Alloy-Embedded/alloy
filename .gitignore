@@ -77,3 +77,7 @@ temp/
 *.tmp
 site/
 .claude/
+
+# alloy-cli: hatch-vcs writes the resolved version into this file at
+# build/install time; it must not be tracked in the source tree.
+tools/alloy-cli/src/alloy_cli/_version.py

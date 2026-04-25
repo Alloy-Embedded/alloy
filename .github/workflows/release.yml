@@ -306,40 +306,38 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # hatch-vcs derives the package version from `git describe`, so it
+          # needs the tag history. Default checkout is shallow and refuses to
+          # describe; fetch-depth: 0 fixes that.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Verify package version matches tag
-        working-directory: tools/alloy-cli
-        run: |
-          PYPROJECT_VERSION=$(python - <<'PY'
-          import sys
-          if sys.version_info >= (3, 11):
-              import tomllib
-          else:
-              import tomli as tomllib
-          with open("pyproject.toml", "rb") as fh:
-              data = tomllib.load(fh)
-          print(data["project"]["version"])
-          PY
-          )
-          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
-          echo "pyproject.toml says: $PYPROJECT_VERSION"
-          echo "git tag says:        v$TAG_VERSION"
-          if [ "$PYPROJECT_VERSION" != "$TAG_VERSION" ]; then
-            echo "ERROR: pyproject.toml version ($PYPROJECT_VERSION) does not match the git tag (v$TAG_VERSION)."
-            echo "Bump tools/alloy-cli/pyproject.toml's version field before tagging."
-            exit 1
-          fi
-
-      - name: Build distribution
+      - name: Build distribution (version derived from git tag)
         working-directory: tools/alloy-cli
         run: |
           python -m pip install --upgrade pip build
           python -m build
+          echo "::group::Built artefacts"
+          ls -1 dist/
+          echo "::endgroup::"
+
+      - name: Sanity-check that the built version matches the tag
+        working-directory: tools/alloy-cli
+        run: |
+          BUILT=$(ls dist/*.whl | head -n1 | sed -E 's|.*alloy_cli-([^-]+)-.*|\1|')
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "wheel: $BUILT"
+          echo "tag:   v$TAG"
+          if [ "$BUILT" != "$TAG" ]; then
+            echo "ERROR: hatch-vcs produced version $BUILT but the tag is v$TAG."
+            echo "This usually means the workflow checkout was shallow or the tag was not pushed."
+            exit 1
+          fi
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

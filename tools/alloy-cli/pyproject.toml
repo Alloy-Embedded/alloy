@@ -1,10 +1,15 @@
 [build-system]
-requires = ["hatchling>=1.24"]
+requires = ["hatchling>=1.24", "hatch-vcs>=0.4"]
 build-backend = "hatchling.build"
 
 [project]
 name = "alloy-cli"
-version = "0.1.0"
+# Version is derived from the most recent `vX.Y.Z` git tag on the alloy repo via
+# hatch-vcs. Building from a tag produces exactly that version (e.g. v0.2.0 ->
+# 0.2.0); building between tags or from a dirty tree produces a PEP 440 dev
+# version like 0.2.0.dev3+g1abcdef. Maintainers never edit a version field by
+# hand, and the publish workflow can no longer ship a wrong-version wheel.
+dynamic = ["version"]
 description = "Alloy multi-vendor bare-metal runtime CLI: scaffold, build, flash, and monitor projects."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -42,6 +47,19 @@ alloy = "alloy_cli.main:main"
 Homepage = "https://github.com/Alloy-Embedded/alloy"
 Source = "https://github.com/Alloy-Embedded/alloy"
 Issues = "https://github.com/Alloy-Embedded/alloy/issues"
+
+[tool.hatch.version]
+# Resolve the package version from `vX.Y.Z` git tags on the alloy repo. The
+# package lives in tools/alloy-cli/ so we point setuptools-scm at the repo root
+# two levels up. Without `root`, setuptools-scm refuses to walk into a parent
+# directory's .git out of caution.
+source = "vcs"
+raw-options = { root = "../..", tag_regex = '^v(?P<version>\d+\.\d+\.\d+(?:[A-Za-z0-9.+-]*)?)$' }
+
+[tool.hatch.build.hooks.vcs]
+# Hatch writes the resolved version to this file at build/install time.
+# The runtime imports from it; gitignore keeps it out of source control.
+version-file = "src/alloy_cli/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/alloy_cli"]

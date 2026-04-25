@@ -40,21 +40,26 @@ automatically.
 
 ## Cutting a release
 
-```bash
-# 1. Bump the CLI version in pyproject.toml. The release workflow refuses to
-#    publish if the file's version field does not match the tag.
-$EDITOR tools/alloy-cli/pyproject.toml          # version = "0.2.0"
+The CLI's package version is derived from the git tag by `hatch-vcs`. Maintainers
+do not edit a version field anywhere; the only thing that matters is the tag.
 
-# 2. (If the alloy-devices SHA changed since the previous release) update
+```bash
+# 1. (If the alloy-devices SHA changed since the previous release) update
 #    the manifest. The CLI uses this for `alloy sdk install` reproducibility.
 $EDITOR docs/RELEASE_MANIFEST.json              # alloy_devices.ref
 
-# 3. Commit, tag, push.
+# 2. Commit any pending changes, tag, push.
 git add -A
 git commit -m "release: alloy v0.2.0"
 git tag -a v0.2.0 -m "alloy v0.2.0"
 git push origin main v0.2.0
 ```
+
+Building from the tag produces `alloy_cli-0.2.0-...whl`. Building from a dirty
+working tree or between tags produces a PEP 440 dev version such as
+`0.2.1.dev3+g1abcdef.d20260425`, which `pip` will not consider a release. That is
+the safety net: the workflow can never publish a wrong-version wheel, because the
+version is what it is.
 
 The `Release` workflow then runs in parallel:
 
