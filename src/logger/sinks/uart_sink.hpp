@@ -66,7 +66,7 @@ class UartSink : public Sink {
             return;
         }
 
-        if constexpr (requires(const UartImpl& uart, std::span<const std::byte> bytes) {
+        if constexpr (requires(UartImpl& uart, std::span<const std::byte> bytes) {
                           { uart.write(bytes) };
                       }) {
             const auto bytes = std::span{

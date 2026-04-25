@@ -40,6 +40,20 @@ jobs:
         submodules: recursive
         fetch-depth: 0  # Full history for changelog
 
+    - name: Read pinned alloy-devices ref
+      id: devices
+      run: |
+        REF=$(python3 -c "import json; print(json.load(open('docs/RELEASE_MANIFEST.json'))['alloy_devices']['ref'])")
+        echo "ref=$REF" >> $GITHUB_OUTPUT
+        echo "alloy-devices ref pinned by RELEASE_MANIFEST.json: $REF"
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+        ref: ${{ steps.devices.outputs.ref }}
+
     - name: Install ARM GCC Toolchain
       run: |
         sudo apt-get update
@@ -61,7 +75,8 @@ jobs:
           -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
           -DCMAKE_BUILD_TYPE=MinSizeRel \
           -DALLOY_BOARD=${{ matrix.board }} \
-          -DALLOY_BUILD_TESTS=OFF
+          -DALLOY_BUILD_TESTS=OFF \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices
 
     - name: Build Example
       run: |
@@ -122,6 +137,19 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Read pinned alloy-devices ref
+      id: devices
+      run: |
+        REF=$(python3 -c "import json; print(json.load(open('docs/RELEASE_MANIFEST.json'))['alloy_devices']['ref'])")
+        echo "ref=$REF" >> $GITHUB_OUTPUT
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+        ref: ${{ steps.devices.outputs.ref }}
+
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -135,7 +163,8 @@ jobs:
           -DALLOY_PLATFORM=linux \
           -DALLOY_BUILD_TESTS=ON \
           -DCMAKE_C_COMPILER=gcc-11 \
-          -DCMAKE_CXX_COMPILER=g++-11
+          -DCMAKE_CXX_COMPILER=g++-11 \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices
 
         cmake --build build-test --parallel
 
