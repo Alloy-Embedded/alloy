@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
 {% if has_openocd %}        {
-            "name": "Debug ({{ board }} via OpenOCD)",
+            "name": "Debug ({{ display_name }} via OpenOCD)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/{{ project }}.elf",

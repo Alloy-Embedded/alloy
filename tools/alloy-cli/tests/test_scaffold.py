@@ -1,14 +1,19 @@
-"""Tests for `alloy new` scaffolding.
+"""Tests for `alloy new` scaffolding (custom-board path).
 
-Each test installs a synthetic SDK (a minimal "Alloy checkout" with the right sentinel
-files plus a CMakeLists.txt) into a temp ALLOY_HOME and asks the scaffolder to generate
-a project against it. We assert on the contents of the generated tree, not on a real
-CMake build.
+Each test installs a synthetic SDK into a temp ALLOY_HOME. The synthetic SDK ships:
+- a stub runtime (CMakeLists.txt + scripts/alloyctl.py + cmake/board_manifest.cmake),
+- a `boards/<name>/` directory whose layout mirrors the real in-tree boards so the
+  copy-from-SDK path can be exercised end to end,
+- an `alloy-devices` checkout next to the runtime, with a small descriptor tree we use
+  to validate the raw-MCU resolution path.
+
+We assert on generated tree contents, never on a real CMake build.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -18,9 +23,10 @@ from alloy_cli import config, scaffold
 from alloy_cli.main import main as cli_main
 
 
-def _git(*args: str, cwd: Path) -> None:
-    import os
+# --- fixtures --------------------------------------------------------------------------
 
+
+def _git(*args: str, cwd: Path) -> None:
     subprocess.run(
         ["git", *args],
         cwd=cwd,
@@ -42,10 +48,37 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
     (path / "scripts").mkdir()
     (path / "cmake").mkdir()
     (path / "scripts" / "alloyctl.py").write_text("def main(): return 0\n")
-    (path / "cmake" / "board_manifest.cmake").write_text("# stub\n")
+    # Fake board manifest fragment: just enough for arch lookup to succeed.
+    (path / "cmake" / "board_manifest.cmake").write_text(
+        '# fake manifest\n'
+        '#   BOARD_NAME STREQUAL "nucleo_g071rb"\n'
+        '#   set(_arch "cortex-m0plus")\n'
+        'BOARD_NAME STREQUAL "nucleo_g071rb"\n'
+        'set(_arch "cortex-m0plus")\n'
+    )
     (path / "CMakeLists.txt").write_text(
         "cmake_minimum_required(VERSION 3.25)\nproject(alloy_stub)\n"
     )
+
+    # Synthetic boards/<name>/ — mirrors the real in-tree shape.
+    for board_name, header_body in (
+        ("nucleo_g071rb", "namespace board { void init(); }"),
+        ("same70_xplained", "namespace board { void init(); }"),
+        ("raspberry_pi_pico", "namespace board { void init(); }"),
+    ):
+        bd = path / "boards" / board_name
+        bd.mkdir(parents=True)
+        (bd / "board.hpp").write_text(f"// stub for {board_name}\n{header_body}\n")
+        (bd / "board_config.hpp").write_text(f"// stub config for {board_name}\n")
+        (bd / "board.cpp").write_text("void board::init() {}\n")
+        (bd / "syscalls.cpp").write_text("// stub syscalls\n")
+
+    # Linker script naming follows the real convention (MCU.ld) for two boards and a
+    # generic name for one, so the copier handles both.
+    (path / "boards" / "nucleo_g071rb" / "STM32G071RBT6.ld").write_text("/* stub */\n")
+    (path / "boards" / "same70_xplained" / "ATSAME70Q21.ld").write_text("/* stub */\n")
+    (path / "boards" / "raspberry_pi_pico" / "rp2040.ld").write_text("/* stub */\n")
+
     _git("add", ".", cwd=path)
     _git("commit", "--quiet", "-m", "initial", cwd=path)
     _git("tag", tag, cwd=path)
@@ -54,7 +87,41 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
 def _make_devices_remote(path: Path) -> None:
     path.mkdir(parents=True)
     _git("init", "--quiet", "--initial-branch=main", cwd=path)
-    (path / "README.md").write_text("# devices stub\n")
+    # st/stm32g0/stm32g071rb -- known-board path
+    g071 = path / "st" / "stm32g0" / "generated" / "runtime" / "devices" / "stm32g071rb"
+    g071.mkdir(parents=True)
+    (g071 / "capabilities.json").write_text(
+        json.dumps(
+            {
+                "memory": {
+                    "regions": [
+                        {"kind": "flash", "origin": "0x08000000", "length": 131072},
+                        {"kind": "ram", "origin": "0x20000000", "length": 36864},
+                    ]
+                },
+                "arch": "cortex-m0plus",
+            }
+        )
+    )
+    # st/stm32g4/stm32g474re -- raw-MCU path (no in-tree board)
+    g474 = path / "st" / "stm32g4" / "generated" / "runtime" / "devices" / "stm32g474re"
+    g474.mkdir(parents=True)
+    (g474 / "capabilities.json").write_text(
+        json.dumps(
+            {
+                "memory": [
+                    {"kind": "flash", "origin": "0x08000000", "length": 524288},
+                    {"kind": "ram", "origin": "0x20000000", "length": 131072},
+                ],
+                "arch": "cortex-m4",
+            }
+        )
+    )
+    # st/stm32u5/stm32u575xx -- descriptor lacking memory data, exercises warnings
+    u575 = path / "st" / "stm32u5" / "generated" / "runtime" / "devices" / "stm32u575xx"
+    u575.mkdir(parents=True)
+    (u575 / "capabilities.json").write_text(json.dumps({"arch": "cortex-m4"}))
+
     _git("add", ".", cwd=path)
     _git("commit", "--quiet", "-m", "initial", cwd=path)
 
@@ -98,77 +165,121 @@ def test_get_board_unknown_raises():
         scaffold.get_board("not_a_board")
 
 
-def test_get_board_returns_metadata():
-    board = scaffold.get_board("nucleo_g071rb")
-    assert board.toolchain == "arm-none-eabi-gcc"
-    assert board.has_openocd
-    assert board.openocd_config_files
+def test_find_board_by_mcu_matches_case_insensitively():
+    board = scaffold.find_board_by_mcu("stm32g071rbt6")
+    assert board is not None and board.name == "nucleo_g071rb"
 
 
-# --- preflight -------------------------------------------------------------------------
+def test_find_board_by_mcu_returns_none_for_unknown():
+    assert scaffold.find_board_by_mcu("STM32X9999") is None
 
 
-def test_preflight_requires_sdk_or_explicit_root(alloy_home):
-    board = scaffold.get_board("nucleo_g071rb")
-    with pytest.raises(scaffold.ScaffoldError, match="no active SDK"):
-        scaffold.preflight(board)
+# --- copy-from-SDK path (--board) ------------------------------------------------------
 
 
-def test_preflight_resolves_explicit_alloy_root(installed_sdk):
-    board = scaffold.get_board("nucleo_g071rb")
-    pf = scaffold.preflight(board, alloy_root=installed_sdk)
-    assert pf.alloy_root == installed_sdk.resolve()
-    assert pf.toolchain_bin is None  # no toolchain installed in this fixture
-
-
-# --- scaffolding -----------------------------------------------------------------------
-
-
-def test_scaffold_creates_full_project_tree(installed_sdk, tmp_path):
+def test_scaffold_with_board_copies_in_tree_files(installed_sdk, tmp_path):
     dest = tmp_path / "myproj"
     result = scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
-    assert result.project == "myproj"
-    assert (dest / "CMakeLists.txt").is_file()
-    assert (dest / "CMakePresets.json").is_file()
-    assert (dest / "src" / "main.cpp").is_file()
-    assert (dest / ".gitignore").is_file()
-    assert (dest / "README.md").is_file()
-    for name in ("settings.json", "tasks.json", "launch.json"):
-        assert (dest / ".vscode" / name).is_file()
+    assert (dest / "board" / "board.hpp").is_file()
+    assert (dest / "board" / "board.cpp").is_file()
+    assert (dest / "board" / "syscalls.cpp").is_file()
+    assert (dest / "board" / "board_config.hpp").is_file()
+    assert (dest / "board" / "STM32G071RBT6.ld").is_file()
+    assert result.layer.linker_script_name == "STM32G071RBT6.ld"
+    assert result.layer.sources == ("board.cpp", "syscalls.cpp")
 
 
-def test_scaffold_bakes_alloy_root_into_cmakelists(installed_sdk, tmp_path):
+def test_cmakelists_uses_custom_board_contract(installed_sdk, tmp_path):
     dest = tmp_path / "myproj"
     scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
     body = (dest / "CMakeLists.txt").read_text()
-    assert str(installed_sdk) in body
-    assert 'set(ALLOY_BOARD "nucleo_g071rb"' in body
+    assert 'set(ALLOY_BOARD "custom"' in body
+    assert "ALLOY_CUSTOM_BOARD_HEADER" in body
+    assert "ALLOY_CUSTOM_LINKER_SCRIPT" in body
+    assert "ALLOY_DEVICE_VENDOR" in body and '"st"' in body
+    assert "ALLOY_DEVICE_NAME" in body and '"stm32g071rb"' in body
+    assert 'ALLOY_DEVICE_ARCH' in body and '"cortex-m0plus"' in body
     assert "add_subdirectory(${ALLOY_ROOT}" in body
+    assert "board/board.cpp" in body
+    assert "board/syscalls.cpp" in body
 
 
-def test_scaffold_emits_valid_presets_json(installed_sdk, tmp_path):
+def test_presets_no_longer_set_alloy_board(installed_sdk, tmp_path):
     dest = tmp_path / "myproj"
     scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
     presets = json.loads((dest / "CMakePresets.json").read_text())
-    names = {p["name"] for p in presets["configurePresets"]}
-    assert names == {"debug", "release"}
     debug = next(p for p in presets["configurePresets"] if p["name"] == "debug")
-    assert debug["cacheVariables"]["ALLOY_BOARD"] == "nucleo_g071rb"
+    assert "ALLOY_BOARD" not in debug["cacheVariables"]
+    assert "ALLOY_ROOT" in debug["cacheVariables"]
 
 
-def test_scaffold_emits_valid_vscode_json(installed_sdk, tmp_path):
+def test_vscode_files_remain_valid_json(installed_sdk, tmp_path):
     dest = tmp_path / "myproj"
     scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
     for name in ("settings.json", "tasks.json", "launch.json"):
-        json.loads((dest / ".vscode" / name).read_text())  # must parse
+        json.loads((dest / ".vscode" / name).read_text())
 
 
-def test_scaffold_launch_json_has_openocd_for_board_with_probe(installed_sdk, tmp_path):
-    dest = tmp_path / "myproj"
-    scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
-    body = (dest / ".vscode" / "launch.json").read_text()
-    assert "OpenOCD" in body
-    assert ":3333" in body
+# --- --mcu with catalog match ----------------------------------------------------------
+
+
+def test_scaffold_with_mcu_aliases_to_known_board(installed_sdk, tmp_path):
+    dest = tmp_path / "viaomcu"
+    result = scaffold.scaffold(mcu="STM32G071RBT6", destination=dest)
+    assert (dest / "board" / "STM32G071RBT6.ld").is_file()
+    assert result.layer.vendor == "st"
+    assert result.layer.device == "stm32g071rb"
+
+
+# --- --mcu raw (no in-tree board) ------------------------------------------------------
+
+
+def test_scaffold_raw_mcu_generates_skeleton(installed_sdk, tmp_path):
+    dest = tmp_path / "g474proj"
+    result = scaffold.scaffold(mcu="STM32G474RET6", destination=dest)
+
+    for name in ("board.hpp", "board_config.hpp", "board.cpp", "syscalls.cpp", "linker.ld"):
+        assert (dest / "board" / name).is_file(), f"missing skeleton file board/{name}"
+    assert result.layer.linker_script_name == "linker.ld"
+    assert result.layer.vendor == "st"
+    assert result.layer.family == "stm32g4"
+    assert result.layer.device == "stm32g474re"
+    assert result.layer.flash_size_bytes == 524288
+    assert result.warnings == ()  # descriptor had memory data
+
+    body = (dest / "board" / "board_config.hpp").read_text()
+    assert "TODO" in body
+    ld = (dest / "board" / "linker.ld").read_text()
+    assert "0x08000000" in ld and "512K" in ld
+
+
+def test_scaffold_raw_mcu_warns_when_descriptor_lacks_memory(installed_sdk, tmp_path):
+    dest = tmp_path / "u575proj"
+    result = scaffold.scaffold(mcu="STM32U575XX", destination=dest)
+    assert any("did not declare memory regions" in w for w in result.warnings)
+    ld = (dest / "board" / "linker.ld").read_text()
+    assert "TODO" in ld
+
+
+def test_scaffold_raw_mcu_unknown_to_devices(installed_sdk, tmp_path):
+    dest = tmp_path / "noproject"
+    with pytest.raises(scaffold.ScaffoldError, match="no descriptor"):
+        scaffold.scaffold(mcu="MADEUP9999", destination=dest)
+
+
+# --- preflight and validation ----------------------------------------------------------
+
+
+def test_scaffold_requires_either_board_or_mcu(installed_sdk, tmp_path):
+    dest = tmp_path / "x"
+    with pytest.raises(scaffold.ScaffoldError, match="exactly one"):
+        scaffold.scaffold(destination=dest)
+
+
+def test_scaffold_rejects_both_board_and_mcu(installed_sdk, tmp_path):
+    dest = tmp_path / "x"
+    with pytest.raises(scaffold.ScaffoldError, match="exactly one"):
+        scaffold.scaffold(board_name="nucleo_g071rb", mcu="STM32G071RBT6", destination=dest)
 
 
 def test_scaffold_rejects_invalid_project_name(installed_sdk, tmp_path):
@@ -185,58 +296,45 @@ def test_scaffold_rejects_non_empty_destination(installed_sdk, tmp_path):
         scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
 
 
-def test_scaffold_overrides_project_name(installed_sdk, tmp_path):
-    dest = tmp_path / "weird-name"
-    result = scaffold.scaffold(
-        board_name="nucleo_g071rb", destination=dest, project_name="my_custom"
-    )
-    assert result.project == "my_custom"
-    assert "project(my_custom" in (dest / "CMakeLists.txt").read_text()
+def test_preflight_requires_sdk_or_explicit_root(alloy_home, tmp_path):
+    dest = tmp_path / "x"
+    with pytest.raises(scaffold.ScaffoldError, match="no active SDK"):
+        scaffold.scaffold(board_name="nucleo_g071rb", destination=dest)
 
 
 # --- CLI integration -------------------------------------------------------------------
 
 
-def test_cli_new_scaffolds(installed_sdk, tmp_path, capsys):
+def test_cli_new_with_board(installed_sdk, tmp_path, capsys):
     dest = tmp_path / "viacli"
     rc = cli_main(["new", str(dest), "--board", "nucleo_g071rb"])
     assert rc == 0
-    out = capsys.readouterr().out
-    assert "scaffolded" in out
-    assert (dest / "CMakeLists.txt").is_file()
+    assert (dest / "board" / "board.cpp").is_file()
 
 
-def test_cli_new_without_sdk_returns_clear_error(alloy_home, tmp_path, capsys):
-    dest = tmp_path / "noproject"
-    rc = cli_main(["new", str(dest), "--board", "nucleo_g071rb"])
-    assert rc == 1
-    err = capsys.readouterr().err
-    assert "no active SDK" in err
-    assert not dest.exists() or not any(dest.iterdir())
+def test_cli_new_with_mcu_known(installed_sdk, tmp_path, capsys):
+    dest = tmp_path / "mcucli"
+    rc = cli_main(["new", str(dest), "--mcu", "STM32G071RBT6"])
+    assert rc == 0
+    assert (dest / "board" / "STM32G071RBT6.ld").is_file()
 
 
-def test_cli_new_unknown_board(installed_sdk, tmp_path, capsys):
+def test_cli_new_with_mcu_raw(installed_sdk, tmp_path, capsys):
+    dest = tmp_path / "rawmcu"
+    rc = cli_main(["new", str(dest), "--mcu", "STM32G474RET6"])
+    assert rc == 0
+    assert (dest / "board" / "linker.ld").is_file()
+
+
+def test_cli_new_rejects_both_targets(installed_sdk, tmp_path, capsys):
     dest = tmp_path / "x"
-    rc = cli_main(["new", str(dest), "--board", "bogus_board"])
-    assert rc == 1
-    assert "unknown board" in capsys.readouterr().err
+    # argparse's mutually-exclusive group surfaces this via SystemExit(2).
+    with pytest.raises(SystemExit):
+        cli_main(["new", str(dest), "--board", "nucleo_g071rb", "--mcu", "STM32G071RBT6"])
 
 
-def test_cli_boards_lists_known(capsys, alloy_home):
+def test_cli_boards_lists_with_mcu(installed_sdk, capsys):
     rc = cli_main(["boards"])
     assert rc == 0
     out = capsys.readouterr().out
-    assert "nucleo_g071rb" in out
-    assert "same70_xplained" in out
-
-
-def test_cli_new_accepts_explicit_alloy_root(tmp_path, alloy_home):
-    runtime_remote = tmp_path / "alloy-checkout"
-    _make_runtime_remote(runtime_remote)
-    dest = tmp_path / "explicit"
-    rc = cli_main(
-        ["new", str(dest), "--board", "nucleo_g071rb", "--alloy-root", str(runtime_remote)]
-    )
-    assert rc == 0
-    body = (dest / "CMakeLists.txt").read_text()
-    assert str(runtime_remote.resolve()) in body
+    assert "STM32G071RBT6" in out

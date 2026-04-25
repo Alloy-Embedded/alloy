@@ -50,3 +50,4 @@ packages = ["src/alloy_cli"]
 "src/alloy_cli/_toolchain_pins.toml" = "alloy_cli/_toolchain_pins.toml"
 "src/alloy_cli/_boards.toml" = "alloy_cli/_boards.toml"
 "src/alloy_cli/_templates" = "alloy_cli/_templates"
+"src/alloy_cli/_templates/board_skeleton" = "alloy_cli/_templates/board_skeleton"

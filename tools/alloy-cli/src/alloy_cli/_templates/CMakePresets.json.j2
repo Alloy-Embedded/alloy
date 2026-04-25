@@ -4,12 +4,11 @@
     "configurePresets": [
         {
             "name": "debug",
-            "displayName": "{{ board }} (Debug)",
+            "displayName": "{{ display_name }} (Debug)",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "ALLOY_BOARD": "{{ board }}",
                 "ALLOY_ROOT": "{{ alloy_root }}"{% if toolchain_file %},
                 "CMAKE_TOOLCHAIN_FILE": "{{ toolchain_file }}"{% endif %}
             }{% if toolchain_bin %},
@@ -20,7 +19,7 @@
         {
             "name": "release",
             "inherits": "debug",
-            "displayName": "{{ board }} (Release)",
+            "displayName": "{{ display_name }} (Release)",
             "binaryDir": "${sourceDir}/build/release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "MinSizeRel"

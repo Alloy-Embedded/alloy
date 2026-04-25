@@ -21,14 +21,14 @@
             "label": "alloy: flash",
             "type": "shell",
             "command": "alloy",
-            "args": ["flash", "--board", "{{ board }}", "--target", "{{ project }}", "--build-first"],
+            "args": ["flash", "--board", "custom", "--target", "{{ project }}", "--build-first"],
             "problemMatcher": []
         },
         {
             "label": "alloy: monitor",
             "type": "shell",
             "command": "alloy",
-            "args": ["monitor", "--board", "{{ board }}"],
+            "args": ["monitor", "--board", "custom"],
             "isBackground": true,
             "problemMatcher": []
         }

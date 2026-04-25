@@ -1,0 +1,26 @@
+#pragma once
+
+// Generated skeleton board for {{ mcu }} ({{ vendor }}/{{ family }}/{{ device }}).
+// alloy-devices supplies the device facts; this header maps your hardware
+// (LED pin, button pin, debug UART, etc.) onto the descriptor-driven runtime.
+//
+// TODO: fill in the pin assignments for your board below. Refer to a known
+//       in-tree board (e.g. boards/nucleo_g071rb/) as a reference shape.
+
+#include <cstdint>
+
+#include "hal/systick.hpp"
+#include "device/system_clock.hpp"
+
+#include "board_config.hpp"
+
+namespace board {
+
+void init();
+
+// TODO: expose your LED helper here once board_config.hpp declares the pin.
+// auto make_led();
+
+using BoardSysTick = alloy::hal::SysTickTimer;
+
+}  // namespace board
