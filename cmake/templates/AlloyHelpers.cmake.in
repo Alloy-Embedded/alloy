@@ -1,0 +1,29 @@
+include_guard(GLOBAL)
+
+function(alloy_add_runtime_executable TARGET_NAME)
+    set(options)
+    set(oneValueArgs)
+    set(multiValueArgs SOURCES)
+    cmake_parse_arguments(ALLOY_APP "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(NOT ALLOY_APP_SOURCES)
+        message(FATAL_ERROR "alloy_add_runtime_executable requires SOURCES <...>")
+    endif()
+
+    add_executable(${TARGET_NAME} ${ALLOY_APP_SOURCES})
+    target_link_libraries(${TARGET_NAME} PRIVATE Alloy::hal)
+    target_compile_features(${TARGET_NAME} PRIVATE cxx_std_23)
+    target_include_directories(${TARGET_NAME} PRIVATE "${Alloy_SOURCE_DIR}")
+
+    if(Alloy_BOARD_SOURCE_DIR AND EXISTS "${Alloy_BOARD_SOURCE_DIR}/board.cpp")
+        target_sources(${TARGET_NAME} PRIVATE "${Alloy_BOARD_SOURCE_DIR}/board.cpp")
+    endif()
+
+    if(CMAKE_CROSSCOMPILING AND Alloy_BOARD_SOURCE_DIR AND EXISTS "${Alloy_BOARD_SOURCE_DIR}/syscalls.cpp")
+        target_sources(${TARGET_NAME} PRIVATE "${Alloy_BOARD_SOURCE_DIR}/syscalls.cpp")
+    endif()
+
+    if(CMAKE_CROSSCOMPILING AND Alloy_LINKER_SCRIPT AND EXISTS "${Alloy_LINKER_SCRIPT}")
+        target_link_options(${TARGET_NAME} PRIVATE "-T${Alloy_LINKER_SCRIPT}")
+    endif()
+endfunction()

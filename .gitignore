@@ -56,7 +56,10 @@ docs/latex/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
+# `.cmake.in` files generated under build dirs should be ignored, but the
+# templates checked into cmake/templates/ are project source.
 *.cmake.in
+!cmake/templates/*.cmake.in
 CTestTestfile.cmake
 
 # Testing
