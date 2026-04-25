@@ -42,7 +42,7 @@
 - [x] 6.1 Replace `kTwihsCrStart` / `kTwihsCrStop` / `kTwihsSr*` raw masks in
       `src/hal/i2c/detail/backend.hpp` with the emitted `FieldRef`s from
       task 1.1.
-- [ ] 6.2 Re-run `driver_at24mac402_probe` on silicon; confirm PASS.
+- [ ] 6.2 Re-run `driver_at24mac402_probe` on silicon; confirm PASS. [BLOCKED: requires SAME70 hardware]
 
 ## 7. Alloy — Probe Refactors
 
@@ -60,5 +60,5 @@
 
 - [x] 8.1 Add `tests/compile/contract_smoke.cmake` entry that fails if any
       HAL-referenced semantic field resolves to `kInvalidFieldRef`.
-- [ ] 8.2 Re-run all three probes on SAME70 Xplained Ultra; confirm PASS.
-- [ ] 8.3 `openspec validate close-codegen-semantics-gaps --strict`.
+- [ ] 8.2 Re-run all three probes on SAME70 Xplained Ultra; confirm PASS. [BLOCKED: requires SAME70 hardware]
+- [ ] 8.3 `openspec validate close-codegen-semantics-gaps --strict`. [BLOCKED: openspec validate tooling not yet implemented]
