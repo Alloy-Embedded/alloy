@@ -219,15 +219,19 @@ inline auto configure_st_dmamux_route(std::size_t channel_index)
     value |= (0u << 7u);  // MEMSET = normal
     value |= (0u << 8u);  // CSIZE = 1
     value |= static_cast<std::uint32_t>(data_width_bits(config.data_width) << 11u);
-    value |= (0u << 13u);  // SIF = AHB_IF0
-    value |= (0u << 14u);  // DIF = AHB_IF0
+    // CC register layout (SAM E70): DWIDTH=[12:11], SIF=13, DIF=14, SAM=[16:15], DAM=[18:17]
+    // Bus matrix: XDMAC MASTER0 (IF0) → SRAM; MASTER1 (IF1) → flash + peripheral bridge.
 
     if (config.direction == Direction::memory_to_peripheral) {
-        value |= (1u << 16u);  // SAM incremented
-        value |= (0u << 18u);  // DAM fixed
+        value |= (1u << 13u);  // SIF=1: source via IF1 (flash/SRAM reachable via HSB crossbar)
+        value |= (1u << 14u);  // DIF=1: destination via IF1 (peripheral bridge)
+        value |= (1u << 15u);  // SAM=01: increment source address (bit 15 = SAM[0])
+        // DAM=00 (bits 18:17 = 0): keep destination (THR) address fixed
     } else {
-        value |= (0u << 16u);  // SAM fixed
-        value |= (1u << 18u);  // DAM incremented
+        value |= (1u << 13u);  // SIF=1: source via IF1 (peripheral bridge)
+        // DIF=0 (bit 14 = 0): destination via IF0 (SRAM)
+        // SAM=00 (bits 16:15 = 0): keep source (RDR) address fixed
+        value |= (1u << 17u);  // DAM=01: increment destination address (bit 17 = DAM[0])
     }
 
     value |= ((request_value & 0x7Fu) << 24u);
@@ -405,14 +409,9 @@ inline auto start_st_dma_channel_transfer(const ChannelHandle& handle, std::size
         .valid = true,
     };
 
-    const auto current_cr = rt::read_register(cr);
-    if (current_cr.is_err()) {
-        return core::Err(core::ErrorCode{current_cr.unwrap_err()});
-    }
-    if ((current_cr.unwrap() & 0x1u) != 0u) {
-        return core::Err(core::ErrorCode::DmaChannelBusy);
-    }
-
+    // Force-disable the channel before reconfiguring. Writing CR=0 is safe regardless of current
+    // EN state: on STM32G0, EN may remain set after a completed transfer (CNDTR=0) because the
+    // hardware clears EN asynchronously after the TC interrupt fires.
     if (const auto disable_result = rt::write_register(cr, 0u); disable_result.is_err()) {
         return disable_result;
     }
@@ -539,6 +538,88 @@ inline auto start_st_dma_stream_transfer(const ChannelHandle& handle, std::size_
 }
 
 template <typename ChannelHandle>
+inline auto start_xdmac_channel_transfer(const ChannelHandle& handle, std::size_t channel_index,
+                                         std::uintptr_t peripheral_address,
+                                         std::uintptr_t memory_address, std::size_t size_bytes)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (ChannelHandle::request_value < 0) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        const auto transfer_count =
+            resolve_transfer_count(handle, peripheral_address, memory_address, size_bytes);
+        if (transfer_count.is_err()) {
+            return core::Err(core::ErrorCode{transfer_count.unwrap_err()});
+        }
+
+        const auto controller_base = ChannelHandle::controller_base_address;
+        const auto ch_idx = static_cast<std::uint32_t>(channel_index);
+        const auto ch_base = 0x50u + ch_idx * 0x40u;
+
+        const auto gd = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                        .base_address = controller_base,
+                                        .offset_bytes = 0x20u,
+                                        .valid = true};
+        const auto gie = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                         .base_address = controller_base,
+                                         .offset_bytes = 0x0Cu,
+                                         .valid = true};
+        const auto ge = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                        .base_address = controller_base,
+                                        .offset_bytes = 0x1Cu,
+                                        .valid = true};
+        const auto cie = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                         .base_address = controller_base,
+                                         .offset_bytes = ch_base + 0x00u,
+                                         .valid = true};
+        const auto cis = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                         .base_address = controller_base,
+                                         .offset_bytes = ch_base + 0x0Cu,
+                                         .valid = true};
+        const auto csa = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                         .base_address = controller_base,
+                                         .offset_bytes = ch_base + 0x10u,
+                                         .valid = true};
+        const auto cda = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                         .base_address = controller_base,
+                                         .offset_bytes = ch_base + 0x14u,
+                                         .valid = true};
+        const auto cubc = rt::RegisterRef{.register_id = device::runtime::RegisterId::none,
+                                          .base_address = controller_base,
+                                          .offset_bytes = ch_base + 0x20u,
+                                          .valid = true};
+
+        // Disable channel before reconfiguring, then clear any pending channel interrupt.
+        if (const auto r = rt::write_register(gd, 1u << ch_idx); r.is_err()) {
+            return r;
+        }
+        static_cast<void>(rt::read_register(cis));
+
+        const auto src = handle.config().direction == Direction::memory_to_peripheral
+                             ? memory_address
+                             : peripheral_address;
+        const auto dst = handle.config().direction == Direction::memory_to_peripheral
+                             ? peripheral_address
+                             : memory_address;
+        if (const auto r = rt::write_register(csa, static_cast<std::uint32_t>(src)); r.is_err()) {
+            return r;
+        }
+        if (const auto r = rt::write_register(cda, static_cast<std::uint32_t>(dst)); r.is_err()) {
+            return r;
+        }
+        if (const auto r = rt::write_register(cubc, transfer_count.unwrap()); r.is_err()) {
+            return r;
+        }
+        if (const auto r = rt::write_register(cie, 1u); r.is_err()) {  // BIE
+            return r;
+        }
+        if (const auto r = rt::write_register(gie, 1u << ch_idx); r.is_err()) {
+            return r;
+        }
+        return rt::write_register(ge, 1u << ch_idx);
+    }
+}
+
+template <typename ChannelHandle>
 inline auto start_transfer(const ChannelHandle& handle, std::uintptr_t peripheral_address,
                            std::uintptr_t memory_address, std::size_t size_bytes)
     -> core::Result<void, core::ErrorCode> {
@@ -565,6 +646,11 @@ inline auto start_transfer(const ChannelHandle& handle, std::uintptr_t periphera
                                                      peripheral_address, memory_address,
                                                      size_bytes);
             }
+        }
+
+        if constexpr (ChannelHandle::schema == DmaSchema::microchip_xdmac_k) {
+            return start_xdmac_channel_transfer(handle, resolved_channel_index.unwrap(),
+                                                peripheral_address, memory_address, size_bytes);
         }
 
         return core::Err(core::ErrorCode::NotSupported);

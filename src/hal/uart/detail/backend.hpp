@@ -559,22 +559,36 @@ auto write_uart_dma(const PortHandle&, const DmaChannel& channel, std::span<cons
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    const auto tx_dma_field = st_tx_dma_field<PortHandle>();
-    if (!tx_dma_field.valid) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-
     using Completion = alloy::dma_event::token<DmaChannel::peripheral_id, DmaChannel::signal_id>;
-    Completion::reset();
 
-    const auto start_result = dma::detail::start_transfer(
-        channel, PortHandle::tx_data_register_address(),
-        reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
-    if (start_result.is_err()) {
-        return start_result;
+    if constexpr (PortHandle::is_st_style) {
+        const auto tx_dma_field = st_tx_dma_field<PortHandle>();
+        if (!tx_dma_field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        Completion::reset();
+        // Ensure DMAT is clear before DMA setup so the USART does not generate
+        // requests against an unconfigured or busy channel.
+        static_cast<void>(rt::modify_field(tx_dma_field, 0u));
+        const auto start_result = dma::detail::start_transfer(
+            channel, PortHandle::tx_data_register_address(),
+            reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
+        if (start_result.is_err()) {
+            return start_result;
+        }
+        return rt::modify_field(tx_dma_field, 1u);
     }
 
-    return rt::modify_field(tx_dma_field, 1u);
+    // Microchip USART (SAME70): XDMAC transfers are triggered by hardware PERID routing;
+    // no explicit DMA-enable bit in the USART is needed.
+    if constexpr (PortHandle::is_microchip_usart_zw) {
+        Completion::reset();
+        return dma::detail::start_transfer(
+            channel, PortHandle::tx_data_register_address(),
+            reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
+    }
+
+    return core::Err(core::ErrorCode::NotSupported);
 }
 
 template <typename PortHandle, typename DmaChannel>
@@ -591,22 +605,30 @@ auto read_uart_dma(const PortHandle&, const DmaChannel& channel, std::span<std::
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    const auto rx_dma_field = st_rx_dma_field<PortHandle>();
-    if (!rx_dma_field.valid) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-
     using Completion = alloy::dma_event::token<DmaChannel::peripheral_id, DmaChannel::signal_id>;
-    Completion::reset();
 
-    const auto start_result = dma::detail::start_transfer(
-        channel, PortHandle::rx_data_register_address(),
-        reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
-    if (start_result.is_err()) {
-        return start_result;
+    if constexpr (PortHandle::is_st_style) {
+        const auto rx_dma_field = st_rx_dma_field<PortHandle>();
+        if (!rx_dma_field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        Completion::reset();
+        if (const auto dmar_result = rt::modify_field(rx_dma_field, 1u); dmar_result.is_err()) {
+            return dmar_result;
+        }
+        return dma::detail::start_transfer(
+            channel, PortHandle::rx_data_register_address(),
+            reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
     }
 
-    return rt::modify_field(rx_dma_field, 1u);
+    if constexpr (PortHandle::is_microchip_usart_zw) {
+        Completion::reset();
+        return dma::detail::start_transfer(
+            channel, PortHandle::rx_data_register_address(),
+            reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
+    }
+
+    return core::Err(core::ErrorCode::NotSupported);
 }
 
 }  // namespace alloy::hal::uart::detail

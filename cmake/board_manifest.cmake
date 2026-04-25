@@ -53,6 +53,7 @@ function(
         set(_mcu "STM32G071RBT6")
         set(_flash_size_bytes 131072)
         set(_supports_uart_logger TRUE)
+        set(_supports_dma_probe TRUE)
     elseif(BOARD_NAME STREQUAL "nucleo_g0b1re")
         set(_found TRUE)
         set(_board_header "boards/nucleo_g0b1re/board.hpp")
