@@ -66,16 +66,21 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       ALLOY_MODBUS_REGISTRY_MAX_BYTES)` (default 8 KB, user-overridable via macro).
 
 ## 7. Slave server
-- [ ] 7.1 Implement `slave.hpp` / `slave.cpp`: cooperative `poll(timeout)` consuming
-      from `byte_stream`, parsing frames, dispatching to FC handlers, writing
-      responses (or exceptions). No allocation in the hot path.
-- [ ] 7.2 Implement `slave.run()` as the trivial loop helper.
-- [ ] 7.3 FC handlers: 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x0F, 0x10, 0x17 against
-      the variable registry.
-- [ ] 7.4 Critical-section guard around multi-register operations to prevent tearing
-      against application code.
-- [ ] 7.5 Cover with `tests/slave_test.cpp` (over loopback): exercise every FC with
-      both happy and exception paths; assert correct responses byte-for-byte.
+- [x] 7.1 Implement `slave.hpp`: cooperative `poll(timeout_us)` consuming from
+      `byte_stream`; decodes RTU frame, ignores frames for other IDs, dispatches to
+      FC handler, encodes and writes RTU response. All buffers stack-local; no alloc.
+- [x] 7.2 `slave.run(timeout_us)` as trivial `[[noreturn]]` loop over `poll()`.
+- [x] 7.3 FC handlers: 0x01/02 (read coils/discrete inputs), 0x03/04 (read
+      holding/input registers), 0x05 (write single coil), 0x06 (write single
+      register), 0x0F (write multiple coils), 0x10 (write multiple registers),
+      0x17 (read/write multiple registers). All map to the bound Registry<N>.
+- [x] 7.4 Critical-section guard (`CritSection` template param, default
+      `NoOpCriticalSection`) wraps each `write_register_word()` RMW to prevent
+      tearing of multi-word vars (float/int32/double) against ISR access.
+- [x] 7.5 `tests/test_slave.cpp`: 15 cases / 171 assertions over LoopbackPair.
+      Every FC exercised with happy path (byte-for-byte response check) and
+      exception path (unmapped address → IllegalDataAddress, read-only write →
+      IllegalDataAddress). Also: wrong slave ID → no response.
 
 ## 8. Master client
 - [ ] 8.1 Implement `master.hpp` / `master.cpp`: cooperative `poll_once()`,

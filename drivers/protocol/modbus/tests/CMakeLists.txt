@@ -27,3 +27,9 @@ alloy_add_catch2_test(test_modbus_var
     LIBS alloy::modbus
     LABELS unit modbus
 )
+
+alloy_add_catch2_test(test_modbus_slave
+    SOURCES test_slave.cpp
+    LIBS alloy::modbus
+    LABELS unit modbus
+)
