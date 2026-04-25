@@ -53,14 +53,25 @@ working state. Do not start a phase before the previous phase is reviewed and me
       against the in-tree alloy checkout (deferred to a follow-up; requires pinned
       toolchains in CI)
 
-## 5. Raw-MCU scaffolding
-- [ ] 5.1 Extend `alloy new` to accept `--mcu <part-number>` instead of `--board`
-- [ ] 5.2 Resolve the MCU against `alloy-devices`; fail with a clear message and pointer
-      to the descriptor repo if the part is not yet supported
-- [ ] 5.3 Generate a minimal board layer (startup + clock + linker script) when no manifest
-      board exists; do not synthesize peripherals
-- [ ] 5.4 Document the supported set in `docs/SUPPORT_MATRIX.md`
-- [ ] 5.5 Tests: scaffold and build for at least one `--mcu` target that has no manifest entry
+## 5. Custom-board scaffolding (depends on add-custom-board-bringup)
+- [ ] 5.1 Switch every scaffold to the custom-board path: `alloy new` always generates a
+      `board/` directory in the user's project and emits a CMakeLists that sets
+      `ALLOY_BOARD=custom` plus the runtime's documented cache variables
+- [ ] 5.2 `--board <name>`: copy `boards/<name>/` from the active SDK into
+      `<project>/board/` so the user starts from a known-good board and can extend it
+- [ ] 5.3 `--mcu <part-number>`: resolve the MCU against `alloy-devices`. If a board
+      already exists in the SDK for that MCU, copy it (same as 5.2). Otherwise, generate
+      a skeleton board (board.hpp, board_config.hpp, board.cpp, syscalls.cpp, linker
+      script) deriving FLASH/RAM from `capabilities.json` when present and falling back
+      to clearly-marked TODOs with a one-line warning otherwise
+- [ ] 5.4 Validate `<vendor>/<family>/<device>` against `alloy-devices/<sdk>/devices`
+      before scaffolding; fail fast with a pointer to `alloy-devices` if the descriptor
+      is missing
+- [ ] 5.5 Document the supported set and the custom-board recipe in
+      `docs/SUPPORT_MATRIX.md` and reference `docs/CUSTOM_BOARDS.md`
+- [ ] 5.6 Tests: scaffold and configure (host-side check, no real toolchain) for
+      `--board nucleo_g071rb`, `--mcu STM32G071RBT6` (alias to existing board), and
+      `--mcu STM32G474RET6` (descriptor-only path with warning)
 
 ## 6. Documentation and migration
 - [ ] 6.1 Rewrite `docs/QUICKSTART.md` to lead with `pipx install alloy-cli` and `alloy new`
