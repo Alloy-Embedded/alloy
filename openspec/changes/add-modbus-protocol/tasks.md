@@ -37,9 +37,13 @@ mergeable. Host-only tests cover every phase that does not require hardware.
 - [x] 4.1 Define `byte_stream.hpp`: `read(span, timeout)`, `write(span)`, `flush()`,
       `wait_idle(silence)` interface returning `core::Result`. Expressed as a C++20
       concept `ByteStream<T>` to enable static-dispatch at zero overhead.
-- [ ] 4.2 Implement `transport/uart_stream.hpp`: adapter from
-      `alloy::hal::uart::handle` to `byte_stream`. Uses the existing `flush()` path
-      to wait on TC.
+- [x] 4.2 Implement `transport/uart_stream.hpp`: `UartStream<Handle, NowFn>`
+      adapter wrapping any `alloy::hal::uart::port_handle<Connector>` as a
+      `ByteStream`. `read()` polls HAL one byte at a time with NowFn deadline;
+      `write()` delegates to HAL write; `flush()` delegates to HAL flush (TC wait);
+      `wait_idle()` drains RX then NowFn busy-waits the silence window. CTAD
+      deduction guide provided. Limitations documented (HAL read granularity ~6.7 ms
+      at 150 MHz per poll burst). Compile-check passes on host without board headers.
 - [x] 4.3 Implement `transport/loopback_stream.hpp`: `LoopbackPair<Cap>` with two
       non-owning `LoopbackEndpoint` views wired back-to-back; satisfies `ByteStream`.
 - [x] 4.4 Tests: loopback round-trip, bidirectional, overrun, and end-to-end RTU
@@ -132,7 +136,10 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       and transaction_id preservation; protocol-id rejection; truncated-ADU and
       declared-length-mismatch errors; buffer-too-small and PDU-too-large encode
       errors; zero-copy subspan verification; FC03 integration round-trip.
-- [ ] 10.3 Document in the user guide that TCP transport is pending the network HAL.
+- [x] 10.3 `docs/MODBUS.md` TCP framing section explicitly states: "TCP transport
+      integration is pending the network HAL." MODBUS.md documents the MBAP API
+      (encode_tcp_frame / decode_tcp_frame / TcpFrame / kTcpMax* constants) and
+      its compile-only status.
 
 ## 11. Examples
 - [x] 11.1 `examples/modbus_slave_basic`: 10 vars (uint16/int16/float/int32/
