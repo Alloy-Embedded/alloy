@@ -34,6 +34,7 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_at24mac402.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_ksz8081.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_is42s16100f.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_i2c_fieldref_contract.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )

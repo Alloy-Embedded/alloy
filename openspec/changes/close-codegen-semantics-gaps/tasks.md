@@ -38,7 +38,7 @@
 
 ## 6. Alloy — TWIHS Backend Refactor
 
-- [ ] 6.1 Replace `kTwihsCrStart` / `kTwihsCrStop` / `kTwihsSr*` raw masks in
+- [x] 6.1 Replace `kTwihsCrStart` / `kTwihsCrStop` / `kTwihsSr*` raw masks in
       `src/hal/i2c/detail/backend.hpp` with the emitted `FieldRef`s from
       task 1.1.
 - [ ] 6.2 Re-run `driver_at24mac402_probe` on silicon; confirm PASS.
@@ -56,7 +56,7 @@
 
 ## 8. Validation
 
-- [ ] 8.1 Add `tests/compile/contract_smoke.cmake` entry that fails if any
+- [x] 8.1 Add `tests/compile/contract_smoke.cmake` entry that fails if any
       HAL-referenced semantic field resolves to `kInvalidFieldRef`.
 - [ ] 8.2 Re-run all three probes on SAME70 Xplained Ultra; confirm PASS.
 - [ ] 8.3 `openspec validate close-codegen-semantics-gaps --strict`.
