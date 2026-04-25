@@ -212,7 +212,7 @@ def test_shipped_pins_file_parses():
     assert "arm-none-eabi-gcc" in data
     assert "openocd" in data
     # Espressif toolchain pins covering ESP32-C3 (RISC-V) and ESP32-S3 (Xtensa LX7).
-    assert "xtensa-esp32s3-elf-gcc" in data
+    assert "xtensa-esp-elf-gcc" in data
     assert "riscv32-esp-elf-gcc" in data
 
 
@@ -223,12 +223,12 @@ def test_install_xtensa_esp32s3_toolchain_via_synthetic_pin(tmp_path, monkeypatc
     name, point a pin override at it via ``ALLOY_TOOLCHAIN_PINS``, and assert the
     install lands in the per-version cache with a usable ``which`` lookup.
     """
-    archive = _make_tarball(tmp_path / "xtensa.tar.gz", binary_name="xtensa-esp32s3-elf-gcc")
+    archive = _make_tarball(tmp_path / "xtensa.tar.gz", binary_name="xtensa-esp-elf-gcc")
     sha = _sha256(archive)
     pins = tmp_path / "pins.toml"
     _write_pins(
         pins,
-        name="xtensa-esp32s3-elf-gcc",
+        name="xtensa-esp-elf-gcc",
         version="esp-test",
         host=_detect(),
         url=archive.as_uri(),
@@ -236,11 +236,11 @@ def test_install_xtensa_esp32s3_toolchain_via_synthetic_pin(tmp_path, monkeypatc
     )
     monkeypatch.setenv("ALLOY_TOOLCHAIN_PINS", str(pins))
 
-    record = toolchains.install("xtensa-esp32s3-elf-gcc")
+    record = toolchains.install("xtensa-esp-elf-gcc")
     assert record.bin_dir == (
-        alloy_home / "toolchains" / "xtensa-esp32s3-elf-gcc" / "esp-test" / "bin"
+        alloy_home / "toolchains" / "xtensa-esp-elf-gcc" / "esp-test" / "bin"
     )
-    assert (record.bin_dir / "xtensa-esp32s3-elf-gcc").is_file()
+    assert (record.bin_dir / "xtensa-esp-elf-gcc").is_file()
 
-    binary = toolchains.which("xtensa-esp32s3-elf-gcc")
-    assert binary.name == "xtensa-esp32s3-elf-gcc"
+    binary = toolchains.which("xtensa-esp-elf-gcc")
+    assert binary.name == "xtensa-esp-elf-gcc"

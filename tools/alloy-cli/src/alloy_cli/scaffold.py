@@ -536,10 +536,12 @@ def _toolchain_for_arch(arch: str) -> str:
     if arch == "native":
         return "gcc"
     if arch == "xtensa":
-        # Today only the ESP32-S3 (LX7) is wired through this arch label. When the LX6
-        # family lands, the arch enum splits into xtensa-lx6 / xtensa-lx7 and this
-        # branch follows suit. See OpenSpec change add-esp32-classic-family.
-        return "xtensa-esp32s3-elf-gcc"
+        # Espressif consolidated all Xtensa ESP variants behind a single driver
+        # (`xtensa-esp-elf-gcc`) starting in 13.x; LX6 (ESP32) and LX7 (ESP32-S3)
+        # both target it via runtime config. The arch enum is expected to split into
+        # xtensa-lx6 / xtensa-lx7 with add-esp32-classic-family, but the toolchain
+        # binary stays the same.
+        return "xtensa-esp-elf-gcc"
     if arch == "riscv32":
         return "riscv32-esp-elf-gcc"
     return "arm-none-eabi-gcc"

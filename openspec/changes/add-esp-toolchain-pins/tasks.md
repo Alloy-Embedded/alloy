@@ -42,7 +42,23 @@
 - [x] 3.3 Cross-link `add-esp-toolchain-pins` from the new ESP32 rows in
       `docs/SUPPORT_MATRIX.md`.
 
-## 4. Pin validation (deferred)
-- [ ] 4.1 Validate the sha256 of each Espressif archive on the maintainer's machine
-      and replace `TODO` placeholders. Mechanical follow-up that lands in the same
-      release.
+## 4. Pin validation
+- [x] 4.1 Replace every `TODO` sha256 placeholder with a validated value.
+      Espressif sha256s come from the release's published
+      `crosstool-NG-esp-13.2.0_20240530-checksum.sha256` manifest (no download
+      required). xPack ARM/OpenOCD do not publish a checksum file; sha256s come
+      from streaming each archive through `curl ... | shasum -a 256`. Real
+      end-to-end install validated for arm-none-eabi-gcc, xtensa-esp-elf-gcc, and
+      riscv32-esp-elf-gcc on darwin-arm64.
+
+## 5. Bug fixes surfaced during validation
+- [x] 5.1 `_download` falls back to curl on HTTPS when available. The framework
+      Python on macOS does not always pick up the system CA bundle; curl uses it
+      by default.
+- [x] 5.2 `_extract` now extracts to a staging directory and moves the contents
+      up by `strip_components` levels rather than mutating `tarinfo.name`.
+      Mutating the name breaks hard-link resolution, which Espressif's `*-esp-elf`
+      toolchains rely on heavily inside `lib/`.
+- [x] 5.3 Rename `xtensa-esp32s3-elf-gcc` -> `xtensa-esp-elf-gcc` everywhere.
+      Espressif consolidated all Xtensa ESP variants behind a single driver
+      starting in 13.x; the old name no longer corresponds to a published release.

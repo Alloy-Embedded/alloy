@@ -365,7 +365,7 @@ def test_scaffold_esp32s3_catalog_match(installed_sdk, tmp_path):
     dest = tmp_path / "esp32s3proj"
     result = scaffold.scaffold(board_name="esp32s3_devkitc", destination=dest)
     assert result.layer.arch == "xtensa"
-    assert result.layer.toolchain == "xtensa-esp32s3-elf-gcc"
+    assert result.layer.toolchain == "xtensa-esp-elf-gcc"
     assert any("does not ship a linker script" in w for w in result.warnings)
 
 
@@ -380,7 +380,7 @@ def test_scaffold_with_mcu_esp32s3_aliases_to_board(installed_sdk, tmp_path):
     dest = tmp_path / "viaclis3"
     result = scaffold.scaffold(mcu="ESP32-S3", destination=dest)
     assert result.layer.family == "esp32s3"
-    assert result.layer.toolchain == "xtensa-esp32s3-elf-gcc"
+    assert result.layer.toolchain == "xtensa-esp-elf-gcc"
 
 
 def test_cli_boards_lists_esp_targets(installed_sdk, capsys):
@@ -392,5 +392,5 @@ def test_cli_boards_lists_esp_targets(installed_sdk, capsys):
 
 
 def test_toolchain_for_arch_maps_xtensa_and_riscv():
-    assert scaffold._toolchain_for_arch("xtensa") == "xtensa-esp32s3-elf-gcc"
+    assert scaffold._toolchain_for_arch("xtensa") == "xtensa-esp-elf-gcc"
     assert scaffold._toolchain_for_arch("riscv32") == "riscv32-esp-elf-gcc"

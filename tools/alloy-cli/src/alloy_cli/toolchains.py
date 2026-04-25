@@ -155,6 +155,23 @@ def _download(url: str, dest: Path) -> None:
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme not in {"http", "https", "file"}:
         raise ToolchainError(f"unsupported URL scheme {parsed.scheme!r}: {url}")
+    if parsed.scheme in {"http", "https"} and shutil.which("curl") is not None:
+        # Prefer curl over urllib for HTTPS: it uses the system CA bundle, which
+        # the framework Python on macOS does not always pick up. Falls back to
+        # urllib when curl is not available.
+        import subprocess
+
+        result = subprocess.run(
+            ["curl", "-fsSL", "--retry", "3", "-o", str(dest), url],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise ToolchainError(
+                f"curl failed for {url} (exit {result.returncode}): "
+                f"{result.stderr.strip() or result.stdout.strip()}"
+            )
+        return
     with urllib.request.urlopen(url) as response, dest.open("wb") as fh:
         shutil.copyfileobj(response, fh)
 
@@ -172,15 +189,46 @@ def _verify_sha256(path: Path, expected: str) -> None:
 
 
 def _extract(archive_path: Path, dest: Path, kind: str, strip: int) -> None:
+    """Extract ``archive_path`` into ``dest``, optionally stripping the top N path
+    components. The strip step uses an indirect-move strategy (extract into a temp
+    directory, then move the children of the deepest stripped level into ``dest``)
+    so that internal hard/symlinks in the archive resolve against their original
+    names. Mutating ``tarinfo.name`` in place breaks link resolution for archives
+    such as Espressif's `*-esp-elf` toolchains, which use hard links throughout
+    `lib/`."""
     dest.mkdir(parents=True, exist_ok=True)
+
+    def _move_stripped(staging: Path) -> None:
+        if strip == 0:
+            for child in staging.iterdir():
+                shutil.move(str(child), str(dest / child.name))
+            return
+        # Walk down ``strip`` levels and move the contents up.
+        cursor = staging
+        for _ in range(strip):
+            children = [c for c in cursor.iterdir() if c.is_dir()]
+            if len(children) != 1:
+                raise ToolchainError(
+                    f"strip_components={strip} expected a single top-level dir at "
+                    f"{cursor}, found {len(children)}"
+                )
+            cursor = children[0]
+        for child in cursor.iterdir():
+            shutil.move(str(child), str(dest / child.name))
+
     if kind in {"tar.gz", "tar.xz", "tar.bz2", "tar"}:
         mode = {"tar.gz": "r:gz", "tar.xz": "r:xz", "tar.bz2": "r:bz2", "tar": "r:"}[kind]
-        with tarfile.open(archive_path, mode) as tf:
-            members = tf.getmembers()
-            if strip:
-                members = _strip_members(members, strip)
-            for member in members:
-                tf.extract(member, dest, filter="data")
+        staging = dest.parent / f".{dest.name}.staging"
+        if staging.exists():
+            shutil.rmtree(staging)
+        staging.mkdir(parents=True)
+        try:
+            with tarfile.open(archive_path, mode) as tf:
+                tf.extractall(staging, filter="data")
+            _move_stripped(staging)
+        finally:
+            if staging.exists():
+                shutil.rmtree(staging)
     elif kind == "zip":
         if strip:
             raise ToolchainError("strip_components is not supported for zip archives")
@@ -188,17 +236,6 @@ def _extract(archive_path: Path, dest: Path, kind: str, strip: int) -> None:
             zf.extractall(dest)
     else:
         raise ToolchainError(f"unsupported archive kind {kind!r}")
-
-
-def _strip_members(members, strip: int):
-    out = []
-    for member in members:
-        parts = member.name.split("/")
-        if len(parts) <= strip:
-            continue
-        member.name = "/".join(parts[strip:])
-        out.append(member)
-    return out
 
 
 @dataclass(frozen=True)
