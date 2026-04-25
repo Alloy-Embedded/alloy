@@ -88,13 +88,6 @@ inline volatile std::uint32_t& reg32(std::uintptr_t addr) {
 // PIOC — host for the KSZ8081 nRESET strap (PC10 on SAME70 Xplained Ultra).
 constexpr std::uintptr_t kPiocBase =
     alloy::device::base<alloy::device::PeripheralId::GPIOC>();
-// PIOD — peripheral multiplex for PD0 (GTXCK), PD8 (GMDC), PD9 (GMDIO).
-constexpr std::uintptr_t kPiodBase =
-    alloy::device::base<alloy::device::PeripheralId::GPIOD>();
-constexpr std::uintptr_t kPioPdr = kPiodBase + 0x04;     // peripheral disable PIO
-constexpr std::uintptr_t kPioAbcdsr1 = kPiodBase + 0x70;
-constexpr std::uintptr_t kPioAbcdsr2 = kPiodBase + 0x74;
-
 // PIO register offsets reused across ports.
 inline std::uintptr_t pio_per(std::uintptr_t base)  { return base + 0x00; }
 inline std::uintptr_t pio_oer(std::uintptr_t base)  { return base + 0x10; }
