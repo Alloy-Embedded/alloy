@@ -83,15 +83,22 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       IllegalDataAddress). Also: wrong slave ID → no response.
 
 ## 8. Master client
-- [ ] 8.1 Implement `master.hpp` / `master.cpp`: cooperative `poll_once()`,
-      `poll(var, slave_id, rate)`, `write(var)`. Internal scheduler is a small
-      sorted vector keyed by next-deadline timestamp.
-- [ ] 8.2 Mirror update is atomic against application reads through the same
-      critical-section primitive used on the slave side.
-- [ ] 8.3 Stale-data callback hook (per design.md, optional setter).
-- [ ] 8.4 Cover with `tests/master_test.cpp` and `tests/master_slave_loopback_test.cpp`:
-      master polls slave's vars over loopback; assert mirror values track slave
-      vars after the configured poll interval.
+- [x] 8.1 `master.hpp`: `Master<Stream, MaxPolls, NowFn, CritSection>` template;
+      `add_poll(Var<T>, T& mirror, slave_id, interval_us)` registers type-erased
+      `PollDescriptor`; `send_due_request()` + `recv_due_response()` two-phase API
+      (allows interleaving with slave in tests); `poll_once()` wraps both phases.
+      `write_now<T>()` for immediate FC06/FC10 write. Scheduler: O(N) scan of
+      fixed-size array, earliest overdue deadline wins; in-flight entry is skipped.
+- [x] 8.2 Mirror update in `recv_due_response()` wrapped in `CritSection` RAII guard
+      (same template param pattern as `Slave`; default `NoOpCriticalSection` shared
+      from `byte_stream.hpp`).
+- [x] 8.3 `set_stale_callback(fn)`: optional C function pointer called with
+      (reg_address, slave_id) when `recv_due_response()` times out.
+- [x] 8.4 `tests/test_master.cpp`: 11 cases / 82 assertions covering registration,
+      SlotsFull guard, mirror update from fake FC03 responses (uint16_t and float),
+      scheduling (not due / fires after interval), stale callback, and 3 integrated
+      master+slave loopback tests asserting mirror tracks slave value across multiple
+      poll cycles.
 
 ## 9. Discovery FC
 - [ ] 9.1 Implement `discovery.hpp`: FC 0x65 sub-functions 0x01 (thin: addr, type,

@@ -42,16 +42,6 @@ enum class SlaveError : std::uint8_t {
 };
 
 // ============================================================================
-// Default no-op critical section
-// ============================================================================
-
-namespace detail {
-struct NoOpCriticalSection {
-    NoOpCriticalSection() noexcept = default;
-};
-}  // namespace detail
-
-// ============================================================================
 // Slave<Stream, N, CritSection>
 // ============================================================================
 

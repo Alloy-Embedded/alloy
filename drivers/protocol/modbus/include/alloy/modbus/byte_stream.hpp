@@ -17,6 +17,15 @@
 
 namespace alloy::modbus {
 
+// No-op critical section RAII guard. Used as the default CritSection template
+// parameter for Slave and Master. Replace with a platform critical section
+// (e.g. disable/enable IRQ) for multi-threaded / ISR-shared access.
+namespace detail {
+struct NoOpCriticalSection {
+    NoOpCriticalSection() noexcept = default;
+};
+}  // namespace detail
+
 enum class StreamError : std::uint8_t {
     Timeout,       // operation did not complete within the given timeout
     Overrun,       // receive buffer overrun (bytes were lost)
