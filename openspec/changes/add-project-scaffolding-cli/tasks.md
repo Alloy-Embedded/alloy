@@ -14,13 +14,14 @@ working state. Do not start a phase before the previous phase is reviewed and me
 - [x] 1.5 Add CI job that exercises `alloy --version` and `alloy info` against the repo
 
 ## 2. SDK manager
-- [ ] 2.1 Add `alloy sdk install <version>` that fetches the runtime and `alloy-devices`
+- [x] 2.1 Add `alloy sdk install <version>` that fetches the runtime and `alloy-devices`
       into `~/.alloy/sdk/<version>/{runtime,devices}` with pinned commit SHAs
-- [ ] 2.2 Add `alloy sdk list`, `alloy sdk use <version>`, `alloy sdk path` (prints active path)
-- [ ] 2.3 Persist the active version in `~/.alloy/config.toml`
+- [x] 2.2 Add `alloy sdk list`, `alloy sdk use <version>`, `alloy sdk path` (prints active path)
+- [x] 2.3 Persist the active version in `~/.alloy/config.toml`
 - [ ] 2.4 Add `--vendored` mode: clone runtime and devices into the project tree and write
       a project-local `alloy.lock` with SHAs
-- [ ] 2.5 Tests: install a tagged version into a temp `ALLOY_HOME`, assert SHAs match
+      (deferred to phase 4: vendored install is only meaningful from `alloy new --vendored`)
+- [x] 2.5 Tests: install a tagged version into a temp `ALLOY_HOME`, assert SHAs match
 
 ## 3. Toolchain manager
 - [ ] 3.1 Add `tools/alloy-cli/src/alloy_cli/toolchains.toml` with curated pins for xPack

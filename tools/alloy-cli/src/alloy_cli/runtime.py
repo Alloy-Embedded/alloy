@@ -65,9 +65,17 @@ def find_runtime_root(explicit: str | os.PathLike[str] | None = None) -> Path:
     if walked is not None:
         return walked
 
+    # Last resort: an SDK version selected via `alloy sdk use`.
+    from . import sdk  # local import to avoid a cycle at module load time
+
+    active = sdk.active_runtime_path()
+    if active is not None and _looks_like_runtime(active):
+        return active
+
     raise RuntimeNotFoundError(
         "Could not locate an Alloy runtime checkout. "
-        f"Set {ENV_VAR} to the runtime path, or run from inside a checkout."
+        f"Set {ENV_VAR}, run from inside a checkout, or install one with "
+        "`alloy sdk install <version>`."
     )
 
 

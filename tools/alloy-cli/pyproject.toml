@@ -25,7 +25,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Embedded Systems",
 ]
-dependencies = []
+dependencies = [
+    "tomli>=2.0; python_version < '3.11'",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -36,9 +38,9 @@ dev = [
 alloy = "alloy_cli.main:main"
 
 [project.urls]
-Homepage = "https://github.com/lgili/alloy"
-Source = "https://github.com/lgili/alloy"
-Issues = "https://github.com/lgili/alloy/issues"
+Homepage = "https://github.com/Alloy-Embedded/alloy"
+Source = "https://github.com/Alloy-Embedded/alloy"
+Issues = "https://github.com/Alloy-Embedded/alloy/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/alloy_cli"]
