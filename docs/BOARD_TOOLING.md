@@ -1,5 +1,9 @@
 # Board Tooling
 
+For boards outside the in-tree foundational set, declare a custom board in your downstream
+project; see [CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) for the runtime contract and a working
+recipe. The CLI shortcut is `alloy new --mcu <part>`.
+
 Use one entrypoint:
 
 ```bash
