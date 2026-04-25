@@ -9,11 +9,18 @@ any directory.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import sys
 from pathlib import Path
 
 from . import _git, config
+
+# The runtime publishes the validated alloy-devices commit through its release
+# manifest at this path. When `alloy sdk install <version>` is run without an
+# explicit --devices-ref, we read this file from the freshly cloned runtime so
+# the install is reproducible against whatever the alloy maintainers validated.
+RELEASE_MANIFEST_PATH = "docs/RELEASE_MANIFEST.json"
 
 
 class SdkError(RuntimeError):
@@ -33,6 +40,24 @@ def _install_repo(url: str, dest: Path, ref: str) -> tuple[str, str]:
     return ref, _git.resolve_sha(dest)
 
 
+def _devices_ref_from_manifest(runtime_dir: Path) -> str | None:
+    """Read the validated alloy-devices commit from the runtime's release manifest.
+
+    Returns ``None`` when the manifest is absent or shaped differently than expected,
+    so callers can fall back to the prior default (`main`).
+    """
+    manifest_path = runtime_dir / RELEASE_MANIFEST_PATH
+    if not manifest_path.is_file():
+        return None
+    try:
+        data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    devices = data.get("alloy_devices") or {}
+    ref = devices.get("ref")
+    return ref if isinstance(ref, str) and ref else None
+
+
 def install(
     version: str,
     *,
@@ -42,9 +67,11 @@ def install(
 ) -> config.Manifest:
     """Install ``version`` into ``$ALLOY_HOME/sdk/<version>/``.
 
-    ``runtime_ref`` defaults to ``version``; ``devices_ref`` defaults to ``main`` and is
-    expected to be pinned by future releases via a runtime-side manifest. ``force=True``
-    wipes an existing version directory before reinstalling.
+    ``runtime_ref`` defaults to ``version``. ``devices_ref`` defaults to whatever the
+    runtime's ``docs/RELEASE_MANIFEST.json`` pins under ``alloy_devices.ref`` (the
+    same SHA the alloy maintainers validate the release against), falling back to
+    ``main`` only when the manifest is missing or unparseable. ``force=True`` wipes
+    an existing version directory before reinstalling.
     """
 
     cfg = config.load()
@@ -53,12 +80,15 @@ def install(
         shutil.rmtree(version_dir)
 
     runtime_ref = runtime_ref or version
-    devices_ref = devices_ref or "main"
 
     runtime_dir = version_dir / "runtime"
     devices_dir = version_dir / "devices"
 
+    # Clone runtime first so we can consult its release manifest for the matching
+    # devices SHA when the caller did not pass one explicitly.
     runtime_ref, runtime_sha = _install_repo(cfg.sources.runtime, runtime_dir, runtime_ref)
+    if devices_ref is None:
+        devices_ref = _devices_ref_from_manifest(runtime_dir) or "main"
     devices_ref, devices_sha = _install_repo(cfg.sources.devices, devices_dir, devices_ref)
 
     manifest = config.Manifest(

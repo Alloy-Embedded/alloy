@@ -105,6 +105,110 @@ def test_install_persists_manifest_and_activates_first_version(configured_source
     assert loaded is not None and loaded.version == "v0.1.0"
 
 
+def test_install_uses_devices_ref_from_release_manifest(tmp_path, alloy_home):
+    """When the runtime's docs/RELEASE_MANIFEST.json pins alloy_devices.ref, the
+    SDK installer SHALL respect that pin instead of defaulting to main."""
+    import json
+    import subprocess
+
+    def git(*args, cwd):
+        subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True,
+                       env={
+                           "GIT_AUTHOR_NAME": "test",
+                           "GIT_AUTHOR_EMAIL": "test@example.com",
+                           "GIT_COMMITTER_NAME": "test",
+                           "GIT_COMMITTER_EMAIL": "test@example.com",
+                           "PATH": __import__("os").environ.get("PATH", ""),
+                       })
+
+    # Devices remote: two commits, capture the older SHA so the manifest can pin it.
+    devices = tmp_path / "remote-devices.git"
+    devices.mkdir()
+    git("init", "--quiet", "--initial-branch=main", cwd=devices)
+    (devices / "v1.txt").write_text("v1\n")
+    git("add", ".", cwd=devices)
+    git("commit", "--quiet", "-m", "v1", cwd=devices)
+    pinned_sha = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=devices, capture_output=True, text=True, check=True
+    ).stdout.strip()
+    (devices / "v2.txt").write_text("v2\n")
+    git("add", ".", cwd=devices)
+    git("commit", "--quiet", "-m", "v2", cwd=devices)
+
+    # Runtime remote: ships a release manifest pinning the older devices SHA.
+    runtime = tmp_path / "remote-runtime.git"
+    _make_runtime_remote(runtime)
+    docs = runtime / "docs"
+    docs.mkdir(exist_ok=True)
+    (docs / "RELEASE_MANIFEST.json").write_text(
+        json.dumps({"alloy_devices": {"ref": pinned_sha}}) + "\n"
+    )
+    git("add", ".", cwd=runtime)
+    git("commit", "--quiet", "-m", "add release manifest", cwd=runtime)
+    git("tag", "v0.2.0", cwd=runtime)
+
+    cfg = config.Config(
+        active_version=None,
+        sources=config.Sources(runtime=str(runtime), devices=str(devices)),
+    )
+    config.save(cfg)
+
+    manifest = sdk.install("v0.2.0")  # no explicit devices_ref
+    assert manifest.devices_sha == pinned_sha, (
+        f"expected installer to honour manifest pin {pinned_sha}, "
+        f"got {manifest.devices_sha}"
+    )
+
+
+def test_install_explicit_devices_ref_overrides_manifest(tmp_path, alloy_home):
+    """Passing --devices-ref explicitly must win over the runtime's manifest pin."""
+    import json
+    import subprocess
+
+    def git(*args, cwd):
+        subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True,
+                       env={
+                           "GIT_AUTHOR_NAME": "test",
+                           "GIT_AUTHOR_EMAIL": "test@example.com",
+                           "GIT_COMMITTER_NAME": "test",
+                           "GIT_COMMITTER_EMAIL": "test@example.com",
+                           "PATH": __import__("os").environ.get("PATH", ""),
+                       })
+
+    devices = tmp_path / "remote-devices.git"
+    devices.mkdir()
+    git("init", "--quiet", "--initial-branch=main", cwd=devices)
+    (devices / "v1.txt").write_text("v1\n")
+    git("add", ".", cwd=devices)
+    git("commit", "--quiet", "-m", "v1", cwd=devices)
+    older = subprocess.run(["git", "rev-parse", "HEAD"], cwd=devices,
+                           capture_output=True, text=True, check=True).stdout.strip()
+    (devices / "v2.txt").write_text("v2\n")
+    git("add", ".", cwd=devices)
+    git("commit", "--quiet", "-m", "v2", cwd=devices)
+    newer = subprocess.run(["git", "rev-parse", "HEAD"], cwd=devices,
+                           capture_output=True, text=True, check=True).stdout.strip()
+
+    runtime = tmp_path / "remote-runtime.git"
+    _make_runtime_remote(runtime)
+    (runtime / "docs").mkdir(exist_ok=True)
+    (runtime / "docs" / "RELEASE_MANIFEST.json").write_text(
+        json.dumps({"alloy_devices": {"ref": older}}) + "\n"
+    )
+    git("add", ".", cwd=runtime)
+    git("commit", "--quiet", "-m", "add manifest", cwd=runtime)
+    git("tag", "v0.2.0", cwd=runtime)
+
+    cfg = config.Config(
+        active_version=None,
+        sources=config.Sources(runtime=str(runtime), devices=str(devices)),
+    )
+    config.save(cfg)
+
+    manifest = sdk.install("v0.2.0", devices_ref=newer)
+    assert manifest.devices_sha == newer
+
+
 def test_list_versions_returns_installed(configured_sources):
     assert sdk.list_versions() == []
     sdk.install("v0.1.0")

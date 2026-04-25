@@ -55,7 +55,13 @@ def test_version_flag(monkeypatch, capsys) -> None:
 
 
 def test_missing_runtime_returns_clear_error(monkeypatch, tmp_path, capsys) -> None:
+    """All four resolution paths must fail before the locator gives up."""
+    from alloy_cli import config
+
     monkeypatch.delenv(ENV_VAR, raising=False)
+    # Point ALLOY_HOME at an empty directory so the active-SDK fallback finds
+    # nothing; otherwise a developer's installed SDK would shadow the test.
+    monkeypatch.setenv(config.ENV_HOME, str(tmp_path / "empty-home"))
     monkeypatch.chdir(tmp_path)
     rc = main(["doctor"])
     assert rc == 2

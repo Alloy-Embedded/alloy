@@ -151,3 +151,4 @@ transition; new docs and examples should use `alloy`.
 - [CMAKE_CONSUMPTION.md](CMAKE_CONSUMPTION.md) -- alternative consumption paths
 - [COOKBOOK.md](COOKBOOK.md) -- canonical runtime patterns
 - [SUPPORT_MATRIX.md](SUPPORT_MATRIX.md) -- foundational boards and known descriptors
+- [PUBLISHING.md](PUBLISHING.md) -- maintainer runbook for cutting an Alloy release
