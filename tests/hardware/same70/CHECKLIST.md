@@ -184,3 +184,30 @@ Record:
 - follow-ups:
   - `add an alloyctl hardware sweep mode that waits for serial reopen and can reset after monitor attach`
   - `next sweep must validate async_uart_timeout (canonical runtime async-model completion+timeout probe); build is already in the SAME70 bundle via tests/hardware/same70/CMakeLists.txt`
+
+## 2026-04-25 Driver Seed Probes
+
+- date: `2026-04-25`
+- operator: `lgili`
+- serial port: `/dev/cu.usbmodem11102`
+- terminal: `115200 8N1`
+
+- `driver_ksz8081_probe`:
+  - flashed: `yes`
+  - pass/fail: `pass`
+  - notes: `PHY_ID1=0022 PHY_ID2=1561 init ok; link DOWN (no partner) — MDIO path OK; PROBE PASS`
+
+- `driver_is42s16100f_probe`:
+  - flashed: `yes`
+  - pass/fail: `pass`
+  - notes: `2097152 bytes 16Mbit x16 CAS=3; SDRAMC init ok; 8 KiB pattern PASS; PROBE PASS`
+
+- `driver_at24mac402_probe`:
+  - flashed: `yes`
+  - pass/fail: `pass`
+  - notes: `EUI-48=FC:C2:3D:0C:10:46; serial read ok; write+readback PASS; PROBE PASS`
+
+## 2026-04-25 Summary
+
+- overall status: `all three driver seed probes passed on hardware`
+- blockers: `none`
