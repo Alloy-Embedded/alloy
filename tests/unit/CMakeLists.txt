@@ -58,6 +58,16 @@ alloy_add_catch2_test(test_logger
     LABELS unit
 )
 
+# Test: Cooperative coroutine scheduler (runtime-tasks)
+# scheduler.cpp is included directly because alloy-hal is INTERFACE on host
+# builds and would not otherwise compile it.
+alloy_add_catch2_test(test_tasks
+    SOURCES
+        test_tasks.cpp
+        ${CMAKE_SOURCE_DIR}/src/runtime/tasks/scheduler.cpp
+    LABELS unit tasks
+)
+
 # Test: Runtime async-model canonical completion+timeout primitive
 alloy_add_catch2_test(test_async_completion_timeout
     SOURCES test_async_completion_timeout.cpp
