@@ -530,6 +530,48 @@ class ScaffoldResult:
     warnings: tuple[str, ...]
 
 
+def _cpu_flags_for_arch(arch: str) -> list[str]:
+    """Return CPU/ABI compile flags appropriate for ``arch``.
+
+    The flags must be applied at the top of the consuming project's CMakeLists
+    (BEFORE add_subdirectory(alloy)) so that both the alloy targets and the
+    project's own executable inherit them. alloy's platform CMake uses
+    `add_compile_options(...)` which is directory-scoped and does not flow up
+    to a parent CMakeLists.
+    """
+    if arch == "cortex-m0plus":
+        return ["-mcpu=cortex-m0plus", "-mthumb"]
+    if arch == "cortex-m4":
+        return ["-mcpu=cortex-m4", "-mthumb", "-mfloat-abi=soft"]
+    if arch == "cortex-m7":
+        return ["-mcpu=cortex-m7", "-mthumb", "-mfloat-abi=soft"]
+    if arch == "riscv32":
+        return ["-march=rv32imc", "-mabi=ilp32"]
+    if arch == "xtensa":
+        return ["-mlongcalls"]
+    # avr, native, and unknown: no global flags here. AVR's -mmcu=... is part
+    # of the toolchain file the avr-da boards already wire up.
+    return []
+
+
+def _toolchain_file_for_arch(arch: str, alloy_root: Path) -> str | None:
+    """Return the absolute path to the alloy toolchain CMake file for ``arch``,
+    or None when no cross-compilation is required (host build)."""
+    mapping = {
+        "cortex-m0plus": "arm-none-eabi.cmake",
+        "cortex-m4": "arm-none-eabi.cmake",
+        "cortex-m7": "arm-none-eabi.cmake",
+        "avr": "avr-gcc.cmake",
+        "riscv32": "riscv32-esp-elf.cmake",
+        "xtensa": "xtensa-esp32s3-elf.cmake",
+        "native": None,
+    }
+    name = mapping.get(arch)
+    if name is None:
+        return None
+    return str(alloy_root / "cmake" / "toolchains" / name)
+
+
 def _toolchain_for_arch(arch: str) -> str:
     if arch == "avr":
         return "avr-gcc"
@@ -630,7 +672,8 @@ def scaffold(
         "linker_script_name": layer.linker_script_name,
         "board_sources": list(layer.sources),
         "toolchain_bin": str(toolchain_bin) if toolchain_bin else None,
-        "toolchain_file": None,
+        "toolchain_file": _toolchain_file_for_arch(layer.arch, resolved_root),
+        "cpu_flags": _cpu_flags_for_arch(layer.arch),
         "has_openocd": layer.has_openocd,
         "gdb_path": gdb_path,
     }

@@ -32,12 +32,33 @@ set(ALLOY_DEVICE_ARCH   "{{ arch }}"   CACHE STRING "" FORCE)
 # tree, which does not exist.
 set(ALLOY_BOARD_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/board" CACHE PATH "" FORCE)
 
+# Disable alloy's own test build when consuming alloy from this project. Alloy
+# auto-disables tests when not top-level, but we set it explicitly so reading
+# the file makes the intent obvious.
+set(ALLOY_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+
 project({{ project }} LANGUAGES C CXX ASM)
 
+{% if cpu_flags %}# Apply platform CPU/ABI flags globally before alloy is added so both alloy
+# and this project's executable inherit them. alloy's platform CMake uses
+# directory-scoped add_compile_options() which does not propagate up here.
+add_compile_options({% for flag in cpu_flags %}{{ flag }} {% endfor %})
+add_link_options({% for flag in cpu_flags %}{{ flag }} {% endfor %})
+{% endif %}
 add_subdirectory(${ALLOY_ROOT} ${CMAKE_BINARY_DIR}/_alloy)
 
-set({{ project }}_SOURCES src/main.cpp)
-{% for src in board_sources %}list(APPEND {{ project }}_SOURCES board/{{ src }})
+set(_{{ project }}_sources src/main.cpp)
+{% for src in board_sources %}list(APPEND _{{ project }}_sources board/{{ src }})
 {% endfor %}
-add_executable({{ project }} ${ {{ project }}_SOURCES })
-target_link_libraries({{ project }} PRIVATE alloy::alloy)
+add_executable({{ project }} ${_{{ project }}_sources})
+
+# Link against the HAL target alloy publishes as Alloy::hal. The in-tree
+# examples expose the same target via the ALLOY_HAL_LIBRARY cache variable;
+# both names refer to the same library so either works.
+target_link_libraries({{ project }} PRIVATE Alloy::hal)
+
+# Apply the board's linker script when cross-compiling so the firmware image
+# lays out FLASH/RAM correctly. On host builds this is a no-op.
+if(CMAKE_CROSSCOMPILING AND EXISTS "${ALLOY_CUSTOM_LINKER_SCRIPT}")
+    target_link_options({{ project }} PRIVATE "-T${ALLOY_CUSTOM_LINKER_SCRIPT}")
+endif()

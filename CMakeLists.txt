@@ -78,7 +78,14 @@ alloy_resolve_board_manifest(
 )
 
 # Build options
-option(ALLOY_BUILD_TESTS "Build unit tests" ON)
+# Tests default ON when alloy is the top-level project, OFF when alloy is consumed
+# via add_subdirectory() from a downstream project (the typical `alloy new` flow).
+# Downstream projects that DO want alloy's tests can flip this back ON via cache.
+if(PROJECT_IS_TOP_LEVEL)
+    option(ALLOY_BUILD_TESTS "Build unit tests" ON)
+else()
+    option(ALLOY_BUILD_TESTS "Build unit tests" OFF)
+endif()
 option(ALLOY_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)
 set(ALLOY_CATCH2_SOURCE_DIR
     ""
@@ -392,7 +399,10 @@ else()
     message(STATUS "Selected device contract: unavailable for board '${ALLOY_BOARD}'")
 endif()
 
-if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
+# The contract smoke is an alloy-internal compile-time check; downstream
+# projects consuming alloy via add_subdirectory() should not pay for it (and
+# its compile_tests/ assume a specific board context that may not match).
+if(ALLOY_DEVICE_CONTRACT_AVAILABLE AND PROJECT_IS_TOP_LEVEL)
     include(${CMAKE_CURRENT_SOURCE_DIR}/tests/compile/contract_smoke.cmake)
     alloy_add_device_contract_smoke(alloy-device-contract-smoke)
 endif()
@@ -410,67 +420,80 @@ endif()
 # ==============================================================================
 # Examples - Board Abstraction Layer
 # ==============================================================================
+#
+# Examples build only when alloy is the top-level project. Downstream projects
+# consuming alloy via add_subdirectory() do not want alloy's example targets
+# (which assume specific in-tree board names) to compile alongside their own
+# code. Override with -DALLOY_BUILD_EXAMPLES=ON if needed.
+
+if(PROJECT_IS_TOP_LEVEL)
+    option(ALLOY_BUILD_EXAMPLES "Build alloy in-tree example targets" ON)
+else()
+    option(ALLOY_BUILD_EXAMPLES "Build alloy in-tree example targets" OFF)
+endif()
 
 # Generic examples - work on any board with board.hpp abstraction
 # The same code compiles for different boards by including the appropriate board.hpp
 
-# Universal blink example - demonstrates board abstraction power
-if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
-    add_subdirectory(examples/blink)
-    add_subdirectory(examples/time_probe)
-endif()
+if(ALLOY_BUILD_EXAMPLES)
+    # Universal blink example - demonstrates board abstraction power
+    if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
+        add_subdirectory(examples/blink)
+        add_subdirectory(examples/time_probe)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
-    add_subdirectory(examples/analog_probe)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+        add_subdirectory(examples/analog_probe)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
-    add_subdirectory(examples/i2c_scan)
-    add_subdirectory(examples/spi_probe)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+        add_subdirectory(examples/i2c_scan)
+        add_subdirectory(examples/spi_probe)
+    endif()
 
-# Board-specific examples
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
-    add_subdirectory(examples/uart_logger)
-endif()
+    # Board-specific examples
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
+        add_subdirectory(examples/uart_logger)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
-   ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE)
-    add_subdirectory(examples/dma_probe)
-    add_subdirectory(examples/async_uart_timeout)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
+       ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE)
+        add_subdirectory(examples/dma_probe)
+        add_subdirectory(examples/async_uart_timeout)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND
-   ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
-    add_subdirectory(examples/timer_pwm_probe)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND
+       ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+        add_subdirectory(examples/timer_pwm_probe)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE AND
-   ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
-    add_subdirectory(examples/rtc_probe)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE AND
+       ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+        add_subdirectory(examples/rtc_probe)
+    endif()
 
-if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE AND
-   ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
-    add_subdirectory(examples/watchdog_probe)
-endif()
+    if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE AND
+       ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+        add_subdirectory(examples/watchdog_probe)
+    endif()
 
-if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld") AND
-   ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE)
-    add_subdirectory(examples/can_probe)
-endif()
+    if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld") AND
+       ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE)
+        add_subdirectory(examples/can_probe)
+    endif()
 
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
-    add_subdirectory(examples/uart_path_probe)
-    add_subdirectory(examples/manual_uart_probe)
-    add_subdirectory(examples/driver_at24mac402_probe)
-    add_subdirectory(examples/driver_ksz8081_probe)
-    add_subdirectory(examples/driver_is42s16100f_probe)
-endif()
+    if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
+        add_subdirectory(examples/uart_path_probe)
+        add_subdirectory(examples/manual_uart_probe)
+        add_subdirectory(examples/driver_at24mac402_probe)
+        add_subdirectory(examples/driver_ksz8081_probe)
+        add_subdirectory(examples/driver_is42s16100f_probe)
+    endif()
 
-if(ALLOY_BOARD STREQUAL "nucleo_g071rb")
-    add_subdirectory(examples/early_boot_probe)
-    add_subdirectory(examples/clock_boot_probe)
+    if(ALLOY_BOARD STREQUAL "nucleo_g071rb")
+        add_subdirectory(examples/early_boot_probe)
+        add_subdirectory(examples/clock_boot_probe)
+    endif()
 endif()
 
 # Tests
