@@ -33,7 +33,7 @@
 
 ## 5. Codegen — GPIO-Only Pin Binding
 
-- [ ] 5.1 Allow `alloy::hal::gpio::configure(PinId, Direction, Level)` for
+- [x] 5.1 Allow `alloy::hal::gpio::configure(PinId, Direction, Level)` for
       pins that are not bound to a peripheral signal (reset lines, LEDs,
       strap probes).
 

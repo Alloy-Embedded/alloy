@@ -51,4 +51,12 @@ static_assert(gpio_is_usable<LedHandle>());
 using LedViaApi = decltype(alloy::hal::gpio::open<alloy::device::pin<alloy::device::PinId::PA23>>(
     {.direction = alloy::hal::PinDirection::Output}));
 static_assert(LedViaApi::valid);
+
+// Task 5.1: gpio::configure<PinId> one-shot free function
+// PC8 = SAME70 Xplained Ultra LED (active-low, no peripheral signal)
+[[maybe_unused]] void compile_same70_gpio_configure() {
+    [[maybe_unused]] auto result =
+        alloy::hal::gpio::configure<alloy::device::PinId::PC8>(alloy::hal::PinDirection::Output,
+                                                                alloy::hal::PinState::High);
+}
 #endif

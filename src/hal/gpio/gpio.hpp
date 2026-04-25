@@ -629,4 +629,22 @@ template <device::PinId PinIdValue>
     return open<pin<PinIdValue>>(config);
 }
 
+// One-shot configure for pins that are not bound to a peripheral signal
+// (reset lines, LEDs, strap inputs). Direction and initial state are required;
+// drive and pull default to PushPull/None.
+template <device::PinId PinIdValue>
+[[nodiscard]] auto configure(Direction dir, State initial_state = State::Low,
+                             Pull pull = Pull::None, Drive drive = Drive::PushPull)
+    -> core::Result<void, core::ErrorCode> {
+    static_assert(pin_handle<pin<PinIdValue>>::valid,
+                  "Requested GPIO pin is not available for the selected device/package.");
+    auto handle = open<PinIdValue>(Config{
+        .direction   = dir,
+        .drive       = drive,
+        .pull        = pull,
+        .initial_state = initial_state,
+    });
+    return handle.configure();
+}
+
 }  // namespace alloy::hal::gpio
