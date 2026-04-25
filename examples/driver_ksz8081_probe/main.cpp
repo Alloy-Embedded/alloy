@@ -188,12 +188,12 @@ void enable_pmc_clocks() {
 }
 
 void mux_mdio_pins() {
-    // PD0 = GTXCK (50 MHz RMII ref clock from MCU to PHY), PD8 = GMDC,
-    // PD9 = GMDIO → all peripheral A (ABCDSR1=0, ABCDSR2=0).
-    constexpr std::uint32_t mask = (1u << 0) | (1u << 8) | (1u << 9);
-    reg32(kPioAbcdsr1) &= ~mask;
-    reg32(kPioAbcdsr2) &= ~mask;
-    reg32(kPioPdr) = mask;
+    using alloy::device::PeripheralId;
+    using alloy::device::PinId;
+    using alloy::device::SignalId;
+    alloy::pinmux::route<PinId::PD0, PeripheralId::GMAC, SignalId::signal_gtxck>();
+    alloy::pinmux::route<PinId::PD8, PeripheralId::GMAC, SignalId::signal_gmdc>();
+    alloy::pinmux::route<PinId::PD9, PeripheralId::GMAC, SignalId::signal_gmdio>();
 }
 
 // SAME70 Xplained Ultra ties the KSZ8081 nRESET to PC10. Pulse low → high so
