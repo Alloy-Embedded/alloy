@@ -69,6 +69,7 @@ relies on.
 | `dac` | `representative` | descriptor smoke + SAME70 hardware spot-check (`analog_probe` DAC-active banner) |
 | `low-power` | `representative` | descriptor smoke + isolated SAME70 host-MMIO wakeup path |
 | `can` | `experimental` | descriptor smoke + SAME70 bring-up spot-check (`can_probe` boot/loop banner); no deterministic traffic assertion yet |
+| `modbus` | `representative` | host loopback tests pass (634 assertions / 113 cases): PDU codec, RTU framing, RS-485 DE, variable registry, slave (FC01–17), master scheduler, discovery FC 0x65, TCP MBAP framing. UART stream adapter (task 4.2) and hardware spot-check pending. See [MODBUS.md](MODBUS.md). |
 
 ## Maintenance Rules
 

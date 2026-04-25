@@ -149,13 +149,18 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       RS-485 note in README. Pending uart_stream.hpp (task 4.2).
 
 ## 12. Documentation
-- [ ] 12.1 `docs/MODBUS.md`: user guide -- slave quickstart, master quickstart,
-      RS-485 wiring notes, discovery FC reference, footprint guidance, common
-      gotchas (word order, DE pin, baud-rate-specific timing).
-- [ ] 12.2 `docs/SUPPORT_MATRIX.md`: add a `modbus` peripheral-class entry; tier
-      `representative` once host loopback tests pass; `compile-only` until then.
-- [ ] 12.3 `docs/CLI.md`: cross-link to MODBUS.md from the runtime tooling section
-      so users discover the library when scaffolding a project.
-- [ ] 12.4 Reference Python client for FC 0x65 discovery (in
-      `tools/modbus_discovery_client/`). Optional but encouraged so users can
-      validate end-to-end without writing client code.
+- [x] 12.1 `docs/MODBUS.md`: user guide covering slave quickstart, master quickstart,
+      variable types + word order table, RS-485 wiring with Rs485DeStream, discovery
+      FC 0x65 protocol reference, critical section guide, TCP framing API, footprint
+      guidance, common gotchas (word order mismatch, DE pin timing, inter-frame
+      silence, CRC table), examples table.
+- [x] 12.2 `docs/SUPPORT_MATRIX.md`: `modbus` peripheral class added at tier
+      `representative` with host loopback evidence (634 assertions / 113 cases across
+      PDU codec, RTU framing, RS-485, registry, slave FC01–17, master, discovery,
+      TCP MBAP). UART stream adapter and hardware spot-check noted as pending.
+- [x] 12.3 `docs/CLI.md`: "Protocol libraries" section added before Stability,
+      cross-linking to MODBUS.md with a bullet summary of the library's contents.
+- [x] 12.4 `tools/modbus_discovery_client/modbus_discovery_client.py`: reference
+      Python client for FC 0x65 thin+rich discovery. Builds RTU frames with CRC-16
+      (no pymodbus dependency, only pyserial). Table and JSON output modes.
+      Supports --port, --baud, --slave, --fc, --sub, --timeout, --json flags.

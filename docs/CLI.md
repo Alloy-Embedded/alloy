@@ -142,6 +142,30 @@ during the transition.
 | `1` | User-facing error (validation, missing inputs, network failures). |
 | `2` | Cannot locate a runtime checkout, or `argparse` rejected the invocation. |
 
+## Protocol libraries
+
+Alloy ships driver-level protocol libraries alongside the HAL. These are
+header-only or static libraries under `drivers/protocol/` and are linked via
+`alloy::modbus` (and future `alloy::canopen`, etc.).
+
+### Modbus RTU/TCP
+
+The Modbus library (`alloy::modbus`) provides allocation-free RTU framing,
+a typed variable registry, cooperative slave and master, RS-485 DE helper,
+vendor discovery FC 0x65, and TCP MBAP framing. It compiles and tests on
+host via LoopbackPair without any hardware.
+
+See [MODBUS.md](MODBUS.md) for the full user guide, including:
+
+- Slave and master quick-start snippets
+- Variable types and word order reference
+- RS-485 wiring with `Rs485DeStream`
+- Discovery FC 0x65 protocol reference
+- Critical section (ISR safety) guide
+- TCP framing API
+- Footprint guidance
+- Common gotchas (word order, DE pin, baud-rate timing)
+
 ## Stability
 
 The native subcommand surface (`new`, `boards`, `sdk *`, `toolchain *`) is part of the
