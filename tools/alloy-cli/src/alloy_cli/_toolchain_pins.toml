@@ -1,0 +1,81 @@
+# Curated cross-toolchain pins shipped with alloy-cli.
+#
+# Schema:
+#   [<toolchain>]
+#   default_version = "<version>"
+#   binary = "<primary binary name, e.g. arm-none-eabi-gcc>"
+#
+#   [<toolchain>.versions."<version>".<platform>]
+#   url             = "<archive download URL>"
+#   sha256          = "<64 hex chars>"  # mark "TODO" until validated; install refuses TODO
+#   archive         = "tar.gz" | "tar.xz" | "zip"
+#   strip_components = <int>             # tar --strip-components, defaults to 0
+#   bin_subdir      = "<relative bin dir under the unpacked tree>"
+#
+# Platforms follow the convention "<system>-<arch>":
+#   system in {darwin, linux}; arch in {x64, arm64}.
+# Windows is out of scope until the toolchain pins are validated there.
+
+[arm-none-eabi-gcc]
+default_version = "13.3.1-1.1"
+binary = "arm-none-eabi-gcc"
+
+[arm-none-eabi-gcc.versions."13.3.1-1.1".darwin-arm64]
+url = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.3.1-1.1/xpack-arm-none-eabi-gcc-13.3.1-1.1-darwin-arm64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[arm-none-eabi-gcc.versions."13.3.1-1.1".darwin-x64]
+url = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.3.1-1.1/xpack-arm-none-eabi-gcc-13.3.1-1.1-darwin-x64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[arm-none-eabi-gcc.versions."13.3.1-1.1".linux-x64]
+url = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.3.1-1.1/xpack-arm-none-eabi-gcc-13.3.1-1.1-linux-x64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[arm-none-eabi-gcc.versions."13.3.1-1.1".linux-arm64]
+url = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.3.1-1.1/xpack-arm-none-eabi-gcc-13.3.1-1.1-linux-arm64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[openocd]
+default_version = "0.12.0-6"
+binary = "openocd"
+
+[openocd.versions."0.12.0-6".darwin-arm64]
+url = "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-darwin-arm64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[openocd.versions."0.12.0-6".darwin-x64]
+url = "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-darwin-x64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[openocd.versions."0.12.0-6".linux-x64]
+url = "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-linux-x64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"
+
+[openocd.versions."0.12.0-6".linux-arm64]
+url = "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-linux-arm64.tar.gz"
+sha256 = "TODO"
+archive = "tar.gz"
+strip_components = 1
+bin_subdir = "bin"

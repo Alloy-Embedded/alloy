@@ -11,13 +11,13 @@ from __future__ import annotations
 import argparse
 import sys
 
-from . import __version__, sdk
+from . import __version__, sdk, toolchains
 from .runtime import RuntimeNotFoundError, find_runtime_root, load_alloyctl
 
 PROG = "alloy"
 
 # Subcommands implemented natively in alloy-cli (not delegated to alloyctl).
-NATIVE_COMMANDS = {"sdk"}
+NATIVE_COMMANDS = {"sdk", "toolchain"}
 
 
 def _print_top_level_help() -> None:
@@ -28,6 +28,7 @@ def _print_top_level_help() -> None:
         "\n"
         "Native commands (handled by alloy-cli):\n"
         "  sdk        manage installed Alloy runtime versions\n"
+        "  toolchain  manage pinned cross-toolchains\n"
         "\n"
         "Delegated commands (handled by the runtime checkout):\n"
         "  new        scaffold a downstream firmware starter for a board\n"
@@ -59,6 +60,7 @@ def _build_native_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog=PROG, add_help=False)
     sub = parser.add_subparsers(dest="cmd", required=True)
     sdk.add_subparsers(sub)
+    toolchains.add_subparsers(sub)
     return parser
 
 

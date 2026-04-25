@@ -24,13 +24,16 @@ working state. Do not start a phase before the previous phase is reviewed and me
 - [x] 2.5 Tests: install a tagged version into a temp `ALLOY_HOME`, assert SHAs match
 
 ## 3. Toolchain manager
-- [ ] 3.1 Add `tools/alloy-cli/src/alloy_cli/toolchains.toml` with curated pins for xPack
-      `arm-none-eabi-gcc`, OpenOCD, and `avr-gcc`
-- [ ] 3.2 Add `alloy toolchain install <name>[@version]` that downloads the pinned release
+- [x] 3.1 Add `tools/alloy-cli/src/alloy_cli/_toolchain_pins.toml` with curated pins for
+      xPack `arm-none-eabi-gcc` and OpenOCD (sha256 placeholders pending validation;
+      AVR-GCC pin deferred until needed by an active board)
+- [x] 3.2 Add `alloy toolchain install <name>[@version]` that downloads the pinned release
       into `~/.alloy/toolchains/<name>/<version>` with checksum verification
-- [ ] 3.3 Add `alloy toolchain list`, `alloy toolchain which <name>`, `alloy toolchain use`
+- [x] 3.3 Add `alloy toolchain list`, `alloy toolchain which <name>`
+      (use/select deferred: a single pinned default version per toolchain is sufficient
+      until multi-version coexistence is needed)
 - [ ] 3.4 Wire `alloy doctor --fix` to install missing toolchains after explicit consent
-- [ ] 3.5 Tests: stub the download URL, verify checksum failure aborts; verify generated
+- [x] 3.5 Tests: stub the download URL, verify checksum failure aborts; verify generated
       paths land in `~/.alloy/toolchains/...`
 
 ## 4. Project scaffolding (`alloy new`)
