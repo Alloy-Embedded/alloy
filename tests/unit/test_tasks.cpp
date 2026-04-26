@@ -15,6 +15,7 @@
 #include "runtime/tasks/event.hpp"
 #include "runtime/tasks/pool.hpp"
 #include "runtime/tasks/scheduler.hpp"
+#include "runtime/tasks/uart_channel.hpp"
 
 using namespace alloy;
 using runtime::time::Duration;
@@ -273,6 +274,66 @@ TEST_CASE("Channel wait() suspends until try_push signals", "[tasks][channel][sc
     sched.tick();  // resume + final drain happens on completion path
 
     CHECK(sum == 1 + 2 + 10 + 100);
+}
+
+// --- UartRxChannel tests -----------------------------------------------------
+
+TEST_CASE("UartRxChannel feeds bytes from a fake ISR through the scheduler",
+          "[tasks][uart][sched]") {
+    reset_clock();
+    Scheduler<2, 384> sched;
+    sched.set_time_source(mock_now);
+    tasks::UartRxChannel<8> uart_rx;
+    std::uint32_t echoed = 0;
+    std::uint32_t checksum = 0;
+
+    auto echo_task = [&]() -> Task {
+        for (int round = 0; round < 3; ++round) {
+            while (auto byte = uart_rx.try_pop()) {
+                ++echoed;
+                checksum = (checksum + static_cast<std::uint32_t>(*byte)) & 0xFFu;
+            }
+            static_cast<void>(co_await uart_rx.wait());
+        }
+        // final drain so any still-queued bytes count
+        while (auto byte = uart_rx.try_pop()) {
+            ++echoed;
+            checksum = (checksum + static_cast<std::uint32_t>(*byte)) & 0xFFu;
+        }
+    };
+
+    REQUIRE(sched.spawn([&] { return echo_task(); }).is_ok());
+    sched.tick();  // task hits await on empty channel and suspends
+
+    // Three "ISR firings", each dropping one or more bytes into the ring.
+    CHECK(uart_rx.feed_from_isr(std::uint8_t{0x10}));
+    CHECK(uart_rx.feed_from_isr(std::uint8_t{0x20}));
+    sched.tick();  // wakes the task
+    sched.tick();  // task resumes, drains, suspends again
+
+    CHECK(uart_rx.feed_from_isr(std::uint8_t{0x05}));
+    sched.tick();
+    sched.tick();
+
+    CHECK(uart_rx.feed_from_isr(std::byte{0xFF}));
+    sched.tick();
+    sched.tick();  // resume + final-drain path
+
+    CHECK(echoed == 4);
+    CHECK(checksum == ((0x10 + 0x20 + 0x05 + 0xFF) & 0xFFu));
+    CHECK(uart_rx.drops() == 0);
+}
+
+TEST_CASE("UartRxChannel reports drops when the ring is full",
+          "[tasks][uart]") {
+    tasks::UartRxChannel<2> rx;  // 2 -> usable slots = 1 (one always reserved)
+    CHECK(rx.feed_from_isr(std::byte{0xAA}));
+    CHECK_FALSE(rx.feed_from_isr(std::byte{0xBB}));
+    CHECK_FALSE(rx.feed_from_isr(std::byte{0xCC}));
+    CHECK(rx.drops() == 2);
+    CHECK(rx.try_pop().has_value());
+    CHECK(rx.feed_from_isr(std::byte{0xDD}));  // slot freed; succeeds
+    CHECK(rx.drops() == 2);                    // unchanged on success
 }
 
 // --- on(event) tests ---------------------------------------------------------

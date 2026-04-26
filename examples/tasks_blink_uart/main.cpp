@@ -52,8 +52,8 @@
 #endif
 
 #include "hal/systick.hpp"
-#include "runtime/tasks/channel.hpp"
 #include "runtime/tasks/scheduler.hpp"
+#include "runtime/tasks/uart_channel.hpp"
 #include "runtime/time.hpp"
 
 using alloy::runtime::time::Duration;
@@ -69,9 +69,9 @@ std::uint32_t bytes_received = 0;
 std::uint32_t running_checksum = 0;
 
 // 16-byte ring big enough that a UART RX burst at ~115200 bps would not drop
-// even if the consumer task takes a few ms to wake. `Channel::try_push` is
-// what a real `USARTx_IRQHandler` would call.
-alloy::tasks::Channel<std::uint8_t, 16> rx_channel;
+// even if the consumer task takes a few ms to wake. `feed_from_isr` is what
+// a real `USARTx_IRQHandler` would call after reading the data register.
+alloy::tasks::UartRxChannel<16> rx_channel;
 
 // Time source for the scheduler. Wraps the board's SysTick into the runtime
 // time::Instant the scheduler expects.
@@ -93,10 +93,11 @@ auto producer_task() -> Task {
     std::uint8_t next_byte = 0;
     while (true) {
         static_cast<void>(co_await alloy::tasks::delay(Duration::from_millis(250)));
-        // try_push is what an ISR would do. We discard the return because
-        // dropping a fake byte here is harmless; real code would log
+        // feed_from_isr is what a real `USARTx_IRQHandler` would call after
+        // reading the data register. We discard the return because dropping
+        // a fake byte here is harmless; real code would log
         // `rx_channel.drops()` to detect undersized rings.
-        static_cast<void>(rx_channel.try_push(next_byte++));
+        static_cast<void>(rx_channel.feed_from_isr(next_byte++));
     }
 }
 
@@ -107,7 +108,8 @@ auto consumer_task() -> Task {
         // between two wakeups are all consumed in the inner while.
         while (auto byte = rx_channel.try_pop()) {
             ++bytes_received;
-            running_checksum = (running_checksum + *byte) & 0xFFu;
+            running_checksum =
+                (running_checksum + static_cast<std::uint32_t>(*byte)) & 0xFFu;
         }
         static_cast<void>(co_await rx_channel.wait());
     }
