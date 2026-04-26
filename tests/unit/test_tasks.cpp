@@ -16,6 +16,7 @@
 #include "runtime/tasks/pool.hpp"
 #include "runtime/tasks/scheduler.hpp"
 #include "runtime/tasks/uart_channel.hpp"
+#include "runtime/tasks/uart_tx_channel.hpp"
 
 using namespace alloy;
 using runtime::time::Duration;
@@ -334,6 +335,121 @@ TEST_CASE("UartRxChannel reports drops when the ring is full",
     CHECK(rx.try_pop().has_value());
     CHECK(rx.feed_from_isr(std::byte{0xDD}));  // slot freed; succeeds
     CHECK(rx.drops() == 2);                    // unchanged on success
+}
+
+// --- UartTxChannel tests -----------------------------------------------------
+
+TEST_CASE("UartTxChannel try_send queues bytes and pop_for_isr drains them",
+          "[tasks][uart_tx]") {
+    tasks::UartTxChannel<8> tx;
+    REQUIRE(tx.empty());
+    CHECK(tx.try_send(std::byte{0xAA}));
+    CHECK(tx.try_send(std::byte{0xBB}));
+    CHECK(tx.try_send(std::byte{0xCC}));
+    CHECK(tx.size() == 3);
+
+    auto a = tx.pop_for_isr();
+    auto b = tx.pop_for_isr();
+    auto c = tx.pop_for_isr();
+    auto d = tx.pop_for_isr();
+    REQUIRE(a.has_value());
+    REQUIRE(b.has_value());
+    REQUIRE(c.has_value());
+    REQUIRE_FALSE(d.has_value());
+    CHECK(*a == std::byte{0xAA});
+    CHECK(*b == std::byte{0xBB});
+    CHECK(*c == std::byte{0xCC});
+    CHECK(tx.empty());
+}
+
+TEST_CASE("UartTxChannel kicks the callback only on empty -> non-empty transition",
+          "[tasks][uart_tx]") {
+    tasks::UartTxChannel<4> tx;
+    static int kicks;  // static so the lambda can capture-by-reference into the
+                       // function pointer slot (KickFn is plain `void(*)()`)
+    kicks = 0;
+    tx.set_kick_callback([] { ++kicks; });
+
+    // First push: queue was empty -> kick fires.
+    CHECK(tx.try_send(std::byte{1}));
+    CHECK(kicks == 1);
+
+    // Subsequent pushes while non-empty: no kick (the ISR is supposed to be
+    // running; kicking again would be redundant and could re-arm an
+    // edge-triggered interrupt at the wrong moment).
+    CHECK(tx.try_send(std::byte{2}));
+    CHECK(tx.try_send(std::byte{3}));
+    CHECK(kicks == 1);
+
+    // ISR drains the queue.
+    CHECK(tx.pop_for_isr().has_value());
+    CHECK(tx.pop_for_isr().has_value());
+    CHECK(tx.pop_for_isr().has_value());
+    CHECK(tx.empty());
+
+    // Next push transitions empty -> non-empty again -> kick fires.
+    CHECK(tx.try_send(std::byte{4}));
+    CHECK(kicks == 2);
+}
+
+TEST_CASE("UartTxChannel reports drops when the ring is full",
+          "[tasks][uart_tx]") {
+    tasks::UartTxChannel<2> tx;  // 2 -> 1 usable slot
+    CHECK(tx.try_send(std::byte{0xAA}));
+    CHECK_FALSE(tx.try_send(std::byte{0xBB}));
+    CHECK_FALSE(tx.try_send(std::byte{0xCC}));
+    CHECK(tx.drops() == 2);
+    CHECK(tx.pop_for_isr().has_value());
+    CHECK(tx.try_send(std::byte{0xDD}));
+    CHECK(tx.drops() == 2);  // unchanged on success
+}
+
+TEST_CASE("UartTxChannel back-pressure: task awaits wait_space() on full ring",
+          "[tasks][uart_tx][sched]") {
+    reset_clock();
+    Scheduler<2, 384> sched;
+    sched.set_time_source(mock_now);
+    tasks::UartTxChannel<2> tx;  // tiny ring forces the back-pressure path
+    int sent = 0;
+
+    auto sender = [&]() -> Task {
+        const std::byte payload[] = {std::byte{0x10}, std::byte{0x20},
+                                     std::byte{0x30}, std::byte{0x40}};
+        for (auto b : payload) {
+            while (!tx.try_send(b)) {
+                static_cast<void>(co_await tx.wait_space());
+            }
+            ++sent;
+        }
+    };
+
+    REQUIRE(sched.spawn([&] { return sender(); }).is_ok());
+
+    // First tick: pushes 0x10 (slot 0). next try_send for 0x20 finds the
+    // ring full (cap=2 -> 1 usable slot) and suspends on wait_space.
+    sched.tick();
+    CHECK(sent == 1);
+    CHECK(tx.full());
+
+    // ISR drains one byte, signals popped.
+    auto a = tx.pop_for_isr();
+    REQUIRE(a.has_value());
+    CHECK(*a == std::byte{0x10});
+
+    // Wake the task; it pushes 0x20 and again hits the back-pressure path.
+    sched.tick();  // wake
+    sched.tick();  // resume + push + suspend
+    CHECK(sent == 2);
+
+    // Drain + wake + resume for the remaining bytes.
+    REQUIRE(tx.pop_for_isr().has_value());
+    sched.tick();
+    sched.tick();
+    REQUIRE(tx.pop_for_isr().has_value());
+    sched.tick();
+    sched.tick();
+
+    CHECK(sent == 4);
 }
 
 // --- on(event) tests ---------------------------------------------------------

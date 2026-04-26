@@ -69,7 +69,7 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       cancellation propagation (`Result<void, Cancelled>` after token fires).
 
 ## 7. ISR-to-task signaling
-- [x] 7.1 Three primitives ship in v1:
+- [x] 7.1 Four primitives ship in v1:
       - `Event` -- single bit, edge-triggered, ISR-safe via compiler-only
         atomic_signal_fence (no libatomic). For "wake the task" without data.
       - `Channel<T, N>` -- SPSC ring buffer with payload. `try_push` is the
@@ -83,6 +83,14 @@ mergeable. Host-only tests cover every phase that does not need hardware.
         application code owns the three lines that bridge a vendor-specific
         RX-byte-ready signal into `feed_from_isr`. Keeps the helper
         portable across STM32, SAME70, RP2040, ESP32.
+      - `UartTxChannel<N>` -- mirror of UartRxChannel for the TX
+        direction. Task-side `try_send`, ISR-side `pop_for_isr`,
+        task-side `wait_space()` and `wait_drained()` for back-pressure
+        and drain-to-empty patterns. A user-supplied `kick` callback is
+        invoked on the empty -> non-empty transition so the application
+        can re-enable the UART TXE interrupt at the right moment without
+        the channel reaching into vendor registers. Same opt-in posture
+        and zero overhead in code that does not include the header.
 - [x] 7.2 Drop counter on Channel: producer-only writes, consumer reads
       via `channel.drops()`. A steadily-rising counter signals an undersized
       ring or a starved consumer.

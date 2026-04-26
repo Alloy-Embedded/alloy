@@ -4,6 +4,33 @@
 
 namespace {
 
+// Watchdog unlock key (same for TIMG and RTC WDTs)
+inline constexpr std::uint32_t kWdtUnlockKey = 0x50D83AA1u;
+
+inline auto& reg32(std::uint32_t addr) noexcept {
+    return *reinterpret_cast<volatile std::uint32_t*>(addr);
+}
+
+// Disable TIMG0 and TIMG1 main watchdogs + RTC watchdog.
+// The ESP-IDF v5 bootloader leaves TIMG0 WDT running (~1s timeout).
+// Without this, the chip resets before the second loop iteration.
+void disable_watchdogs() noexcept {
+    // TIMG0 WDT: WDTPROTECT=0x3FF5F064, WDTCONFIG0=0x3FF5F048 (EN=bit31)
+    reg32(0x3FF5F064u) = kWdtUnlockKey;
+    reg32(0x3FF5F048u) &= ~(1u << 31u);
+    reg32(0x3FF5F064u) = 0u;
+
+    // TIMG1 WDT: WDTPROTECT=0x3FF60064, WDTCONFIG0=0x3FF60048
+    reg32(0x3FF60064u) = kWdtUnlockKey;
+    reg32(0x3FF60048u) &= ~(1u << 31u);
+    reg32(0x3FF60064u) = 0u;
+
+    // RTC WDT: WDTPROTECT=0x3FF480A8, WDTCONFIG0=0x3FF48094 (EN=bit31)
+    reg32(0x3FF480A8u) = kWdtUnlockKey;
+    reg32(0x3FF48094u) &= ~(1u << 31u);
+    reg32(0x3FF480A8u) = 0u;
+}
+
 // GPIO base: 0x3FF44000
 // IO_MUX base: 0x3FF49000
 inline constexpr std::uint32_t kGpioBase  = 0x3FF44000u;
@@ -60,6 +87,7 @@ void toggle() {
 
 void init() {
     if (s_initialized) { return; }
+    disable_watchdogs();
     led::init();
     s_initialized = true;
 }
