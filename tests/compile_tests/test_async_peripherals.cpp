@@ -81,6 +81,20 @@ struct MockGpioPort {
     }
 };
 
+// ── async UART wait_for (interrupt-driven) ───────────────────────────────────
+struct MockUartPort {
+    // peripheral_id must be constexpr for uart_event::token<P, Kind>.
+    static constexpr auto peripheral_id = alloy::device::PeripheralId::none;
+
+    [[nodiscard]] auto enable_interrupt(alloy::hal::uart::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+
+    [[nodiscard]] auto disable_interrupt(alloy::hal::uart::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+};
+
 }  // namespace
 
 [[maybe_unused]] void compile_async_peripherals_api() {
@@ -127,4 +141,16 @@ struct MockGpioPort {
     [[maybe_unused]] const auto gpio_e =
         alloy::async::gpio::wait_edge<alloy::device::PinId::none>(gpio_port,
                                                                    alloy::async::gpio::Edge::Rising);
+
+    // ── async::uart::wait_for ────────────────────────────────────────────────
+    // Pins the signature: wait_for<Kind>(port) ->
+    //   Result<operation<uart_event::token<P, Kind>>, ErrorCode>.
+    // The IdleLine kind is the canonical "unknown-length frame" trigger used
+    // with circular RX DMA (see openspec extend-uart-coverage task 5.1 + 9.2).
+    MockUartPort uart_port;
+    [[maybe_unused]] const auto uart_idle =
+        alloy::async::uart::wait_for<alloy::hal::uart::InterruptKind::IdleLine>(uart_port);
+    // Also verify LinBreak kind compiles (task 4.2 — F401 LIN path coverage).
+    [[maybe_unused]] const auto uart_lin =
+        alloy::async::uart::wait_for<alloy::hal::uart::InterruptKind::LinBreak>(uart_port);
 }

@@ -984,6 +984,46 @@ auto enable_lin_impl(const PortHandle&, bool enable)
     return core::Err(core::ErrorCode::NotSupported);
 }
 
+// Send a LIN break character by setting SBKRQ in the USART RQR register (bit 1).
+// Only valid on ST SCI3 / SCI2 families (STM32G0/F4/H7/WB); returns NotSupported
+// if the RQR register is absent from the runtime database (e.g. Microchip USART).
+template <typename PortHandle>
+auto send_lin_break_impl(const PortHandle&)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (PortHandle::is_st_style) {
+        // RQR is not in UartSemanticTraits; discover at constexpr time by suffix.
+        constexpr auto rqr =
+            rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "rqr");
+        if constexpr (!rqr.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            // SBKRQ: RQR bit 1 — write-only, self-clearing after break sent.
+            const auto field = rt::find_runtime_field_ref_by_register_and_offset(
+                rqr.register_id, std::uint16_t{1});
+            if (!field.valid) {
+                return core::Err(core::ErrorCode::NotSupported);
+            }
+            return rt::modify_field(field, 1u);
+        }
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+// Returns true when the LIN break detection flag (LBDF) is set.
+// ISR bit 8 on modern ST; SR bit 8 on legacy ST.
+template <typename PortHandle>
+[[nodiscard]] auto lin_break_detected_impl() noexcept -> bool {
+    return read_status_flag<PortHandle>(std::uint16_t{8});
+}
+
+// Clear the LIN break detection flag (LBDCF: ICR bit 8 on modern ST).
+// Returns NotSupported on legacy ST (flags cleared by read of DR).
+template <typename PortHandle>
+auto clear_lin_break_flag_impl()
+    -> core::Result<void, core::ErrorCode> {
+    return clear_status_flag_impl<PortHandle>(8u);
+}
+
 template <typename PortHandle>
 auto set_half_duplex_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {

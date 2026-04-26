@@ -552,6 +552,23 @@ class port_handle {
         return detail::enable_lin_impl(*this, enable);
     }
 
+    /// Request a LIN break transmission (SBKRQ / RQR bit 1).
+    /// The break is sent after any pending character completes.
+    /// Returns NotSupported on Microchip backends.
+    [[nodiscard]] auto send_lin_break() const -> core::Result<void, core::ErrorCode> {
+        return detail::send_lin_break_impl(*this);
+    }
+
+    /// True when a LIN break has been detected (LBDF / ISR or SR bit 8).
+    [[nodiscard]] auto lin_break_detected() const -> bool {
+        return detail::lin_break_detected_impl<port_handle>();
+    }
+
+    /// Clear the LIN break detection flag (LBDCF / ICR bit 8, modern ST).
+    [[nodiscard]] auto clear_lin_break_flag() const -> core::Result<void, core::ErrorCode> {
+        return detail::clear_lin_break_flag_impl<port_handle>();
+    }
+
     /// Enable or disable single-wire half-duplex mode (HDSEL / CR3 bit 3).
     [[nodiscard]] auto set_half_duplex(bool enable) const
         -> core::Result<void, core::ErrorCode> {

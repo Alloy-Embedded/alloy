@@ -87,6 +87,9 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
 
     // ---- Phase 3: mode setters ----
     [[maybe_unused]] const auto lin_en   = uart.enable_lin(true);
+    [[maybe_unused]] const auto lin_brk  = uart.send_lin_break();
+    [[maybe_unused]] const bool lbdf     = uart.lin_break_detected();
+    [[maybe_unused]] const auto clr_lbdf = uart.clear_lin_break_flag();
     [[maybe_unused]] const auto hdsel    = uart.set_half_duplex(true);
     [[maybe_unused]] const auto de_en    = uart.enable_de(true);
     [[maybe_unused]] const auto deat     = uart.set_de_assertion_time(5u);
