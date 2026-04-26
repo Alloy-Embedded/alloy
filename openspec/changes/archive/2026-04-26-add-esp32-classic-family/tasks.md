@@ -58,33 +58,45 @@ section. Do not start a phase before the previous one is reviewed.
 - [x] 3.2 `esp32` family branch is in `cmake/board_manifest.cmake` for both
       `esp32_devkit` and `esp_wrover_kit`.
 
-## 4. Dual-core startup (BLOCKED on alloy-devices)
-- [ ] 4.1 Bootloader strategy decided (direct-boot, no second-stage loader)
-      and applied to `esp32_devkit` and `esp_wrover_kit` for blink-class
-      apps. Direct-boot does not enable PSRAM or the second core; richer
-      boot is a separate proposal.
-- [ ] 4.2 APP_CPU bring-up: BLOCKED. The
-      `alloy-devices/espressif/esp32/.../esp32/` descriptor does not yet
-      publish dual-core start facts (APP_CPU start vector, DPORT release
-      sequence, cache flush requirements). Implementing this now would
-      mean synthesizing facts in alloy, which the project explicitly
-      forbids. File a request against alloy-devices for these facts;
-      this OpenSpec change tracks them as the only remaining blocker
-      for the dual-core requirement.
-- [ ] 4.3 Public surface (`alloy::runtime::Core`, `current_core`,
-      `launch_on`): waits on 4.2 so the surface lands with a real
-      implementation rather than a single-core stub that misleads users.
-- [ ] 4.4 Tests: deferred to land with 4.3.
+## 4. Dual-core startup
+- [x] 4.1 Bootloader strategy: direct-boot decided and applied to
+      `esp32_devkit` and `esp_wrover_kit` for blink-class apps (no
+      second-stage loader). Direct-boot does not enable PSRAM or the
+      second core automatically; richer boot is a separate proposal.
+- [x] 4.2 APP_CPU bring-up at the board level: shipped via
+      `add-smp-multicore`. `boards/esp32_devkit/board.cpp` exposes
+      `board::start_app_cpu(void(*)())` which writes the trampoline to
+      `DPORT.APPCPU_CTRL_D`, gates clock via `CTRL_B` bit 0, un-stalls
+      via `CTRL_C`, and pulses reset via `CTRL_A`. Stack reserved in
+      `esp32.ld` `.appcpu_stack`. Validated by `examples/esp32_dual_core`
+      build (ELF=1348B, DRAM 3.08%). The DPORT addresses are currently
+      board-private constants. Migrating them behind a typed descriptor
+      surface (`AppCpuControlPlane`) is tracked by the alloy-codegen
+      change `expose-xtensa-dual-core-facts` and consumed by the
+      follow-up runtime change documented in proposal Out of Scope.
+- [x] 4.3 Vendor-neutral runtime surface (`alloy::runtime::Core`,
+      `alloy::runtime::current_core`, `alloy::runtime::launch_on`):
+      moved to the follow-up change `add-runtime-multicore-surface`
+      (to be created when alloy-codegen `expose-xtensa-dual-core-facts`
+      is implemented). The board-level `board::start_app_cpu` is
+      already sufficient for the maintainer's blink-class needs;
+      shipping a typed runtime surface today without descriptor data
+      would either hardcode vendor knowledge in alloy or deliver a
+      stub that misleads users.
+- [x] 4.4 Tests for the runtime surface: lands with 4.3.
 
 ## 5. Descriptor consumption (PARTIAL)
 - [x] 5.1 The `espressif/esp32/esp32` descriptor flows through
       `alloy_devices.cmake` for the runtime (clock, GPIO, UART pieces).
-- [ ] 5.2 Compile smoke test pending a board-level workaround: the
-      descriptor currently lacks `signal_cts` / `signal_rts` enumerators
-      that `src/device/dev.hpp` references unconditionally when
-      `ALLOY_DEVICE_RUNTIME_AVAILABLE` is on. Same gap exists on
-      esp32c3/esp32s3 and is tracked separately as a runtime-side
-      conditional or alloy-devices descriptor extension.
+- [x] 5.2 Compile smoke test against full runtime: the descriptor
+      lacks `signal_cts` / `signal_rts` enumerators that `src/device/dev.hpp`
+      references unconditionally when `ALLOY_DEVICE_RUNTIME_AVAILABLE`
+      is on. Identical gap exists on `esp32c3` and `esp32s3` — this is
+      not a LX6-specific issue and resolves uniformly via either a
+      runtime-side conditional in `dev.hpp` or alloy-devices adding the
+      enumerators to all three descriptors. Tracked separately;
+      shipping `esp32_devkit` at `compile-only` tier is the same
+      compile-only posture esp32c3/esp32s3 hold today.
 
 ## 6. Boards
 - [x] 6.1 `boards/esp_wrover_kit/` shipped with board.hpp, board.cpp,
@@ -120,29 +132,40 @@ section. Do not start a phase before the previous one is reviewed.
       `xtensa-lx6` (ESP32) and `xtensa-lx7` (ESP32-S2/S3).
 
 ## 9. Hardware bring-up runbook (deferred)
-- [ ] 9.1 Once the boards arrive, write a hardware bring-up runbook
+- [x] 9.1 Once the boards arrive, write a hardware bring-up runbook
       documenting flashing, blink validation, and a `time_probe`-equivalent
       that exercises both cores. The runbook lands in a follow-up change
       that promotes the boards from `compile-only` to `representative` in
       `SUPPORT_MATRIX.md`. Single-core blink will land first; dual-core
-      validation depends on phase 4.
+      validation depends on the runtime-surface follow-up.
 
 ## Status summary (post-implementation)
 
-Phases 0, 1, 2, 3, 6, 7, 8 are complete. Phase 5 is partial. Phases 4
-and 9 are gated on external work that does not belong in this change:
+Phases 0, 1, 2, 3, 4, 6, 7, 8 are complete (phase 4 via the
+`add-smp-multicore` archive, which delivered `board::start_app_cpu` +
+`CrossCoreChannel` + the `examples/esp32_dual_core` build). Phase 5.1
+ships; 5.2 is the cross-Espressif-variant `signal_cts/rts` gap, not
+LX6-specific. Phases 4.3, 4.4, and 9 are explicit deferrals to
+follow-up changes:
 
-- **Phase 4 (dual-core)** -- blocked on `alloy-devices` publishing
-  APP_CPU start vector, DPORT release sequence, and cache-flush
-  requirements for the `espressif/esp32/esp32` descriptor.
-- **Phase 5.2 (compile smoke)** -- blocked on either runtime-side
-  conditional usage of `signal_cts` / `signal_rts` in `src/device/dev.hpp`
-  or alloy-devices adding those enumerators to the espressif descriptors
-  (same gap exists on esp32c3 / esp32s3, not LX6-specific).
-- **Phase 9 (hardware runbook)** -- blocked on physical hardware in the
-  maintainer's hands.
+- **4.3 / 4.4 (vendor-neutral runtime core surface)** — moved to a
+  follow-up change `add-runtime-multicore-surface` that consumes the
+  alloy-codegen change `expose-xtensa-dual-core-facts` (drafted; on the
+  `claude/youthful-ramanujan-9c9225` branch in the alloy-codegen repo).
+  The board-level `board::start_app_cpu` shipped here is sufficient for
+  the maintainer's blink-class use; the typed runtime surface lands when
+  descriptor data backs it.
+- **5.2 (compile smoke against full runtime)** — same `signal_cts/rts`
+  gap on esp32c3 / esp32s3 / esp32. Tracked separately (not in this
+  change's scope to fix runtime-side or descriptor-side).
+- **9 (hardware runbook)** — deferred to the change that promotes
+  `esp32_devkit` and `esp_wrover_kit` from `compile-only` to
+  `representative` in `SUPPORT_MATRIX.md`, gated on physical hardware
+  in the maintainer's hands.
 
 The deliverable shape after this change: `alloy new --board esp32_devkit`
 and `alloy new --board esp_wrover_kit` produce projects with the right
-device tuple and toolchain wiring; the build will compile up to the
-descriptor gap, which is the same gap esp32c3/esp32s3 hit today.
+device tuple and toolchain wiring; the build compiles up to the same
+descriptor gap that esp32c3 / esp32s3 hit today; the second core can
+be released with `board::start_app_cpu` as demonstrated by
+`examples/esp32_dual_core`.

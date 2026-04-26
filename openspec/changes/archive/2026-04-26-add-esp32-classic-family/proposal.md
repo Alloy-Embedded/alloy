@@ -40,24 +40,26 @@ than discovered mid-implementation.
 - Pin `xtensa-esp32-elf-gcc` in `_toolchain_pins.toml` (alongside the entries scoped by
   `add-esp-toolchain-pins`).
 
-### Dual-core startup
-- Extend the descriptor-driven startup runtime to bring up the second Xtensa core
-  (APP_CPU) after PRO_CPU clock bring-up, in a way that stays inside alloy's
-  runtime/device boundary -- startup *algorithms* in the runtime, startup *data* in
-  `alloy-devices`.
-- Define a small public surface for "what core am I running on" so application code
-  can pin work to a core without leaking ESP-specific names.
-- Decide and document the second-stage-bootloader strategy (see design.md open
-  question). Two viable paths under evaluation: (a) write a minimal alloy second-stage
-  loader, (b) reuse Espressif's open-source second-stage bootloader as a vendored
-  binary blob. **Option (a) is preferred** to keep the no-IDF promise intact, but it is
-  research work that must complete before this change can be implemented.
+### Dual-core startup (board-level scope only — runtime surface is follow-up)
+- Bootloader strategy: direct-boot, no second-stage loader for blink-class apps.
+  Boards apply this directly via `boards/<name>/startup.{S,cpp}` (no Espressif vendor
+  blob, manual WDT disable + clock + IO_MUX). PSRAM and second-stage are explicitly
+  out of scope.
+- APP_CPU bring-up at the **board level** ships via the `add-smp-multicore` archive:
+  `boards/esp32_devkit/board.cpp` exposes `board::start_app_cpu(void(*)())` with the
+  DPORT.APPCPU_CTRL_* sequence as board-private constants. Validated by
+  `examples/esp32_dual_core` (CrossCoreChannel between PRO_CPU and APP_CPU).
+- The vendor-neutral runtime surface (`alloy::runtime::Core`,
+  `alloy::runtime::current_core`, `alloy::runtime::launch_on`) and the
+  descriptor-driven version of the bring-up sequence are **deferred** (see Out of
+  Scope below). Shipping them today without descriptor-published facts would either
+  hardcode vendor knowledge in alloy or deliver a stub that misleads users.
 
 ### Boards
 - `boards/esp_wrover_kit/`: WROVER-KIT v4.1, ESP32-WROVER-B module. RGB LED on
   GPIO0/2/4, JTAG via onboard FT2232HL, microSD on SPI2, ILI9341 LCD on SPI3, debug
   UART through the FT2232HL B channel. PSRAM is **out of scope** at v1 (documented).
-- `boards/esp32_devkitc/`: ESP32-DevKitC v4, ESP-WROOM-32 module. Single user LED on
+- `boards/esp32_devkit/`: ESP32-DevKitC v4, ESP-WROOM-32 module. Single user LED on
   GPIO2, debug UART through the CP210x USB bridge.
 - Both boards expose the same descriptor-driven HAL path used by the existing ESP32-S3
   board.
@@ -73,12 +75,13 @@ than discovered mid-implementation.
 ## Impact
 
 - Affected specs:
-  - `board-bringup` (extended: ESP32 classic boards must follow the same declarative
-    contract; dual-core bring-up extends the existing `board::init()` requirement)
-  - `startup-runtime` (extended: dual-core start sequence becomes a runtime concern;
-    explicit non-leak of vendor names through the public "current core" surface)
-  - `runtime-tooling` (extended: new toolchain pin; ESP32 classic boards in catalog;
-    again, explicit non-implication of ESP-IDF integration)
+  - `board-bringup` (extended: ESP32 classic boards declared with the same manifest
+    shape; secondary-core launch primitive `board::start_app_cpu` exposed opt-in)
+  - `runtime-tooling` (NOT touched here — `xtensa-esp-elf-gcc` toolchain pin and
+    ESP32 catalog requirements were already absorbed by the sibling
+    `add-esp-toolchain-pins` archive)
+  - `startup-runtime` (NOT touched — descriptor-driven dual-core bring-up +
+    `alloy::runtime::Core` typed surface deferred to follow-up; see Out of Scope)
 
 - Affected code:
   - `cmake/{platforms,toolchains}/`, `cmake/board_manifest.cmake`
@@ -101,12 +104,21 @@ than discovered mid-implementation.
   - `add-esp-toolchain-pins` is a sibling change for the C3/S3 toolchain pins; this
     change extends the same `_toolchain_pins.toml` with the LX6 entry.
 
-- Out of scope:
-  - ESP-IDF framework integration (FreeRTOS, WiFi/BLE, NVS, partition tables, `idf.py`
-    builds). Tracked separately under a future `add-esp-idf-integration` proposal.
-  - PSRAM bring-up on WROVER-KIT.
-  - Camera and SD-card driver bring-up on WROVER-KIT (the boards expose them; alloy
-    drivers come later).
-  - Hardware validation gates for either board. v1 lands at a `compile-only` tier;
-    `representative` and `foundational` claims arrive in follow-up changes once a
-    runbook and CI integration exist.
+- Out of scope (deferred to dedicated follow-up changes):
+  - **Vendor-neutral runtime core surface.** `alloy::runtime::Core`,
+    `alloy::runtime::current_core`, `alloy::runtime::launch_on`, and the descriptor-
+    driven version of the APP_CPU bring-up sequence. Tracked under the future change
+    `add-runtime-multicore-surface` (alloy repo), which depends on the alloy-codegen
+    change `expose-xtensa-dual-core-facts` (drafted) being implemented first to
+    publish the typed `AppCpuControlPlane` data the runtime would consume.
+  - **`signal_cts` / `signal_rts` descriptor enumerator gap.** `src/device/dev.hpp`
+    references these unconditionally; the same gap exists on `esp32c3` and `esp32s3`
+    so it is not LX6-specific. Resolves uniformly via either a runtime-side
+    conditional or a descriptor-side addition; either way is a separate change.
+  - **Hardware validation runbook.** Promotion from `compile-only` to
+    `representative` (and `foundational` later) lands in follow-ups when boards are
+    in the maintainer's hands.
+  - ESP-IDF framework integration (FreeRTOS, WiFi/BLE, NVS, partition tables,
+    `idf.py` builds). Tracked under a future `add-esp-idf-integration` proposal —
+    actively scoped via the WiFi/BLE OpenSpec tree under discussion.
+  - PSRAM bring-up on WROVER-KIT; Camera and SD-card driver bring-up on WROVER-KIT.
