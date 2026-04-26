@@ -1323,6 +1323,410 @@ patterns.
 """
 
 
+_CATEGORY_DEFAULTS: dict[str, str] = {
+    "i2c": "sensor",
+    "spi": "memory",
+    "uart": "net",
+    "1wire": "sensor",
+}
+
+
+def cmd_new_driver(args: argparse.Namespace) -> None:
+    name: str = args.name.lower().replace("-", "_")
+    interface: str = args.interface
+    category: str = args.category or _CATEGORY_DEFAULTS[interface]
+    board: str = args.board
+
+    driver_dir = ROOT / "drivers" / category / name
+    test_path = ROOT / "tests" / "compile_tests" / f"test_driver_{name}.cpp"
+    example_dir = ROOT / "examples" / f"driver_{name}_probe"
+
+    for path in (driver_dir, example_dir):
+        if path.exists() and any(path.iterdir()):
+            print(f"error: {path} exists and is not empty", file=sys.stderr)
+            raise SystemExit(2)
+        path.mkdir(parents=True, exist_ok=True)
+
+    header_path = driver_dir / f"{name}.hpp"
+    header_path.write_text(_driver_header(name, category, interface), encoding="utf-8")
+    test_path.write_text(_driver_compile_test(name, category, interface), encoding="utf-8")
+    (example_dir / "main.cpp").write_text(_driver_probe_main(name, category, interface), encoding="utf-8")
+    (example_dir / "CMakeLists.txt").write_text(_driver_probe_cmake(name), encoding="utf-8")
+
+    print(f"scaffolded driver '{name}' (interface={interface}, category={category}, board={board})")
+    print(f"  header:       {header_path.relative_to(ROOT)}")
+    print(f"  compile test: {test_path.relative_to(ROOT)}")
+    print(f"  probe example:{(example_dir / 'main.cpp').relative_to(ROOT)}")
+    print("next steps:")
+    print(f"  1. Fill in register addresses and operations in {header_path.relative_to(ROOT)}")
+    print(f"  2. Update the Mock bus in {test_path.relative_to(ROOT)} if needed")
+    print(f"  3. Wire the probe in {(example_dir / 'main.cpp').relative_to(ROOT)}")
+    print("  4. Run: alloyctl build --board <board> --target driver_{name}_probe")
+
+
+def _driver_namespace(category: str, name: str) -> str:
+    return f"alloy::drivers::{category}::{name}"
+
+
+def _mock_bus_i2c() -> str:
+    return """\
+struct MockI2cBus {
+    [[nodiscard]] auto write(std::uint16_t, std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> { return alloy::core::Ok(); }
+    [[nodiscard]] auto read(std::uint16_t, std::span<std::uint8_t> rx) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        for (auto& b : rx) b = 0; return alloy::core::Ok();
+    }
+    [[nodiscard]] auto write_read(std::uint16_t, std::span<const std::uint8_t>,
+                                  std::span<std::uint8_t> rx) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        for (auto& b : rx) b = 0; return alloy::core::Ok();
+    }
+};"""
+
+
+def _mock_bus_spi() -> str:
+    return """\
+struct MockSpiBus {
+    [[nodiscard]] auto transfer(std::span<const std::uint8_t>,
+                                std::span<std::uint8_t> rx) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        for (auto& b : rx) b = 0; return alloy::core::Ok();
+    }
+};"""
+
+
+def _mock_bus_uart() -> str:
+    return """\
+struct MockUartBus {
+    [[nodiscard]] auto transmit(std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> { return alloy::core::Ok(); }
+    [[nodiscard]] auto receive(std::span<std::uint8_t> rx) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        for (auto& b : rx) b = 0xFF; return alloy::core::Ok();
+    }
+};"""
+
+
+def _mock_bus(interface: str) -> str:
+    return {"i2c": _mock_bus_i2c, "spi": _mock_bus_spi,
+            "uart": _mock_bus_uart, "1wire": _mock_bus_uart}[interface]()
+
+
+def _bus_template(interface: str) -> str:
+    if interface == "spi":
+        return "template <typename BusHandle, typename CsPolicy = NoOpCsPolicy>"
+    return "template <typename BusHandle>"
+
+
+def _bus_ctor_params(interface: str) -> str:
+    if interface == "spi":
+        return "BusHandle& bus, CsPolicy cs = {}, Config cfg = {}"
+    return "BusHandle& bus, Config cfg = {}"
+
+
+def _bus_ctor_init(interface: str) -> str:
+    if interface == "spi":
+        return "bus_{&bus}, cs_{cs}, cfg_{cfg}"
+    return "bus_{&bus}, cfg_{cfg}"
+
+
+def _bus_private_members(interface: str) -> str:
+    if interface == "spi":
+        return "    BusHandle* bus_;\n    CsPolicy   cs_;\n    Config     cfg_;"
+    return "    BusHandle* bus_;\n    Config     cfg_;"
+
+
+def _board_bus_header(interface: str) -> str:
+    return {"i2c": "BOARD_I2C_HEADER", "spi": "BOARD_SPI_HEADER",
+            "uart": "BOARD_UART_HEADER", "1wire": "BOARD_GPIO_HEADER"}.get(interface, "BOARD_I2C_HEADER")
+
+
+def _board_make_bus(interface: str) -> str:
+    return {"i2c": "board::make_i2c()", "spi": "board::make_spi()",
+            "uart": "board::make_debug_uart()", "1wire": "/* configure GPIO pin */"}.get(interface, "board::make_i2c()")
+
+
+def _driver_header(name: str, category: str, interface: str) -> str:
+    ns = _driver_namespace(category, name)
+    tmpl = _bus_template(interface)
+    ctor_params = _bus_ctor_params(interface)
+    ctor_init = _bus_ctor_init(interface)
+    private_members = _bus_private_members(interface)
+    spi_cs_include = '\n#include "drivers/memory/w25q/w25q.hpp"  // for NoOpCsPolicy / GpioCsPolicy' if interface == "spi" else ""
+    return f"""\
+#pragma once
+
+// drivers/{category}/{name}/{name}.hpp
+//
+// Driver for <Vendor> <PartNumber> <brief description> over {interface.upper()}.
+// Written against datasheet revision <rev> (<date>).
+// Seed driver: chip-ID probe + <primary operation>. See drivers/README.md.
+
+#include <array>
+#include <cstdint>
+#include <span>
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"{spi_cs_include}
+
+namespace {ns} {{
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+// TODO: fill in device-specific addresses / chip-ID constants.
+// inline constexpr std::uint16_t kDefaultAddress = 0x00;
+// inline constexpr std::uint8_t  kExpectedChipId = 0x00;
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+struct Config {{
+    // TODO: add device-specific configuration fields with defaults.
+    std::uint16_t address = 0x00;  // I2C address (remove for SPI drivers)
+}};
+
+struct Measurement {{
+    // TODO: replace with the actual physical quantities this device outputs.
+    float value = 0.0f;
+}};
+
+// ── Device ────────────────────────────────────────────────────────────────────
+
+{tmpl}
+class Device {{
+public:
+    explicit Device({ctor_params})
+        : {ctor_init} {{}}
+
+    // Verifies device presence (chip-ID or equivalent). Must be called before
+    // any other method.
+    [[nodiscard]] auto init() -> alloy::core::Result<void, alloy::core::ErrorCode> {{
+        // TODO: implement chip-ID check or init sequence.
+        (void)bus_;
+        return alloy::core::Err(alloy::core::ErrorCode::NotSupported);
+    }}
+
+    // Reads one measurement from the device.
+    [[nodiscard]] auto read() -> alloy::core::Result<Measurement, alloy::core::ErrorCode> {{
+        // TODO: implement register read + physical-unit conversion.
+        return alloy::core::Err(alloy::core::ErrorCode::NotSupported);
+    }}
+
+private:
+{private_members}
+}};
+
+}}  // namespace {ns}
+
+// Concept gate — fails at include time if the Device no longer compiles against
+// the documented bus surface.
+namespace {{
+struct _Mock{name.capitalize()}BusGate {{
+    // TODO: replace with the real bus surface for this interface.
+    [[nodiscard]] auto write(std::uint16_t, std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {{ return alloy::core::Ok(); }}
+    [[nodiscard]] auto read(std::uint16_t, std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {{ return alloy::core::Ok(); }}
+    [[nodiscard]] auto write_read(std::uint16_t, std::span<const std::uint8_t>,
+                                  std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {{ return alloy::core::Ok(); }}
+}};
+static_assert(
+    sizeof({ns}::Device<_Mock{name.capitalize()}BusGate>) > 0,
+    "{name} Device must compile against the documented bus surface");
+}}  // namespace
+"""
+
+
+def _driver_compile_test(name: str, category: str, interface: str) -> str:
+    ns = _driver_namespace(category, name)
+    mock = _mock_bus(interface)
+    mock_type = {"i2c": "MockI2cBus", "spi": "MockSpiBus",
+                 "uart": "MockUartBus", "1wire": "MockUartBus"}[interface]
+    return f"""\
+// Compile test: {name} seed driver instantiates against the documented public
+// {interface.upper()} HAL surface. Exercises init()/read() so that any drift in
+// the bus handle's signature fails the build.
+
+#include <cstdint>
+#include <span>
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "drivers/{category}/{name}/{name}.hpp"
+
+namespace {{
+
+{mock}
+
+[[maybe_unused]] void compile_{name}_against_public_{interface}_handle() {{
+    {mock_type} bus;
+    {ns}::Device sensor{{bus}};
+    (void)sensor.init();
+    auto m = sensor.read();
+    (void)m.is_ok();
+}}
+
+}}  // namespace
+"""
+
+
+def _driver_probe_main(name: str, category: str, interface: str) -> str:
+    bus_header = _board_bus_header(interface)
+    make_bus = _board_make_bus(interface)
+    return f"""\
+// examples/driver_{name}_probe/main.cpp
+//
+// SAME70 Xplained Ultra — {name} driver probe.
+//
+// TODO: document wiring (connector pins, I2C address / SPI CS, VCC/GND).
+//
+// Expected UART output:
+//   [{name}] booting
+//   [{name}] init ok
+//   [{name}] value=<reading>
+//   [{name}] PROBE PASS
+
+#include <array>
+#include <cstddef>
+#include <cstdint>
+
+#include BOARD_HEADER
+
+#ifndef BOARD_UART_HEADER
+#    error "driver_{name}_probe requires BOARD_UART_HEADER for the selected board"
+#endif
+#ifndef {bus_header}
+#    error "driver_{name}_probe requires {bus_header} for the selected board"
+#endif
+
+#include BOARD_UART_HEADER
+#include {bus_header}
+
+#include "drivers/{category}/{name}/{name}.hpp"
+#include "examples/common/uart_console.hpp"
+#include "hal/systick.hpp"
+
+namespace uart = alloy::examples::uart_console;
+namespace drv  = alloy::drivers::{category}::{name};
+
+[[noreturn]] static void halt_blink(std::uint32_t period_ms) {{
+    while (true) {{
+        board::led::toggle();
+        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(period_ms);
+    }}
+}}
+
+int main() {{
+    board::init();
+
+    auto debug = board::make_debug_uart();
+    if (debug.configure().is_err()) {{ halt_blink(100); }}
+    uart::write_line(debug, "[{name}] booting");
+
+    // TODO: configure bus (I2C address, SPI mode, baud rate, etc.)
+    auto bus = {make_bus};
+    if (bus.configure().is_err()) {{
+        uart::write_line(debug, "[{name}] bus configure failed");
+        halt_blink(100);
+    }}
+
+    drv::Device sensor{{bus}};
+    if (sensor.init().is_err()) {{
+        uart::write_line(debug, "[{name}] init failed");
+        halt_blink(100);
+    }}
+    uart::write_line(debug, "[{name}] init ok");
+
+    auto m = sensor.read();
+    if (m.is_err()) {{
+        uart::write_line(debug, "[{name}] read failed");
+        halt_blink(100);
+    }}
+
+    // TODO: print measurement fields.
+    uart::write_line(debug, "[{name}] read ok");
+    uart::write_line(debug, "[{name}] PROBE PASS");
+    halt_blink(500);
+}}
+"""
+
+
+def _driver_probe_cmake(name: str) -> str:
+    proj = f"driver_{name}_probe"
+    return f"""\
+cmake_minimum_required(VERSION 3.25)
+
+project({proj}
+    VERSION 1.0.0
+    DESCRIPTION "{name} driver probe"
+    LANGUAGES CXX C ASM
+)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(SOURCES main.cpp)
+
+if(DEFINED ALLOY_BOARD_SOURCE_DIR)
+    set(BOARD_SOURCE_DIR "${{ALLOY_BOARD_SOURCE_DIR}}")
+else()
+    set(BOARD_SOURCE_DIR "${{CMAKE_SOURCE_DIR}}/boards/${{ALLOY_BOARD}}")
+endif()
+
+if(EXISTS "${{BOARD_SOURCE_DIR}}/board.cpp")
+    list(APPEND SOURCES "${{BOARD_SOURCE_DIR}}/board.cpp")
+endif()
+
+if(CMAKE_CROSSCOMPILING AND EXISTS "${{BOARD_SOURCE_DIR}}/syscalls.cpp")
+    list(APPEND SOURCES "${{BOARD_SOURCE_DIR}}/syscalls.cpp")
+endif()
+
+if(CMAKE_CROSSCOMPILING AND DEFINED STARTUP_SOURCE AND NOT DEFINED ALLOY_HAL_LIBRARY)
+    list(APPEND SOURCES ${{STARTUP_SOURCE}})
+endif()
+
+add_executable(${{PROJECT_NAME}} ${{SOURCES}})
+
+target_include_directories(${{PROJECT_NAME}} PRIVATE
+    ${{CMAKE_SOURCE_DIR}}
+    ${{CMAKE_SOURCE_DIR}}/src
+    ${{CMAKE_SOURCE_DIR}}/boards
+)
+
+target_link_libraries(${{PROJECT_NAME}} PRIVATE ${{ALLOY_HAL_LIBRARY}})
+
+target_compile_options(${{PROJECT_NAME}} PRIVATE
+    -Wall -Wextra -Wpedantic
+    $<$<CONFIG:Debug>:-O0 -g3>
+    $<$<CONFIG:Release>:-O2 -g>
+    $<$<CONFIG:MinSizeRel>:-Os -g>
+)
+
+if(CMAKE_CROSSCOMPILING)
+    target_compile_options(${{PROJECT_NAME}} PRIVATE
+        -ffunction-sections -fdata-sections
+        -fno-exceptions -fno-rtti -fno-threadsafe-statics
+    )
+    target_link_options(${{PROJECT_NAME}} PRIVATE
+        -Wl,--gc-sections -Wl,--print-memory-usage
+        --specs=nano.specs --specs=nosys.specs
+    )
+    if(DEFINED LINKER_SCRIPT AND EXISTS "${{LINKER_SCRIPT}}")
+        target_link_options(${{PROJECT_NAME}} PRIVATE -T${{LINKER_SCRIPT}})
+    endif()
+    add_custom_command(TARGET ${{PROJECT_NAME}} POST_BUILD
+        COMMAND ${{CMAKE_OBJCOPY}} -O ihex $<TARGET_FILE:${{PROJECT_NAME}}> ${{PROJECT_NAME}}.hex
+        COMMAND ${{CMAKE_OBJCOPY}} -O binary $<TARGET_FILE:${{PROJECT_NAME}}> ${{PROJECT_NAME}}.bin
+        COMMAND ${{CMAKE_SIZE}} $<TARGET_FILE:${{PROJECT_NAME}}>
+        WORKING_DIRECTORY ${{CMAKE_CURRENT_BINARY_DIR}}
+        COMMENT "Generating HEX and BIN files"
+    )
+endif()
+"""
+
+
 def cmd_diff(args: argparse.Namespace) -> None:
     manifest = load_manifest()
     left = board_config(args.from_board)
@@ -1509,6 +1913,16 @@ def main() -> int:
     new_p.add_argument("--path", required=True, help="destination directory for the new project")
     new_p.add_argument("--name", help="override project name (defaults to the destination basename)")
     new_p.set_defaults(func=cmd_new)
+
+    nd_p = sub.add_parser("new-driver", help="scaffold a new seed driver (header + compile test + probe example)")
+    nd_p.add_argument("--name", required=True, help="driver name in snake_case (e.g. sht40)")
+    nd_p.add_argument("--interface", required=True, choices=["i2c", "spi", "uart", "1wire"],
+                      help="bus interface the driver uses")
+    nd_p.add_argument("--category", default="",
+                      help="driver category: sensor, display, memory, power, net (auto-inferred if omitted)")
+    nd_p.add_argument("--board", default="same70_xplained",
+                      help="target board for the probe example (default: same70_xplained)")
+    nd_p.set_defaults(func=cmd_new_driver)
 
     args = p.parse_args()
     args.func(args)
