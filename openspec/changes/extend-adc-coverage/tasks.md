@@ -1,0 +1,161 @@
+# Tasks: Extend ADC Coverage
+
+Phases are ordered. Phases 1-3 are host-testable (compile + concept).
+Phase 4 needs the existing 3-board hardware matrix
+(SAME70 / STM32G0 / STM32F4) — same boards that already validate
+`adc` at the foundational tier today.
+
+## 1. Channel typed enum (codegen + runtime)
+
+- [ ] 1.1 alloy-codegen: extend the ADC semantic emitter so each
+      published peripheral also produces a typed
+      `enum class Channel : std::uint8_t { … }` listing the
+      channels (peripheral + internal) declared in the descriptor.
+      Channels are named from the SVD where available
+      (`CH0`, `CH1`, …, `Vrefint`, `VBat`, `TempSensor`); fallback is
+      ordinal-only.
+- [ ] 1.2 alloy-codegen: regenerate goldens for ST / Microchip / NXP
+      so the new `Channel` enum appears in
+      `<vendor>/<family>/.../driver_semantics/adc.hpp` next to
+      `AdcSemanticTraits`.
+- [ ] 1.3 Runtime: `src/hal/adc.hpp` exposes `using Channel =
+      device::AdcChannel<Peripheral>` (the codegen-emitted enum).
+      Existing call sites that pass `std::uint8_t` keep compiling
+      via implicit conversion; new call sites are typed.
+
+## 2. HAL extensions
+
+All methods are members of `alloy::hal::adc::handle<Peripheral>`.
+Every method `static_assert(valid)` first; gates the body via
+`if constexpr` on the published trait field's `.valid`. Returns
+`core::ErrorCode::NotSupported` on the fall-through path.
+
+- [ ] 2.1 Resolution / alignment:
+      - `enum class Resolution { Bits6, Bits8, Bits10, Bits12, Bits14, Bits16 }`
+      - `enum class Alignment { Right, Left }`
+      - `set_resolution(Resolution)` — clamped at compile time to
+        `kResultBits` ceiling (`static_assert` if the requested value
+        exceeds the published max).
+      - `set_alignment(Alignment)`.
+- [ ] 2.2 Mode:
+      - `set_continuous(bool)`
+      - `stop()` (inverse of existing `start()`).
+- [ ] 2.3 Sample time:
+      - `set_sample_time(Channel, std::uint32_t ticks)` — only
+        emits MMIO when `kSampleTimeRegister.valid`.
+- [ ] 2.4 Sequence builder:
+      - `set_sequence(std::span<const Channel> channels)` — programmes
+        ordered conversion sequence using `kSequenceRegister` +
+        `kChannelBitPattern`. Empty span clears the sequence; oversize
+        returns `core::ErrorCode::InvalidArgument`.
+- [ ] 2.5 Per-channel enable (Microchip-style):
+      - `enable_channel(Channel)` / `disable_channel(Channel)` /
+        `channel_enabled(Channel) -> bool` — gated on
+        `kChannelEnablePattern.valid`.
+- [ ] 2.6 Hardware trigger:
+      - `enum class TriggerEdge { Disabled, Rising, Falling, Both }`
+      - `set_hardware_trigger(std::uint8_t source, TriggerEdge edge)` —
+        v1 takes raw source index per the descriptor's
+        `kExternalTriggerSelectField` width (clamped); a future
+        codegen change can promote to a typed `TriggerSource` enum.
+- [ ] 2.7 Sequence read (no-DMA path):
+      - `read_sequence(std::span<std::uint16_t> samples)` — drains
+        `samples.size()` conversions by polling
+        `kEndOfConversionField` and reading `kDataField` in a loop.
+        Returns `core::ErrorCode::Overrun` if `kOverrunField` flips
+        mid-loop.
+- [ ] 2.8 Status:
+      - `end_of_sequence() -> bool` (`kEndOfSequenceField`)
+      - `overrun() -> bool` (`kOverrunField`)
+      - `clear_overrun() -> Result<void, ErrorCode>` (clears the
+        field).
+
+## 3. Compile tests
+
+- [ ] 3.1 Extend `tests/compile_tests/test_adc_api.cpp`: instantiate
+      every new method against the existing `nucleo_g071rb` device
+      contract. Verify return types, `static_assert` fires on
+      out-of-range `Resolution`.
+- [ ] 3.2 Add a SAME70-targeted compile test exercising
+      `enable_channel` / `disable_channel` (the AFEC per-channel
+      register path that doesn't exist on G0 / F4).
+- [ ] 3.3 Concept test: `static_assert(handle<…>::has_resolution() ==
+      true)` etc. for each capability — codified introspection so
+      examples can branch without consulting docs.
+
+## 4. Async integration
+
+- [ ] 4.1 Extend `src/runtime/async_adc.hpp`'s `scan_dma`: take an
+      additional `complete_on` parameter
+      (`CompletionTrigger::DmaTransferComplete` or
+      `CompletionTrigger::EndOfSequence`); the runtime hook uses the
+      requested signal source. Default keeps backward compat
+      (DMA TC).
+- [ ] 4.2 Extend `tests/compile_tests/test_async_peripherals.cpp`
+      with a `scan_dma(complete_on=EndOfSequence)` instantiation.
+
+## 5. Example
+
+- [ ] 5.1 `examples/analog_probe_complete/`: targets
+      `nucleo_g071rb`. Configures ADC1 with:
+      - resolution 12-bit, right alignment
+      - 4-channel sequence (CH0, CH1, CH4, Vrefint)
+      - per-channel sample time (slow on Vrefint, fast on the rest)
+      - hardware trigger from TIM3 update at 1 kHz
+      - continuous + DMA circular into 64-sample buffer
+      - overrun monitor task that prints to UART when the flag flips
+      Demonstrates every new lever in one focused demo. Builds for
+      `nucleo_g071rb`.
+- [ ] 5.2 Mirror configuration on `same70_xplained` targeting AFEC0
+      (uses `enable_channel` instead of the bitmask sequence).
+- [ ] 5.3 Mirror on `nucleo_f401re` for ADC1 (third foundational
+      board).
+
+## 6. Hardware spot-check (3-board matrix)
+
+- [ ] 6.1 SAME70 Xplained: run `analog_probe_complete`. Verify all
+      4 channels report sane voltages; trigger jitter < 1% at 1 kHz;
+      no overrun across 60 s.
+- [ ] 6.2 STM32G0 Nucleo: same matrix.
+- [ ] 6.3 STM32F4 Nucleo: same matrix.
+- [ ] 6.4 Update `docs/SUPPORT_MATRIX.md` `adc` row to record the
+      extended-coverage validation (single line note + link to
+      `docs/ADC.md`).
+
+## 7. Documentation
+
+- [ ] 7.1 `docs/ADC.md` — comprehensive guide:
+      - The model (typed Channel, capability gates, error semantics).
+      - Single-shot recipe (configure → enable → start → ready → read).
+      - Sequence-without-DMA recipe (set_sequence + read_sequence).
+      - Continuous DMA scan recipe (set_sequence + set_continuous +
+        configure_dma + async::adc::scan_dma).
+      - Hardware-trigger recipe (set_hardware_trigger + TIM update).
+      - Internal channels (Vrefint, VBat, TempSensor) — discovery
+        and voltage conversion notes (with calibration deferred to
+        a future change).
+      - Overrun handling.
+      - "modm migration" table: each modm `Adc::*` API → alloy
+        equivalent.
+      - Per-vendor capability matrix: which backends expose
+        per-channel enable, hardware trigger, etc.
+- [ ] 7.2 Reference `docs/ADC.md` from `docs/ASYNC.md` (under the
+      ADC section) and `docs/COOKBOOK.md` (where applicable).
+- [ ] 7.3 Cross-link from `docs/SUPPORT_MATRIX.md` `adc` row.
+
+## 8. Out-of-scope follow-ups (filed but not done in this change)
+
+- [ ] 8.1 File `add-adc-coverage-esp32` once Espressif ADC schema is
+      published in alloy-devices.
+- [ ] 8.2 File `add-adc-coverage-rp2040` once RP2040 ADC schema is
+      published.
+- [ ] 8.3 File `add-adc-coverage-avr-da` once AVR-DA ADC schema is
+      published.
+- [ ] 8.4 File `add-adc-injected-channels` once descriptor publishes
+      injected-mode fields.
+- [ ] 8.5 File `add-adc-watchdog` once descriptor publishes
+      analog-window fields.
+- [ ] 8.6 File `add-adc-calibration` once descriptor publishes
+      calibration coefficient fields.
+- [ ] 8.7 File `add-adc-differential` once descriptor publishes
+      differential-channel fields.
