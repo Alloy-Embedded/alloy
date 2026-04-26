@@ -362,3 +362,39 @@ private:
 };
 
 }  // namespace alloy::drivers::display::ssd1306
+
+// ── Concept gate ──────────────────────────────────────────────────────────────
+// Fails at include time if either Device (I2C) or SpiDevice (SPI) no longer
+// compiles against its documented bus surface.
+namespace {
+struct _MockI2cForSsd1306Gate {
+    [[nodiscard]] auto write(std::uint16_t, std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto read(std::uint16_t, std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto write_read(std::uint16_t,
+                                  std::span<const std::uint8_t>,
+                                  std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+};
+struct _MockSpiForSsd1306Gate {
+    [[nodiscard]] auto transfer(std::span<const std::uint8_t>,
+                                std::span<std::uint8_t> rx) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        for (auto& b : rx) b = 0u;
+        return alloy::core::Ok();
+    }
+};
+static_assert(
+    sizeof(alloy::drivers::display::ssd1306::Device<_MockI2cForSsd1306Gate>) > 0,
+    "ssd1306 Device must compile against the documented I2C bus surface");
+static_assert(
+    sizeof(alloy::drivers::display::ssd1306::SpiDevice<_MockSpiForSsd1306Gate>) > 0,
+    "ssd1306 SpiDevice must compile against the documented SPI bus surface");
+}  // namespace

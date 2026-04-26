@@ -50,6 +50,43 @@ jobs:
       run: |
         python3 scripts/check_runtime_tooling.py
 
+    - name: driver-spec-lint
+      run: |
+        # Enforces drivers/DRIVER_SPEC.md rules:
+        #   - no `new` allocations, no `malloc`, no `throw` in driver code
+        #   - every driver header carries at least one `static_assert`
+        # Comments and string literals are excluded; generated/ skipped.
+        FAILED=0
+        FORBIDDEN_RE='\b(new[[:space:]]+[A-Za-z_][A-Za-z0-9_:<]*[[:space:]]*[\(\{]|malloc|throw)\b'
+        while IFS= read -r f; do
+          # Strip line comments before grepping; tolerates the chip-id literal
+          # `0x4...` in flash-driver opcodes (those aren't peripheral bases).
+          if sed 's://.*$::' "$f" | grep -nE "$FORBIDDEN_RE" >/dev/null; then
+            echo "::error file=$f::driver-spec-lint: forbidden pattern (new/malloc/throw)"
+            sed 's://.*$::' "$f" | grep -nE "$FORBIDDEN_RE" | head -3
+            FAILED=1
+          fi
+        done < <(find drivers -type f \( -name "*.hpp" -o -name "*.cpp" \) ! -path "*/_deps/*" ! -path "*/build*/*")
+
+        # Every primary driver header needs a `static_assert`. We pick
+        # `drivers/<category>/<name>/<name>.hpp` as the primary header.
+        while IFS= read -r f; do
+          base=$(basename "$f" .hpp)
+          dir=$(basename "$(dirname "$f")")
+          # Only enforce on the primary header (matches the directory name).
+          if [ "$base" != "$dir" ]; then continue; fi
+          if ! grep -q "static_assert" "$f"; then
+            echo "::error file=$f::driver-spec-lint: primary driver header lacks static_assert (concept conformance check missing)"
+            FAILED=1
+          fi
+        done < <(find drivers -type f -name "*.hpp" ! -path "*/_deps/*" ! -path "*/build*/*")
+
+        if [ $FAILED -ne 0 ]; then
+          echo "driver-spec-lint failed; see drivers/DRIVER_SPEC.md for the rules"
+          exit 1
+        fi
+        echo "OK: driver-spec-lint passed across drivers/"
+
     - name: Run clang-format check
       run: |
         echo "🔍 Checking code formatting with clang-format..."

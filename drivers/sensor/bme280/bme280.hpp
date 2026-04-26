@@ -305,3 +305,28 @@ private:
 };
 
 }  // namespace alloy::drivers::sensor::bme280
+
+// ── Concept gate ──────────────────────────────────────────────────────────────
+// Fails at include time if Device no longer compiles against the documented
+// I2C bus surface.
+namespace {
+struct _MockBusForBme280Gate {
+    [[nodiscard]] auto write(std::uint16_t, std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto read(std::uint16_t, std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto write_read(std::uint16_t,
+                                  std::span<const std::uint8_t>,
+                                  std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+};
+static_assert(
+    sizeof(alloy::drivers::sensor::bme280::Device<_MockBusForBme280Gate>) > 0,
+    "bme280 Device must compile against the documented I2C bus surface");
+}  // namespace

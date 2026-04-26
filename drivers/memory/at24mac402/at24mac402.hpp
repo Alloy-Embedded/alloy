@@ -147,3 +147,28 @@ private:
 };
 
 }  // namespace alloy::drivers::memory::at24mac402
+
+// ── Concept gate ──────────────────────────────────────────────────────────────
+// Fails at include time if Device no longer compiles against the documented
+// I2C bus surface.
+namespace {
+struct _MockBusForAt24Gate {
+    [[nodiscard]] auto write(std::uint16_t, std::span<const std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto read(std::uint16_t, std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto write_read(std::uint16_t,
+                                  std::span<const std::uint8_t>,
+                                  std::span<std::uint8_t>) const
+        -> alloy::core::Result<void, alloy::core::ErrorCode> {
+        return alloy::core::Ok();
+    }
+};
+static_assert(
+    sizeof(alloy::drivers::memory::at24mac402::Device<_MockBusForAt24Gate>) > 0,
+    "at24mac402 Device must compile against the documented I2C bus surface");
+}  // namespace
