@@ -23,7 +23,7 @@
 #
 # Refer to docs/CUSTOM_BOARDS.md for the consuming-project recipe.
 
-set(_ALLOY_VALID_ARCHES "cortex-m0plus;cortex-m4;cortex-m7;riscv32;xtensa;avr;native")
+set(_ALLOY_VALID_ARCHES "cortex-m0plus;cortex-m4;cortex-m7;riscv32;xtensa-lx6;xtensa-lx7;avr;native")
 
 function(_alloy_require_custom_var VAR_NAME)
     if(NOT DEFINED ${VAR_NAME} OR "${${VAR_NAME}}" STREQUAL "")
@@ -232,7 +232,7 @@ function(
         set(_vendor "espressif")
         set(_family "esp32s3")
         set(_device "esp32s3")
-        set(_arch "xtensa")
+        set(_arch "xtensa-lx7")
         set(_mcu "ESP32-S3")
         set(_flash_size_bytes 8388608)
         set(_supports_uart_logger TRUE)
@@ -242,8 +242,18 @@ function(
         set(_vendor "espressif")
         set(_family "esp32")
         set(_device "esp32")
-        set(_arch "xtensa")
+        set(_arch "xtensa-lx6")
         set(_mcu "ESP32")
+        set(_flash_size_bytes 4194304)
+        set(_supports_uart_logger TRUE)
+    elseif(BOARD_NAME STREQUAL "esp_wrover_kit")
+        set(_found TRUE)
+        set(_board_header "boards/esp_wrover_kit/board.hpp")
+        set(_vendor "espressif")
+        set(_family "esp32")
+        set(_device "esp32-wroom32")
+        set(_arch "xtensa-lx6")
+        set(_mcu "ESP32-WROVER-B")
         set(_flash_size_bytes 4194304)
         set(_supports_uart_logger TRUE)
     endif()

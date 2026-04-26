@@ -47,6 +47,10 @@
     #include "nucleo_f722ze/board.hpp"
 #elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     #include "raspberry_pi_pico/board.hpp"
+#elif defined(ALLOY_BOARD_ESP32_DEVKIT)
+    #include "esp32_devkit/board.hpp"
+#elif defined(ALLOY_BOARD_ESP_WROVER_KIT)
+    #include "esp_wrover_kit/board.hpp"
 #else
     #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
 #endif

@@ -27,7 +27,7 @@ variables that the downstream project sets *before* `add_subdirectory(<alloy>)`:
 | `ALLOY_DEVICE_VENDOR`          | yes      | e.g. `st`, `microchip`, `raspberrypi`, `espressif`.                        |
 | `ALLOY_DEVICE_FAMILY`          | yes      | e.g. `stm32g0`, `same70`, `rp2040`.                                        |
 | `ALLOY_DEVICE_NAME`            | yes      | The descriptor directory name in `alloy-devices` (e.g. `stm32g071rb`).     |
-| `ALLOY_DEVICE_ARCH`            | yes      | One of `cortex-m0plus`, `cortex-m4`, `cortex-m7`, `riscv32`, `xtensa`, `avr`, `native`. |
+| `ALLOY_DEVICE_ARCH`            | yes      | One of `cortex-m0plus`, `cortex-m4`, `cortex-m7`, `riscv32`, `xtensa-lx6` (ESP32 classic), `xtensa-lx7` (ESP32-S2/S3), `avr`, `native`. |
 | `ALLOY_DEVICE_MCU`             | no       | Canonical part number used in diagnostics. Defaults to `ALLOY_DEVICE_NAME`. |
 | `ALLOY_FLASH_SIZE_BYTES`       | no       | Declared flash size in bytes. Defaults to `0`.                             |
 

@@ -51,7 +51,8 @@ VALID_ARCHES = (
     "cortex-m4",
     "cortex-m7",
     "riscv32",
-    "xtensa",
+    "xtensa-lx6",
+    "xtensa-lx7",
     "avr",
     "native",
 )
@@ -433,7 +434,8 @@ _ARCH_BY_BOARD_FALLBACK = {
     "rp2040": "cortex-m0plus",
     "avr-da": "avr",
     "esp32c3": "riscv32",
-    "esp32s3": "xtensa",
+    "esp32s3": "xtensa-lx7",
+    "esp32": "xtensa-lx6",
 }
 
 
@@ -563,7 +565,7 @@ def _cpu_flags_for_arch(arch: str) -> list[str]:
         return ["-mcpu=cortex-m7", "-mthumb", "-mfloat-abi=soft"]
     if arch == "riscv32":
         return ["-march=rv32imc", "-mabi=ilp32"]
-    if arch == "xtensa":
+    if arch == "xtensa-lx6" or arch == "xtensa-lx7":
         return ["-mlongcalls"]
     # avr, native, and unknown: no global flags here. AVR's -mmcu=... is part
     # of the toolchain file the avr-da boards already wire up.
@@ -579,7 +581,8 @@ def _toolchain_file_for_arch(arch: str, alloy_root: Path) -> str | None:
         "cortex-m7": "arm-none-eabi.cmake",
         "avr": "avr-gcc.cmake",
         "riscv32": "riscv32-esp-elf.cmake",
-        "xtensa": "xtensa-esp32s3-elf.cmake",
+        "xtensa-lx6": "xtensa-esp32-elf.cmake",
+        "xtensa-lx7": "xtensa-esp32s3-elf.cmake",
         "native": None,
     }
     name = mapping.get(arch)
@@ -593,12 +596,12 @@ def _toolchain_for_arch(arch: str) -> str:
         return "avr-gcc"
     if arch == "native":
         return "gcc"
-    if arch == "xtensa":
+    if arch == "xtensa-lx6" or arch == "xtensa-lx7":
         # Espressif consolidated all Xtensa ESP variants behind a single driver
         # (`xtensa-esp-elf-gcc`) starting in 13.x; LX6 (ESP32) and LX7 (ESP32-S3)
-        # both target it via runtime config. The arch enum is expected to split into
-        # xtensa-lx6 / xtensa-lx7 with add-esp32-classic-family, but the toolchain
-        # binary stays the same.
+        # both target it via runtime config. The arch enum splits the two so the
+        # custom-board contract can name each precisely, but the toolchain binary
+        # is the same.
         return "xtensa-esp-elf-gcc"
     if arch == "riscv32":
         return "riscv32-esp-elf-gcc"

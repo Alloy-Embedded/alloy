@@ -85,3 +85,22 @@ device = "esp32s3"
 mcu = "ESP32-S3"
 toolchain = "xtensa-esp-elf-gcc"
 debug_probe = "builtin-jtag"
+
+[esp32_devkit]
+display_name = "ESP32 DevKitC v4 (WROOM-32)"
+vendor = "espressif"
+family = "esp32"
+device = "esp32"
+mcu = "ESP32"
+toolchain = "xtensa-esp-elf-gcc"
+debug_probe = "external"
+
+[esp_wrover_kit]
+display_name = "ESP-WROVER-KIT v4.1 (WROVER-B)"
+vendor = "espressif"
+family = "esp32"
+device = "esp32-wroom32"
+mcu = "ESP32-WROVER-B"
+toolchain = "xtensa-esp-elf-gcc"
+debug_probe = "ftdi-onboard"
+openocd_config = "board/esp32-wrover-kit-3.3v.cfg"

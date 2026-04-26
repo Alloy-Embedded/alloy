@@ -56,7 +56,7 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
         'BOARD_NAME STREQUAL "esp32c3_devkitm"\n'
         'set(_arch "riscv32")\n'
         'BOARD_NAME STREQUAL "esp32s3_devkitc"\n'
-        'set(_arch "xtensa")\n'
+        'set(_arch "xtensa-lx7")\n'
     )
     (path / "CMakeLists.txt").write_text(
         "cmake_minimum_required(VERSION 3.25)\nproject(alloy_stub)\n"
@@ -359,14 +359,18 @@ def test_cli_boards_lists_with_mcu(installed_sdk, capsys):
 # --- ESP32-C3 / ESP32-S3 (catalog + toolchain mapping) ---------------------------------
 
 
-def test_scaffold_esp32c3_catalog_match(installed_sdk, tmp_path):
+def test_scaffold_esp32c3_catalog_match(installed_sdk, tmp_path, monkeypatch):
+    # chdir outside any real alloy checkout so walk-up does not shadow the
+    # synthetic SDK (whose esp32c3 board ships no linker script -- the test
+    # depends on the placeholder fallback firing).
+    monkeypatch.chdir(tmp_path)
     dest = tmp_path / "esp32c3proj"
     result = scaffold.scaffold(board_name="esp32c3_devkitm", destination=dest)
     assert result.layer.vendor == "espressif"
     assert result.layer.family == "esp32c3"
     assert result.layer.arch == "riscv32"
     assert result.layer.toolchain == "riscv32-esp-elf-gcc"
-    # The in-tree board ships no linker script -> placeholder is rendered with a warning.
+    # The synthetic in-tree board ships no linker script -> placeholder is rendered.
     assert (dest / "board" / "linker.ld").is_file()
     assert any("does not ship a linker script" in w for w in result.warnings)
 
@@ -374,7 +378,7 @@ def test_scaffold_esp32c3_catalog_match(installed_sdk, tmp_path):
 def test_scaffold_esp32s3_catalog_match(installed_sdk, tmp_path):
     dest = tmp_path / "esp32s3proj"
     result = scaffold.scaffold(board_name="esp32s3_devkitc", destination=dest)
-    assert result.layer.arch == "xtensa"
+    assert result.layer.arch == "xtensa-lx7"
     assert result.layer.toolchain == "xtensa-esp-elf-gcc"
     assert any("does not ship a linker script" in w for w in result.warnings)
 
@@ -402,5 +406,7 @@ def test_cli_boards_lists_esp_targets(installed_sdk, capsys):
 
 
 def test_toolchain_for_arch_maps_xtensa_and_riscv():
-    assert scaffold._toolchain_for_arch("xtensa") == "xtensa-esp-elf-gcc"
+    # Both Xtensa variants resolve to the unified Espressif crosstool.
+    assert scaffold._toolchain_for_arch("xtensa-lx6") == "xtensa-esp-elf-gcc"
+    assert scaffold._toolchain_for_arch("xtensa-lx7") == "xtensa-esp-elf-gcc"
     assert scaffold._toolchain_for_arch("riscv32") == "riscv32-esp-elf-gcc"

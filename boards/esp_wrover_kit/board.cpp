@@ -1,3 +1,7 @@
+// ESP-WROVER-KIT v4.1 board implementation. Mirrors the DevKitC v4 path for
+// LED + UART direct-boot bring-up; WROVER-specific peripherals (LCD, SD, full
+// RGB, PSRAM, JTAG via on-board FT2232HL) ship in follow-up changes.
+
 #include "board.hpp"
 
 #include <cstdint>
@@ -40,10 +44,9 @@ inline auto& gpio_reg(std::uint32_t offset) noexcept {
     return *reinterpret_cast<volatile std::uint32_t*>(kGpioBase + offset);
 }
 
-// ESP32 IO_MUX is NOT sequential by GPIO number — each GPIO has a fixed offset.
-// GPIO2: IO_MUX offset 0x40 (PERIPHS_IO_MUX_GPIO2_U per ESP32 TRM)
-inline auto& iomux_gpio2() noexcept {
-    return *reinterpret_cast<volatile std::uint32_t*>(kIoMuxBase + 0x40u);
+// IO_MUX_GPIOn_REG = kIoMuxBase + 0x04 + n*4 (ESP32 IO_MUX table)
+inline auto& iomux_reg(std::uint32_t pin) noexcept {
+    return *reinterpret_cast<volatile std::uint32_t*>(kIoMuxBase + 0x04u + pin * 4u);
 }
 
 // GPIO_FUNCn_OUT_SEL_CFG_REG = kGpioBase + 0x530 + n*4
@@ -57,7 +60,7 @@ inline constexpr std::uint32_t kSigGpioOut = 256u; // SIG_GPIO_OUT_IDX
 
 void gpio_output_init(std::uint32_t pin) noexcept {
     // IO_MUX: set MCU_SEL = 2 (GPIO function) at bits [12:10]
-    iomux_gpio2() = (kMcuSelGpio << 10u);
+    iomux_reg(pin) = (kMcuSelGpio << 10u);
     // Route to GPIO matrix software control
     func_out_sel(pin) = kSigGpioOut;
     // Enable output

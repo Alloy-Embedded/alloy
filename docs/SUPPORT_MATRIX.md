@@ -24,6 +24,8 @@ Machine-readable source of truth:
 | `nucleo_g0b1re` | `experimental` | embedded build coverage for `blink` only | Not part of the foundational release ladder |
 | `esp32c3_devkitm` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-C3`. See OpenSpec change `add-esp-toolchain-pins`. |
 | `esp32s3_devkitc` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-S3`. See OpenSpec change `add-esp-toolchain-pins`. |
+| `esp32_devkit` | `compile-only` | bare-metal direct-boot startup, GPIO LED + UART0 raw HAL, esp32 LX6 descriptor consumed; single-core only (dual-core APP_CPU bring-up gated on `alloy-devices` publishing the secondary-core start facts). See OpenSpec change `add-esp32-classic-family`. |
+| `esp_wrover_kit` | `compile-only` | shares the DevKitC v4 startup + LED/UART path; WROVER-specific peripherals (PSRAM, ILI9341 LCD, microSD, full RGB, FT2232HL JTAG) are follow-ups. |
 
 Notes:
 
