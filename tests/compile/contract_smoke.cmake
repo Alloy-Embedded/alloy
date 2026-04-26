@@ -46,6 +46,9 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_w25q_block_device.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_sdcard.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_filesystem_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_sht4x.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_aht20.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_lps22hh.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )

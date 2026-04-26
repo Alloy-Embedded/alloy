@@ -30,12 +30,13 @@ Hardware spot-checks are listed where a reference board is available.
       compensated T/P/H. ✅ compile-review.
 - [ ] 3.2 `drivers/sensor/bme688/bme688.hpp` — BME688 over I2C/SPI. Raw T/P/H/G read,
       Bosch compensation formulas. IAQ deferred (requires BSEC, proprietary).
-- [ ] 3.3 `drivers/sensor/sht4x/sht4x.hpp` — SHT40/SHT41 over I2C. Single-shot
-      measurement, CRC-8 verification.
-- [ ] 3.4 `drivers/sensor/aht20/aht20.hpp` — AHT20 over I2C. Init + trigger + read,
-      20-bit raw → °C and %RH.
-- [ ] 3.5 `drivers/sensor/lps22hh/lps22hh.hpp` — LPS22HH barometer over I2C.
-      Pressure + temp output data registers.
+- [x] 3.3 `drivers/sensor/sht4x/sht4x.hpp` — SHT40/SHT41 over I2C. Single-shot
+      measurement, CRC-8 verification. ✅ compile-review. HW validation pending.
+- [x] 3.4 `drivers/sensor/aht20/aht20.hpp` — AHT20 over I2C. Init + trigger + read,
+      20-bit raw → °C and %RH. ✅ compile-review. HW validation pending.
+- [x] 3.5 `drivers/sensor/lps22hh/lps22hh.hpp` — LPS22HH barometer over I2C.
+      WHO_AM_I probe, one-shot P+T, 24-bit signed pressure, 16-bit signed temp.
+      ✅ compile-review. HW validation pending.
 - [ ] 3.6 `drivers/sensor/ccs811/ccs811.hpp` — CCS811 CO₂/TVOC over I2C.
       App firmware boot sequence, NDRDY polling.
 - [ ] 3.7 `drivers/sensor/sgp40/sgp40.hpp` — SGP40 VOC index over I2C.
