@@ -49,6 +49,11 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_sht4x.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_aht20.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_lps22hh.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_lsm6dsox.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_icm42688p.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_mpu6050.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_lis3mdl.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_nmea_parser.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )

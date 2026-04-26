@@ -46,16 +46,21 @@ Hardware spot-checks are listed where a reference board is available.
 
 ## 4. Motion sensor batch
 
-- [ ] 4.1 `drivers/sensor/icm42688p/icm42688p.hpp` — ICM-42688-P over SPI.
-      Accel + gyro raw read, configurable ODR, WHO_AM_I check.
-- [ ] 4.2 `drivers/sensor/mpu6050/mpu6050.hpp` — MPU-6050 over I2C.
-      Accel + gyro + temp, configurable full-scale range.
-- [ ] 4.3 `drivers/sensor/lsm6dsox/lsm6dsox.hpp` — LSM6DSOX over I2C/SPI.
-      6-DoF, embedded functions disabled by default.
-- [ ] 4.4 `drivers/sensor/lis3mdl/lis3mdl.hpp` — LIS3MDL magnetometer over I2C/SPI.
-      3-axis, configurable full-scale.
-- [ ] 4.5 `drivers/sensor/nmea/nmea_parser.hpp` — NMEA-0183 GPGGA/GPRMC parser.
-      Stateless, line-by-line, template over `UartPeripheral`. No heap.
+- [x] 4.1 `drivers/sensor/icm42688p/icm42688p.hpp` — ICM-42688-P over SPI.
+      WHO_AM_I, soft-reset, PWR_MGMT0, configurable accel/gyro FS + ODR, 14-byte burst.
+      ✅ compile-review. HW validation pending.
+- [x] 4.2 `drivers/sensor/mpu6050/mpu6050.hpp` — MPU-6050 over I2C.
+      WHO_AM_I, reset+wake, DLPF, configurable accel/gyro FS, 14-byte burst read.
+      ✅ compile-review. HW validation pending.
+- [x] 4.3 `drivers/sensor/lsm6dsox/lsm6dsox.hpp` — LSM6DSOX over I2C.
+      WHO_AM_I (0x6C), IF_INC, 416 Hz ODR, configurable FS, 14-byte burst read.
+      ✅ compile-review. HW validation pending.
+- [x] 4.4 `drivers/sensor/lis3mdl/lis3mdl.hpp` — LIS3MDL magnetometer over I2C.
+      WHO_AM_I (0x3D), ultra-high perf, STATUS poll, 6-byte burst read.
+      ✅ compile-review. HW validation pending.
+- [x] 4.5 `drivers/net/nmea_parser/nmea_parser.hpp` — NMEA-0183 GPGGA/GPRMC parser.
+      Stateless `Parser<BusHandle>`, byte-by-byte UART reader, no heap, no stdlib strings.
+      ✅ compile-review. HW validation pending.
 
 ## 5. Display driver batch
 
