@@ -18,4 +18,8 @@ void toggle();
 
 void init();
 
+// Start the APP_CPU (core 1). `fn` is called on the second core with a
+// dedicated 8 KB stack. Call once from core 0 after board::init().
+void start_app_cpu(void (*fn)());
+
 }  // namespace board

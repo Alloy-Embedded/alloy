@@ -87,11 +87,14 @@ class Channel {
             return false;
         }
         storage_[h] = value;
-        // The element write must be visible before the head advance is visible
-        // to the consumer side. atomic_signal_fence is enough on a single core
-        // (compiler reorder barrier); the CPU has no out-of-order observation
-        // of its own ISR boundary on Cortex-M / RISC-V single-core designs.
+        // Ensure the element write is visible before the head advance.
+        // Single-core: compiler barrier is sufficient (ISR boundary, no OoO).
+        // SMP: full memory fence to order across cores.
+#if ALLOY_SINGLE_CORE
         std::atomic_signal_fence(std::memory_order_release);
+#else
+        std::atomic_thread_fence(std::memory_order_release);
+#endif
         head_ = next_head;
         ready_.signal();
         return true;
@@ -100,7 +103,11 @@ class Channel {
     /// Consumer-side non-blocking pop. Returns nullopt when the ring is empty.
     [[nodiscard]] auto try_pop() noexcept -> std::optional<T> {
         if (head_ == tail_) return std::nullopt;
+#if ALLOY_SINGLE_CORE
         std::atomic_signal_fence(std::memory_order_acquire);
+#else
+        std::atomic_thread_fence(std::memory_order_acquire);
+#endif
         const auto value = storage_[tail_];
         tail_ = (tail_ + 1u) & kMask;
         return value;

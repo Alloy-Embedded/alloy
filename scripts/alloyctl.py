@@ -40,6 +40,7 @@ class BoardConfig:
     esptool_chip: str = ""        # non-empty => use esptool instead of openocd
     esptool_app_offset: str = "0x0"  # flash offset for the app binary
     esptool_partition_table: str = ""  # path to partition table bin (relative to repo root)
+    toolchain_file: str = "cmake/toolchains/arm-none-eabi.cmake"
 
 
 @dataclass(frozen=True)
@@ -102,6 +103,7 @@ BOARDS: dict[str, BoardConfig] = {
         ("/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"),
         115200,
         esptool_chip="esp32c3",
+        toolchain_file="cmake/toolchains/riscv32-esp-elf.cmake",
     ),
     "esp32_devkit": BoardConfig(
         "esp32_devkit",
@@ -114,6 +116,7 @@ BOARDS: dict[str, BoardConfig] = {
         esptool_chip="esp32",
         esptool_app_offset="0x10000",
         esptool_partition_table="boards/esp32_devkit/partitions.csv",
+        toolchain_file="cmake/toolchains/xtensa-esp32-elf.cmake",
     ),
 }
 
@@ -420,7 +423,8 @@ def ensure_configured(cfg: BoardConfig, build_type: str, build_tests: bool) -> N
     expected_build_tests = "ON" if build_tests else "OFF"
     if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != expected_build_tests or
             cache_value(cfg, "ALLOY_BOARD") != cfg.board or
-            cache_value(cfg, "CMAKE_BUILD_TYPE") != build_type):
+            cache_value(cfg, "CMAKE_BUILD_TYPE") != build_type or
+            cache_value(cfg, "CMAKE_TOOLCHAIN_FILE") != str(ROOT / cfg.toolchain_file)):
         configure(cfg, build_type, build_tests=build_tests)
 
 
@@ -434,7 +438,7 @@ def configure(cfg: BoardConfig, build_type: str, build_tests: bool) -> None:
             str(cfg.build_dir),
             f"-DALLOY_BOARD={cfg.board}",
             f"-DALLOY_BUILD_TESTS={'ON' if build_tests else 'OFF'}",
-            "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake",
+            f"-DCMAKE_TOOLCHAIN_FILE={cfg.toolchain_file}",
             f"-DCMAKE_BUILD_TYPE={build_type}",
         ]
     )
@@ -759,6 +763,41 @@ def cmd_run(args: argparse.Namespace) -> None:
         image = stm32_program_image(cfg, args.target)
         run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100",
              "-w", str(image), "-v"])
+    elif backend == "esptool":
+        # ESP32/C3/S3: esptool handles both flash and reset in one pass.
+        # We use --after hard_reset so the chip boots immediately after write-flash.
+        # The serial port is opened after this step, so very early boot output may
+        # be missed; this is acceptable for probe/demo targets.
+        esptool = shutil.which("esptool") or shutil.which("esptool.py") or "esptool"
+        elf = artifact(cfg, args.target)
+        bin_path = elf.with_suffix(".bin")
+        resolved_port = port or auto_port(cfg)
+        base_cmd = [esptool, "--chip", cfg.esptool_chip,
+                    "--port", resolved_port, "--baud", "460800",
+                    "--after", "hard-reset"]
+        if cfg.esptool_app_offset == "0x0":
+            arch_prefix = "riscv32-esp-elf" if "c3" in cfg.esptool_chip else "xtensa-esp32-elf"
+            objcopy = shutil.which(f"{arch_prefix}-objcopy") or f"{arch_prefix}-objcopy"
+            run([objcopy, "-O", "binary", str(elf), str(bin_path)])
+            run(base_cmd + ["write-flash", "0x0", str(bin_path)])
+        else:
+            if not bin_path.exists():
+                raise SystemExit(die(
+                    f"binary not found: {bin_path}\n"
+                    "Run build first or check the post-build elf2image step."))
+            if cfg.esptool_partition_table:
+                pt_csv = ROOT / cfg.esptool_partition_table
+                if pt_csv.exists():
+                    pt_bin = Path(tempfile.mkstemp(suffix=".bin", prefix="alloy_pt_")[1])
+                    _gen = _find_gen_esp32part()
+                    if _gen:
+                        run(["python3", _gen, str(pt_csv), str(pt_bin)])
+                    else:
+                        _generate_partition_table(pt_csv, pt_bin)
+                    run([esptool, "--chip", cfg.esptool_chip,
+                         "--port", resolved_port, "--baud", "460800",
+                         "write-flash", "0x8000", str(pt_bin)])
+            run(base_cmd + ["write-flash", cfg.esptool_app_offset, str(bin_path)])
     else:
         require_tool("openocd")
         elf = artifact(cfg, args.target)
@@ -790,12 +829,15 @@ def cmd_run(args: argparse.Namespace) -> None:
     ser.reset_input_buffer()
 
     # Step 3: trigger a clean reset now that the port is open.
+    # For esptool boards the chip was already reset by write-flash --after hard_reset.
     print(f"+ resetting target via {backend} ...")
     if backend == "stm32cube":
         cli = find_stm32_programmer_cli()
         if cli is not None:
             run_soft([cli, "-c", "port=SWD", "mode=UR",
                       "reset=HWrst", "freq=100", "-rst"])
+    elif backend == "esptool":
+        pass  # reset already issued by write-flash --after hard_reset
     else:
         run_soft(list(cfg.openocd_args)
                  + ["-c", "init", "-c", "reset run", "-c", "exit"])

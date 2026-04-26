@@ -29,4 +29,6 @@ else()
     message(WARNING "esp32c3.ld not found — linker script not applied")
 endif()
 
+add_compile_definitions(ALLOY_SINGLE_CORE=1)
+
 message(STATUS "ESP32-C3 platform configured (direct boot)")

@@ -33,4 +33,10 @@ void toggle();
 
 void init();
 
+// Launch core 1. `fn` runs on the second Cortex-M0+ core with a dedicated
+// 8 KB stack (defined in rp2040.ld as `.core1_stack`). Uses the 5-word SIO
+// FIFO handshake required by the RP2040 ROM (§2.8.2 of the datasheet).
+// Call once from core 0 after board::init().
+void launch_core1(void (*fn)());
+
 }  // namespace board

@@ -14,4 +14,6 @@ add_compile_options(-Wall -Wextra -ffunction-sections -fdata-sections
                     -fno-exceptions -fno-rtti -fno-threadsafe-statics)
 add_link_options(-Wl,--gc-sections)
 
+add_compile_definitions(ALLOY_SINGLE_CORE=0)
+
 message(STATUS "RP2040 platform configured")

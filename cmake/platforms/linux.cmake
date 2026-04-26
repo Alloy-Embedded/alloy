@@ -60,6 +60,7 @@ message(STATUS "  Host Arch: ${CMAKE_SYSTEM_PROCESSOR}")
 add_compile_definitions(
     _POSIX_C_SOURCE=200809L     # POSIX.1-2008 (for termios, etc.)
     _DEFAULT_SOURCE             # Enable default features (glibc)
+    ALLOY_SINGLE_CORE=1
 )
 
 # Optional: Enable large file support on 32-bit systems

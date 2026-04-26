@@ -200,6 +200,8 @@ endif()
 # Platform Summary
 # ------------------------------------------------------------------------------
 
+add_compile_definitions(ALLOY_SINGLE_CORE=1)
+
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "STM32G0 Platform Configuration Complete")
 message(STATUS "------------------------------------------------------------------------------")

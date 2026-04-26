@@ -76,6 +76,7 @@ add_compile_definitions(
     ALLOY_PLATFORM_STM32F4
     ARM_MATH_CM4
     __FPU_PRESENT=1
+    ALLOY_SINGLE_CORE=1
 )
 
 message(STATUS "  CPU: Cortex-M4F")

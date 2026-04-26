@@ -544,6 +544,11 @@ if(ALLOY_BUILD_EXAMPLES)
 
     if(ALLOY_BOARD STREQUAL "esp32_devkit")
         add_subdirectory(examples/hello_esp32)
+        add_subdirectory(examples/esp32_dual_core)
+    endif()
+
+    if(ALLOY_BOARD STREQUAL "raspberry_pi_pico")
+        add_subdirectory(examples/rp2040_dual_core)
     endif()
 endif()
 

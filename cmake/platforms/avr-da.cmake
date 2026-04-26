@@ -22,4 +22,6 @@ add_compile_options(-Wall -Wextra -ffunction-sections -fdata-sections
                     -fno-exceptions -fno-rtti -fno-threadsafe-statics)
 add_link_options(-Wl,--gc-sections)
 
+add_compile_definitions(ALLOY_SINGLE_CORE=1)
+
 message(STATUS "AVR-DA platform configured: -mmcu=${_avr_mcu}")

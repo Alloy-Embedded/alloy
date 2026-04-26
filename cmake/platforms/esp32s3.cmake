@@ -11,4 +11,6 @@ add_compile_options(-mlongcalls
                     -fno-exceptions -fno-rtti -fno-threadsafe-statics)
 add_link_options(-mlongcalls -Wl,--gc-sections)
 
+add_compile_definitions(ALLOY_SINGLE_CORE=0)
+
 message(STATUS "ESP32-S3 platform configured")

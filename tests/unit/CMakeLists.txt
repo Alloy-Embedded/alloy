@@ -74,6 +74,26 @@ alloy_add_catch2_test(test_async_completion_timeout
     LABELS unit
 )
 
+# Test: Channel<T,N> memory ordering (two threads, simulates cross-core)
+alloy_add_catch2_test(test_memory_ordering
+    SOURCES test_memory_ordering.cpp
+    LABELS unit smp
+)
+
+# Test: CrossCoreChannel<T,N> — TSan-compatible acquire/release SPSC ring
+alloy_add_catch2_test(test_cross_core_channel
+    SOURCES test_cross_core_channel.cpp
+    LABELS unit smp
+)
+
+# Test: SharedScheduler + SharedEvent — dual-core cooperative scheduling
+alloy_add_catch2_test(test_shared_scheduler
+    SOURCES
+        test_shared_scheduler.cpp
+        ${CMAKE_SOURCE_DIR}/src/runtime/tasks/scheduler.cpp
+    LABELS unit smp
+)
+
 # ==============================================================================
 # Test Summary
 # ==============================================================================
@@ -83,4 +103,5 @@ message(STATUS "Unit Tests Configured:")
 message(STATUS "  ✓ Core: Result<T,E>, Error")
 message(STATUS "  ✓ HAL:  GPIO, Clock Concepts")
 message(STATUS "  ✓ Utility: Logger core")
+message(STATUS "  ✓ SMP:  Channel ordering, CrossCoreChannel")
 message(STATUS "========================================")

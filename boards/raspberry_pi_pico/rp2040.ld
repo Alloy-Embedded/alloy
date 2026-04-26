@@ -76,6 +76,16 @@ SECTIONS
         _ebss = .;
     } > RAM
 
+    /* Dedicated stack for core 1. 8 KB, 8-byte aligned (AAPCS).
+     * _core1_stack_top is loaded into SP by the RP2040 ROM after the
+     * 5-word SIO FIFO handshake completes. */
+    .core1_stack (NOLOAD) : ALIGN(8)
+    {
+        _core1_stack_bottom = .;
+        . = . + 8192;
+        _core1_stack_top = .;
+    } > RAM
+
     end = .;
     _end = .;
     _stack_top = ORIGIN(RAM) + LENGTH(RAM);

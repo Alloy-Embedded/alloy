@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 
 #include "core/error_code.hpp"
@@ -13,11 +14,25 @@ class completion {
    public:
     using tag_type = Tag;
 
-    static auto signal() -> void { state().signaled = true; }
+    static auto signal() -> void {
+#if ALLOY_SINGLE_CORE
+        state().signaled.store(true, std::memory_order_relaxed);
+        std::atomic_signal_fence(std::memory_order_release);
+#else
+        state().signaled.store(true, std::memory_order_release);
+#endif
+    }
 
-    static auto reset() -> void { state().signaled = false; }
+    static auto reset() -> void { state().signaled.store(false, std::memory_order_relaxed); }
 
-    [[nodiscard]] static auto ready() -> bool { return state().signaled; }
+    [[nodiscard]] static auto ready() -> bool {
+#if ALLOY_SINGLE_CORE
+        std::atomic_signal_fence(std::memory_order_acquire);
+        return state().signaled.load(std::memory_order_relaxed);
+#else
+        return state().signaled.load(std::memory_order_acquire);
+#endif
+    }
 
     template <typename TimeSource>
     [[nodiscard]] static auto wait_until(time::Deadline deadline)
@@ -38,7 +53,7 @@ class completion {
 
    private:
     struct state_type {
-        volatile bool signaled = false;
+        std::atomic<bool> signaled{false};
     };
 
     [[nodiscard]] static auto state() -> state_type& {

@@ -222,6 +222,59 @@ jobs:
         ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
         UBSAN_OPTIONS: halt_on_error=1
 
+  # ThreadSanitizer job for SMP-critical runtime primitives.
+  # Runs test_cross_core_channel and test_shared_scheduler under TSan.
+  # Triggers on any change touching src/runtime/ to catch data races early.
+  tsan-channel:
+    name: ThreadSanitizer (CrossCoreChannel + SharedScheduler)
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' &&
+       contains(toJSON(github.event.pull_request.changed_files), 'src/runtime/'))
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake ninja-build clang-14
+
+    - name: Configure with ThreadSanitizer
+      run: |
+        cmake -S . -B build-tsan \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DALLOY_BOARD=host \
+          -DALLOY_BUILD_TESTS=ON \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices \
+          -DCMAKE_C_COMPILER=clang-14 \
+          -DCMAKE_CXX_COMPILER=clang++-14 \
+          -DENABLE_TSAN=ON
+
+    - name: Build TSan targets
+      run: |
+        cmake --build build-tsan --target test_cross_core_channel test_shared_scheduler --parallel
+
+    - name: Run under ThreadSanitizer
+      working-directory: build-tsan
+      run: |
+        ./tests/unit/test_cross_core_channel
+        ./tests/unit/test_shared_scheduler
+      env:
+        TSAN_OPTIONS: halt_on_error=1:second_deadlock_stack=1
+
   # Summary job
   test-summary:
     name: Test Summary

@@ -83,6 +83,7 @@ message(STATUS "  FPU: FPv5 double-precision (hard ABI)")
 add_compile_definitions(
     __SAME70Q21B__              # Specific variant (adjust as needed)
     ARM_MATH_CM7                # ARM CMSIS DSP library support
+    ALLOY_SINGLE_CORE=1
 )
 
 # Optional: Enable ARM CMSIS if available

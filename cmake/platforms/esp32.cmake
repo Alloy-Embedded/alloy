@@ -28,4 +28,6 @@ else()
     message(WARNING "esp32.ld not found")
 endif()
 
+add_compile_definitions(ALLOY_SINGLE_CORE=0)
+
 message(STATUS "ESP32 platform configured")
