@@ -242,6 +242,68 @@ jobs:
           build-${{ matrix.board }}/examples/blink/blink.hex
 
   # ==============================================================================
+  # runtime-tasks footprint gate (spec: runtime-tasks "Stay Inside The Footprint
+  # Budget"). Builds the canonical scheduler demo for nucleo_g071rb and asserts
+  # text + rodata + data + bss <= 12 KB. Trips the build if a future change
+  # pushes the scheduler over budget.
+  # ==============================================================================
+  tasks-footprint-gate:
+    name: runtime-tasks footprint gate (nucleo_g071rb)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+    - name: Configure CMake (nucleo_g071rb, MinSizeRel)
+      run: |
+        cmake -B build-tasks-footprint \
+          -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+          -DCMAKE_BUILD_TYPE=MinSizeRel \
+          -DALLOY_BOARD=nucleo_g071rb \
+          -DALLOY_PLATFORM=stm32g0 \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices \
+          -DALLOY_BUILD_TESTS=OFF
+
+    - name: Build tasks_blink_uart
+      run: cmake --build build-tasks-footprint --target tasks_blink_uart -j$(nproc)
+
+    - name: Assert footprint within budget (12 KB)
+      shell: bash
+      run: |
+        ELF=build-tasks-footprint/examples/tasks_blink_uart/tasks_blink_uart
+        echo "=== arm-none-eabi-size ==="
+        arm-none-eabi-size "$ELF"
+        # size -B prints "text data bss dec hex filename" — sum first three columns
+        read -r TEXT DATA BSS REST < <(arm-none-eabi-size -B "$ELF" | tail -1)
+        TOTAL=$((TEXT + DATA + BSS))
+        BUDGET=12288
+        echo "footprint: text=$TEXT data=$DATA bss=$BSS total=$TOTAL bytes (budget=$BUDGET)"
+        if [ "$TOTAL" -gt "$BUDGET" ]; then
+          echo "::error::runtime-tasks footprint $TOTAL B exceeds the $BUDGET B budget"
+          echo "  text grew by $((TEXT - 5044)) B (baseline 5044 B)" >&2
+          echo "  data grew by $((DATA - 160)) B (baseline 160 B)" >&2
+          echo "  bss grew by $((BSS - 4536)) B (baseline 4536 B)" >&2
+          exit 1
+        fi
+        echo "::notice::runtime-tasks footprint $TOTAL B fits in $BUDGET B budget"
+
+  # ==============================================================================
   # Descriptor Contract Smokes (Build Only - No Execution)
   # ==============================================================================
   descriptor-contract-smoke:
