@@ -266,7 +266,7 @@ private:
 // Fails at include time if Device no longer compiles against the documented
 // SPI bus surface.
 namespace {
-struct _MockSpiForW25qGate {
+struct _MockSpiForW25qDeviceGate {
     [[nodiscard]] auto transfer(std::span<const std::uint8_t>,
                                 std::span<std::uint8_t> rx) const
         -> alloy::core::Result<void, alloy::core::ErrorCode> {
@@ -275,6 +275,6 @@ struct _MockSpiForW25qGate {
     }
 };
 static_assert(
-    sizeof(alloy::drivers::memory::w25q::Device<_MockSpiForW25qGate>) > 0,
+    sizeof(alloy::drivers::memory::w25q::Device<_MockSpiForW25qDeviceGate>) > 0,
     "w25q Device must compile against the documented SPI bus surface");
 }  // namespace

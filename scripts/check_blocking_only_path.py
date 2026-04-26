@@ -34,7 +34,9 @@ GUARDED_FILES = [
 FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("includes async.hpp", re.compile(r'#\s*include\s+"async\.hpp"')),
     ("includes runtime/async.hpp", re.compile(r'#\s*include\s+"runtime/async\.hpp"')),
-    ("includes runtime/async_uart.hpp", re.compile(r'#\s*include\s+"runtime/async_uart\.hpp"')),
+    # Cover every async_<peripheral>.hpp wrapper, current and future.
+    ("includes runtime/async_<peripheral>.hpp",
+     re.compile(r'#\s*include\s+"runtime/async_[a-z0-9_]+\.hpp"')),
     ("names alloy::async::", re.compile(r"\balloy::async::")),
     ("names runtime::async::", re.compile(r"\bruntime::async::")),
 ]
