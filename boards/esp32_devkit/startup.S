@@ -1,11 +1,16 @@
 /* ESP32 (Xtensa LX6) startup — called by ESP-IDF 2nd-stage bootloader.
  *
+ * Placed in .text so it lands in the IROM flash-cached region.
+ * The bootloader sets up the MMU (IROM + DROM mappings) BEFORE jumping
+ * to call_start_cpu0, so running from flash cache is safe here.
+ *
  * l32r requires the literal pool to be BEFORE (negative offset from) the
  * instruction. We emit .literal_position before the function body so the
- * assembler places the pool there.
+ * assembler places the pool there. The linker script puts all .literal*
+ * before .text* within the IROM section, guaranteeing negative offsets.
  */
 
-    .section .iram1.text, "ax"
+    .section .text, "ax"
 
     /* ------------------------------------------------------------------ *
      * Literal pool — must be BEFORE the l32r instructions that use it    *

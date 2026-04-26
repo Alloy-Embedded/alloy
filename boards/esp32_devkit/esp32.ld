@@ -1,22 +1,32 @@
-/* Linker script for ESP32-DevKit (Xtensa LX6) — IRAM-only app
+/* Linker script for ESP32-DevKit (Xtensa LX6)
  *
  * Boot flow: ROM → ESP-IDF 2nd-stage bootloader (flash 0x1000)
- *            → our app (flash 0x10000, loaded to IRAM by bootloader)
+ *            → our app (flash 0x10000)
  *
- * All code+data lands in IRAM/DRAM — no flash cache mapping needed.
- * The ESP-IDF bootloader reads segments from the ESP32 image header
- * and copies each segment to its load address before jumping to entry.
+ * ESP-IDF v5 bootloader calls cache_flash_mmu_set() for DROM and IROM
+ * unconditionally (even when size=0, which aborts with vaddr=0).
+ * We must have at least one byte in DROM and IROM so the bootloader
+ * gets valid virtual addresses to map.
  *
- * Memory:
- *   IRAM : 128 KB at 0x40080000  (instruction RAM)
- *   DRAM : 272 KB at 0x3FFB0000  (data RAM, conservative — top reserved for ROM/BT)
+ * All code runs from IROM (flash cache) — bootloader sets up the MMU
+ * before jumping to the entry point, so there is no IRAM bootstrap needed.
+ *
+ * Memory map (ESP32):
+ *   DROM  (flash-cached RO data) : 0x3F400000 – 0x3FBFFFFF
+ *   IRAM  (fast SRAM, optional)  : 0x40080000 – 0x4009FFFF
+ *   IROM  (flash-cached code)    : 0x400D0000 – 0x40BFFFFF
+ *   DRAM  (SRAM data/BSS/stack)  : 0x3FFB0000 – 0x3FFFFFFF
  */
 
 ENTRY(call_start_cpu0)
 
 MEMORY
 {
-    IRAM (rwx) : ORIGIN = 0x40080000, LENGTH = 128K
+    /* Flash-cached read-only data (MMU-mapped by bootloader) */
+    DROM (r)   : ORIGIN = 0x3F400010, LENGTH = (3584K - 16)
+    /* Flash-cached executable code (MMU-mapped by bootloader) */
+    IROM (rx)  : ORIGIN = 0x400D0010, LENGTH = (1984K - 16)
+    /* Direct SRAM for data, BSS, and stack */
     DRAM (rw)  : ORIGIN = 0x3FFB0000, LENGTH = 272K
 }
 
@@ -24,77 +34,76 @@ _stack_top = ORIGIN(DRAM) + LENGTH(DRAM);   /* 0x3FFF4000 */
 
 SECTIONS
 {
-    /* Entry + IRAM-forced code.
-     * .iram1.literal must precede .iram1.text so l32r offsets are negative. */
-    .iram1.text :
+    /* ------------------------------------------------------------------ *
+     * DROM — flash-cached read-only data                                  *
+     * Bootloader maps this region via MMU to flash physical address.      *
+     * LMA = VMA; esptool places segment at a 64KB-page-aligned offset.   *
+     * ------------------------------------------------------------------ */
+    .rodata : ALIGN(4)
     {
+        *(.rodata .rodata.*)
+        *(.rodata1)
         . = ALIGN(4);
+    } > DROM
+
+    /* ------------------------------------------------------------------ *
+     * IROM — flash-cached executable code                                 *
+     * All .text (including call_start_cpu0) runs here after MMU setup.   *
+     * Literals must precede their l32r instructions → put all .literal*  *
+     * before .text* within this section.                                  *
+     * ------------------------------------------------------------------ */
+    .text : ALIGN(4)
+    {
+        /* Literal pools — must be at lower address than the l32r users */
+        *(.literal .literal.*)
         *(.iram1.literal)
         *(.iram0.literal)
+        /* Code */
         KEEP(*(.iram1.text))
-        KEEP(*(.entry.text))
         *(.iram0.text*)
         *(.iram1.text*)
-    } > IRAM
-
-    /* Xtensa l32r literals MUST come before their .text counterparts.
-     * Placing all .literal* here ensures the linker never emits a forward l32r. */
-    .text :
-    {
-        *(.literal .literal.*)
         *(.text .text.*)
-        *(.rodata .rodata.*)
         . = ALIGN(4);
         _etext = .;
-    } > IRAM
+    } > IROM
 
-    .preinit_array :
+    .init_array : ALIGN(4)
     {
-        . = ALIGN(4);
-        __preinit_array_start = .;
-        KEEP(*(.preinit_array*))
-        __preinit_array_end = .;
-    } > IRAM
-
-    .init_array :
-    {
-        . = ALIGN(4);
         __init_array_start = .;
         KEEP(*(SORT(.init_array.*)))
         KEEP(*(.init_array*))
         __init_array_end = .;
-    } > IRAM
+    } > IROM
 
-    .fini_array :
+    .fini_array : ALIGN(4)
     {
-        . = ALIGN(4);
         __fini_array_start = .;
         KEEP(*(SORT(.fini_array.*)))
         KEEP(*(.fini_array*))
         __fini_array_end = .;
-    } > IRAM
+    } > IROM
 
+    /* ------------------------------------------------------------------ *
+     * DRAM — read-write data and BSS                                      *
+     * ------------------------------------------------------------------ */
     _sidata = LOADADDR(.data);
 
-    .data :
+    .data : ALIGN(4)
     {
-        . = ALIGN(4);
         _sdata = .;
-        *(.data*)
+        *(.data .data.*)
         . = ALIGN(4);
         _edata = .;
-    } > DRAM AT > IRAM
+    } > DRAM
 
-    .bss (NOLOAD) :
+    .bss (NOLOAD) : ALIGN(4)
     {
-        . = ALIGN(4);
         _sbss = .;
-        *(.bss*)
+        *(.bss .bss.*)
         *(COMMON)
         . = ALIGN(4);
         _ebss = .;
     } > DRAM
 
-    end = .;
     _end = .;
 }

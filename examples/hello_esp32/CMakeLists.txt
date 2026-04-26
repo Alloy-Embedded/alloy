@@ -56,6 +56,7 @@ if(_ESPTOOL)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${_ESPTOOL} --chip esp32
             elf2image
+            --dont-append-digest
             --output "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.bin"
             "$<TARGET_FILE:${PROJECT_NAME}>"
         COMMAND ${CMAKE_SIZE} "$<TARGET_FILE:${PROJECT_NAME}>"
