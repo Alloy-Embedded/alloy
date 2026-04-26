@@ -239,6 +239,10 @@ struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_usart_z
 
 }  // namespace detail
 
+// Enumerations (Oversampling, FifoTrigger, InterruptKind, AddressLength,
+// WakeupTrigger) are defined in backend.hpp (included above) so the backend
+// implementation can use them without circular includes.
+
 template <typename Connector>
 class port_handle {
    public:
@@ -373,6 +377,217 @@ class port_handle {
 
     [[nodiscard]] auto flush() const -> core::Result<void, core::ErrorCode> {
         return detail::flush_uart(*this);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 1: Baudrate / oversampling / kernel clock
+    // ------------------------------------------------------------------
+
+    /// Set baudrate at runtime without reconfiguring the full peripheral.
+    /// Computes the BRR divisor from config().peripheral_clock_hz (kernel clock).
+    /// Returns OutOfRange when:
+    ///   - BRR overflows 16 bits, OR
+    ///   - realised baud rate falls outside ±2% of the requested rate.
+    [[nodiscard]] auto set_baudrate(std::uint32_t bps) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_baudrate_impl(*this, bps);
+    }
+
+    /// Set oversampling ratio. The UART must NOT be transmitting/receiving
+    /// while this is called (internally toggles UE).
+    /// Returns NotSupported on backends that don't publish the OVER8 field.
+    [[nodiscard]] auto set_oversampling(Oversampling mode) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_oversampling_impl(*this, mode);
+    }
+
+    /// Returns the kernel clock frequency in Hz (as configured via UartConfig).
+    [[nodiscard]] auto kernel_clock_hz() const -> std::uint32_t {
+        return config_.peripheral_clock_hz;
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 2: Status flags
+    // ------------------------------------------------------------------
+
+    /// True when the last transmission is complete (TC flag).
+    [[nodiscard]] auto tx_complete() const -> bool {
+        if constexpr (is_st_modern_style) {
+            const auto v = detail::rt::read_field(tc_isr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (is_st_legacy_style) {
+            const auto v = detail::rt::read_field(tc_sr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        }
+        return false;
+    }
+
+    /// True when the TX data register is empty (TXE / TXFNF flag).
+    [[nodiscard]] auto tx_register_empty() const -> bool {
+        if constexpr (is_st_modern_style) {
+            const auto v = detail::rt::read_field(txe_isr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (is_st_legacy_style) {
+            const auto v = detail::rt::read_field(txe_sr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        }
+        return false;
+    }
+
+    /// True when the RX data register has data (RXNE / RXFNE flag).
+    [[nodiscard]] auto rx_register_not_empty() const -> bool {
+        if constexpr (is_st_modern_style) {
+            const auto v = detail::rt::read_field(rxne_isr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (is_st_legacy_style) {
+            const auto v = detail::rt::read_field(rxne_sr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        }
+        return false;
+    }
+
+    /// True when a parity error occurred (PE flag, ISR/SR bit 0).
+    [[nodiscard]] auto parity_error() const -> bool {
+        return detail::read_status_flag<port_handle>(std::uint16_t{0});
+    }
+
+    /// True when a framing error occurred (FE flag, ISR/SR bit 1).
+    [[nodiscard]] auto framing_error() const -> bool {
+        return detail::read_status_flag<port_handle>(std::uint16_t{1});
+    }
+
+    /// True when a noise error occurred (NE flag, ISR/SR bit 2).
+    [[nodiscard]] auto noise_error() const -> bool {
+        return detail::read_status_flag<port_handle>(std::uint16_t{2});
+    }
+
+    /// True when an overrun error occurred (ORE flag, ISR/SR bit 3).
+    [[nodiscard]] auto overrun_error() const -> bool {
+        return detail::read_status_flag<port_handle>(std::uint16_t{3});
+    }
+
+    /// Clear parity error flag (modern ST: ICR PECF bit 0).
+    [[nodiscard]] auto clear_parity_error() const -> core::Result<void, core::ErrorCode> {
+        return detail::clear_status_flag_impl<port_handle>(0u);
+    }
+
+    /// Clear framing error flag (modern ST: ICR FECF bit 1).
+    [[nodiscard]] auto clear_framing_error() const -> core::Result<void, core::ErrorCode> {
+        return detail::clear_status_flag_impl<port_handle>(1u);
+    }
+
+    /// Clear noise error flag (modern ST: ICR NECF bit 2).
+    [[nodiscard]] auto clear_noise_error() const -> core::Result<void, core::ErrorCode> {
+        return detail::clear_status_flag_impl<port_handle>(2u);
+    }
+
+    /// Clear overrun error flag (modern ST: ICR ORECF bit 3).
+    [[nodiscard]] auto clear_overrun_error() const -> core::Result<void, core::ErrorCode> {
+        return detail::clear_status_flag_impl<port_handle>(3u);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 2: Interrupts
+    // ------------------------------------------------------------------
+
+    /// Enable a typed interrupt.  Returns NotSupported when the interrupt
+    /// kind is not available on this peripheral (field not found at runtime).
+    [[nodiscard]] auto enable_interrupt(InterruptKind kind) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_interrupt_enable_impl(*this, kind, true);
+    }
+
+    /// Disable a typed interrupt.  Returns NotSupported when the interrupt
+    /// kind is not available on this peripheral.
+    [[nodiscard]] auto disable_interrupt(InterruptKind kind) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_interrupt_enable_impl(*this, kind, false);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 2: FIFO control
+    // ------------------------------------------------------------------
+
+    /// Enable or disable the FIFO (FIFOEN / CR1 bit 29).
+    /// Returns NotSupported on peripherals that have no FIFO (e.g. STM32F4 USART).
+    [[nodiscard]] auto enable_fifo(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_fifo_impl(*this, enable);
+    }
+
+    /// Configure the TX FIFO threshold trigger level.
+    /// Returns NotSupported when TXFTCFG field is absent (no FIFO).
+    [[nodiscard]] auto set_tx_threshold(FifoTrigger trigger) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_tx_threshold_impl(*this, trigger);
+    }
+
+    /// Configure the RX FIFO threshold trigger level.
+    /// Returns NotSupported when RXFTCFG field is absent (no FIFO).
+    [[nodiscard]] auto set_rx_threshold(FifoTrigger trigger) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_rx_threshold_impl(*this, trigger);
+    }
+
+    /// True when the TX FIFO is full (TXFF / ISR bit 25 on modern ST).
+    [[nodiscard]] auto tx_fifo_full() const -> bool {
+        return detail::read_status_flag<port_handle>(std::uint16_t{25});
+    }
+
+    /// True when the RX FIFO is empty (RXFE / ISR bit 24 on modern ST).
+    [[nodiscard]] auto rx_fifo_empty() const -> bool {
+        // ISR bit 24 = RXFF (full); bit 23 = TXFE (TX empty); empty flag
+        // is the complement of RXFF. Return true (empty) when RXFF == 0.
+        return !detail::read_status_flag<port_handle>(std::uint16_t{24});
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 3: LIN / RS-485 DE / half-duplex / smartcard / IrDA
+    // ------------------------------------------------------------------
+
+    /// Enable or disable LIN mode (LINEN / CR2 bit 14).
+    /// Returns NotSupported on peripherals that don't publish the LINEN field.
+    [[nodiscard]] auto enable_lin(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_lin_impl(*this, enable);
+    }
+
+    /// Enable or disable single-wire half-duplex mode (HDSEL / CR3 bit 3).
+    [[nodiscard]] auto set_half_duplex(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_half_duplex_impl(*this, enable);
+    }
+
+    /// Enable or disable the RS-485 Driver Enable output (DEM / CR3 bit 14).
+    [[nodiscard]] auto enable_de(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_de_impl(*this, enable);
+    }
+
+    /// Set the DE signal assertion time in baud-clock sample units (DEAT, CR1 bits [25:21]).
+    /// Values > 31 are clamped to 31.
+    [[nodiscard]] auto set_de_assertion_time(std::uint8_t sample_times) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_de_assertion_time_impl(*this, sample_times);
+    }
+
+    /// Set the DE signal de-assertion time in baud-clock sample units (DEDT, CR1 bits [20:16]).
+    /// Values > 31 are clamped to 31.
+    [[nodiscard]] auto set_de_deassertion_time(std::uint8_t sample_times) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_de_deassertion_time_impl(*this, sample_times);
+    }
+
+    /// Enable or disable smartcard (ISO 7816) mode (SCEN / CR3 bit 5).
+    [[nodiscard]] auto set_smartcard_mode(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_smartcard_mode_impl(*this, enable);
+    }
+
+    /// Enable or disable IrDA SIR mode (IREN / CR3 bit 1).
+    [[nodiscard]] auto set_irda_mode(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_irda_mode_impl(*this, enable);
     }
 
     template <typename DmaChannel>

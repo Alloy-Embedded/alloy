@@ -44,6 +44,55 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
     [[maybe_unused]] const auto write_byte_result = uart.write_byte(std::byte{0x79});
     [[maybe_unused]] const auto read_result = uart.read(std::span<std::byte>{rx_buffer});
     [[maybe_unused]] const auto flush_result = uart.flush();
+
+    // ---- Phase 1: baudrate / oversampling ----
+    // set_baudrate: raw Hz value — compiles on all backends.
+    [[maybe_unused]] const auto baud_result = uart.set_baudrate(921'600u);
+    // set_oversampling: typed enum — compiles on all backends; returns
+    // NotSupported when OVER8 field absent (e.g. Microchip USART).
+    [[maybe_unused]] const auto over_result =
+        uart.set_oversampling(alloy::hal::uart::Oversampling::X8);
+    // kernel_clock_hz: always compiles, returns config value.
+    static_assert(noexcept(uart.kernel_clock_hz()));
+
+    // ---- Phase 2: status flags ----
+    [[maybe_unused]] const bool tc   = uart.tx_complete();
+    [[maybe_unused]] const bool txe  = uart.tx_register_empty();
+    [[maybe_unused]] const bool rxne = uart.rx_register_not_empty();
+    [[maybe_unused]] const bool pe   = uart.parity_error();
+    [[maybe_unused]] const bool fe   = uart.framing_error();
+    [[maybe_unused]] const bool ne   = uart.noise_error();
+    [[maybe_unused]] const bool ore  = uart.overrun_error();
+    [[maybe_unused]] const auto clr_pe  = uart.clear_parity_error();
+    [[maybe_unused]] const auto clr_fe  = uart.clear_framing_error();
+    [[maybe_unused]] const auto clr_ne  = uart.clear_noise_error();
+    [[maybe_unused]] const auto clr_ore = uart.clear_overrun_error();
+
+    // ---- Phase 2: interrupts ----
+    [[maybe_unused]] const auto en_tc  =
+        uart.enable_interrupt(alloy::hal::uart::InterruptKind::Tc);
+    [[maybe_unused]] const auto en_rxne =
+        uart.enable_interrupt(alloy::hal::uart::InterruptKind::Rxne);
+    [[maybe_unused]] const auto dis_txe =
+        uart.disable_interrupt(alloy::hal::uart::InterruptKind::Txe);
+
+    // ---- Phase 2: FIFO ----
+    [[maybe_unused]] const auto fifo_en  = uart.enable_fifo(true);
+    [[maybe_unused]] const auto tx_thr   =
+        uart.set_tx_threshold(alloy::hal::uart::FifoTrigger::Half);
+    [[maybe_unused]] const auto rx_thr   =
+        uart.set_rx_threshold(alloy::hal::uart::FifoTrigger::Quarter);
+    [[maybe_unused]] const bool txff     = uart.tx_fifo_full();
+    [[maybe_unused]] const bool rxfe     = uart.rx_fifo_empty();
+
+    // ---- Phase 3: mode setters ----
+    [[maybe_unused]] const auto lin_en   = uart.enable_lin(true);
+    [[maybe_unused]] const auto hdsel    = uart.set_half_duplex(true);
+    [[maybe_unused]] const auto de_en    = uart.enable_de(true);
+    [[maybe_unused]] const auto deat     = uart.set_de_assertion_time(5u);
+    [[maybe_unused]] const auto dedt     = uart.set_de_deassertion_time(3u);
+    [[maybe_unused]] const auto sc       = uart.set_smartcard_mode(false);
+    [[maybe_unused]] const auto irda     = uart.set_irda_mode(false);
 }
 
 }  // namespace
