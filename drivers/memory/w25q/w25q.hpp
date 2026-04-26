@@ -11,8 +11,10 @@
 // See drivers/README.md.
 //
 // The driver issues each operation as one full-duplex `transfer(tx, rx)` call
-// on the bus handle, so the SPI backend's hardware CS framing governs chip
-// select. For reads longer than one 256-byte page, the driver issues multiple
+// on the bus handle. CS is managed by the CsPolicy template parameter:
+//   NoOpCsPolicy       — SPI hardware holds CS permanently (default).
+//   GpioCsPolicy<Pin>  — software GPIO CS (recommended for shared buses).
+// For reads longer than one 256-byte page, the driver issues multiple
 // 0x03 Read-Data commands with incremented addresses to keep a fixed-size
 // internal scratch buffer (no dynamic allocation).
 
@@ -26,6 +28,24 @@
 #include "core/result.hpp"
 
 namespace alloy::drivers::memory::w25q {
+
+// ── CS policies ───────────────────────────────────────────────────────────────
+
+struct NoOpCsPolicy {
+    void assert_cs()   const noexcept {}
+    void deassert_cs() const noexcept {}
+};
+
+template <typename GpioPin>
+struct GpioCsPolicy {
+    explicit GpioCsPolicy(GpioPin& pin) : pin_(&pin) {
+        (void)pin_->set_high();
+    }
+    void assert_cs()   const noexcept { (void)pin_->set_low(); }
+    void deassert_cs() const noexcept { (void)pin_->set_high(); }
+private:
+    GpioPin* pin_;
+};
 
 inline constexpr std::uint32_t kPageSizeBytes = 256;
 inline constexpr std::uint32_t kSectorSizeBytes = 4096;
@@ -59,13 +79,25 @@ struct JedecId {
     std::uint8_t capacity;  // e.g. 0x16 = W25Q32, 0x18 = W25Q128
 };
 
-template <typename BusHandle>
+template <typename BusHandle, typename CsPolicy = NoOpCsPolicy>
 class Device {
 public:
     using ResultVoid = alloy::core::Result<void, alloy::core::ErrorCode>;
     using ResultJedec = alloy::core::Result<JedecId, alloy::core::ErrorCode>;
 
-    explicit Device(BusHandle& bus, Config cfg = {}) : bus_{&bus}, cfg_{cfg} {}
+    explicit Device(BusHandle& bus, CsPolicy cs = {}, Config cfg = {})
+        : bus_{&bus}, cs_{cs}, cfg_{cfg} {}
+
+private:
+    struct ScopedCs {
+        const CsPolicy& cs;
+        explicit ScopedCs(const CsPolicy& c) : cs(c) { cs.assert_cs(); }
+        ~ScopedCs() { cs.deassert_cs(); }
+        ScopedCs(const ScopedCs&) = delete;
+        ScopedCs& operator=(const ScopedCs&) = delete;
+    };
+
+public:
 
     // Reads the JEDEC ID. Returns CommunicationError if the bus reports all
     // 0x00 or all 0xFF (unpopulated bus / device absent).
@@ -86,6 +118,7 @@ public:
     [[nodiscard]] auto read_jedec_id() -> ResultJedec {
         std::array<std::uint8_t, 4> tx{opcode::kJedecId, 0, 0, 0};
         std::array<std::uint8_t, 4> rx{};
+        ScopedCs guard{cs_};
         if (auto r = bus_->transfer(tx, rx); r.is_err()) {
             return alloy::core::Err(std::move(r).err());
         }
@@ -97,6 +130,7 @@ public:
     [[nodiscard]] auto read_status() -> alloy::core::Result<std::uint8_t, alloy::core::ErrorCode> {
         std::array<std::uint8_t, 2> tx{opcode::kReadStatus1, 0};
         std::array<std::uint8_t, 2> rx{};
+        ScopedCs guard{cs_};
         if (auto r = bus_->transfer(tx, rx); r.is_err()) {
             return alloy::core::Err(std::move(r).err());
         }
@@ -130,10 +164,14 @@ public:
             std::memset(scratch_tx_.data(), 0, frame_len);
             encode_read_command(address + static_cast<std::uint32_t>(offset));
 
-            if (auto r = bus_->transfer(std::span<const std::uint8_t>{scratch_tx_.data(), frame_len},
-                                       std::span<std::uint8_t>{scratch_rx_.data(), frame_len});
-                r.is_err()) {
-                return r;
+            {
+                ScopedCs guard{cs_};
+                if (auto r = bus_->transfer(
+                        std::span<const std::uint8_t>{scratch_tx_.data(), frame_len},
+                        std::span<std::uint8_t>{scratch_rx_.data(), frame_len});
+                    r.is_err()) {
+                    return r;
+                }
             }
             std::memcpy(out.data() + offset, scratch_rx_.data() + kCommandLength, chunk);
             offset += chunk;
@@ -162,10 +200,14 @@ public:
         scratch_tx_[3] = static_cast<std::uint8_t>(address & 0xFF);
         std::memcpy(scratch_tx_.data() + kCommandLength, data.data(), data.size());
 
-        if (auto r = bus_->transfer(std::span<const std::uint8_t>{scratch_tx_.data(), frame_len},
-                                   std::span<std::uint8_t>{scratch_rx_.data(), frame_len});
-            r.is_err()) {
-            return r;
+        {
+            ScopedCs guard{cs_};
+            if (auto r = bus_->transfer(
+                    std::span<const std::uint8_t>{scratch_tx_.data(), frame_len},
+                    std::span<std::uint8_t>{scratch_rx_.data(), frame_len});
+                r.is_err()) {
+                return r;
+            }
         }
         return wait_while_busy();
     }
@@ -184,8 +226,11 @@ public:
             static_cast<std::uint8_t>(address & 0xFF),
         };
         std::array<std::uint8_t, kCommandLength> rx{};
-        if (auto r = bus_->transfer(tx, rx); r.is_err()) {
-            return r;
+        {
+            ScopedCs guard{cs_};
+            if (auto r = bus_->transfer(tx, rx); r.is_err()) {
+                return r;
+            }
         }
         return wait_while_busy();
     }
@@ -194,6 +239,7 @@ private:
     [[nodiscard]] auto write_enable() -> ResultVoid {
         std::array<std::uint8_t, 1> tx{opcode::kWriteEnable};
         std::array<std::uint8_t, 1> rx{};
+        ScopedCs guard{cs_};
         return bus_->transfer(tx, rx);
     }
 
@@ -205,8 +251,9 @@ private:
     }
 
     BusHandle* bus_;
-    Config cfg_;
-    JedecId jedec_{};
+    CsPolicy   cs_;
+    Config     cfg_;
+    JedecId    jedec_{};
     // One page worth of payload + one 4-byte command header. Same buffer is
     // reused for page_program, read chunks, and sector_erase frames.
     std::array<std::uint8_t, kCommandLength + kPageSizeBytes> scratch_tx_{};

@@ -609,8 +609,10 @@ template <typename PortHandle>
             return tx_ready;
         }
 
+        // PCS=0xE selects NPCS0 internally so the SPI generates a clock.
+        // PCS=0xF ("no peripheral") suppresses the clock on Microchip SPI.
         const auto tdr_value = build_register_value(
-            std::array<FieldWrite, 2>{FieldWrite{td, tx_buffer[index]}, FieldWrite{pcs, 0xFu}});
+            std::array<FieldWrite, 2>{FieldWrite{td, tx_buffer[index]}, FieldWrite{pcs, 0xEu}});
         if (tdr_value.is_err()) {
             return core::Err(core::ErrorCode{tdr_value.unwrap_err()});
         }

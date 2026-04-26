@@ -511,6 +511,8 @@ if(ALLOY_BUILD_EXAMPLES)
         add_subdirectory(examples/driver_at24mac402_probe)
         add_subdirectory(examples/driver_ksz8081_probe)
         add_subdirectory(examples/driver_is42s16100f_probe)
+        add_subdirectory(examples/filesystem_littlefs)
+        add_subdirectory(examples/filesystem_fatfs_sdcard)
     endif()
 
     if(ALLOY_BOARD STREQUAL "nucleo_g071rb")

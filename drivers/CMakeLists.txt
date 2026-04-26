@@ -24,3 +24,8 @@ endif()
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/net/CMakeLists.txt")
     add_subdirectory(net)
 endif()
+
+# Filesystem HAL: littlefs + FatFS backends (fetched via FetchContent).
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/filesystem/CMakeLists.txt")
+    add_subdirectory(filesystem)
+endif()

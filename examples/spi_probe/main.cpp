@@ -15,6 +15,7 @@
 #endif
 
 #include "examples/common/uart_console.hpp"
+#include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 
 namespace {
@@ -38,7 +39,13 @@ int main() {
     constexpr auto uart_ready = false;
 #endif
 
-    auto bus = board::make_spi();
+    auto bus = board::make_spi(alloy::hal::spi::Config{
+        alloy::hal::SpiMode::Mode0,
+        1'000'000u,
+        alloy::hal::SpiBitOrder::MsbFirst,
+        alloy::hal::SpiDataSize::Bits8,
+        board::kBoardSpiPeripheralClockHz,
+    });
     if (const auto result = bus.configure(); result.is_err()) {
 #ifdef BOARD_UART_HEADER
         if (uart_ready) {
@@ -54,17 +61,36 @@ int main() {
     }
 #endif
 
-    std::uint32_t loop_count = 0u;
-    while (true) {
-        board::led::toggle();
+    // Drive PD25 low as plain GPIO to assert W25Q /CS (no CsPolicy abstraction).
+    using CsPin = alloy::hal::gpio::pin_handle<
+        alloy::hal::gpio::pin<alloy::device::PinId::PD25>>;
+    CsPin cs{{.direction     = alloy::hal::PinDirection::Output,
+              .initial_state = alloy::hal::PinState::High}};
+    (void)cs.configure();
+
+    // Send JEDEC-ID command: 0x9F followed by 3 dummy bytes.
+    // W25Q128 expected response: EF 40 18.
+    (void)cs.set_low();
+    std::array<std::uint8_t, 4> tx{0x9F, 0x00, 0x00, 0x00};
+    std::array<std::uint8_t, 4> rx{};
+    const auto result = bus.transfer(tx, rx);
+    (void)cs.set_high();
+
 #ifdef BOARD_UART_HEADER
-        if (uart_ready) {
-            alloy::examples::uart_console::write_text(uart, "spi loop=");
-            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+    if (uart_ready) {
+        if (result.is_err()) {
+            alloy::examples::uart_console::write_line(uart, "transfer err");
+        } else {
+            alloy::examples::uart_console::write_text(uart, "jedec: ");
+            alloy::examples::uart_console::write_hex_byte(uart, rx[1]);
+            alloy::examples::uart_console::write_text(uart, " ");
+            alloy::examples::uart_console::write_hex_byte(uart, rx[2]);
+            alloy::examples::uart_console::write_text(uart, " ");
+            alloy::examples::uart_console::write_hex_byte(uart, rx[3]);
             alloy::examples::uart_console::write_text(uart, "\r\n");
         }
-#endif
-        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(500);
-        ++loop_count;
     }
+#endif
+
+    blink_error(500);
 }
