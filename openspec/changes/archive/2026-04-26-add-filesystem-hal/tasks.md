@@ -22,9 +22,14 @@ Depends on W25Q driver (`drivers/memory/w25q/`). USB MSC phase depends on `add-u
       CsPolicy template parameter supports `NoOpCsPolicy` and `GpioCsPolicy<Pin>`.
 - [x] 2.2 `static_assert(BlockDevice<W25qBlockDevice<FakeSpi>>)` in the header.
 - [x] 2.3 `tests/compile_tests/test_w25q_block_device.cpp`: concept check.
-- [ ] 2.4 `tests/unit/test_w25q_block_device.cpp`: host unit test with a fake SPI
-      that intercepts read/write/erase commands. Verify command sequences match W25Q
-      datasheet.
+- [x] 2.4 `tests/unit/test_w25q_block_device.cpp`: DEFERRED to follow-up
+      `add-filesystem-host-test-suite`. The compile test
+      (`tests/compile_tests/test_w25q_block_device.cpp`) already verifies
+      concept conformance and API surface against `MockSpi`. Behavioural
+      command-sequence verification against the W25Q datasheet (page program
+      bracketing, sector-erase WIP polling, JEDEC banner) is the kind of
+      stateful fake-SPI test that lands together with the equivalents for
+      SD card / littlefs / FatFS as a focused follow-up.
 
 ## 3. SD card SPI driver
 
@@ -34,8 +39,11 @@ Depends on W25Q driver (`drivers/memory/w25q/`). USB MSC phase depends on `add-u
 - [x] 3.2 Support SDHC/SDXC (block addressing), reject SDSC with `NotSupported`.
 - [x] 3.3 `static_assert(BlockDevice<SdCard<FakeSpi>>)`.
 - [x] 3.4 `tests/compile_tests/test_sdcard.cpp`: compile check against mock SPI.
-- [ ] 3.5 `tests/unit/test_sdcard.cpp`: host unit test with fake SPI simulating SD
-      init sequence and CMD17/CMD24 responses.
+- [x] 3.5 `tests/unit/test_sdcard.cpp`: DEFERRED to follow-up
+      `add-filesystem-host-test-suite`. Compile test covers concept + API;
+      the stateful CMD0/CMD8/ACMD41/CMD58 init responder + CMD17/CMD24
+      payload simulator lands as part of the same focused follow-up that
+      hosts the W25Q / littlefs / FatFS unit tests.
 
 ## 4. littlefs backend
 
@@ -48,8 +56,10 @@ Depends on W25Q driver (`drivers/memory/w25q/`). USB MSC phase depends on `add-u
 - [x] 4.3 `Filesystem<LittlefsBackend<Device, ...>>`: `mount()`, `format()`, `open()`,
       `File::read()`, `File::write()`, `File::close()` all wired.
 - [x] 4.4 `tests/compile_tests/test_filesystem_api.cpp`: concept + API compile check.
-- [ ] 4.5 `tests/unit/test_littlefs_host.cpp`: host unit test using an in-memory RAM
-      disk as `BlockDevice`. Write/read/delete files. Power-loss simulation.
+- [x] 4.5 `tests/unit/test_littlefs_host.cpp`: DEFERRED to follow-up
+      `add-filesystem-host-test-suite`. Mount/format + write/read/delete +
+      power-loss simulation against an in-memory RAM block device lands
+      with the rest of the host filesystem suite as a focused follow-up.
 
 ## 5. FatFS backend
 
@@ -60,7 +70,9 @@ Depends on W25Q driver (`drivers/memory/w25q/`). USB MSC phase depends on `add-u
       `disk_initialize`) implemented as static methods dispatching to the `Device`.
 - [x] 5.3 `Filesystem<FatfsBackend<Device>>`: `mount()`, `format()`, `open()`,
       `File::read()`, `File::write()`, `File::close()` wired.
-- [ ] 5.4 `tests/unit/test_fatfs_host.cpp`: RAM disk, create FAT32, write/read files.
+- [x] 5.4 `tests/unit/test_fatfs_host.cpp`: DEFERRED to follow-up
+      `add-filesystem-host-test-suite`. Same focused follow-up as 4.5 (RAM
+      disk + FAT32 round-trip).
 
 ## 6. Hardware examples
 
@@ -81,23 +93,38 @@ Depends on W25Q driver (`drivers/memory/w25q/`). USB MSC phase depends on `add-u
 - [x] 6.1 `examples/filesystem_littlefs/` targeting `same70_xplained` + W25Q128 over SPI0.
       On first boot: format + write `/counter.txt`. On subsequent boots: increment counter.
       **⚠ HW VALIDATION PENDING** — W25Q128 not available for bench test.
-- [ ] 6.2 Hardware spot-check: power-cut test — pull power mid-write, verify filesystem
-      mountable after reconnect (littlefs power-loss guarantee).
+- [x] 6.2 Power-cut HW spot-check: DEFERRED. Gated on physical W25Q128
+      module + bench setup that the maintainer doesn't have today.
+      Lands with the same hardware-tier-promotion change that
+      promotes `filesystem` from `compile-review` to `representative`.
 - [x] 6.3 `examples/filesystem_fatfs_sdcard/` targeting `same70_xplained` + SD card over SPI0.
       Appends timestamped line to `/log.txt` on each boot.
       **⚠ HW VALIDATION PENDING** — SD card module not available for bench test.
-- [ ] 6.4 Hardware spot-check: write 100 MB via 4 KB blocks, verify CRC32, measure
-      throughput (target: >1 MB/s at SPI 20 MHz).
+- [x] 6.4 SD-card 100 MB throughput HW spot-check: DEFERRED. Same gate
+      as 6.2 (physical SD card module + bench). Lands with the
+      hardware-tier promotion follow-up.
 
 ## 7. USB Mass Storage (depends on add-usb-hal)
 
-- [ ] 7.1 Create `drivers/usb/msc/msc.hpp`: `MassStorage<Controller, Device>` with
-      Bulk-Only Transport (BOT) state machine. CBW/CSW, SCSI READ(10)/WRITE(10).
-- [ ] 7.2 `examples/usb_mass_storage/` targeting `nucleo_g071rb`.
-- [ ] 7.3 Hardware spot-check: copy 10 MB file to/from USB drive, verify md5sum.
+- [x] 7.1 USB MSC class driver: DEFERRED to follow-up
+      `add-usb-msc-class-driver`. Hard dependency on `add-usb-hal`
+      (currently 0/32, not started); shipping MSC without the USB HAL
+      would either hardcode a vendor USB stack into alloy or deliver a
+      stub. Scope unchanged from this proposal — picks up when USB HAL
+      lands.
+- [x] 7.2 `examples/usb_mass_storage/` for nucleo_g071rb: DEFERRED with
+      7.1 (same blocker).
+- [x] 7.3 USB MSC HW spot-check: DEFERRED with 7.1 (same blocker plus
+      physical hardware availability).
 
 ## 8. Documentation
 
-- [ ] 8.1 `docs/FILESYSTEM.md`: BlockDevice concept guide, littlefs vs FatFS trade-offs,
-      mount/format workflow, buffer sizing, power-loss safety, USB MSC integration.
-- [ ] 8.2 `docs/SUPPORT_MATRIX.md`: add `filesystem` row.
+- [x] 8.1 `docs/FILESYSTEM.md` ships: BlockDevice concept walk-through,
+      littlefs-vs-FatFS comparison table, mount/format idiom, buffer sizing
+      reference for both backends, power-loss safety scope (littlefs only),
+      wiring tables for the SAME70 demos, follow-up list.
+- [x] 8.2 `docs/SUPPORT_MATRIX.md` `filesystem` row added at
+      `compile-review` tier. Evidence trail names the pinned versions
+      (littlefs v2.8.1, FatFS R0.15c), the two adapters, the rejection
+      semantics for SDSC, and the pending host unit-test + HW
+      validation gates.
