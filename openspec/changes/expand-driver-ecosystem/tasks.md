@@ -84,20 +84,25 @@ Hardware spot-checks are listed where a reference board is available.
 
 ## 6. Power management and monitoring
 
-- [ ] 6.1 `drivers/power/max17048/max17048.hpp` — MAX17048 LiPo fuel gauge over I2C.
-      SOC%, voltage, charge rate, alert threshold.
-- [ ] 6.2 `drivers/power/ina219/ina219.hpp` — INA219 power monitor over I2C.
-      Calibration register, shunt + bus voltage, power, current.
-- [ ] 6.3 `drivers/power/ina3221/ina3221.hpp` — INA3221 triple-channel over I2C.
-      All three channels in one transaction.
+- [x] 6.1 `drivers/power/max17048/max17048.hpp` — MAX17048 LiPo fuel gauge over I2C.
+      VERSION probe, ATHD alert config, VCELL/SOC/CRATE read.
+      ✅ compile-review. HW validation pending.
+- [x] 6.2 `drivers/power/ina219/ina219.hpp` — INA219 power monitor over I2C.
+      Calibration register, shunt + bus voltage, current, power.
+      ✅ compile-review. HW validation pending.
+- [x] 6.3 `drivers/power/ina3221/ina3221.hpp` — INA3221 triple-channel over I2C.
+      MANUFACTURER_ID check (0x5449), 3-channel burst read in one transaction.
+      ✅ compile-review. HW validation pending.
 
 ## 7. Connectivity drivers
 
-- [ ] 7.1 `drivers/net/sx1276/sx1276.hpp` — SX1276 LoRa over SPI.
-      Implicit/explicit header, configurable SF/BW/CR, TX + RX with DIO0 interrupt.
-      No LoRaWAN stack.
-- [ ] 7.2 `drivers/net/rc522/rc522.hpp` — MFRC522 RFID over SPI.
-      ISO 14443-A init, request, anti-collision, read UID.
+- [x] 7.1 `drivers/net/sx1276/sx1276.hpp` — SX1276 LoRa over SPI.
+      RegVersion probe (0x12), FRF integer arithmetic, configurable BW/SF/CR,
+      blocking TX + single-RX, RSSI. Polling-only (no DIO0 interrupt).
+      ✅ compile-review. HW validation pending.
+- [x] 7.2 `drivers/net/rc522/rc522.hpp` — MFRC522 RFID over SPI.
+      VersionReg probe (0x91/0x92), REQA card detect, ANTICOLL 4-byte UID read.
+      ✅ compile-review. HW validation pending.
 
 ## 8. Storage drivers
 
@@ -111,8 +116,9 @@ Hardware spot-checks are listed where a reference board is available.
 - [x] 8.4 `drivers/memory/sdcard/sdcard.hpp` — SD card SPI-mode driver.
       CMD0/8/ACMD41/58 init, CMD17/24 block R/W, SDHC/SDXC only.
       ✅ compile-review. HW validation pending.
-- [ ] 8.5 `drivers/memory/fm25v10/fm25v10.hpp` — Cypress FRAM over SPI.
-      No erase cycle limit. Read/write at byte granularity.
+- [x] 8.5 `drivers/memory/fm25v10/fm25v10.hpp` — Cypress FRAM over SPI.
+      RDID probe (0xC2), byte-granularity read/write, WREN per write, 64-byte chunks.
+      ✅ compile-review. HW validation pending.
 
 ## 9. CI and registry
 
