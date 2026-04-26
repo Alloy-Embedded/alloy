@@ -11,7 +11,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from . import __version__, scaffold, sdk, toolchains
+from . import __version__, config, scaffold, sdk, toolchains
 from .runtime import RuntimeNotFoundError, find_runtime_root, load_alloyctl
 
 PROG = "alloy"
@@ -58,6 +58,32 @@ def _is_version_only(argv: list[str]) -> bool:
     return len(argv) == 1 and argv[0] in {"-V", "--version"}
 
 
+def _print_version() -> None:
+    """Report the CLI version, the active SDK, and installed toolchains.
+
+    Output is line-oriented and stable: tooling can grep `^alloy `, `^sdk `,
+    or `^toolchain ` without parsing arbitrary prose. Missing entries print
+    an explicit `(none)` so consumers do not have to distinguish "key absent"
+    from "key empty".
+    """
+    sys.stdout.write(f"{PROG} {__version__}\n")
+
+    cfg = config.load()
+    if cfg.active_version is not None:
+        runtime = config.sdk_version_dir(cfg.active_version) / "runtime"
+        present = "present" if runtime.is_dir() else "missing"
+        sys.stdout.write(f"sdk {cfg.active_version} ({present})\n")
+    else:
+        sys.stdout.write("sdk (none)\n")
+
+    installed = toolchains.list_installed()
+    if installed:
+        for name, version in installed:
+            sys.stdout.write(f"toolchain {name} {version}\n")
+    else:
+        sys.stdout.write("toolchain (none)\n")
+
+
 def _build_native_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog=PROG, add_help=False)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -95,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
 
     if _is_version_only(args):
-        sys.stdout.write(f"{PROG} {__version__}\n")
+        _print_version()
         return 0
 
     if _is_help_only(args):

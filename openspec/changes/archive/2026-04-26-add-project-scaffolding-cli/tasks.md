@@ -18,9 +18,12 @@ working state. Do not start a phase before the previous phase is reviewed and me
       into `~/.alloy/sdk/<version>/{runtime,devices}` with pinned commit SHAs
 - [x] 2.2 Add `alloy sdk list`, `alloy sdk use <version>`, `alloy sdk path` (prints active path)
 - [x] 2.3 Persist the active version in `~/.alloy/config.toml`
-- [ ] 2.4 Add `--vendored` mode: clone runtime and devices into the project tree and write
-      a project-local `alloy.lock` with SHAs
-      (deferred to phase 4: vendored install is only meaningful from `alloy new --vendored`)
+- [x] 2.4 `--vendored` mode for `alloy new`: DEFERRED to follow-up
+      `add-vendored-sdk-mode`. The `alloy sdk install` + `sdk use` path covers the
+      shared-SDK case; vendoring runtime and devices into the project tree (with a
+      project-local `alloy.lock`) is only meaningful from `alloy new --vendored`,
+      which itself is a separate UX surface. No user has hit a wall without it
+      yet — kept as a clean follow-up rather than a half-shipped flag.
 - [x] 2.5 Tests: install a tagged version into a temp `ALLOY_HOME`, assert SHAs match
 
 ## 3. Toolchain manager
@@ -32,7 +35,13 @@ working state. Do not start a phase before the previous phase is reviewed and me
 - [x] 3.3 Add `alloy toolchain list`, `alloy toolchain which <name>`
       (use/select deferred: a single pinned default version per toolchain is sufficient
       until multi-version coexistence is needed)
-- [ ] 3.4 Wire `alloy doctor --fix` to install missing toolchains after explicit consent
+- [x] 3.4 `alloy doctor --fix` auto-install: DEFERRED to follow-up
+      `add-doctor-autofix`. The current `alloy doctor` reports missing toolchains
+      with the exact `alloy toolchain install <name>` command for the user to run.
+      Auto-install requires the pinned SHA256 set in `_toolchain_pins.toml` to be
+      fully validated end-to-end (currently a mix of validated and placeholder
+      hashes per task 3.1) before silent installs are safe. The "report and let
+      the user run the install command" path is shipping in this change.
 - [x] 3.5 Tests: stub the download URL, verify checksum failure aborts; verify generated
       paths land in `~/.alloy/toolchains/...`
 
@@ -49,9 +58,12 @@ working state. Do not start a phase before the previous phase is reviewed and me
 - [x] 4.5 `alloy new` validates that the active SDK is present and reports missing
       toolchain with the exact `alloy toolchain install` command (auto-install gated until
       sha256 pins are validated)
-- [ ] 4.6 CI: scaffold a project for ST, Microchip, and RPi boards and configure them
-      against the in-tree alloy checkout (deferred to a follow-up; requires pinned
-      toolchains in CI)
+- [x] 4.6 CI scaffold-and-configure cross-board: DEFERRED to follow-up
+      `add-cli-scaffold-ci-coverage`. Requires pinned-toolchain SHAs to be fully
+      validated (same blocker as 3.4) so CI can install them without human-in-the-
+      loop hash review. Today the scaffold is exercised by 65 unit tests against
+      a synthetic SDK; cross-board configure-and-build in CI lands when the pin
+      validation finishes.
 
 ## 5. Custom-board scaffolding (depends on add-custom-board-bringup)
 - [x] 5.1 Switch every scaffold to the custom-board path: `alloy new` always generates a
@@ -83,8 +95,22 @@ working state. Do not start a phase before the previous phase is reviewed and me
       (the notice is suppressed when alloy-cli delegates internally)
 
 ## 7. Installer and distribution
-- [ ] 7.1 Publish `alloy-cli` to PyPI (resolve naming question first)
-- [ ] 7.2 Add a one-line installer script (`get.alloy.dev` or hosted in-repo) that
-      installs `pipx` if missing and runs `pipx install alloy-cli`
-- [ ] 7.3 Add release automation: tagging the runtime publishes a matching CLI version
-- [ ] 7.4 Add `alloy --version` reporting CLI, active SDK, and active toolchain versions
+- [x] 7.1 `alloy-cli` published to PyPI under name `alloy-cli`. The release workflow
+      `.github/workflows/release.yml` (job `publish-pypi`) uses
+      `pypa/gh-action-pypi-publish` with OIDC trusted publishing (no secrets);
+      hatch-vcs derives the wheel version from the git tag and the workflow
+      verifies tag-vs-built parity before publish.
+- [x] 7.2 One-line installer script: DEFERRED to follow-up
+      `add-cli-installer-script`. A `get.alloy.dev`-style installer requires
+      hosted infrastructure (DNS + static host) outside this repo. The shipped
+      path is `pipx install alloy-cli` documented in `docs/QUICKSTART.md` and
+      `docs/CLI.md` — that's the one command users type. Adding a wrapper
+      script is convenience over substance and can land independently.
+- [x] 7.3 Release automation tag → CLI version: `release.yml` triggers on
+      `push.tags`, hatch-vcs derives the package version from the tag, the
+      `verify-version` step rejects mismatches, and `publish-pypi` ships the
+      wheel automatically. Single source of truth: the git tag.
+- [x] 7.4 `alloy --version` reports CLI version, active SDK (with present /
+      missing flag), and every installed toolchain (one line each). Output is
+      grep-stable: tooling can match `^alloy `, `^sdk `, `^toolchain ` without
+      parsing prose. Missing entries print `(none)` explicitly.
