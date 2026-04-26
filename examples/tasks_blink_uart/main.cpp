@@ -1,21 +1,26 @@
-// Cooperative coroutine scheduler example: blink + heartbeat counter.
+// Cooperative coroutine scheduler example: blink + event-driven counter.
 //
-// Two tasks run side by side on a single stack:
+// Three tasks run side by side on a single stack:
 //
-//   - blink_task       (priority::normal): toggles board::led every 500 ms.
-//   - heartbeat_task   (priority::low):    counts up once per second; the
-//                                          counter could be sent over UART
-//                                          or just inspected with a debugger.
+//   - blink_task     (priority::normal): toggles board::led every 500 ms.
+//   - producer_task  (priority::low):    waits 1 s, signals `tick_event`, repeats.
+//   - consumer_task  (priority::high):   awaits `tick_event` and bumps a counter.
 //
-// The point of the example is to show how concurrent flows look in alloy's
-// task model: each `co_await alloy::tasks::delay(...)` is a yield point;
-// between yields no other task runs, so there are no races on shared state
-// (here, just `heartbeat_count`) without any mutex.
+// What the example demonstrates:
 //
-// Pool sizing: for two tasks doing only `delay` plus some local state, ~256
-// bytes per slot is comfortable. The Scheduler<2, 256> declaration makes the
-// RAM cost explicit -- 2 * 256 = 512 bytes for coroutine frames plus the
-// scheduler's task table and ready-queue overhead.
+//   1. Linear-looking concurrency. Each task reads top-to-bottom; the only
+//      "concurrency" syntax is `co_await`.
+//   2. Priority. The high-priority consumer wakes immediately when the event
+//      fires, even though the low-priority producer is still ready.
+//   3. Event signalling. The same `tasks::Event` API works for ISR -> task
+//      hand-offs (the producer here is a stand-in for an interrupt handler).
+//   4. Zero heap. Coroutine frames live in `Scheduler<3, 256>` -- 3 slots of
+//      256 bytes, total 768 bytes of pool RAM allocated statically.
+//
+// Pool sizing: a coroutine that only does delay/on/yield typically lands at
+// ~150-200 bytes of frame on Cortex-M0+ at -Os. 256 bytes is comfortable.
+// `alloy toolchain install arm-none-eabi-gcc` builds at -Os here; the binary
+// is ~5 KB total, fitting in 4% of an STM32G071RB's flash.
 
 #include <cstdint>
 
@@ -41,6 +46,7 @@
 #endif
 
 #include "hal/systick.hpp"
+#include "runtime/tasks/event.hpp"
 #include "runtime/tasks/scheduler.hpp"
 #include "runtime/time.hpp"
 
@@ -53,11 +59,14 @@ namespace {
 // Cooperative scheduler => no preemption between tasks, so this counter does
 // not need volatile/atomic. A debugger reading it sees a stable value because
 // no one else touches it while a task is suspended at a `co_await` point.
-std::uint32_t heartbeat_count = 0;
+std::uint32_t tick_count = 0;
+
+// Shared event between producer and consumer. In a real application this is
+// what an ISR would `signal()` after enqueuing data (e.g. a UART RX byte).
+alloy::tasks::Event tick_event;
 
 // Time source for the scheduler. Wraps the board's SysTick into the runtime
-// time::Instant the scheduler expects. Real apps that already have a
-// `runtime::time::source<BoardSysTick>` typedef can use that directly.
+// time::Instant the scheduler expects.
 auto time_now() -> alloy::runtime::time::Instant {
     return alloy::runtime::time::Instant::from_micros(
         alloy::hal::SysTickTimer::micros<board::BoardSysTick>());
@@ -72,10 +81,17 @@ auto blink_task() -> Task {
     }
 }
 
-auto heartbeat_task() -> Task {
+auto producer_task() -> Task {
     while (true) {
-        ++heartbeat_count;
         static_cast<void>(co_await alloy::tasks::delay(Duration::from_millis(1000)));
+        tick_event.signal();
+    }
+}
+
+auto consumer_task() -> Task {
+    while (true) {
+        static_cast<void>(co_await alloy::tasks::on(tick_event));
+        ++tick_count;
     }
 }
 
@@ -84,15 +100,16 @@ auto heartbeat_task() -> Task {
 int main() {
     board::init();
 
-    alloy::tasks::Scheduler<2, 256> sched;
+    alloy::tasks::Scheduler<3, 256> sched;
     sched.set_time_source(time_now);
 
     // The lambda factories install the scheduler's pool around the coroutine
     // creation; without that the promise's allocator hook returns nullptr.
     auto blink = sched.spawn([] { return blink_task(); }, Priority::Normal);
-    auto heartbeat = sched.spawn([] { return heartbeat_task(); }, Priority::Low);
+    auto producer = sched.spawn([] { return producer_task(); }, Priority::Low);
+    auto consumer = sched.spawn([] { return consumer_task(); }, Priority::High);
 
-    if (blink.is_err() || heartbeat.is_err()) {
+    if (blink.is_err() || producer.is_err() || consumer.is_err()) {
         // Pool too small or task table full. The board has no console here, so
         // we just spin -- a debugger inspecting the scheduler will see the
         // error code in the Result.

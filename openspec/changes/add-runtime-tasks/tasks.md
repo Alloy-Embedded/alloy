@@ -59,22 +59,27 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       between High and Low tasks, FIFO within Normal.
 
 ## 6. Awaiters
-- [x] 6.1 v1 ships `delay(Duration)` and `yield_now()` -- enough for the
-      example and for any task graph driven by time. `on(event)`,
-      `until(predicate)`, `any_of`, `all_of` are tracked as a follow-up
-      (no behavioural blocker; just more surface to maintain).
-- [x] 6.2 The host suite covers `delay` against a mock clock (deadline
-      honoured, not premature) and `yield_now` (FIFO interleaving). `delay`
-      additionally proves cancellation: the awaiter returns
-      `Result<void, Cancelled>` when the token is fired mid-wait.
+- [x] 6.1 v1 ships `delay(Duration)`, `yield_now()`, and `on(Event&)`.
+      `until(predicate)`, `any_of`, `all_of` remain follow-ups (more
+      surface area, no behavioural blocker for the canonical example).
+- [x] 6.2 The host suite covers `delay` against a mock clock,
+      `yield_now`, and `on(event)` across three scenarios: the canonical
+      ISR-stand-in pattern (signal->wake->resume), the pre-signalled
+      shortcut (await_ready returns true, no suspension), and
+      cancellation propagation (`Result<void, Cancelled>` after token fires).
 
 ## 7. ISR-to-task signaling
-- [ ] 7.1 Implement a lock-free SPSC queue keyed to a runtime event.
-      Producer is wait-free; consumer is the scheduler.
-- [ ] 7.2 Surface a drop counter the user can read after the fact so
-      production code can detect saturated queues.
-- [ ] 7.3 Test with a host-side simulator that posts from a separate
-      "ISR" thread and asserts the consumer wakes within one tick.
+- [x] 7.1 `Event` (alloy::tasks::Event) is the v1 signal primitive. Single
+      bit, edge-triggered, signal()-from-ISR safe through compiler-only
+      atomic_signal_fence (no RMW => no libatomic dependency on Cortex-M0+).
+      Event-with-data via SPSC ring buffer is a follow-up; for now the
+      producer fills shared state before calling `signal()` and the consumer
+      reads it after `co_await on(event)` returns.
+- [ ] 7.2 Drop counter (relevant only once SPSC queues land); deferred.
+- [ ] 7.3 Host test simulates the producer-consumer pattern within the same
+      cooperative scheduler (no separate "ISR thread" needed; the producer
+      task is the stand-in). Real ISR validation lands with hardware spot
+      checks on the foundational boards.
 
 ## 8. Cancellation
 - [ ] 8.1 Implement `cancellation_token`. Tokens hold a single atomic flag
@@ -86,10 +91,12 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       and a parent token that propagates to a child task.
 
 ## 9. Examples
-- [x] 9.1 `examples/tasks_blink_uart`: a `priority::normal` blink task and
-      a `priority::low` heartbeat counter. Built and verified for
-      `nucleo_g071rb` -- 4492 B `.text` + 160 B `.data` + 4496 B `.bss`
-      = 9148 B total (3.55% flash, 12.6% RAM on the G071RB).
+- [x] 9.1 `examples/tasks_blink_uart`: three coroutines exercising priority
+      and `on(event)` together: blink_task (Normal) toggles the LED every
+      500 ms; producer_task (Low) signals a shared Event every 1000 ms;
+      consumer_task (High) awaits the event and bumps a counter. Builds
+      for `nucleo_g071rb` at 4928 B `.text` + 160 B `.data` + 4504 B `.bss`
+      = 9592 B total (3.88% flash, 12.63% RAM).
 - [ ] 9.2 `examples/tasks_priorities`: deferred until v1 absorbs `on(event)`
       so the example shows real signalling instead of contention against
       a busy loop.

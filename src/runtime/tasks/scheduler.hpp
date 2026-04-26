@@ -22,6 +22,7 @@
 #include <utility>
 
 #include "core/result.hpp"
+#include "runtime/tasks/event.hpp"
 #include "runtime/tasks/pool.hpp"
 #include "runtime/tasks/priority.hpp"
 #include "runtime/time.hpp"
@@ -88,6 +89,7 @@ struct TaskPromise {
     enum class State : std::uint8_t {
         Ready,
         WaitingDelay,
+        WaitingEvent,
         WaitingPredicate,
         Done,
     };
@@ -96,6 +98,7 @@ struct TaskPromise {
     Priority priority = Priority::Normal;
     State state = State::Ready;
     runtime::time::Instant wake_at{};
+    Event* pending_event = nullptr;  // valid when state == WaitingEvent
     CancellationToken token = CancellationToken{nullptr};
     bool token_observed_cancel = false;
 
@@ -342,9 +345,34 @@ class YieldAwaiter {
     static void await_resume() noexcept {}
 };
 
+class OnEventAwaiter {
+   public:
+    explicit OnEventAwaiter(Event& e) noexcept : event_(&e) {}
+
+    /// If the event is already signalled at await time, consume it and skip
+    /// the suspension. Allows tight ISR -> task ping-pongs to stay efficient.
+    [[nodiscard]] auto await_ready() noexcept -> bool { return event_->consume(); }
+
+    void await_suspend(std::coroutine_handle<TaskPromise> h) noexcept;
+
+    [[nodiscard]] auto await_resume() noexcept -> core::Result<void, Cancelled> {
+        if (promise_ && promise_->token_observed_cancel) {
+            promise_->token_observed_cancel = false;
+            return core::Err(Cancelled::Yes);
+        }
+        return core::Ok();
+    }
+
+   private:
+    Event* event_ = nullptr;
+    TaskPromise* promise_ = nullptr;
+    friend class SchedulerBase;
+};
+
 [[nodiscard]] inline auto delay(runtime::time::Duration d) noexcept -> DelayAwaiter {
     return DelayAwaiter{d};
 }
 [[nodiscard]] inline auto yield_now() noexcept -> YieldAwaiter { return {}; }
+[[nodiscard]] inline auto on(Event& e) noexcept -> OnEventAwaiter { return OnEventAwaiter{e}; }
 
 }  // namespace alloy::tasks

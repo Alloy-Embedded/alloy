@@ -11,6 +11,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "runtime/tasks/event.hpp"
 #include "runtime/tasks/pool.hpp"
 #include "runtime/tasks/scheduler.hpp"
 
@@ -193,6 +194,83 @@ TEST_CASE("spawn returns PoolFull when every slot is occupied", "[tasks][sched]"
     });
     REQUIRE(second.is_err());
     CHECK(second.unwrap_err() == SpawnError::PoolFull);
+}
+
+// --- on(event) tests ---------------------------------------------------------
+
+TEST_CASE("on(event) suspends until the event is signalled", "[tasks][sched][event]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    tasks::Event uart_byte_ready;
+    int byte_count = 0;
+
+    auto echo = [&]() -> Task {
+        for (int i = 0; i < 3; ++i) {
+            static_cast<void>(co_await tasks::on(uart_byte_ready));
+            ++byte_count;
+        }
+    };
+
+    REQUIRE(sched.spawn([&] { return echo(); }).is_ok());
+
+    // Tick once: task hits the await and suspends; no event fired yet.
+    sched.tick();
+    CHECK(byte_count == 0);
+
+    // Simulate three ISR firings, draining each before the next.
+    for (int i = 0; i < 3; ++i) {
+        uart_byte_ready.signal();
+        sched.tick();  // wakes the task (state -> Ready)
+        sched.tick();  // resumes it; bumps counter; awaits again or completes
+    }
+
+    CHECK(byte_count == 3);
+}
+
+TEST_CASE("on(event) consumes a pre-signalled event without suspending",
+          "[tasks][sched][event]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    tasks::Event already_set;
+    already_set.signal();
+    int reached = 0;
+
+    auto t = [&]() -> Task {
+        // Event was set before await; await_ready returns true, no suspend,
+        // body continues immediately on the same tick.
+        static_cast<void>(co_await tasks::on(already_set));
+        reached = 1;
+    };
+
+    REQUIRE(sched.spawn([&] { return t(); }).is_ok());
+    sched.tick();
+    CHECK(reached == 1);
+    CHECK_FALSE(already_set.is_signaled());
+}
+
+TEST_CASE("Cancelling an on(event) wait returns Cancelled", "[tasks][sched][event][cancel]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    tasks::Event never_signalled;
+    auto token = CancellationToken::make();
+    bool got_cancel = false;
+
+    auto t = [&]() -> Task {
+        auto r = co_await tasks::on(never_signalled);
+        got_cancel = r.is_err();
+    };
+
+    REQUIRE(sched.spawn([&] { return t(); }, Priority::Normal, token).is_ok());
+    sched.tick();  // suspends on event
+    REQUIRE_FALSE(got_cancel);
+
+    token.request();
+    sched.tick();  // wakes via cancellation
+    sched.tick();  // resumes; awaiter returns Cancelled
+    CHECK(got_cancel);
 }
 
 TEST_CASE("Cancelling a delay returns Cancelled to the awaiter", "[tasks][sched][cancel]") {

@@ -75,18 +75,27 @@ auto SchedulerBase::tick() -> bool {
     auto* slots = slots_span();
     const auto current = now();
 
-    // 1. Wake delays whose deadline has passed and propagate cancellation to
-    //    any awaiter whose token was requested while it slept.
+    // 1. Wake any waiter whose condition is satisfied. Cancellation also
+    //    counts as a wake-up; the awaiter inspects `token_observed_cancel`
+    //    on resume and returns Cancelled.
     for (std::size_t i = 0; i < max_tasks_; ++i) {
         auto& slot = slots[i];
         if (!slot.occupied) continue;
         auto& promise = slot.handle.promise();
+        const bool cancelled = promise.token.requested();
         if (promise.state == TaskPromise::State::WaitingDelay) {
             const bool deadline_passed = !(current < promise.wake_at);
-            const bool cancelled = promise.token.requested();
             if (cancelled) promise.token_observed_cancel = true;
             if (deadline_passed || cancelled) {
                 promise.state = TaskPromise::State::Ready;
+            }
+        } else if (promise.state == TaskPromise::State::WaitingEvent) {
+            const bool fired =
+                promise.pending_event != nullptr && promise.pending_event->consume();
+            if (cancelled) promise.token_observed_cancel = true;
+            if (fired || cancelled) {
+                promise.state = TaskPromise::State::Ready;
+                promise.pending_event = nullptr;
             }
         }
     }
@@ -152,6 +161,18 @@ void YieldAwaiter::await_suspend(std::coroutine_handle<TaskPromise> h) noexcept 
     // yield_now is just "stay Ready". The scheduler picks next-best at the next
     // tick, which respects priority + FIFO-by-slot-index.
     h.promise().state = TaskPromise::State::Ready;
+}
+
+void OnEventAwaiter::await_suspend(std::coroutine_handle<TaskPromise> h) noexcept {
+    auto& p = h.promise();
+    promise_ = &p;
+    if (p.token.requested()) {
+        // Already cancelled at the moment of suspension.
+        p.token_observed_cancel = true;
+        return;
+    }
+    p.state = TaskPromise::State::WaitingEvent;
+    p.pending_event = event_;
 }
 
 }  // namespace alloy::tasks
