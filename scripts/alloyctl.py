@@ -4,11 +4,14 @@ from __future__ import annotations
 import argparse
 import difflib
 import glob
+import hashlib
 import json
 import re
 import shutil
+import struct
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,7 +37,9 @@ class BoardConfig:
     uart_globs: tuple[str, ...]
     uart_baud: int
     stm32_programmer_supported: bool = False
-    esptool_chip: str = ""   # non-empty => use esptool instead of openocd
+    esptool_chip: str = ""        # non-empty => use esptool instead of openocd
+    esptool_app_offset: str = "0x0"  # flash offset for the app binary
+    esptool_partition_table: str = ""  # path to partition table bin (relative to repo root)
 
 
 @dataclass(frozen=True)
@@ -107,6 +112,8 @@ BOARDS: dict[str, BoardConfig] = {
         ("/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"),
         115200,
         esptool_chip="esp32",
+        esptool_app_offset="0x10000",
+        esptool_partition_table="boards/esp32_devkit/partitions.csv",
     ),
 }
 
@@ -260,6 +267,45 @@ def select_flash_backend(cfg: BoardConfig, requested_backend: str, recover: bool
     return "openocd"
 
 
+def _find_gen_esp32part() -> str | None:
+    """Locate gen_esp32part.py from ESP-IDF or Arduino ESP32 install."""
+    import os
+    candidates = [
+        os.path.join(os.environ.get("IDF_PATH", ""), "components/partition_table/gen_esp32part.py"),
+        str(Path.home() / "esp/esp-idf/components/partition_table/gen_esp32part.py"),
+    ]
+    for c in candidates:
+        if c and Path(c).exists():
+            return c
+    return None
+
+
+def _generate_partition_table(csv_path: Path, out_bin: Path) -> None:
+    """Pure-Python minimal partition table generator (no IDF needed)."""
+    entries = b""
+    for line in csv_path.read_text().splitlines():
+        line = line.split("#")[0].strip()
+        if not line:
+            continue
+        parts = [p.strip() for p in line.split(",")]
+        if len(parts) < 5:
+            continue
+        name, type_s, subtype_s, offset_s, size_s = parts[:5]
+        type_map = {"app": 0x00, "data": 0x01}
+        sub_map = {"factory": 0x00, "ota_0": 0x10, "ota_1": 0x11,
+                   "nvs": 0x02, "phy": 0x01, "otadata": 0x00}
+        t = type_map.get(type_s, int(type_s, 0))
+        s = sub_map.get(subtype_s, int(subtype_s, 0))
+        offset = int(offset_s, 0)
+        size = int(size_s, 0)
+        label = name.encode("ascii").ljust(16, b"\x00")[:16]
+        entry = struct.pack("<BBII", t, s, offset, size) + label + b"\x00\x00\x00\x00"
+        entries += b"\xaa\x50" + entry
+    md5_marker = b"\xeb\xeb" + b"\xff" * 14 + hashlib.md5(entries).digest()
+    table = (entries + md5_marker).ljust(0xC00, b"\xff")
+    out_bin.write_bytes(table)
+
+
 def flash_plan_lines(cfg: BoardConfig, target: str, backend: str, recover: bool) -> list[str]:
     action = "recover-and-flash" if recover else "flash"
     lines = [
@@ -270,12 +316,24 @@ def flash_plan_lines(cfg: BoardConfig, target: str, backend: str, recover: bool)
     ]
 
     if backend == "esptool":
-        lines.extend([
-            "supported-flow: esptool.py direct-boot write_flash 0x0",
-            "planned-steps:",
-            "  - convert ELF to raw binary (objcopy -O binary)",
-            "  - esptool.py --chip esp32c3 write_flash 0x0 <target>.bin",
-        ])
+        if cfg.esptool_app_offset == "0x0":
+            # ESP32-C3 direct-boot: raw binary at 0x0
+            lines.extend([
+                "supported-flow: esptool direct-boot write-flash 0x0",
+                "planned-steps:",
+                "  - convert ELF to raw binary (objcopy -O binary)",
+                f"  - esptool --chip {cfg.esptool_chip} write-flash 0x0 <target>.bin",
+            ])
+        else:
+            # ESP32 ESP-IDF bootloader: elf2image + optional partition table
+            steps = ["planned-steps:"]
+            if cfg.esptool_partition_table:
+                steps.append(f"  - esptool --chip {cfg.esptool_chip} write-flash 0x8000 {cfg.esptool_partition_table}")
+            steps.append(f"  - esptool --chip {cfg.esptool_chip} write-flash {cfg.esptool_app_offset} <target>.bin")
+            lines.extend([
+                f"supported-flow: esptool ESP-IDF-bootloader write-flash {cfg.esptool_app_offset}",
+                *steps,
+            ])
         if recover:
             lines.append("  - --before default_reset --after hard_reset")
         return lines
@@ -597,20 +655,34 @@ def cmd_flash(args: argparse.Namespace) -> None:
         return
 
     if backend == "esptool":
-        require_tool("esptool.py")
+        esptool = shutil.which("esptool") or shutil.which("esptool.py") or "esptool"
         elf = artifact(cfg, args.target)
         bin_path = elf.with_suffix(".bin")
-        objcopy = shutil.which("riscv32-esp-elf-objcopy") or "riscv32-esp-elf-objcopy"
-        run([objcopy, "-O", "binary", str(elf), str(bin_path)])
         port = getattr(args, "port", None) or auto_port(cfg)
-        cmd = [
-            "esptool.py",
-            "--chip", cfg.esptool_chip,
-            "--port", port,
-            "--baud", "460800",
-            "write_flash", "0x0", str(bin_path),
-        ]
-        run(cmd)
+        base_cmd = [esptool, "--chip", cfg.esptool_chip, "--port", port, "--baud", "460800"]
+
+        if cfg.esptool_app_offset == "0x0":
+            # ESP32-C3 direct-boot: raw binary via objcopy
+            arch_prefix = "riscv32-esp-elf" if "c3" in cfg.esptool_chip else "xtensa-esp32-elf"
+            objcopy = shutil.which(f"{arch_prefix}-objcopy") or f"{arch_prefix}-objcopy"
+            run([objcopy, "-O", "binary", str(elf), str(bin_path)])
+            run(base_cmd + ["write-flash", "0x0", str(bin_path)])
+        else:
+            # ESP32 ESP-IDF bootloader: .bin already produced by elf2image post-build
+            if not bin_path.exists():
+                die(f"binary not found: {bin_path}\nRun build first or check post-build elf2image step.")
+            # Flash partition table: generate from CSV using gen_esp32part.py
+            if cfg.esptool_partition_table:
+                pt_csv = ROOT / cfg.esptool_partition_table
+                if pt_csv.exists():
+                    pt_bin = Path(tempfile.mkstemp(suffix=".bin", prefix="alloy_pt_")[1])
+                    _gen = _find_gen_esp32part()
+                    if _gen:
+                        run(["python3", _gen, str(pt_csv), str(pt_bin)])
+                    else:
+                        _generate_partition_table(pt_csv, pt_bin)
+                    run(base_cmd + ["write-flash", "0x8000", str(pt_bin)])
+            run(base_cmd + ["write-flash", cfg.esptool_app_offset, str(bin_path)])
         return
 
     if backend == "stm32cube":
