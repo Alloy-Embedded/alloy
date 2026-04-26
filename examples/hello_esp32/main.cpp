@@ -38,9 +38,13 @@ int main() {
     std::uint32_t loop = 0u;
 
     while (true) {
+        board::uart_raw::writeln("[alloy] led on");
         board::led::on();
+        board::uart_raw::writeln("[alloy] delay1");
         delay_500ms();
+        board::uart_raw::writeln("[alloy] led off");
         board::led::off();
+        board::uart_raw::writeln("[alloy] delay2");
         delay_500ms();
 
         ++loop;

@@ -19,6 +19,8 @@
 #include <coroutine>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
+#include <type_traits>
 #include <utility>
 
 #include "core/result.hpp"
@@ -99,6 +101,13 @@ struct TaskPromise {
     State state = State::Ready;
     runtime::time::Instant wake_at{};
     Event* pending_event = nullptr;  // valid when state == WaitingEvent
+    // Predicate poll closure (valid when state == WaitingPredicate). The
+    // scheduler calls predicate_poll(predicate_data) each tick; on true the
+    // task transitions back to Ready. The closure object lives in the
+    // coroutine frame, so the lifetime is automatically tied to the await.
+    using PredicatePoll = bool (*)(void*) noexcept;
+    PredicatePoll predicate_poll = nullptr;
+    void* predicate_data = nullptr;
     CancellationToken token = CancellationToken{nullptr};
     bool token_observed_cancel = false;
 
@@ -369,10 +378,62 @@ class OnEventAwaiter {
     friend class SchedulerBase;
 };
 
+/// Suspend until a user-supplied predicate returns true. The scheduler calls
+/// the predicate from the main loop on each tick; cheap, side-effect-free
+/// callables are best (the predicate may be invoked many times before the
+/// condition becomes true). The predicate runs in task / scheduler context,
+/// not from any ISR.
+class UntilAwaiter {
+   public:
+    using PollFn = bool (*)(void*) noexcept;
+
+    UntilAwaiter(PollFn poll, void* data) noexcept : poll_(poll), data_(data) {}
+
+    [[nodiscard]] auto await_ready() noexcept -> bool {
+        // Short-circuit: if the predicate is already true, don't bother
+        // suspending. The scheduler tick that observes the WaitingPredicate
+        // state would do the same call anyway.
+        return poll_ != nullptr && poll_(data_);
+    }
+
+    void await_suspend(std::coroutine_handle<TaskPromise> h) noexcept;
+
+    [[nodiscard]] auto await_resume() noexcept -> core::Result<void, Cancelled> {
+        if (promise_ && promise_->token_observed_cancel) {
+            promise_->token_observed_cancel = false;
+            return core::Err(Cancelled::Yes);
+        }
+        return core::Ok();
+    }
+
+   private:
+    PollFn poll_ = nullptr;
+    void* data_ = nullptr;
+    TaskPromise* promise_ = nullptr;
+    friend class SchedulerBase;
+};
+
 [[nodiscard]] inline auto delay(runtime::time::Duration d) noexcept -> DelayAwaiter {
     return DelayAwaiter{d};
 }
 [[nodiscard]] inline auto yield_now() noexcept -> YieldAwaiter { return {}; }
 [[nodiscard]] inline auto on(Event& e) noexcept -> OnEventAwaiter { return OnEventAwaiter{e}; }
+
+/// `until(predicate)` returns an awaiter that suspends until `predicate()`
+/// returns true. The predicate is captured by reference; the user is
+/// responsible for keeping its lifetime alive across the suspension. In
+/// practice this means passing a lambda directly inside the co_await
+/// expression, which the C++ coroutine machinery extends to the
+/// suspend/resume cycle.
+template <typename Predicate>
+[[nodiscard]] auto until(Predicate&& pred) noexcept -> UntilAwaiter {
+    using Decayed = std::remove_reference_t<Predicate>;
+    static_assert(std::is_invocable_r_v<bool, Decayed&>,
+                  "until() requires a callable returning bool");
+    return UntilAwaiter{
+        +[](void* p) noexcept -> bool { return (*static_cast<Decayed*>(p))(); },
+        const_cast<void*>(static_cast<const void*>(std::addressof(pred))),
+    };
+}
 
 }  // namespace alloy::tasks

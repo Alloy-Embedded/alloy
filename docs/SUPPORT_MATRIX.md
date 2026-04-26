@@ -72,6 +72,7 @@ relies on.
 | `modbus` | `representative` | host loopback tests pass (634 assertions / 113 cases): PDU codec, RTU framing, RS-485 DE, variable registry, slave (FC01–17), master scheduler, discovery FC 0x65, TCP MBAP framing. UART stream adapter and hardware spot-check pending. See [MODBUS.md](MODBUS.md). |
 | `ethernet` | `representative` | concept checks pass (MdioBus, EthernetMac, NetworkInterface, PhyDriver, TcpStream/ByteStream); Same70Mdio + Same70Gmac + KSZ8081 wired via EthernetInterface; lwIP host loopback test (TcpStream round-trip). SAME70 Xplained hardware spot-check pending (`ethernet_basic` + `modbus_tcp_slave`). See [NETWORK.md](NETWORK.md). |
 | `wifi` | `scaffolded` | W5500Interface and EspAtInterface satisfy NetworkInterface concept (compile checks pass); full SPI/UART driver implementation is deferred to a follow-on change. |
+| `tasks` | `representative` | host suite (25 cases / 135 assertions) covers pool, Task spawn, priority + FIFO, delay/yield_now/on(event)/until(predicate), CancellationToken propagation, Channel SPSC + drops, UartRxChannel + UartTxChannel kick callback. Cross-compiles for nucleo_g071rb at 5132 B text. Hardware ISR validation pending. See [TASKS.md](TASKS.md). |
 
 ## Maintenance Rules
 

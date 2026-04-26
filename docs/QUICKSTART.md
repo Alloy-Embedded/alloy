@@ -150,5 +150,6 @@ transition; new docs and examples should use `alloy`.
 - [BOARD_TOOLING.md](BOARD_TOOLING.md) -- probe and flashing notes per board
 - [CMAKE_CONSUMPTION.md](CMAKE_CONSUMPTION.md) -- alternative consumption paths
 - [COOKBOOK.md](COOKBOOK.md) -- canonical runtime patterns
+- [TASKS.md](TASKS.md) -- cooperative coroutine scheduler for application code
 - [SUPPORT_MATRIX.md](SUPPORT_MATRIX.md) -- foundational boards and known descriptors
 - [PUBLISHING.md](PUBLISHING.md) -- maintainer runbook for cutting an Alloy release

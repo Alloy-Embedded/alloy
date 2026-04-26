@@ -452,6 +452,89 @@ TEST_CASE("UartTxChannel back-pressure: task awaits wait_space() on full ring",
     CHECK(sent == 4);
 }
 
+// --- until(predicate) tests --------------------------------------------------
+
+TEST_CASE("until() resumes immediately when the predicate is already true",
+          "[tasks][sched][until]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    int reached = 0;
+
+    auto t = [&]() -> Task {
+        bool always_true = true;
+        static_cast<void>(co_await tasks::until([&] { return always_true; }));
+        reached = 1;
+    };
+
+    REQUIRE(sched.spawn([&] { return t(); }).is_ok());
+    sched.tick();
+    CHECK(reached == 1);
+}
+
+TEST_CASE("until() suspends until the predicate flips true",
+          "[tasks][sched][until]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    int counter = 0;
+    bool ready = false;
+    int reached = 0;
+
+    auto t = [&]() -> Task {
+        // Predicate captures `ready` by reference. The lambda lives in this
+        // task's coroutine frame, so the reference stays valid across
+        // suspensions. The scheduler polls the lambda every tick.
+        static_cast<void>(co_await tasks::until([&] { return ready; }));
+        reached = 1;
+    };
+
+    REQUIRE(sched.spawn([&] { return t(); }).is_ok());
+
+    // First tick: task suspends; predicate false.
+    sched.tick();
+    ++counter;
+    CHECK(reached == 0);
+
+    // Several ticks while predicate stays false: task remains suspended,
+    // counter advances on the test side just to prove time is moving.
+    for (int i = 0; i < 5; ++i) {
+        sched.tick();
+        ++counter;
+    }
+    CHECK(reached == 0);
+
+    // Flip the predicate; the next tick observes it and wakes the task.
+    ready = true;
+    sched.tick();  // wake (transition to Ready)
+    sched.tick();  // resume; reached := 1
+    CHECK(reached == 1);
+    CHECK(counter == 6);  // sanity: ticks happened
+}
+
+TEST_CASE("Cancelling an until() wait returns Cancelled", "[tasks][sched][until][cancel]") {
+    reset_clock();
+    Scheduler<2, 256> sched;
+    sched.set_time_source(mock_now);
+    auto token = CancellationToken::make();
+    bool got_cancel = false;
+    bool never_true = false;
+
+    auto t = [&]() -> Task {
+        auto r = co_await tasks::until([&] { return never_true; });
+        got_cancel = r.is_err();
+    };
+
+    REQUIRE(sched.spawn([&] { return t(); }, Priority::Normal, token).is_ok());
+    sched.tick();  // suspends
+    REQUIRE_FALSE(got_cancel);
+
+    token.request();
+    sched.tick();  // wake via cancellation
+    sched.tick();  // resume; awaiter returns Cancelled
+    CHECK(got_cancel);
+}
+
 // --- on(event) tests ---------------------------------------------------------
 
 TEST_CASE("on(event) suspends until the event is signalled", "[tasks][sched][event]") {

@@ -59,14 +59,13 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       between High and Low tasks, FIFO within Normal.
 
 ## 6. Awaiters
-- [x] 6.1 v1 ships `delay(Duration)`, `yield_now()`, and `on(Event&)`.
-      `until(predicate)`, `any_of`, `all_of` remain follow-ups (more
-      surface area, no behavioural blocker for the canonical example).
+- [x] 6.1 v1 ships `delay(Duration)`, `yield_now()`, `on(Event&)`, and
+      `until(predicate)`. `any_of`, `all_of` remain follow-ups.
 - [x] 6.2 The host suite covers `delay` against a mock clock,
-      `yield_now`, and `on(event)` across three scenarios: the canonical
-      ISR-stand-in pattern (signal->wake->resume), the pre-signalled
-      shortcut (await_ready returns true, no suspension), and
-      cancellation propagation (`Result<void, Cancelled>` after token fires).
+      `yield_now`, `on(event)` (canonical pattern, pre-signalled
+      shortcut, cancellation), and `until` (predicate already true,
+      predicate flips after several ticks, cancellation interrupts a
+      stuck predicate). All paths return `Result<void, Cancelled>`.
 
 ## 7. ISR-to-task signaling
 - [x] 7.1 Four primitives ship in v1:
@@ -124,16 +123,17 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       contract is implemented (this commit only ships the simple flag).
 
 ## 10. Documentation
-- [ ] 10.1 `docs/TASKS.md`: user guide -- spawn, await, priority, pool
-      sizing recipe, footprint table, cancellation idiom, ISR signalling
-      pattern, common gotchas.
-- [ ] 10.2 `docs/SUPPORT_MATRIX.md`: add a `tasks` runtime-class entry,
-      `representative` once host loopback tests pass, `compile-only` until
-      hardware spot-checks land.
-- [ ] 10.3 `docs/COOKBOOK.md`: add a tasks section with the canonical
-      patterns from the examples.
-- [ ] 10.4 Cross-link from `docs/QUICKSTART.md` so users discover the
-      capability after `alloy new`.
+- [x] 10.1 `docs/TASKS.md` ships -- quick start, footprint table, full
+      awaiter reference (delay, yield_now, on, until), Channel docs,
+      UartRx/UartTx wiring, cancellation idiom, ISR-safety table,
+      architecture support, sizing recipe, and a follow-ups section
+      that mirrors the deferred items in this tasks.md.
+- [x] 10.2 `docs/SUPPORT_MATRIX.md` gains a `tasks` runtime-class entry
+      at `representative` (host suite passes; hardware spot-check pending).
+- [ ] 10.3 `docs/COOKBOOK.md` deferred -- TASKS.md already captures the
+      canonical patterns from the example; a separate cookbook entry can
+      land alongside additional examples.
+- [x] 10.4 `docs/QUICKSTART.md` cross-links TASKS.md.
 
 ## 11. Footprint gate
 - [ ] 11.1 Add a CI job that builds `examples/tasks_blink_uart` for

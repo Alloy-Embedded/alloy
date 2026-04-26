@@ -97,6 +97,15 @@ auto SchedulerBase::tick() -> bool {
                 promise.state = TaskPromise::State::Ready;
                 promise.pending_event = nullptr;
             }
+        } else if (promise.state == TaskPromise::State::WaitingPredicate) {
+            const bool ready = promise.predicate_poll != nullptr &&
+                               promise.predicate_poll(promise.predicate_data);
+            if (cancelled) promise.token_observed_cancel = true;
+            if (ready || cancelled) {
+                promise.state = TaskPromise::State::Ready;
+                promise.predicate_poll = nullptr;
+                promise.predicate_data = nullptr;
+            }
         }
     }
 
@@ -173,6 +182,18 @@ void OnEventAwaiter::await_suspend(std::coroutine_handle<TaskPromise> h) noexcep
     }
     p.state = TaskPromise::State::WaitingEvent;
     p.pending_event = event_;
+}
+
+void UntilAwaiter::await_suspend(std::coroutine_handle<TaskPromise> h) noexcept {
+    auto& p = h.promise();
+    promise_ = &p;
+    if (p.token.requested()) {
+        p.token_observed_cancel = true;
+        return;
+    }
+    p.state = TaskPromise::State::WaitingPredicate;
+    p.predicate_poll = poll_;
+    p.predicate_data = data_;
 }
 
 }  // namespace alloy::tasks
