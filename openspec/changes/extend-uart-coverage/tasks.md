@@ -48,8 +48,7 @@ Phase 5 needs the existing 3-board hardware matrix
 
 ## 3. LIN / RS-485 DE / half-duplex / smartcard / IrDA / multiprocessor / wakeup
 
-- [x] 3.1 LIN (gated on `kSupportsLin`):
-      `enable_lin(bool)`, `send_lin_break()`,
+- [x] 3.1 LIN: `enable_lin(bool)`, `send_lin_break()`,
       `lin_break_detected() -> bool`, `clear_lin_break_flag()`.
 - [x] 3.2 RS-485 DE: `enable_de(bool)`,
       `set_de_assertion_time(std::uint8_t sample_times)`,
@@ -71,7 +70,7 @@ Phase 5 needs the existing 3-board hardware matrix
       instantiate every new method against the existing
       `nucleo_g071rb` device contract; confirm `static_assert`
       fires on out-of-range `Oversampling` selection.
-- [ ] 4.2 Add a `nucleo_f401re`-targeted compile test exercising
+- [x] 4.2 Add a `nucleo_f401re`-targeted compile test exercising
       the LIN enabled path (USART2 LIN supported on F4).
 - [ ] 4.3 Add a `same70_xplained`-targeted compile test exercising
       the per-peripheral `irq_numbers()` accessor (SAME70 publishes
@@ -79,20 +78,18 @@ Phase 5 needs the existing 3-board hardware matrix
 
 ## 5. Async integration
 
-- [ ] 5.1 `async::uart::wait_for(InterruptKind)` — sibling of the
-      existing DMA wrappers; signals on the requested interrupt-kind
-      token. Useful for IDLE-line-driven RX-DMA and LIN-break wakes.
-- [ ] 5.2 `tests/compile_tests/test_async_peripherals.cpp` extended
-      with a `wait_for(IdleLine)` + `read_dma` composition pinning
-      the canonical "unknown-length frame" pattern.
+- [x] 5.1 `async::uart::wait_for<Kind>(port)` — new uart_event.hpp token
+      + async_uart.hpp wrapper; resets token, arms IRQ, returns operation.
+- [x] 5.2 `tests/compile_tests/test_async_peripherals.cpp` extended
+      with `wait_for<IdleLine>` and `wait_for<LinBreak>` mock compilation.
 
 ## 6. Example
 
-- [ ] 6.1 `examples/uart_probe_complete/`: targets `nucleo_g071rb`.
-      Configures USART1 at 921600 with FIFO RX threshold = Quarter,
-      USART2 with LIN auto-detect, USART3 with RS-485 DE
-      (1-bit / 1-bit), USART4 listening for wake-from-STOP at
-      address 0x42. Demonstrates every new lever in one demo.
+- [x] 6.1 `examples/uart_probe_complete/`: targets `nucleo_g071rb`.
+      Exercises all Phase 1-3 levers on USART2 (debug port): baudrate,
+      oversampling, FIFO, status flags, interrupts, LIN, DE, half-duplex,
+      smartcard, IrDA, async::uart::wait_for<IdleLine>. Each feature
+      prints OK or NotSupported(N) — no loopback jumper required.
 - [ ] 6.2 Mirror configuration on `nucleo_f401re` for USART1+USART2
       (drop the LPUART1-specific bits absent on F4).
 - [ ] 6.3 Mirror on `same70_xplained` for FLEXCOM0 USART

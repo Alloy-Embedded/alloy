@@ -45,17 +45,41 @@ interrupt.
 
 ## Per-peripheral API
 
-### UART (DMA)
+### UART (DMA + interrupt wait)
 
 ```cpp
 #include "runtime/async_uart.hpp"
 
+// DMA transfers.
 auto op = co_await async::uart::write_dma(uart, tx_dma, buffer);
 // Result<operation<dma_event::token<peripheral, signal_TX>>, ErrorCode>
 ```
 
 DMA transfer-complete interrupt signals the token. `read_dma` mirrors it
 with `signal_RX`.
+
+**Single interrupt-event wait** — new, for IDLE-line / LIN-break / TC
+patterns that do not involve DMA but need to suspend on a UART interrupt:
+
+```cpp
+#include "runtime/async_uart.hpp"
+#include "runtime/uart_event.hpp"  // uart_event::token<P, Kind>
+
+using alloy::hal::uart::InterruptKind;
+
+// Arm IDLE-line interrupt, start DMA, wait for end-of-frame.
+auto idle_op = async::uart::wait_for<InterruptKind::IdleLine>(uart);
+uart.read_dma(rx_channel, rx_buf);
+idle_op->wait_for<SysTickSource>(time::Duration::from_millis(100));
+uart.disable_interrupt(InterruptKind::IdleLine);  // disarm
+```
+
+`wait_for<Kind>(port)` resets `uart_event::token<P, Kind>`, calls
+`port.enable_interrupt(Kind)`, then returns
+`operation<uart_event::token<P, Kind>>`. The vendor ISR calls `token::signal()`.
+
+See [UART.md](UART.md) for the full per-vendor capability matrix and
+the `InterruptKind` enum.
 
 ### SPI (DMA)
 
