@@ -1,0 +1,231 @@
+{
+  "_comment": "Machine-readable driver registry. Fields: name, category, interface, chips, status, example, notes.",
+  "_status_values": ["compile-review", "hardware-validated"],
+  "drivers": [
+    {
+      "name": "ssd1306",
+      "category": "display",
+      "interface": "i2c",
+      "chips": ["SSD1306"],
+      "status": "compile-review",
+      "example": "examples/driver_ssd1306_probe",
+      "notes": "128×64 OLED. I2C Device<Bus> + SpiDevice<Spi,Dc,Cs> transport. HW validation pending."
+    },
+    {
+      "name": "st7789",
+      "category": "display",
+      "interface": "spi",
+      "chips": ["ST7789"],
+      "status": "compile-review",
+      "example": "examples/driver_st7789_probe",
+      "notes": "240×320 TFT LCD. fill_rect, draw_pixel, blit. DcPolicy+CsPolicy templates. HW validation pending."
+    },
+    {
+      "name": "ili9341",
+      "category": "display",
+      "interface": "spi",
+      "chips": ["ILI9341"],
+      "status": "compile-review",
+      "example": "examples/driver_ili9341_probe",
+      "notes": "240×320 TFT LCD. Same API as ST7789. 11-step init. HW validation pending."
+    },
+    {
+      "name": "uc8151",
+      "category": "display",
+      "interface": "spi",
+      "chips": ["UC8151"],
+      "status": "compile-review",
+      "example": "examples/driver_uc8151_probe",
+      "notes": "E-paper (2.13\"/2.9\"). Full update, BUSY pin poll, deep-sleep. Width/Height template params. HW validation pending."
+    },
+    {
+      "name": "tm1637",
+      "category": "display",
+      "interface": "gpio",
+      "chips": ["TM1637"],
+      "status": "compile-review",
+      "example": "examples/driver_tm1637_probe",
+      "notes": "4-digit 7-segment LED. GPIO bit-bang, display_number, set_brightness. HW validation pending."
+    },
+    {
+      "name": "bme280",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["BME280"],
+      "status": "compile-review",
+      "example": "examples/driver_bme280_probe",
+      "notes": "Temperature, pressure, humidity. Bosch compensation formulas. HW validation pending."
+    },
+    {
+      "name": "sht4x",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["SHT40", "SHT41"],
+      "status": "compile-review",
+      "example": "examples/driver_sht4x_probe",
+      "notes": "T+RH one-shot, CRC-8. High/medium/low repeatability. HW validation pending."
+    },
+    {
+      "name": "aht20",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["AHT20"],
+      "status": "compile-review",
+      "example": "examples/driver_aht20_probe",
+      "notes": "T+RH triggered one-shot, calibration check, busy-poll. HW validation pending."
+    },
+    {
+      "name": "lps22hh",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["LPS22HH"],
+      "status": "compile-review",
+      "example": "examples/driver_lps22hh_probe",
+      "notes": "Barometric pressure + temperature. One-shot mode. HW validation pending."
+    },
+    {
+      "name": "icm42688p",
+      "category": "sensor",
+      "interface": "spi",
+      "chips": ["ICM-42688-P"],
+      "status": "compile-review",
+      "example": "examples/driver_icm42688p_probe",
+      "notes": "6-DoF IMU. Configurable accel/gyro FS + ODR. 14-byte burst. HW validation pending."
+    },
+    {
+      "name": "mpu6050",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["MPU-6050"],
+      "status": "compile-review",
+      "example": "examples/driver_mpu6050_probe",
+      "notes": "6-DoF IMU + temperature. DLPF, configurable FS, 14-byte burst. HW validation pending."
+    },
+    {
+      "name": "lsm6dsox",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["LSM6DSOX"],
+      "status": "compile-review",
+      "example": "examples/driver_lsm6dsox_probe",
+      "notes": "6-DoF IMU + temperature. 416 Hz ODR, auto-increment burst. HW validation pending."
+    },
+    {
+      "name": "lis3mdl",
+      "category": "sensor",
+      "interface": "i2c",
+      "chips": ["LIS3MDL"],
+      "status": "compile-review",
+      "example": "examples/driver_lis3mdl_probe",
+      "notes": "3-axis magnetometer. Ultra-high perf mode, configurable FS. HW validation pending."
+    },
+    {
+      "name": "w25q",
+      "category": "memory",
+      "interface": "spi",
+      "chips": ["W25Q16", "W25Q32", "W25Q64", "W25Q128", "W25Q256"],
+      "status": "compile-review",
+      "example": "examples/driver_w25q_probe",
+      "notes": "NOR flash. JEDEC ID, page program, sector erase. BlockDevice adapter included. HW validation pending."
+    },
+    {
+      "name": "at24mac402",
+      "category": "memory",
+      "interface": "i2c",
+      "chips": ["AT24MAC402"],
+      "status": "compile-review",
+      "example": "examples/driver_at24mac402_probe",
+      "notes": "EEPROM + EUI-48/EUI-64 + 128-bit serial. Paged read/write. Onboard SAME70 Xplained Ultra."
+    },
+    {
+      "name": "is42s16100f",
+      "category": "memory",
+      "interface": "sdramc",
+      "chips": ["IS42S16100F"],
+      "status": "compile-review",
+      "example": "examples/driver_is42s16100f_probe",
+      "notes": "16-bit SDRAM. SDRAMC controller init. Onboard SAME70 Xplained Ultra."
+    },
+    {
+      "name": "sdcard",
+      "category": "memory",
+      "interface": "spi",
+      "chips": ["SD", "SDHC", "SDXC"],
+      "status": "compile-review",
+      "example": "examples/filesystem_fatfs_sdcard",
+      "notes": "SPI-mode SD card. CMD0/8/ACMD41/58 init, CMD17/24 block R/W. SDSC not supported."
+    },
+    {
+      "name": "fm25v10",
+      "category": "memory",
+      "interface": "spi",
+      "chips": ["FM25V10"],
+      "status": "compile-review",
+      "example": "examples/driver_fm25v10_probe",
+      "notes": "1-Mbit FRAM. No erase, byte-granularity R/W, WREN per write. HW validation pending."
+    },
+    {
+      "name": "ksz8081",
+      "category": "net",
+      "interface": "mdio",
+      "chips": ["KSZ8081"],
+      "status": "compile-review",
+      "example": "examples/driver_ksz8081_probe",
+      "notes": "Ethernet PHY. MDIO/MDC register access. Onboard SAME70 Xplained Ultra."
+    },
+    {
+      "name": "nmea_parser",
+      "category": "net",
+      "interface": "uart",
+      "chips": ["generic GPS"],
+      "status": "compile-review",
+      "example": "examples/driver_nmea_parser_probe",
+      "notes": "Stateless GPGGA/GPRMC parser. No heap, no stdlib strings. HW validation pending."
+    },
+    {
+      "name": "sx1276",
+      "category": "net",
+      "interface": "spi",
+      "chips": ["SX1276"],
+      "status": "compile-review",
+      "example": "examples/driver_sx1276_probe",
+      "notes": "LoRa radio. Configurable BW/SF/CR, blocking TX+RX, RSSI. Polling-only (no DIO0). HW validation pending."
+    },
+    {
+      "name": "rc522",
+      "category": "net",
+      "interface": "spi",
+      "chips": ["MFRC522"],
+      "status": "compile-review",
+      "example": "examples/driver_rc522_probe",
+      "notes": "ISO 14443-A RFID. Card detect, anti-collision, 4-byte UID read. HW validation pending."
+    },
+    {
+      "name": "max17048",
+      "category": "power",
+      "interface": "i2c",
+      "chips": ["MAX17048", "MAX17049"],
+      "status": "compile-review",
+      "example": "examples/driver_max17048_probe",
+      "notes": "LiPo fuel gauge. SOC%, voltage, charge rate, alert threshold. HW validation pending."
+    },
+    {
+      "name": "ina219",
+      "category": "power",
+      "interface": "i2c",
+      "chips": ["INA219"],
+      "status": "compile-review",
+      "example": "examples/driver_ina219_probe",
+      "notes": "Power monitor. Calibration register, shunt+bus voltage, current, power. HW validation pending."
+    },
+    {
+      "name": "ina3221",
+      "category": "power",
+      "interface": "i2c",
+      "chips": ["INA3221"],
+      "status": "compile-review",
+      "example": "examples/driver_ina3221_probe",
+      "notes": "Triple-channel power monitor. MANUFACTURER_ID check, 3-channel burst read. HW validation pending."
+    }
+  ]
+}

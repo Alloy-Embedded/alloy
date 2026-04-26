@@ -124,8 +124,10 @@ Hardware spot-checks are listed where a reference board is available.
 
 - [ ] 9.1 `compile-review-drivers` CI job: builds all driver compile tests in parallel.
       Blocks on any new driver PR that lacks a compile test.
-- [ ] 9.2 `drivers/MANIFEST.json`: machine-readable registry. Fields: `name`, `category`,
-      `interface`, `chips`, `status`, `example`, `notes`.
-- [ ] 9.3 `docs/DRIVERS.md`: driver catalog auto-generated from `MANIFEST.json`.
-      Status: compile-review / hardware-validated.
-- [ ] 9.4 `alloyctl info --drivers`: lists available drivers and status from MANIFEST.json.
+      (Deferred — requires CI pipeline infrastructure.)
+- [x] 9.2 `drivers/MANIFEST.json`: machine-readable registry. 25 drivers catalogued.
+      Fields: `name`, `category`, `interface`, `chips`, `status`, `example`, `notes`.
+- [x] 9.3 `docs/DRIVERS.md`: driver catalog table grouped by category, generated from MANIFEST.
+      Status: compile-review / hardware-validated. Links to driver headers and probe examples.
+- [x] 9.4 `alloyctl info --drivers`: tabular output grouped by category with chip list,
+      interface, and status. Summary line: total / hardware-validated / compile-review.

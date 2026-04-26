@@ -1159,8 +1159,46 @@ def cmd_compile_commands(args: argparse.Namespace) -> None:
         print(f"linked {dest} -> {src}")
 
 
+def _read_driver_manifest() -> list[dict]:
+    """Load drivers/MANIFEST.json and return the drivers list."""
+    path = ROOT / "drivers" / "MANIFEST.json"
+    if not path.exists():
+        return []
+    with path.open() as f:
+        data = json.load(f)
+    return data.get("drivers", [])
+
+
 def cmd_info(args: argparse.Namespace) -> None:
-    del args  # signature required by argparse dispatch
+    if getattr(args, "drivers", False):
+        drivers = _read_driver_manifest()
+        if not drivers:
+            print("drivers/MANIFEST.json not found or empty", file=sys.stderr)
+            sys.exit(1)
+        # Group by category for readable output.
+        by_cat: dict[str, list[dict]] = {}
+        for d in drivers:
+            by_cat.setdefault(d["category"], []).append(d)
+        col_w = {"name": 16, "chips": 28, "iface": 8, "status": 20}
+        for cat in sorted(by_cat):
+            print(f"\n{cat.upper()}")
+            header = (
+                f"  {'name':<{col_w['name']}}  {'chips':<{col_w['chips']}}"
+                f"  {'interface':<{col_w['iface']}}  status"
+            )
+            print(header)
+            print("  " + "-" * (len(header) - 2))
+            for d in by_cat[cat]:
+                chips = ", ".join(d.get("chips", []))
+                print(
+                    f"  {d['name']:<{col_w['name']}}  {chips:<{col_w['chips']}}"
+                    f"  {d['interface']:<{col_w['iface']}}  {d['status']}"
+                )
+        total = len(drivers)
+        validated = sum(1 for d in drivers if d["status"] == "hardware-validated")
+        print(f"\n{total} drivers total — {validated} hardware-validated, "
+              f"{total - validated} compile-review")
+        return
     manifest = _read_release_manifest()
     manifest_ref = None
     if isinstance(manifest, dict):
@@ -1882,6 +1920,8 @@ def main() -> int:
     cc_p.set_defaults(func=cmd_compile_commands)
 
     info_p = sub.add_parser("info", help="print machine-readable environment report (JSON)")
+    info_p.add_argument("--drivers", action="store_true",
+                        help="list available drivers and status from drivers/MANIFEST.json")
     info_p.set_defaults(func=cmd_info)
 
     doctor_p = sub.add_parser("doctor", help="preflight check: toolchain, probe, python deps, ref")
