@@ -26,6 +26,11 @@ MEMORY
     DROM (r)   : ORIGIN = 0x3F400010, LENGTH = (3584K - 16)
     /* Flash-cached executable code (MMU-mapped by bootloader) */
     IROM (rx)  : ORIGIN = 0x400D0010, LENGTH = (1984K - 16)
+    /* Internal SRAM for code that must not depend on flash cache.
+     * The 2nd-stage bootloader uses 0x40080000-0x40080EE8 area, but it
+     * hands control off before our code starts, so we can reuse it.
+     * Use 0x40080400 onwards to be safe (avoids low-IRAM ROM trampolines). */
+    IRAM (rwx) : ORIGIN = 0x40080400, LENGTH = 126K
     /* Direct SRAM for data, BSS, and stack */
     DRAM (rw)  : ORIGIN = 0x3FFB0000, LENGTH = 272K
 }
@@ -52,16 +57,29 @@ SECTIONS
      * Literals must precede their l32r instructions → put all .literal*  *
      * before .text* within this section.                                  *
      * ------------------------------------------------------------------ */
+    /* ------------------------------------------------------------------ *
+     * IRAM — internal-SRAM code that must run without flash cache.        *
+     * Used by APP_CPU bring-up: when APP_CPU is released, there's a brief *
+     * window of cache-controller arbitration glitch that returns garbage  *
+     * on PRO_CPU's flash fetches.  Code reachable in that window must     *
+     * live here.                                                           *
+     * ------------------------------------------------------------------ */
+    .iram_text : ALIGN(4)
+    {
+        _siram_text = .;
+        *(.iram1.literal .iram1.literal.*)
+        *(.iram0.literal .iram0.literal.*)
+        *(.iram1.text .iram1.text.*)
+        *(.iram0.text .iram0.text.*)
+        . = ALIGN(4);
+        _eiram_text = .;
+    } > IRAM
+
     .text : ALIGN(4)
     {
         /* Literal pools — must be at lower address than the l32r users */
         *(.literal .literal.*)
-        *(.iram1.literal)
-        *(.iram0.literal)
         /* Code */
-        KEEP(*(.iram1.text))
-        *(.iram0.text*)
-        *(.iram1.text*)
         *(.text .text.*)
         . = ALIGN(4);
         _etext = .;
@@ -103,6 +121,15 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         _ebss = .;
+    } > DRAM
+
+    /* Dedicated stack for APP_CPU (core 1). 8 KB, 16-byte aligned.
+     * _appcpu_stack_top is loaded into a1 (SP) by _alloy_appcpu_entry. */
+    .appcpu_stack (NOLOAD) : ALIGN(16)
+    {
+        _appcpu_stack_bottom = .;
+        . = . + 8192;
+        _appcpu_stack_top = .;
     } > DRAM
 
     _end = .;
