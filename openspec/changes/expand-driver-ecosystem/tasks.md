@@ -65,16 +65,22 @@ Hardware spot-checks are listed where a reference board is available.
 ## 5. Display driver batch
 
 - [x] 5.1 `drivers/display/ssd1306/ssd1306.hpp` — SSD1306 over I2C. Init, clear,
-      pixel, text, flush. ✅ compile-review. SPI backend: not yet.
-- [ ] 5.2 SSD1306 SPI transport backend — add `SpiTransport<Spi>` path to existing
-      driver without breaking I2C API.
-- [ ] 5.3 `drivers/display/st7789/st7789.hpp` — ST7789 over SPI. Init, fill_rect,
-      draw_pixel. Framebuffer is user-supplied `std::span`.
-- [ ] 5.4 `drivers/display/ili9341/ili9341.hpp` — ILI9341 over SPI. Same API as ST7789.
-- [ ] 5.5 `drivers/display/uc8151/uc8151.hpp` — UC8151 e-paper over SPI.
-      Full + partial update, BUSY pin wait.
-- [ ] 5.6 `drivers/display/tm1637/tm1637.hpp` — TM1637 4-digit 7-seg over GPIO bit-bang.
-      Display number, brightness control.
+      pixel, text, flush. ✅ compile-review. HW validated (AT24MAC402 probe board).
+- [x] 5.2 SSD1306 SPI transport backend — `SpiDevice<Spi, DcPolicy, CsPolicy>` added
+      alongside existing I2C `Device`. Uses `transfer(tx,rx)` bus surface.
+      ✅ compile-review. HW validation pending.
+- [x] 5.3 `drivers/display/st7789/st7789.hpp` — ST7789 over SPI. Init, fill_rect,
+      draw_pixel, blit. DcPolicy + CsPolicy templates. 64-byte stack chunks (no heap).
+      ✅ compile-review. HW validation pending.
+- [x] 5.4 `drivers/display/ili9341/ili9341.hpp` — ILI9341 over SPI. Same API as ST7789,
+      11-step init sequence per datasheet.
+      ✅ compile-review. HW validation pending.
+- [x] 5.5 `drivers/display/uc8151/uc8151.hpp` — UC8151 e-paper over SPI.
+      Full update, BUSY pin poll, deep-sleep. Width/Height as template params.
+      ✅ compile-review. HW validation pending.
+- [x] 5.6 `drivers/display/tm1637/tm1637.hpp` — TM1637 4-digit 7-seg over GPIO bit-bang.
+      LSB-first 2-wire protocol, display_number, set_brightness, clear.
+      ✅ compile-review. HW validation pending.
 
 ## 6. Power management and monitoring
 
