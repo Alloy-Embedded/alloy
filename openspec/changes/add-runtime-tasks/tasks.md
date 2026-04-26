@@ -69,16 +69,19 @@ mergeable. Host-only tests cover every phase that does not need hardware.
       cancellation propagation (`Result<void, Cancelled>` after token fires).
 
 ## 7. ISR-to-task signaling
-- [x] 7.1 `Event` (alloy::tasks::Event) is the v1 signal primitive. Single
-      bit, edge-triggered, signal()-from-ISR safe through compiler-only
-      atomic_signal_fence (no RMW => no libatomic dependency on Cortex-M0+).
-      Event-with-data via SPSC ring buffer is a follow-up; for now the
-      producer fills shared state before calling `signal()` and the consumer
-      reads it after `co_await on(event)` returns.
-- [ ] 7.2 Drop counter (relevant only once SPSC queues land); deferred.
-- [ ] 7.3 Host test simulates the producer-consumer pattern within the same
-      cooperative scheduler (no separate "ISR thread" needed; the producer
-      task is the stand-in). Real ISR validation lands with hardware spot
+- [x] 7.1 Two primitives ship in v1:
+      - `Event` -- single bit, edge-triggered, ISR-safe via compiler-only
+        atomic_signal_fence (no libatomic). For "wake the task" without data.
+      - `Channel<T, N>` -- SPSC ring buffer with payload. `try_push` is the
+        call an ISR makes; `try_pop` and `wait()` are the consumer side.
+        Drain-then-wait is the canonical pattern, so multiple values that
+        arrive between two consumer wakes are never lost.
+- [x] 7.2 Drop counter on Channel: producer-only writes, consumer reads
+      via `channel.drops()`. A steadily-rising counter signals an undersized
+      ring or a starved consumer.
+- [x] 7.3 Host suite covers the SPSC consumer loop (drain in inner while,
+      `wait()` in outer while) across three batches with three sizes (1, 1,
+      and a final pair). Real ISR validation lands with hardware spot
       checks on the foundational boards.
 
 ## 8. Cancellation
@@ -92,11 +95,13 @@ mergeable. Host-only tests cover every phase that does not need hardware.
 
 ## 9. Examples
 - [x] 9.1 `examples/tasks_blink_uart`: three coroutines exercising priority
-      and `on(event)` together: blink_task (Normal) toggles the LED every
-      500 ms; producer_task (Low) signals a shared Event every 1000 ms;
-      consumer_task (High) awaits the event and bumps a counter. Builds
-      for `nucleo_g071rb` at 4928 B `.text` + 160 B `.data` + 4504 B `.bss`
-      = 9592 B total (3.88% flash, 12.63% RAM).
+      and the SPSC channel together: blink_task (Normal) toggles the LED
+      every 500 ms; producer_task (Low) emits a fake "byte" into a
+      `Channel<uint8_t, 16>` every 250 ms (stand-in for a UART RX ISR);
+      consumer_task (High) drains the channel into a checksum and a
+      counter, then `co_await rx_channel.wait()`. Builds for
+      `nucleo_g071rb` at 5044 B `.text` + 160 B `.data` + 4536 B `.bss`
+      = 9740 B total (3.97% flash, 12.72% RAM).
 - [ ] 9.2 `examples/tasks_priorities`: deferred until v1 absorbs `on(event)`
       so the example shows real signalling instead of contention against
       a busy loop.

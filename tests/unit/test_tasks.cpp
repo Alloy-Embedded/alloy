@@ -11,6 +11,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "runtime/tasks/channel.hpp"
 #include "runtime/tasks/event.hpp"
 #include "runtime/tasks/pool.hpp"
 #include "runtime/tasks/scheduler.hpp"
@@ -194,6 +195,84 @@ TEST_CASE("spawn returns PoolFull when every slot is occupied", "[tasks][sched]"
     });
     REQUIRE(second.is_err());
     CHECK(second.unwrap_err() == SpawnError::PoolFull);
+}
+
+// --- Channel<T, N> tests -----------------------------------------------------
+
+TEST_CASE("Channel try_push and try_pop round-trip a sequence of values",
+          "[tasks][channel]") {
+    tasks::Channel<int, 4> ch;
+    REQUIRE(ch.empty());
+    CHECK(ch.try_push(1));
+    CHECK(ch.try_push(2));
+    CHECK(ch.try_push(3));
+    CHECK(ch.size() == 3);
+    auto a = ch.try_pop();
+    auto b = ch.try_pop();
+    auto c = ch.try_pop();
+    auto d = ch.try_pop();
+    REQUIRE(a.has_value());
+    REQUIRE(b.has_value());
+    REQUIRE(c.has_value());
+    REQUIRE_FALSE(d.has_value());
+    CHECK(*a == 1);
+    CHECK(*b == 2);
+    CHECK(*c == 3);
+}
+
+TEST_CASE("Channel drops values and bumps the counter when full",
+          "[tasks][channel]") {
+    tasks::Channel<int, 2> ch;  // capacity 2 -> usable slots = 1 (one always reserved)
+    CHECK(ch.try_push(10));
+    CHECK_FALSE(ch.try_push(11));    // full: head+1 == tail
+    CHECK(ch.drops() == 1);
+    auto v = ch.try_pop();
+    REQUIRE(v.has_value());
+    CHECK(*v == 10);
+    CHECK(ch.try_push(12));
+    CHECK(ch.drops() == 1);  // didn't bump on success
+}
+
+TEST_CASE("Channel wait() suspends until try_push signals", "[tasks][channel][sched]") {
+    reset_clock();
+    Scheduler<2, 384> sched;
+    sched.set_time_source(mock_now);
+    tasks::Channel<int, 8> ch;
+    int sum = 0;
+
+    auto consumer = [&]() -> Task {
+        for (int i = 0; i < 3; ++i) {
+            // drain ready values, then suspend for more
+            while (auto v = ch.try_pop()) {
+                sum += *v;
+            }
+            static_cast<void>(co_await ch.wait());
+        }
+        // final drain so any still-queued values are counted
+        while (auto v = ch.try_pop()) {
+            sum += *v;
+        }
+    };
+
+    REQUIRE(sched.spawn([&] { return consumer(); }).is_ok());
+    sched.tick();  // first iteration drains nothing, suspends
+
+    // Three "ISR firings" with batches; consumer wakes once per signal,
+    // drains everything ready, suspends again.
+    REQUIRE(ch.try_push(1));
+    REQUIRE(ch.try_push(2));
+    sched.tick();  // wake
+    sched.tick();  // resume; drains 1+2=3, suspends again
+
+    REQUIRE(ch.try_push(10));
+    sched.tick();
+    sched.tick();
+
+    REQUIRE(ch.try_push(100));
+    sched.tick();
+    sched.tick();  // resume + final drain happens on completion path
+
+    CHECK(sum == 1 + 2 + 10 + 100);
 }
 
 // --- on(event) tests ---------------------------------------------------------

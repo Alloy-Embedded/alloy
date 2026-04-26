@@ -1,19 +1,25 @@
-// Cooperative coroutine scheduler example: blink + event-driven counter.
+// Cooperative coroutine scheduler example: blink + ISR-stand-in feeding a
+// SPSC channel that a consumer task drains and tallies.
 //
 // Three tasks run side by side on a single stack:
 //
 //   - blink_task     (priority::normal): toggles board::led every 500 ms.
-//   - producer_task  (priority::low):    waits 1 s, signals `tick_event`, repeats.
-//   - consumer_task  (priority::high):   awaits `tick_event` and bumps a counter.
+//   - producer_task  (priority::low):    every 250 ms, pushes a fake "byte"
+//                                        into rx_channel. Stand-in for what a
+//                                        UART RX ISR would do in real code.
+//   - consumer_task  (priority::high):   drains rx_channel; tallies the byte
+//                                        count and a running checksum.
 //
 // What the example demonstrates:
 //
 //   1. Linear-looking concurrency. Each task reads top-to-bottom; the only
 //      "concurrency" syntax is `co_await`.
-//   2. Priority. The high-priority consumer wakes immediately when the event
-//      fires, even though the low-priority producer is still ready.
-//   3. Event signalling. The same `tasks::Event` API works for ISR -> task
-//      hand-offs (the producer here is a stand-in for an interrupt handler).
+//   2. Priority. The high-priority consumer wakes immediately when the channel
+//      receives a byte, even though the low-priority producer is still ready.
+//   3. SPSC channel. `try_push` is the call an ISR makes; `wait()` is the
+//      consumer's await. Drain-then-wait is the canonical pattern -- the
+//      consumer pops everything ready before suspending again, so multiple
+//      bytes that arrive between two consumer wakes are never lost.
 //   4. Zero heap. Coroutine frames live in `Scheduler<3, 256>` -- 3 slots of
 //      256 bytes, total 768 bytes of pool RAM allocated statically.
 //
@@ -46,7 +52,7 @@
 #endif
 
 #include "hal/systick.hpp"
-#include "runtime/tasks/event.hpp"
+#include "runtime/tasks/channel.hpp"
 #include "runtime/tasks/scheduler.hpp"
 #include "runtime/time.hpp"
 
@@ -56,14 +62,16 @@ using alloy::tasks::Task;
 
 namespace {
 
-// Cooperative scheduler => no preemption between tasks, so this counter does
-// not need volatile/atomic. A debugger reading it sees a stable value because
-// no one else touches it while a task is suspended at a `co_await` point.
-std::uint32_t tick_count = 0;
+// Cooperative scheduler => no preemption between tasks, so these counters do
+// not need volatile/atomic. A debugger reading them sees a stable value because
+// no one else touches them while a task is suspended at a `co_await` point.
+std::uint32_t bytes_received = 0;
+std::uint32_t running_checksum = 0;
 
-// Shared event between producer and consumer. In a real application this is
-// what an ISR would `signal()` after enqueuing data (e.g. a UART RX byte).
-alloy::tasks::Event tick_event;
+// 16-byte ring big enough that a UART RX burst at ~115200 bps would not drop
+// even if the consumer task takes a few ms to wake. `Channel::try_push` is
+// what a real `USARTx_IRQHandler` would call.
+alloy::tasks::Channel<std::uint8_t, 16> rx_channel;
 
 // Time source for the scheduler. Wraps the board's SysTick into the runtime
 // time::Instant the scheduler expects.
@@ -82,16 +90,26 @@ auto blink_task() -> Task {
 }
 
 auto producer_task() -> Task {
+    std::uint8_t next_byte = 0;
     while (true) {
-        static_cast<void>(co_await alloy::tasks::delay(Duration::from_millis(1000)));
-        tick_event.signal();
+        static_cast<void>(co_await alloy::tasks::delay(Duration::from_millis(250)));
+        // try_push is what an ISR would do. We discard the return because
+        // dropping a fake byte here is harmless; real code would log
+        // `rx_channel.drops()` to detect undersized rings.
+        static_cast<void>(rx_channel.try_push(next_byte++));
     }
 }
 
 auto consumer_task() -> Task {
     while (true) {
-        static_cast<void>(co_await alloy::tasks::on(tick_event));
-        ++tick_count;
+        // Drain everything ready; only suspend when the ring is empty. This
+        // is the canonical SPSC consumer loop -- multiple bytes arriving
+        // between two wakeups are all consumed in the inner while.
+        while (auto byte = rx_channel.try_pop()) {
+            ++bytes_received;
+            running_checksum = (running_checksum + *byte) & 0xFFu;
+        }
+        static_cast<void>(co_await rx_channel.wait());
     }
 }
 
