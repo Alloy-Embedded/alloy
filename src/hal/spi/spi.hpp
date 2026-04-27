@@ -19,6 +19,8 @@ using Config = SpiConfig;
 using Mode = SpiMode;
 using BitOrder = SpiBitOrder;
 using DataSize = SpiDataSize;
+// FrameFormat / BiDir / NssManagement / InterruptKind are defined in
+// detail/backend.hpp so the backend can use them before this re-export.
 
 template <device::PeripheralId PeripheralIdValue, typename... Bindings>
 using route = connection::connector<PeripheralIdValue, Bindings...>;
@@ -127,6 +129,189 @@ requires(Connector::valid) class port_handle {
     }
 
     [[nodiscard]] auto is_busy() const -> bool { return detail::spi_is_busy(*this); }
+
+    /// Returns the NVIC IRQ line numbers for this peripheral.
+    /// The span is empty when the descriptor publishes no IRQ for this SPI.
+    [[nodiscard]] static constexpr auto irq_numbers() -> std::span<const std::uint32_t> {
+        return std::span<const std::uint32_t>{semantic_traits::kIrqNumbers};
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 1: Variable data size / clock speed / kernel clock
+    // ------------------------------------------------------------------
+
+    /// Set frame data size at runtime. Validates against the descriptor's
+    /// kSupportedFrameSizes and the published kDsField/kDffField/kBitsField
+    /// width. Returns InvalidParameter when the request cannot be realised.
+    /// Compile-time-constant calls outside [4, 16] static_assert.
+    [[nodiscard]] auto set_data_size(std::uint8_t bits) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_data_size_impl(*this, bits);
+    }
+
+    template <std::uint8_t Bits>
+    [[nodiscard]] auto set_data_size_static() const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(Bits >= 4u && Bits <= 16u,
+                      "SPI data size must be in the range [4, 16] bits");
+        return detail::set_data_size_impl(*this, Bits);
+    }
+
+    /// Set the SPI bit clock at runtime. Returns InvalidParameter when the
+    /// realised rate falls outside ±5 % of the requested rate.
+    [[nodiscard]] auto set_clock_speed(std::uint32_t hz) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_clock_speed_impl(*this, hz);
+    }
+
+    /// Returns the rate produced by the current BR / SCBR field encoding,
+    /// or 0 when the descriptor does not publish a baud divider field.
+    [[nodiscard]] auto realised_clock_speed() const -> std::uint32_t {
+        return detail::realised_clock_speed_impl(*this);
+    }
+
+    /// Returns the kernel-clock frequency in Hz (as configured via SpiConfig).
+    [[nodiscard]] auto kernel_clock_hz() const noexcept -> std::uint32_t {
+        return config_.peripheral_clock_hz;
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 2: Frame format / CRC / bidirectional 3-wire / NSS management
+    // ------------------------------------------------------------------
+
+    [[nodiscard]] auto set_frame_format(FrameFormat fmt) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_frame_format_impl(*this, fmt);
+    }
+
+    [[nodiscard]] auto enable_crc(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_crc_impl(*this, enable);
+    }
+
+    [[nodiscard]] auto set_crc_polynomial(std::uint16_t poly) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_crc_polynomial_impl(*this, poly);
+    }
+
+    [[nodiscard]] auto read_crc() const -> std::uint16_t {
+        return detail::read_crc_impl(*this);
+    }
+
+    [[nodiscard]] auto crc_error() const -> bool {
+        return detail::crc_error_impl(*this);
+    }
+
+    [[nodiscard]] auto clear_crc_error() const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::clear_crc_error_impl(*this);
+    }
+
+    [[nodiscard]] auto set_bidirectional(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_bidirectional_impl(*this, enable);
+    }
+
+    [[nodiscard]] auto set_bidirectional_direction(BiDir dir) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_bidirectional_direction_impl(*this, dir);
+    }
+
+    [[nodiscard]] auto set_nss_management(NssManagement mode) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_nss_management_impl(*this, mode);
+    }
+
+    [[nodiscard]] auto set_nss_pulse_per_transfer(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_nss_pulse_per_transfer_impl(*this, enable);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 3: SAM-style per-CS timing
+    // ------------------------------------------------------------------
+
+    [[nodiscard]] auto set_cs_decode_mode(bool decoded) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_cs_decode_mode_impl(*this, decoded);
+    }
+
+    [[nodiscard]] auto set_cs_delay_between_consecutive(std::uint16_t cycles) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_cs_delay_between_consecutive_impl(*this, cycles);
+    }
+
+    [[nodiscard]] auto set_cs_delay_clock_to_active(std::uint16_t cycles) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_cs_delay_clock_to_active_impl(*this, cycles);
+    }
+
+    [[nodiscard]] auto set_cs_delay_active_to_clock(std::uint16_t cycles) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_cs_delay_active_to_clock_impl(*this, cycles);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 4: Status flags, interrupts
+    // ------------------------------------------------------------------
+
+    /// True when the TX data register is empty (TXE / TDRE).
+    [[nodiscard]] auto tx_register_empty() const -> bool {
+        switch (schema) {
+            case detail::runtime::SpiSchema::st_spi2s1_v3_3_cube:
+            case detail::runtime::SpiSchema::st_spi2s1_v2_2_cube:
+                return detail::read_field_bool(txe_field);
+            case detail::runtime::SpiSchema::microchip_spi_zm:
+                return detail::read_field_bool(tdre_field);
+            default:
+                return false;
+        }
+    }
+
+    /// True when the RX data register has data (RXNE / RDRF).
+    [[nodiscard]] auto rx_register_not_empty() const -> bool {
+        switch (schema) {
+            case detail::runtime::SpiSchema::st_spi2s1_v3_3_cube:
+            case detail::runtime::SpiSchema::st_spi2s1_v2_2_cube:
+                return detail::read_field_bool(rxne_field);
+            case detail::runtime::SpiSchema::microchip_spi_zm:
+                return detail::read_field_bool(rdrf_field);
+            default:
+                return false;
+        }
+    }
+
+    /// True when the peripheral is busy transmitting / receiving (BSY / !TXEMPTY).
+    [[nodiscard]] auto busy() const -> bool { return detail::spi_is_busy(*this); }
+
+    /// True when a mode fault has been detected (STM32 SR.MODF).
+    [[nodiscard]] auto mode_fault() const -> bool {
+        return detail::read_field_bool(detail::st_modf_field<port_handle>());
+    }
+
+    /// Clears the mode-fault flag (STM32 read-SR-then-write-CR1 sequence).
+    [[nodiscard]] auto clear_mode_fault() const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::clear_mode_fault_impl(*this);
+    }
+
+    /// True when a frame-format error has been detected (STM32 SR.FRE).
+    [[nodiscard]] auto frame_format_error() const -> bool {
+        return detail::read_field_bool(detail::st_fre_field<port_handle>());
+    }
+
+    /// Enable a typed interrupt. Returns NotSupported for kinds that the
+    /// peripheral doesn't expose (e.g. CrcError on a non-CRC SPI).
+    [[nodiscard]] auto enable_interrupt(InterruptKind kind) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_interrupt_enable_impl(*this, kind, true);
+    }
+
+    /// Disable a typed interrupt.
+    [[nodiscard]] auto disable_interrupt(InterruptKind kind) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_interrupt_enable_impl(*this, kind, false);
+    }
 
     template <typename DmaChannel>
     [[nodiscard]] auto configure_tx_dma(const DmaChannel& channel) const

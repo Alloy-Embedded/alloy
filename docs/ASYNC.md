@@ -98,6 +98,13 @@ transfer is the RX-side `dma_event::token`; the RX DMA's
 transfer-complete interrupt is what the application is waiting on
 (TX completes earlier, RX is the bottleneck).
 
+`async::spi::wait_for<Kind>(port)` is the interrupt-driven sibling — a
+coroutine `co_await`s a typed `InterruptKind` (Rxne, ModeFault,
+CrcError, …) without polling. The vendor ISR calls
+`spi_event::token<P, Kind>::signal()` when the interrupt fires. See
+[SPI.md](SPI.md) for the per-vendor capability matrix and the
+`InterruptKind` enum.
+
 ### I2C (interrupt-driven)
 
 ```cpp

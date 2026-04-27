@@ -9,6 +9,29 @@
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/spi/types.hpp"
 
+// ============================================================
+// Extended SPI enumerations — defined here so backend.hpp can use them
+// before spi.hpp re-exports them into the alloy::hal::spi namespace.
+// ============================================================
+namespace alloy::hal::spi {
+
+enum class FrameFormat : std::uint8_t { Motorola, TI };
+
+enum class BiDir : std::uint8_t { Receive, Transmit };
+
+enum class NssManagement : std::uint8_t { Software, HardwareInput, HardwareOutput };
+
+enum class InterruptKind : std::uint8_t {
+    Txe,
+    Rxne,
+    Error,
+    ModeFault,
+    CrcError,
+    FrameError,
+};
+
+}  // namespace alloy::hal::spi
+
 namespace alloy::hal::spi::detail {
 
 namespace rt = alloy::hal::detail::runtime;
@@ -727,6 +750,630 @@ template <typename PortHandle>
         }
         default:
             return false;
+    }
+}
+
+// ============================================================
+// Extended SPI HAL helpers (extend-spi-coverage)
+// ============================================================
+
+// Returns true when valid and non-zero (single-bit flag check).
+[[nodiscard]] inline auto read_field_bool(rt::FieldRef field) noexcept -> bool {
+    if (!field.valid) {
+        return false;
+    }
+    const auto v = rt::read_field(field);
+    return v.is_ok() && v.unwrap() != 0u;
+}
+
+// Build a synthetic FieldRef anchored at an existing register's MMIO address.
+// MMIO accesses only need base_address + offset_bytes; FieldId/RegisterId are
+// not consulted by runtime_ops, so this works on backends whose descriptor
+// publishes RegisterId::none for some registers (e.g. STM32G0 SPI CR2/SR/DR).
+[[nodiscard]] constexpr auto make_synthetic_field(rt::RegisterRef reg,
+                                                  std::uint16_t bit_offset,
+                                                  std::uint16_t bit_width) -> rt::FieldRef {
+    if (!reg.valid) {
+        return rt::kInvalidFieldRef;
+    }
+    return rt::FieldRef{rt::FieldId::none, reg, bit_offset, bit_width, true};
+}
+
+// Build a synthetic RegisterRef anchored at an existing peripheral base.
+[[nodiscard]] constexpr auto make_synthetic_register(rt::RegisterRef anchor,
+                                                     std::uintptr_t offset_bytes)
+    -> rt::RegisterRef {
+    if (!anchor.valid) {
+        return rt::kInvalidRegisterRef;
+    }
+    return rt::RegisterRef{rt::RegisterId::none, anchor.base_address,
+                           static_cast<std::uint16_t>(offset_bytes), true};
+}
+
+// ---------- Phase 1: Variable data size ----------
+
+// True when `width` is in the descriptor's published kSupportedFrameSizes.
+template <typename PortHandle>
+[[nodiscard]] constexpr auto frame_size_supported(std::uint8_t width) -> bool {
+    for (const auto supported : PortHandle::semantic_traits::kSupportedFrameSizes) {
+        if (supported == width) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_data_size_impl(const PortHandle&, std::uint8_t bits)
+    -> core::Result<void, core::ErrorCode> {
+    if (bits < 4u || bits > 16u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+    if (!frame_size_supported<PortHandle>(bits)) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    constexpr auto ds_field = PortHandle::ds_field;
+    constexpr auto dff_field = PortHandle::dff_field;
+    constexpr auto frxth_field = PortHandle::frxth_field;
+    constexpr auto bits_field = PortHandle::bits_field;
+
+    // STM32: prefer DFF when width is 8 / 16 (legacy F4 SPI semantics).
+    // Use DS only for non-{8,16} widths so we don't write the I2S-mode DS
+    // field on legacy peripherals where DFF is the real selector.
+    if constexpr (dff_field.valid) {
+        if (bits == 8u) {
+            const auto r = rt::modify_field(dff_field, 0u);
+            if (r.is_err()) {
+                return r;
+            }
+            if constexpr (frxth_field.valid) {
+                static_cast<void>(rt::modify_field(frxth_field, 1u));
+            }
+            return core::Ok();
+        }
+        if (bits == 16u) {
+            const auto r = rt::modify_field(dff_field, 1u);
+            if (r.is_err()) {
+                return r;
+            }
+            if constexpr (frxth_field.valid) {
+                static_cast<void>(rt::modify_field(frxth_field, 0u));
+            }
+            return core::Ok();
+        }
+    }
+
+    if constexpr (ds_field.valid) {
+        const auto encoding = static_cast<std::uint32_t>(bits - 1u);
+        const auto r = rt::modify_field(ds_field, encoding);
+        if (r.is_err()) {
+            return r;
+        }
+        if constexpr (frxth_field.valid) {
+            static_cast<void>(rt::modify_field(frxth_field, bits <= 8u ? 1u : 0u));
+        }
+        return core::Ok();
+    }
+
+    if constexpr (bits_field.valid) {
+        // SAME70: BITS encodes (bits - 8); valid for 8..16.
+        if (bits < 8u) {
+            return core::Err(core::ErrorCode::InvalidParameter);
+        }
+        return rt::modify_field(bits_field, static_cast<std::uint32_t>(bits - 8u));
+    }
+
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+// ---------- Phase 1: Variable clock speed (raw, ±5 % validated) ----------
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto compute_realised_clock_st(std::uint32_t kernel_hz,
+                                                       std::uint32_t target_hz)
+    -> std::uint32_t {
+    if (kernel_hz == 0u || target_hz == 0u) {
+        return 0u;
+    }
+    constexpr std::array divisors{2u, 4u, 8u, 16u, 32u, 64u, 128u, 256u};
+    const auto ratio = (kernel_hz + target_hz - 1u) / target_hz;
+    for (const auto divisor : divisors) {
+        if (ratio <= divisor) {
+            return kernel_hz / divisor;
+        }
+    }
+    return kernel_hz / divisors.back();
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto compute_realised_clock_microchip(std::uint32_t kernel_hz,
+                                                              std::uint32_t target_hz)
+    -> std::uint32_t {
+    if (kernel_hz == 0u || target_hz == 0u) {
+        return 0u;
+    }
+    auto divider = (kernel_hz + target_hz - 1u) / target_hz;
+    if (divider == 0u) {
+        divider = 1u;
+    }
+    if (divider > 255u) {
+        divider = 255u;
+    }
+    return kernel_hz / divider;
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto realised_clock_speed_impl(const PortHandle& port) -> std::uint32_t {
+    const auto kernel_hz = port.config().peripheral_clock_hz;
+    if (kernel_hz == 0u) {
+        return 0u;
+    }
+    if constexpr (PortHandle::br_field.valid) {
+        const auto encoding = rt::read_field(PortHandle::br_field);
+        if (encoding.is_err()) {
+            return 0u;
+        }
+        constexpr auto& divisors = PortHandle::semantic_traits::kBaudPrescalerDivisors;
+        if constexpr (divisors.size() == 0u) {
+            return 0u;
+        } else {
+            const auto idx = encoding.unwrap();
+            if (idx >= divisors.size()) {
+                return 0u;
+            }
+            const auto divisor = divisors[idx];
+            return divisor == 0u ? 0u : kernel_hz / divisor;
+        }
+    } else if constexpr (PortHandle::scbr_field.valid) {
+        const auto scbr = rt::read_field(PortHandle::scbr_field);
+        if (scbr.is_err()) {
+            return 0u;
+        }
+        const auto divisor = scbr.unwrap();
+        return divisor == 0u ? 0u : kernel_hz / divisor;
+    } else {
+        return 0u;
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_clock_speed_impl(const PortHandle& port, std::uint32_t hz)
+    -> core::Result<void, core::ErrorCode> {
+    const auto kernel_hz = port.config().peripheral_clock_hz;
+    if (kernel_hz == 0u || hz == 0u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    std::uint32_t realised = 0u;
+    switch (rt::spi_schema_for<PortHandle>()) {
+        case rt::SpiSchema::st_spi2s1_v3_3_cube:
+        case rt::SpiSchema::st_spi2s1_v2_2_cube:
+            realised = compute_realised_clock_st<PortHandle>(kernel_hz, hz);
+            break;
+        case rt::SpiSchema::microchip_spi_zm:
+            realised = compute_realised_clock_microchip<PortHandle>(kernel_hz, hz);
+            break;
+        default:
+            return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    const auto diff = realised > hz ? realised - hz : hz - realised;
+    if (diff * 100u > hz * 5u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    if constexpr (PortHandle::br_field.valid) {
+        const auto br = st_spi_prescaler_bits(kernel_hz, hz);
+        if (br.is_err()) {
+            return core::Err(core::ErrorCode{br.unwrap_err()});
+        }
+        return rt::modify_field(PortHandle::br_field, br.unwrap());
+    }
+    if constexpr (PortHandle::scbr_field.valid) {
+        const auto scbr = microchip_spi_scbr(kernel_hz, hz);
+        if (scbr.is_err()) {
+            return core::Err(core::ErrorCode{scbr.unwrap_err()});
+        }
+        return rt::modify_field(PortHandle::scbr_field, scbr.unwrap());
+    }
+
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+// ---------- STM32 synthetic field accessors (CR1 / CR2 / SR positions) ----------
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_crcen_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr1_reg, 13u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_crcnext_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr1_reg, 12u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_bidimode_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr1_reg, 15u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_bidioe_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr1_reg, 14u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_ssoe_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 2u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_nssp_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 3u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_frf_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 4u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_errie_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 5u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_rxneie_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 6u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_txeie_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::cr2_reg, 7u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_modf_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::sr_reg, 5u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_crcerr_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::sr_reg, 4u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_fre_field() -> rt::FieldRef {
+    return make_synthetic_field(PortHandle::sr_reg, 8u, 1u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_crcpr_reg() -> rt::RegisterRef {
+    // CRCPR is at base+0x10 on every STM32 SPI variant.
+    return make_synthetic_register(PortHandle::cr1_reg, 0x10u);
+}
+
+template <typename PortHandle>
+[[nodiscard]] constexpr auto st_rxcrcr_reg() -> rt::RegisterRef {
+    // RXCRCR is at base+0x14.
+    return make_synthetic_register(PortHandle::cr1_reg, 0x14u);
+}
+
+// ---------- Phase 2: Frame format / CRC / bidirectional / NSS ----------
+
+template <typename PortHandle>
+[[nodiscard]] auto set_frame_format_impl(const PortHandle&, FrameFormat fmt)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto kSupportsTi = PortHandle::semantic_traits::kSupportsTiFrame;
+    constexpr auto kSupportsMot = PortHandle::semantic_traits::kSupportsMotorolaFrame;
+    if (fmt == FrameFormat::TI) {
+        if constexpr (!kSupportsTi) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            constexpr auto frf = st_frf_field<PortHandle>();
+            if (!frf.valid) {
+                return core::Err(core::ErrorCode::NotSupported);
+            }
+            return rt::modify_field(frf, 1u);
+        }
+    } else {
+        if constexpr (!kSupportsMot) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            constexpr auto frf = st_frf_field<PortHandle>();
+            if (frf.valid) {
+                return rt::modify_field(frf, 0u);
+            }
+            // SAM / Microchip SPI is always Motorola — nothing to set.
+            return core::Ok();
+        }
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto enable_crc_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto crcen = st_crcen_field<PortHandle>();
+        if (!crcen.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(crcen, enable ? 1u : 0u);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_crc_polynomial_impl(const PortHandle&, std::uint16_t poly)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto crcpr = st_crcpr_reg<PortHandle>();
+        if (!crcpr.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::write_register(crcpr, static_cast<std::uint32_t>(poly));
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto read_crc_impl(const PortHandle&) -> std::uint16_t {
+    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+        return 0u;
+    } else {
+        constexpr auto rxcrcr = st_rxcrcr_reg<PortHandle>();
+        if (!rxcrcr.valid) {
+            return 0u;
+        }
+        const auto v = rt::read_register(rxcrcr);
+        return v.is_ok() ? static_cast<std::uint16_t>(v.unwrap() & 0xFFFFu) : 0u;
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto crc_error_impl(const PortHandle&) -> bool {
+    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+        return false;
+    } else {
+        return read_field_bool(st_crcerr_field<PortHandle>());
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto clear_crc_error_impl(const PortHandle&)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto crcerr = st_crcerr_field<PortHandle>();
+        if (!crcerr.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        // CRCERR is rc_w0 on STM32 — write 0 to clear.
+        return rt::modify_field(crcerr, 0u);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_bidirectional_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsBidirectional3Wire) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto bidimode = st_bidimode_field<PortHandle>();
+        if (!bidimode.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(bidimode, enable ? 1u : 0u);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_bidirectional_direction_impl(const PortHandle&, BiDir dir)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsBidirectional3Wire) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto bidioe = st_bidioe_field<PortHandle>();
+        if (!bidioe.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(bidioe, dir == BiDir::Transmit ? 1u : 0u);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_nss_management_impl(const PortHandle&, NssManagement mode)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsNssHwManagement) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto ssm = PortHandle::ssm_field;
+        constexpr auto ssoe = st_ssoe_field<PortHandle>();
+        if (!ssm.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        switch (mode) {
+            case NssManagement::Software: {
+                static_cast<void>(rt::modify_field(ssm, 1u));
+                if constexpr (PortHandle::ssi_field.valid) {
+                    static_cast<void>(rt::modify_field(PortHandle::ssi_field, 1u));
+                }
+                if (ssoe.valid) {
+                    static_cast<void>(rt::modify_field(ssoe, 0u));
+                }
+                return core::Ok();
+            }
+            case NssManagement::HardwareInput: {
+                static_cast<void>(rt::modify_field(ssm, 0u));
+                if (ssoe.valid) {
+                    static_cast<void>(rt::modify_field(ssoe, 0u));
+                }
+                return core::Ok();
+            }
+            case NssManagement::HardwareOutput: {
+                static_cast<void>(rt::modify_field(ssm, 0u));
+                if (!ssoe.valid) {
+                    return core::Err(core::ErrorCode::NotSupported);
+                }
+                return rt::modify_field(ssoe, 1u);
+            }
+        }
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_nss_pulse_per_transfer_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::semantic_traits::kSupportsNssHwManagement) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        constexpr auto nssp = st_nssp_field<PortHandle>();
+        if (!nssp.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(nssp, enable ? 1u : 0u);
+    }
+}
+
+// ---------- Phase 3: SAM-style per-CS timing ----------
+
+template <typename PortHandle>
+[[nodiscard]] auto set_cs_decode_mode_impl(const PortHandle&, bool decoded)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto pcsdec = PortHandle::pcsdec_field;
+    if constexpr (!pcsdec.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        return rt::modify_field(pcsdec, decoded ? 1u : 0u);
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_cs_delay_between_consecutive_impl(const PortHandle&,
+                                                         std::uint16_t cycles)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto dlybct = PortHandle::dlybct_field;
+    if constexpr (!dlybct.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        return rt::modify_field(dlybct, static_cast<std::uint32_t>(cycles));
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_cs_delay_clock_to_active_impl(const PortHandle&, std::uint16_t cycles)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto dlybs = PortHandle::dlybs_field;
+    if constexpr (!dlybs.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        return rt::modify_field(dlybs, static_cast<std::uint32_t>(cycles));
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_cs_delay_active_to_clock_impl(const PortHandle&, std::uint16_t cycles)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto dlybcs = PortHandle::dlybcs_field;
+    if constexpr (!dlybcs.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        return rt::modify_field(dlybcs, static_cast<std::uint32_t>(cycles));
+    }
+}
+
+// ---------- Phase 4: Status flag clears + interrupt enables ----------
+
+template <typename PortHandle>
+[[nodiscard]] auto clear_mode_fault_impl(const PortHandle&)
+    -> core::Result<void, core::ErrorCode> {
+    constexpr auto modf = st_modf_field<PortHandle>();
+    if (!modf.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+    // STM32 MODF clear sequence: read SR then write CR1 to release MODF.
+    if constexpr (PortHandle::sr_reg.valid && PortHandle::cr1_reg.valid) {
+        const auto sr_value = rt::read_register(PortHandle::sr_reg);
+        if (sr_value.is_err()) {
+            return core::Err(core::ErrorCode{sr_value.unwrap_err()});
+        }
+        const auto cr1_value = rt::read_register(PortHandle::cr1_reg);
+        if (cr1_value.is_err()) {
+            return core::Err(core::ErrorCode{cr1_value.unwrap_err()});
+        }
+        return rt::write_register(PortHandle::cr1_reg, cr1_value.unwrap());
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+template <typename PortHandle>
+[[nodiscard]] auto set_interrupt_enable_impl(const PortHandle&, InterruptKind kind, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    const auto value = enable ? 1u : 0u;
+
+    switch (rt::spi_schema_for<PortHandle>()) {
+        case rt::SpiSchema::st_spi2s1_v3_3_cube:
+        case rt::SpiSchema::st_spi2s1_v2_2_cube: {
+            rt::FieldRef field = rt::kInvalidFieldRef;
+            switch (kind) {
+                case InterruptKind::Txe:
+                    field = st_txeie_field<PortHandle>();
+                    break;
+                case InterruptKind::Rxne:
+                    field = st_rxneie_field<PortHandle>();
+                    break;
+                case InterruptKind::Error:
+                case InterruptKind::ModeFault:
+                case InterruptKind::FrameError:
+                    // STM32 muxes MODF / OVR / FRE / CRCERR through ERRIE.
+                    field = st_errie_field<PortHandle>();
+                    break;
+                case InterruptKind::CrcError:
+                    if constexpr (!PortHandle::semantic_traits::kSupportsCrc) {
+                        return core::Err(core::ErrorCode::NotSupported);
+                    }
+                    field = st_errie_field<PortHandle>();
+                    break;
+            }
+            if (!field.valid) {
+                return core::Err(core::ErrorCode::NotSupported);
+            }
+            return rt::modify_field(field, value);
+        }
+        case rt::SpiSchema::microchip_spi_zm: {
+            // SAM SPI uses IER/IDR write-to-set (no read-modify-write).
+            constexpr auto ier_reg = make_synthetic_register(PortHandle::cr_reg, 0x14u);
+            constexpr auto idr_reg = make_synthetic_register(PortHandle::cr_reg, 0x18u);
+            if (!ier_reg.valid || !idr_reg.valid) {
+                return core::Err(core::ErrorCode::NotSupported);
+            }
+            std::uint32_t mask = 0u;
+            switch (kind) {
+                case InterruptKind::Txe:
+                    mask = (1u << 1u);  // TDRE
+                    break;
+                case InterruptKind::Rxne:
+                    mask = (1u << 0u);  // RDRF
+                    break;
+                case InterruptKind::ModeFault:
+                    mask = (1u << 2u);  // MODF
+                    break;
+                case InterruptKind::Error:
+                    mask = (1u << 3u);  // OVRES
+                    break;
+                case InterruptKind::CrcError:
+                case InterruptKind::FrameError:
+                    return core::Err(core::ErrorCode::NotSupported);
+            }
+            return rt::write_register(enable ? ier_reg : idr_reg, mask);
+        }
+        default:
+            return core::Err(core::ErrorCode::NotSupported);
     }
 }
 

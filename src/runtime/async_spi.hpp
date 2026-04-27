@@ -29,8 +29,10 @@
 #include "core/result.hpp"
 #include "device/runtime.hpp"
 #include "hal/dma.hpp"
+#include "hal/spi.hpp"
 #include "runtime/async.hpp"
 #include "runtime/dma_event.hpp"
+#include "runtime/spi_event.hpp"
 
 namespace alloy::runtime::async::spi {
 
@@ -105,5 +107,36 @@ template <typename PortHandle, typename TxDmaChannel, typename RxDmaChannel>
 }
 
 #endif  // ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+
+/// Interrupt-driven single-event wait.
+///
+/// Resets the spi_event::token<P, Kind> static flag, arms the interrupt
+/// via port.enable_interrupt(Kind), and returns an awaitable operation.
+///
+/// Usage:
+///   auto op = async::spi::wait_for<InterruptKind::CrcError>(spi_port);
+///   op.wait_for<SysTickSource>(time::Duration::from_millis(100));
+///   spi_port.disable_interrupt(InterruptKind::CrcError);
+///
+/// The vendor SPI ISR must call:
+///   spi_event::token<P, InterruptKind::CrcError>::signal();
+template <hal::spi::InterruptKind Kind, typename PortHandle>
+[[nodiscard]] auto wait_for(const PortHandle& port)
+    -> core::Result<
+        operation<alloy::runtime::spi_event::token<PortHandle::peripheral_id, Kind>>,
+        core::ErrorCode> {
+    using token_type     = alloy::runtime::spi_event::token<PortHandle::peripheral_id, Kind>;
+    using operation_type = operation<token_type>;
+
+    // Reset the completion flag before arming so a stale signal is not
+    // seen as an immediate completion.
+    token_type::reset();
+
+    const auto arm_result = port.enable_interrupt(Kind);
+    if (arm_result.is_err()) {
+        return core::Err(core::ErrorCode{arm_result.err()});
+    }
+    return core::Ok(operation_type{});
+}
 
 }  // namespace alloy::runtime::async::spi

@@ -472,6 +472,7 @@ if(ALLOY_BUILD_EXAMPLES)
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
         add_subdirectory(examples/i2c_scan)
         add_subdirectory(examples/spi_probe)
+        add_subdirectory(examples/spi_probe_complete)
     endif()
 
     # Board-specific examples

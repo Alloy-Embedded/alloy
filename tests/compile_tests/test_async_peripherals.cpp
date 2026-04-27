@@ -32,6 +32,9 @@ struct MockRxDmaChannel {
 };
 
 struct MockSpiPort {
+    // peripheral_id must be constexpr for spi_event::token<P, Kind>.
+    static constexpr auto peripheral_id = alloy::device::PeripheralId::none;
+
     [[nodiscard]] auto write_dma(const MockTxDmaChannel&, std::span<const std::byte>) const -> ResultVoid {
         return alloy::core::Ok();
     }
@@ -40,6 +43,12 @@ struct MockSpiPort {
     }
     [[nodiscard]] auto transfer_dma(const MockTxDmaChannel&, const MockRxDmaChannel&,
                                     std::span<const std::byte>, std::span<std::byte>) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto enable_interrupt(alloy::hal::spi::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto disable_interrupt(alloy::hal::spi::InterruptKind) const -> ResultVoid {
         return alloy::core::Ok();
     }
 };
@@ -95,6 +104,10 @@ struct MockUartPort {
     }
 };
 
+struct MockAdcDmaChannel {
+    static constexpr auto valid = true;
+};
+
 }  // namespace
 
 [[maybe_unused]] void compile_async_peripherals_api() {
@@ -110,6 +123,12 @@ struct MockUartPort {
     [[maybe_unused]] const auto spi_r = alloy::async::spi::read_dma(spi_port, rx_ch, rx_buf);
     [[maybe_unused]] const auto spi_xfer = alloy::async::spi::transfer_dma(
         spi_port, tx_ch, rx_ch, std::span<const std::byte>{tx_buf}, rx_buf);
+
+    // ── async::spi::wait_for — extend-spi-coverage task 6.2 ─────────────────
+    [[maybe_unused]] const auto spi_wait_crc =
+        alloy::async::spi::wait_for<alloy::hal::spi::InterruptKind::CrcError>(spi_port);
+    [[maybe_unused]] const auto spi_wait_modf =
+        alloy::async::spi::wait_for<alloy::hal::spi::InterruptKind::ModeFault>(spi_port);
 #endif
 
     MockI2cPort i2c_port;
@@ -129,6 +148,18 @@ struct MockUartPort {
     MockAdcPort adc_port;
     [[maybe_unused]] const auto adc_r =
         alloy::async::adc::read<alloy::device::PeripheralId::none>(adc_port);
+
+    // ── async::adc::scan_dma — task 4.2: CompletionTrigger::EndOfSequence ────
+    std::array<std::uint16_t, 4> adc_samples{};
+    MockAdcDmaChannel adc_dma_ch;
+    [[maybe_unused]] const auto adc_scan_dma =
+        alloy::async::adc::scan_dma<alloy::device::PeripheralId::none>(
+            adc_port, adc_dma_ch, std::span<std::uint16_t>{adc_samples});
+    [[maybe_unused]] const auto adc_scan_eos =
+        alloy::async::adc::scan_dma<alloy::device::PeripheralId::none,
+                                    MockAdcPort, MockAdcDmaChannel,
+                                    alloy::async::adc::CompletionTrigger::EndOfSequence>(
+            adc_port, adc_dma_ch, std::span<std::uint16_t>{adc_samples});
 
     MockTimerPort tim_port;
     [[maybe_unused]] const auto tim_p =
