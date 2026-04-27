@@ -310,6 +310,12 @@ template <typename SchemaId>
             return I2cSchema::st_i2c1_v1_5_cube;
         }
     }
+    // F4 family uses a non-numbered schema alias — map it too.
+    if constexpr (requires { SchemaId::schema_alloy_i2c_st_i2c1_v1_5_cube; }) {
+        if (schema_id == SchemaId::schema_alloy_i2c_st_i2c1_v1_5_cube) {
+            return I2cSchema::st_i2c1_v1_5_cube;
+        }
+    }
     if constexpr (requires { SchemaId::schema_alloy_i2c2_st_i2c1_v1_5_cube; }) {
         if (schema_id == SchemaId::schema_alloy_i2c2_st_i2c1_v1_5_cube) {
             return I2cSchema::st_i2c1_v1_5_cube;

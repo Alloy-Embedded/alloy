@@ -18,6 +18,48 @@ using Config = I2cConfig;
 using Addressing = I2cAddressing;
 using Speed = I2cSpeed;
 
+// ---------------------------------------------------------------------------
+// extend-i2c-coverage: new enumerations
+// ---------------------------------------------------------------------------
+
+enum class SpeedMode : std::uint8_t {
+    Standard100kHz,
+    Fast400kHz,
+    FastPlus1MHz,  ///< Gated on kSupportsFastModePlus — NotSupported otherwise.
+};
+
+enum class DutyCycle : std::uint8_t {
+    Duty2,    ///< T_low / T_high = 2   (default for STM32 fast mode)
+    Duty169,  ///< T_low / T_high = 16/9 (STM32 CCR.DUTY=1)
+};
+
+enum class AddressingMode : std::uint8_t {
+    Bits7,
+    Bits10,  ///< Gated on kSupports10BitAddressing — NotSupported otherwise.
+};
+
+enum class SmbusRole : std::uint8_t { Host, Device };
+
+/// Kernel clock source for the I2C peripheral. Raw encoding matches the
+/// device's clock-selector field. Only meaningful when
+/// `kKernelClockSelectorField.valid`. Returns NotSupported otherwise.
+enum class KernelClockSource : std::uint8_t { Default = 0u };
+
+enum class InterruptKind : std::uint8_t {
+    Tx,
+    Rx,
+    Stop,
+    Tc,
+    AddrMatch,
+    Nack,
+    BusError,
+    ArbitrationLoss,
+    Overrun,
+    PecError,
+    Timeout,
+    SmbAlert,
+};
+
 template <device::PeripheralId PeripheralIdValue, typename... Bindings>
 using route = connection::connector<PeripheralIdValue, Bindings...>;
 
@@ -190,6 +232,231 @@ requires(Connector::valid) class port_handle {
         } else {
             return 0u;
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // extend-i2c-coverage: speed / duty / addressing / clock-stretching
+    // -----------------------------------------------------------------------
+
+    /// Reconfigure clock speed by re-running configure() with the new speed.
+    /// Returns NotSupported when the TIMINGR register is not published in the
+    /// device database (no kTimingrRegister in current traits). Callers can
+    /// use open(Config{speed, ...}).configure() as a workaround.
+    [[nodiscard]] auto set_clock_speed(std::uint32_t /*hz*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Switch the bus to a predefined speed mode. Like set_clock_speed, requires
+    /// the TIMINGR register in the device database (not yet published).
+    [[nodiscard]] auto set_speed_mode(SpeedMode /*mode*/) const
+        -> core::Result<void, core::ErrorCode> {
+        // TIMINGR / CCR register refs not in current traits → NotSupported.
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Set CCR duty-cycle mode (STM32 CCR.DUTY). Only meaningful in Fast mode;
+    /// applies only when kDutyField.valid (STM32 I2C v1 CCR register).
+    [[nodiscard]] auto set_duty_cycle(DutyCycle cycle) const
+        -> core::Result<void, core::ErrorCode> {
+        if constexpr (!duty_field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            return detail::runtime::modify_field(duty_field,
+                                                 cycle == DutyCycle::Duty169 ? 1u : 0u);
+        }
+    }
+
+    /// Switch addressing mode. Returns NotSupported when 10-bit addressing is
+    /// not supported by the peripheral or when no configuration field exists.
+    [[nodiscard]] auto set_addressing_mode(AddressingMode mode) const
+        -> core::Result<void, core::ErrorCode> {
+        if constexpr (!semantic_traits::kSupports10BitAddressing) {
+            if (mode == AddressingMode::Bits10) {
+                return core::Err(core::ErrorCode::NotSupported);
+            }
+        }
+        // No dedicated mode-configuration field in current traits.
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Set own address (OAR1). Returns NotSupported — no OAR1 field in current
+    /// device database.
+    [[nodiscard]] auto set_own_address(std::uint16_t /*addr*/, AddressingMode /*mode*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Set second own address (OAR2). Returns NotSupported — no OAR2 field in
+    /// current device database.
+    [[nodiscard]] auto set_dual_address(std::uint16_t /*addr2*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Enable or disable clock stretching (NOSTRETCH). Returns NotSupported —
+    /// no NOSTRETCH field in current device database.
+    [[nodiscard]] auto set_clock_stretching(bool /*enabled*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    // -----------------------------------------------------------------------
+    // extend-i2c-coverage: status flags + clear
+    // -----------------------------------------------------------------------
+
+    /// True when the last addressed peripheral sent a NACK.
+    /// STM32 v2: NACKF in ISR. STM32 v1: AF in SR1. SAME70: NACK in SR.
+    [[nodiscard]] auto nack_received() const -> bool {
+        if constexpr (nackf_field.valid) {
+            const auto v = detail::runtime::read_field(nackf_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (af_field.valid) {
+            const auto v = detail::runtime::read_field(af_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (nack_field.valid) {
+            const auto v = detail::runtime::read_field(nack_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else {
+            return false;
+        }
+    }
+
+    /// True when arbitration was lost on the bus.
+    [[nodiscard]] auto arbitration_lost() const -> bool {
+        if constexpr (arlo_isr_field.valid) {
+            const auto v = detail::runtime::read_field(arlo_isr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (arlo_field.valid) {
+            const auto v = detail::runtime::read_field(arlo_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (arblst_field.valid) {
+            const auto v = detail::runtime::read_field(arblst_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else {
+            return false;
+        }
+    }
+
+    /// True when a bus error (misplaced START/STOP) was detected.
+    [[nodiscard]] auto bus_error() const -> bool {
+        if constexpr (berr_isr_field.valid) {
+            const auto v = detail::runtime::read_field(berr_isr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else if constexpr (berr_field.valid) {
+            const auto v = detail::runtime::read_field(berr_field);
+            return v.is_ok() && v.unwrap() != 0u;
+        } else {
+            return false;
+        }
+    }
+
+    /// Clear the NACK flag. STM32 v2: write 1 to ICR.NACKCF. STM32 v1: write
+    /// 0 to SR1.AF.
+    [[nodiscard]] auto clear_nack() const -> core::Result<void, core::ErrorCode> {
+        if constexpr (nackcf_field.valid) {
+            return detail::runtime::modify_field(nackcf_field, 1u);
+        } else if constexpr (af_field.valid) {
+            return detail::runtime::modify_field(af_field, 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+    }
+
+    /// Clear the arbitration-lost flag.
+    [[nodiscard]] auto clear_arbitration_lost() const -> core::Result<void, core::ErrorCode> {
+        if constexpr (arlocf_field.valid) {
+            return detail::runtime::modify_field(arlocf_field, 1u);
+        } else if constexpr (arlo_field.valid) {
+            return detail::runtime::modify_field(arlo_field, 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+    }
+
+    /// Clear the bus-error flag.
+    [[nodiscard]] auto clear_bus_error() const -> core::Result<void, core::ErrorCode> {
+        if constexpr (berrcf_field.valid) {
+            return detail::runtime::modify_field(berrcf_field, 1u);
+        } else if constexpr (berr_field.valid) {
+            return detail::runtime::modify_field(berr_field, 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // extend-i2c-coverage: interrupts
+    // -----------------------------------------------------------------------
+
+    /// Enable a typed interrupt. Returns NotSupported — individual interrupt-
+    /// enable field refs are not published in the current device database.
+    [[nodiscard]] auto enable_interrupt(InterruptKind /*kind*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Disable a typed interrupt. Returns NotSupported (see enable_interrupt).
+    [[nodiscard]] auto disable_interrupt(InterruptKind /*kind*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Returns the NVIC IRQ line numbers for this peripheral.
+    [[nodiscard]] static constexpr auto irq_numbers() -> std::span<const std::uint32_t> {
+        return std::span<const std::uint32_t>{semantic_traits::kIrqNumbers};
+    }
+
+    // -----------------------------------------------------------------------
+    // extend-i2c-coverage: kernel clock source
+    // -----------------------------------------------------------------------
+
+    /// Select the I2C kernel clock source. Gated on
+    /// `kKernelClockSelectorField.valid`.
+    [[nodiscard]] auto set_kernel_clock_source(KernelClockSource src) const
+        -> core::Result<void, core::ErrorCode> {
+        if constexpr (!semantic_traits::kKernelClockSelectorField.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            return detail::runtime::modify_field(
+                semantic_traits::kKernelClockSelectorField,
+                static_cast<std::uint32_t>(src));
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // extend-i2c-coverage: SMBus + PEC
+    // -----------------------------------------------------------------------
+
+    /// Enable/disable SMBus mode. Returns NotSupported — no SMBus enable field
+    /// in current device database (kSupportsSmbus = true on G071, but the
+    /// SMBHEN / SMBDEN bits are not yet published as field refs).
+    [[nodiscard]] auto enable_smbus(bool /*enable*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Set SMBus role (Host or Device). Returns NotSupported.
+    [[nodiscard]] auto set_smbus_role(SmbusRole /*role*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Enable/disable PEC (Packet Error Checking). Returns NotSupported.
+    [[nodiscard]] auto enable_pec(bool /*enable*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Returns the last PEC byte. Returns 0 when not supported.
+    [[nodiscard]] auto last_pec() const -> std::uint8_t { return 0u; }
+
+    /// True when a PEC error was detected.
+    [[nodiscard]] auto pec_error() const -> bool { return false; }
+
+    /// Clear the PEC error flag. Returns NotSupported.
+    [[nodiscard]] auto clear_pec_error() const -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
     }
 
    private:

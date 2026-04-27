@@ -1445,7 +1445,8 @@ auto read_i2c(const PortHandle&, std::uint16_t address, std::span<std::uint8_t> 
         case rt::I2cSchema::st_i2c1_v1_5_cube:
             return read_st_i2c_v1<PortHandle>(address, buffer);
         case rt::I2cSchema::microchip_twihs_z:
-            return read_microchip_twihs<PortHandle>(address, buffer);
+            return read_microchip_twihs<PortHandle>(
+                address, buffer, std::span<const std::uint8_t>{});
         default:
             return core::Err(core::ErrorCode::NotSupported);
     }
