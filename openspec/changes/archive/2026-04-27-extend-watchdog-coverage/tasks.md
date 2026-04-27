@@ -2,30 +2,32 @@
 
 ## 1. Window mode + early warning + status flags
 
-- [ ] 1.1 `set_window(std::uint16_t cycles)`,
+- [x] 1.1 `set_window(std::uint16_t cycles)`,
       `enable_window_mode(bool)` — gated on `kHasWindow`.
-- [ ] 1.2 `enable_early_warning(std::uint16_t cycles_before_timeout)`,
+- [x] 1.2 `enable_early_warning(std::uint16_t cycles_before_timeout)`,
       `early_warning_pending()`, `clear_early_warning()` — gated on
       `kEarlyWarningInterruptEnableField.valid`.
-- [ ] 1.3 Status flags: `timeout_occurred`,
+- [x] 1.3 Status flags: `timeout_occurred`,
       `prescaler_update_in_progress`,
       `reload_update_in_progress`,
       `window_update_in_progress`, `error` — each gated on
       matching status field.
-- [ ] 1.4 `set_reset_on_timeout(bool)` — gated on
+- [x] 1.4 `set_reset_on_timeout(bool)` — gated on
       `kResetEnableField.valid`.
 
 ## 2. Kernel clock + interrupts + IRQ vector
 
-- [ ] 2.1 `set_kernel_clock_source(KernelClockSource)` — gated.
-- [ ] 2.2 `enum class InterruptKind { EarlyWarning }`.
+- [x] 2.1 `set_kernel_clock_source(KernelClockSource)` — gated.
+      Note: no `kKernelClockSourceField` published in any current backend;
+      API present, always returns NotSupported. DB task deferred (10.5).
+- [x] 2.2 `enum class InterruptKind { EarlyWarning }`.
       `enable_interrupt` / `disable_interrupt`.
-- [ ] 2.3 `irq_numbers() -> std::span<const std::uint32_t>`.
+- [x] 2.3 `irq_numbers() -> std::span<const std::uint32_t>`.
 
 ## 3. Compile tests + async + example + HW
 
-- [ ] 3.1 Extend `tests/compile_tests/test_watchdog_api.cpp`.
-- [ ] 3.2 `async::watchdog::wait_for(InterruptKind)` runtime
+- [x] 3.1 Extend `tests/compile_tests/test_watchdog_api.cpp`.
+- [x] 3.2 `async::watchdog::wait_for(InterruptKind)` runtime
       sibling + compile test.
 - [ ] 3.3 `examples/watchdog_probe_complete/`: targets
       `nucleo_g071rb` IWDG + WWDG with window + early-warning
@@ -39,3 +41,8 @@
 - [ ] 4.1 `docs/WATCHDOG.md` — model, IWDG vs WWDG comparison,
       window-mode recipe, early-warning recipe.
 - [ ] 4.2 Cross-link from `docs/ASYNC.md`.
+
+## 10. Device-database follow-ups (deferred)
+
+- [ ] 10.5 Publish `kKernelClockSourceField` in watchdog traits for
+      STM32 devices that support IWDG clock mux (STM32H7+).
