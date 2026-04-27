@@ -43,7 +43,7 @@ Phase 5 needs the existing 3-board hardware matrix
       `enable_interrupt(InterruptKind)` /
       `disable_interrupt(InterruptKind)` — each kind gated on the
       corresponding control-side field.
-- [ ] 2.5 `irq_numbers() -> std::span<const std::uint32_t>` —
+- [x] 2.5 `irq_numbers() -> std::span<const std::uint32_t>` —
       static accessor returning the descriptor's `kIrqNumbers`.
 
 ## 3. LIN / RS-485 DE / half-duplex / smartcard / IrDA / multiprocessor / wakeup
@@ -72,7 +72,7 @@ Phase 5 needs the existing 3-board hardware matrix
       fires on out-of-range `Oversampling` selection.
 - [x] 4.2 Add a `nucleo_f401re`-targeted compile test exercising
       the LIN enabled path (USART2 LIN supported on F4).
-- [ ] 4.3 Add a `same70_xplained`-targeted compile test exercising
+- [x] 4.3 Add a `same70_xplained`-targeted compile test exercising
       the per-peripheral `irq_numbers()` accessor (SAME70 publishes
       multiple IRQ lines per peripheral).
 

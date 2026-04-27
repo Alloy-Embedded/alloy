@@ -622,6 +622,16 @@ class port_handle {
 
     [[nodiscard]] static constexpr auto base_address() -> std::uintptr_t { return base; }
 
+    /// Returns the NVIC IRQ line numbers for this peripheral.
+    /// The span is non-empty on every supported target; size varies by vendor:
+    ///   - STM32G0 USART: 1 entry (combined IRQ)
+    ///   - STM32F4 USART1/2/3: 2 entries (global + DMA)
+    ///   - SAME70 UART/USART: 1 entry each
+    /// Use these values to register ISR handlers without hardcoding NVIC line IDs.
+    [[nodiscard]] static constexpr auto irq_numbers() -> std::span<const std::uint32_t> {
+        return std::span<const std::uint32_t>{semantic_traits::kIrqNumbers};
+    }
+
     [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
         return detail::configure_uart(*this);
     }
@@ -667,7 +677,7 @@ class port_handle {
     }
 
     /// Returns the kernel clock frequency in Hz (as configured via UartConfig).
-    [[nodiscard]] auto kernel_clock_hz() const -> std::uint32_t {
+    [[nodiscard]] auto kernel_clock_hz() const noexcept -> std::uint32_t {
         return config_.peripheral_clock_hz;
     }
 
