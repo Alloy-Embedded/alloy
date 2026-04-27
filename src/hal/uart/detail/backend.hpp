@@ -667,97 +667,32 @@ auto read_uart_dma(const PortHandle&, const DmaChannel& channel, std::span<std::
 
 // ============================================================
 // Extended UART Coverage — phases 1-3 (host-testable)
-// All ST-style implementations use runtime field discovery via
-// find_runtime_register_ref_by_suffix + find_runtime_field_ref_by_register_and_offset,
-// the same pattern used by the DMA backend (see st_tx_dma_field / st_rx_dma_field above).
-// If a field is not present in the runtime database the function returns
-// core::ErrorCode::NotSupported; no MMIO write occurs.
+// All ST-style implementations now use pre-computed static constexpr field members
+// from port_handle (via st_uart_register_bank) rather than calling field-discovery
+// functions at runtime. This eliminates the flash-overflow caused by thousands of
+// unique binary-search template instantiations at -O0.
 //
 // Register layout for ST SCI3 (USART modern — STM32G0/G4/H7/WB):
 //   CR1: offset 0x00  CR2: offset 0x04  CR3: offset 0x08  BRR: offset 0x0C
 //   ISR: offset 0x1C  ICR: offset 0x20  RDR: offset 0x24  TDR: offset 0x28
 // ============================================================
 
-// ---------- Field discovery helpers ----------
-// Use existing port_handle static register refs (cr1_reg, cr2_reg, isr_reg)
-// where available; discover CR3 and ICR via suffix search.
+// ---------- Simple field helper ----------
 
-// CR1 field by bit offset (uses PortHandle::cr1_reg — always valid for is_st_style).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_cr1_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_style) {
-        return rt::kInvalidFieldRef;
-    } else {
-        return rt::find_runtime_field_ref_by_register_and_offset(
-            PortHandle::cr1_reg.register_id, bit_offset);
-    }
+// Read a FieldRef and return true when valid and non-zero (single-bit flag check).
+[[nodiscard]] inline auto read_field_bool(rt::FieldRef field) noexcept -> bool {
+    if (!field.valid) { return false; }
+    const auto v = rt::read_field(field);
+    return v.is_ok() && v.unwrap() != 0u;
 }
 
-// CR2 field by bit offset (uses PortHandle::cr2_reg).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_cr2_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_style || !PortHandle::cr2_reg.valid) {
-        return rt::kInvalidFieldRef;
-    } else {
-        return rt::find_runtime_field_ref_by_register_and_offset(
-            PortHandle::cr2_reg.register_id, bit_offset);
+// Write 1 to a FieldRef (ICR-style clear-by-write-1). Returns NotSupported when invalid.
+[[nodiscard]] inline auto clear_flag_field_impl(rt::FieldRef field)
+    -> core::Result<void, core::ErrorCode> {
+    if (!field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
     }
-}
-
-// CR3 field by bit offset (runtime register discovery; CR3 not in UartSemanticTraits).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_cr3_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_style) {
-        return rt::kInvalidFieldRef;
-    } else {
-        constexpr auto cr3 =
-            rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
-        if constexpr (!cr3.valid) {
-            return rt::kInvalidFieldRef;
-        } else {
-            return rt::find_runtime_field_ref_by_register_and_offset(cr3.register_id,
-                                                                      bit_offset);
-        }
-    }
-}
-
-// ISR field by bit offset (modern ST only; uses PortHandle::isr_reg).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_isr_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_modern_style || !PortHandle::isr_reg.valid) {
-        return rt::kInvalidFieldRef;
-    } else {
-        return rt::find_runtime_field_ref_by_register_and_offset(
-            PortHandle::isr_reg.register_id, bit_offset);
-    }
-}
-
-// SR field by bit offset (legacy ST only; uses PortHandle::sr_reg).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_sr_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_legacy_style || !PortHandle::sr_reg.valid) {
-        return rt::kInvalidFieldRef;
-    } else {
-        return rt::find_runtime_field_ref_by_register_and_offset(
-            PortHandle::sr_reg.register_id, bit_offset);
-    }
-}
-
-// ICR field by bit offset (modern ST only; ICR not in UartSemanticTraits).
-template <typename PortHandle>
-[[nodiscard]] inline auto st_icr_field(std::uint16_t bit_offset) noexcept -> rt::FieldRef {
-    if constexpr (!PortHandle::is_st_modern_style) {
-        return rt::kInvalidFieldRef;
-    } else {
-        constexpr auto icr =
-            rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "icr");
-        if constexpr (!icr.valid) {
-            return rt::kInvalidFieldRef;
-        } else {
-            return rt::find_runtime_field_ref_by_register_and_offset(icr.register_id,
-                                                                      bit_offset);
-        }
-    }
+    return rt::modify_field(field, 1u);
 }
 
 // ---------- Phase 1: Baudrate / oversampling ----------
@@ -820,12 +755,12 @@ auto set_oversampling_impl(const PortHandle&, Oversampling mode)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // OVER8 = CR1 bit 15 on all ST SCI3 / SCI2 families
-        const auto over8 = st_cr1_field<PortHandle>(std::uint16_t{15});
-        if (!over8.valid) {
+        if (!PortHandle::cr1_over8_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
         static_cast<void>(rt::modify_field(PortHandle::ue_field, 0u));
-        const auto r = rt::modify_field(over8, (mode == Oversampling::X8) ? 1u : 0u);
+        const auto r = rt::modify_field(PortHandle::cr1_over8_field,
+                                        (mode == Oversampling::X8) ? 1u : 0u);
         static_cast<void>(rt::modify_field(PortHandle::ue_field, 1u));
         return r;
     }
@@ -834,43 +769,8 @@ auto set_oversampling_impl(const PortHandle&, Oversampling mode)
 
 // ---------- Phase 2: Status flags + interrupts ----------
 
-// Read a single-bit flag from ISR (modern) or SR (legacy).
-// bit_offset: same position in both ISR and SR for the common error/status flags.
-template <typename PortHandle>
-[[nodiscard]] auto read_status_flag(std::uint16_t bit_offset) noexcept -> bool {
-    if constexpr (PortHandle::is_st_modern_style) {
-        const auto field = st_isr_field<PortHandle>(bit_offset);
-        if (!field.valid) { return false; }
-        const auto v = rt::read_field(field);
-        return v.is_ok() && v.unwrap() != 0u;
-    } else if constexpr (PortHandle::is_st_legacy_style) {
-        const auto field = st_sr_field<PortHandle>(bit_offset);
-        if (!field.valid) { return false; }
-        const auto v = rt::read_field(field);
-        return v.is_ok() && v.unwrap() != 0u;
-    } else {
-        return false;
-    }
-}
-
-// Clear a status flag via ICR (modern) or by reading DR (legacy clears by read).
-// For legacy, a read of DR clears most flags; we don't expose individual clears there.
-template <typename PortHandle>
-auto clear_status_flag_impl(std::uint32_t icr_bit_offset)
-    -> core::Result<void, core::ErrorCode> {
-    if constexpr (PortHandle::is_st_modern_style) {
-        const auto field = st_icr_field<PortHandle>(static_cast<std::uint16_t>(icr_bit_offset));
-        if (!field.valid) {
-            return core::Err(core::ErrorCode::NotSupported);
-        }
-        return rt::modify_field(field, 1u);
-    }
-    // Legacy: flags are cleared by reading DR; individual clears not supported.
-    return core::Err(core::ErrorCode::NotSupported);
-}
-
 // enable/disable a single interrupt-enable bit.
-// Returns NotSupported when the field cannot be found in the runtime database.
+// Returns NotSupported when the field is absent on this peripheral.
 template <typename PortHandle>
 auto set_interrupt_enable_impl(const PortHandle&, InterruptKind kind, bool enable)
     -> core::Result<void, core::ErrorCode> {
@@ -883,35 +783,35 @@ auto set_interrupt_enable_impl(const PortHandle&, InterruptKind kind, bool enabl
         switch (kind) {
             // CR1 interrupt enables
             case InterruptKind::IdleLine:
-                field = st_cr1_field<PortHandle>(std::uint16_t{4});   // IDLEIE
+                field = PortHandle::cr1_idleie_field;   // IDLEIE bit 4
                 break;
             case InterruptKind::Rxne:
-                field = st_cr1_field<PortHandle>(std::uint16_t{5});   // RXNEIE / RXFNEIE
+                field = PortHandle::cr1_rxneie_field;   // RXNEIE / RXFNEIE bit 5
                 break;
             case InterruptKind::Tc:
-                field = st_cr1_field<PortHandle>(std::uint16_t{6});   // TCIE
+                field = PortHandle::cr1_tcie_field;     // TCIE bit 6
                 break;
             case InterruptKind::Txe:
-                field = st_cr1_field<PortHandle>(std::uint16_t{7});   // TXEIE / TXFNFIE
+                field = PortHandle::cr1_txeie_field;    // TXEIE / TXFNFIE bit 7
                 break;
             // CR2 interrupt enables
             case InterruptKind::LinBreak:
-                field = st_cr2_field<PortHandle>(std::uint16_t{6});   // LBDIE
+                field = PortHandle::cr2_lbdie_field;    // LBDIE bit 6
                 break;
             // CR3 interrupt enables
             case InterruptKind::Error:
-                field = st_cr3_field<PortHandle>(std::uint16_t{0});   // EIE (ORE/FE/NE)
+                field = PortHandle::cr3_eie_field;      // EIE bit 0 (ORE/FE/NE)
                 break;
             case InterruptKind::Cts:
-                field = st_cr3_field<PortHandle>(std::uint16_t{10});  // CTSIE
+                field = PortHandle::cr3_ctsie_field;    // CTSIE bit 10
                 break;
             case InterruptKind::TxFifoThreshold:
-                field = st_cr3_field<PortHandle>(std::uint16_t{23});  // TXFTIE
+                field = PortHandle::cr3_txftie_field;   // TXFTIE bit 23
                 break;
             case InterruptKind::RxFifoThreshold:
-                // RXFTIE offset varies by family; returns kInvalidFieldRef → NotSupported
-                // if absent (e.g. STM32F4 has no FIFO).
-                field = st_cr3_field<PortHandle>(std::uint16_t{27});
+                // RXFTIE: CR3 bit 27 (pre-computed in cr3_rxftie_field).
+                // Absent on families without FIFO (e.g. STM32F4) → NotSupported.
+                field = PortHandle::cr3_rxftie_field;
                 break;
         }
 
@@ -929,11 +829,10 @@ auto enable_fifo_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // FIFOEN: CR1 bit 29 (STM32G0/G4/H7; absent on F1/F4 → NotSupported)
-        const auto field = st_cr1_field<PortHandle>(std::uint16_t{29});
-        if (!field.valid) {
+        if (!PortHandle::cr1_fifoen_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr1_fifoen_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -945,11 +844,10 @@ auto set_tx_threshold_impl(const PortHandle&, FifoTrigger trigger)
         // TXFTCFG: CR3 bits [31:29], 3-bit field
         // Trigger enum → register encoding:
         //   Empty=0(1/8), Quarter=1(1/4), Half=2(1/2), ThreeQuarters=3(3/4), Full=4(7/8)
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{29});
-        if (!field.valid) {
+        if (!PortHandle::cr3_txftcfg_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, static_cast<std::uint32_t>(trigger));
+        return rt::modify_field(PortHandle::cr3_txftcfg_field, static_cast<std::uint32_t>(trigger));
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -959,11 +857,10 @@ auto set_rx_threshold_impl(const PortHandle&, FifoTrigger trigger)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // RXFTCFG: CR3 bits [26:24], 3-bit field
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{24});
-        if (!field.valid) {
+        if (!PortHandle::cr3_rxftcfg_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, static_cast<std::uint32_t>(trigger));
+        return rt::modify_field(PortHandle::cr3_rxftcfg_field, static_cast<std::uint32_t>(trigger));
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -975,11 +872,10 @@ auto enable_lin_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // LINEN: CR2 bit 14
-        const auto field = st_cr2_field<PortHandle>(std::uint16_t{14});
-        if (!field.valid) {
+        if (!PortHandle::cr2_linen_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr2_linen_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -991,37 +887,34 @@ template <typename PortHandle>
 auto send_lin_break_impl(const PortHandle&)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
-        // RQR is not in UartSemanticTraits; discover at constexpr time by suffix.
-        constexpr auto rqr =
-            rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "rqr");
-        if constexpr (!rqr.valid) {
+        // SBKRQ: RQR bit 1 (pre-computed in rqr_sbkrq_field) — write-only, self-clearing.
+        if (!PortHandle::rqr_sbkrq_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
-        } else {
-            // SBKRQ: RQR bit 1 — write-only, self-clearing after break sent.
-            const auto field = rt::find_runtime_field_ref_by_register_and_offset(
-                rqr.register_id, std::uint16_t{1});
-            if (!field.valid) {
-                return core::Err(core::ErrorCode::NotSupported);
-            }
-            return rt::modify_field(field, 1u);
         }
+        return rt::modify_field(PortHandle::rqr_sbkrq_field, 1u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
 
 // Returns true when the LIN break detection flag (LBDF) is set.
 // ISR bit 8 on modern ST; SR bit 8 on legacy ST.
+// (Kept for any callers that go through this function; uart.hpp methods call read_field_bool directly.)
 template <typename PortHandle>
-[[nodiscard]] auto lin_break_detected_impl() noexcept -> bool {
-    return read_status_flag<PortHandle>(std::uint16_t{8});
+[[nodiscard]] constexpr auto lin_break_detected_impl() noexcept -> bool {
+    if constexpr (PortHandle::is_st_modern_style)
+        return read_field_bool(PortHandle::isr_lbdf_field);
+    else if constexpr (PortHandle::is_st_legacy_style)
+        return read_field_bool(PortHandle::sr_lbdf_field);
+    return false;
 }
 
 // Clear the LIN break detection flag (LBDCF: ICR bit 8 on modern ST).
 // Returns NotSupported on legacy ST (flags cleared by read of DR).
+// (Kept for any callers that go through this function; uart.hpp methods call clear_flag_field_impl directly.)
 template <typename PortHandle>
 auto clear_lin_break_flag_impl()
     -> core::Result<void, core::ErrorCode> {
-    return clear_status_flag_impl<PortHandle>(8u);
+    return clear_flag_field_impl(PortHandle::icr_lbdcf_field);
 }
 
 template <typename PortHandle>
@@ -1029,11 +922,10 @@ auto set_half_duplex_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // HDSEL: CR3 bit 3
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{3});
-        if (!field.valid) {
+        if (!PortHandle::cr3_hdsel_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr3_hdsel_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -1043,11 +935,10 @@ auto enable_de_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // DEM: CR3 bit 14
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{14});
-        if (!field.valid) {
+        if (!PortHandle::cr3_dem_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr3_dem_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -1057,11 +948,10 @@ auto set_de_assertion_time_impl(const PortHandle&, std::uint8_t sample_times)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // DEAT[4:0]: CR1 bits [25:21], 5-bit field. Clamp to [0,31].
-        const auto field = st_cr1_field<PortHandle>(std::uint16_t{21});
-        if (!field.valid) {
+        if (!PortHandle::cr1_deat_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, std::uint32_t{sample_times} & 0x1Fu);
+        return rt::modify_field(PortHandle::cr1_deat_field, std::uint32_t{sample_times} & 0x1Fu);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -1071,11 +961,10 @@ auto set_de_deassertion_time_impl(const PortHandle&, std::uint8_t sample_times)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // DEDT[4:0]: CR1 bits [20:16], 5-bit field. Clamp to [0,31].
-        const auto field = st_cr1_field<PortHandle>(std::uint16_t{16});
-        if (!field.valid) {
+        if (!PortHandle::cr1_dedt_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, std::uint32_t{sample_times} & 0x1Fu);
+        return rt::modify_field(PortHandle::cr1_dedt_field, std::uint32_t{sample_times} & 0x1Fu);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -1085,11 +974,10 @@ auto set_smartcard_mode_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // SCEN: CR3 bit 5
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{5});
-        if (!field.valid) {
+        if (!PortHandle::cr3_scen_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr3_scen_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }
@@ -1099,11 +987,10 @@ auto set_irda_mode_impl(const PortHandle&, bool enable)
     -> core::Result<void, core::ErrorCode> {
     if constexpr (PortHandle::is_st_style) {
         // IREN: CR3 bit 1
-        const auto field = st_cr3_field<PortHandle>(std::uint16_t{1});
-        if (!field.valid) {
+        if (!PortHandle::cr3_iren_field.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return rt::modify_field(field, enable ? 1u : 0u);
+        return rt::modify_field(PortHandle::cr3_iren_field, enable ? 1u : 0u);
     }
     return core::Err(core::ErrorCode::NotSupported);
 }

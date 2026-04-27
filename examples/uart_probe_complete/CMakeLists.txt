@@ -51,6 +51,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:-O0 -g3>
     $<$<CONFIG:Release>:-O2 -g>
     $<$<CONFIG:MinSizeRel>:-Os -g>
+    # Devices with large register databases (STM32F4, SAME70) hit the default 33M-op limit when
+    # computing 30+ new UART field refs as static constexpr members at class instantiation time.
+    # 256M is sufficient for STM32F4 (425 registers, ~10K fields × 24 field searches).
+    -fconstexpr-ops-limit=268435456
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

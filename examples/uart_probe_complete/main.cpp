@@ -23,7 +23,6 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "async.hpp"
 #include "core/error_code.hpp"
 #include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
@@ -152,28 +151,19 @@ void probe_modes(Uart& port) {
     report(port, "set_irda_mode(false)",      port.set_irda_mode(false));
 }
 
-// ── async IdleLine wait ───────────────────────────────────────────────────────
+// ── IdleLine interrupt arm / disarm ──────────────────────────────────────────
+// Demonstrates the interrupt-enable/disable API without pulling in the DMA
+// subsystem headers (async::uart::wait_for is compile-tested separately in
+// tests/compile_tests/test_async_peripherals.cpp).
 
 template <typename Uart>
-void probe_async_idle(Uart& port) {
-    console::write_line(port, "--- Async: wait_for<IdleLine> ---");
-
-    // Arm the IDLE-line interrupt, then immediately check readiness
-    // without a real ISR — this demonstrates the API surface compiles
-    // and the reset+arm sequence is correct.
-    const auto op_result =
-        alloy::async::uart::wait_for<InterruptKind::IdleLine>(port);
-    if (op_result.is_err()) {
-        console::write_text(port, "wait_for arm err ");
-        console::write_unsigned(port, static_cast<std::uint32_t>(op_result.err()));
-        console::write_line(port, "");
-    } else {
-        const auto& op = op_result.unwrap();
-        console::write_text(port, "wait_for armed, ready=");
-        console::write_line(port, op.ready() ? "true" : "false");
-    }
-    // Disarm regardless.
-    static_cast<void>(port.disable_interrupt(InterruptKind::IdleLine));
+void probe_idle_interrupt(Uart& port) {
+    console::write_line(port, "--- Interrupt arm/disarm: IdleLine ---");
+    report(port, "enable_interrupt(IdleLine)",
+           port.enable_interrupt(InterruptKind::IdleLine));
+    // Without a real ISR registered there is nothing to wait on; just disarm.
+    report(port, "disable_interrupt(IdleLine)",
+           port.disable_interrupt(InterruptKind::IdleLine));
 }
 
 }  // namespace
@@ -205,7 +195,7 @@ int main() {
     probe_status_flags(uart);
     probe_interrupts(uart);
     probe_modes(uart);
-    probe_async_idle(uart);
+    probe_idle_interrupt(uart);
 
     console::write_line(uart, "=== done ===");
 

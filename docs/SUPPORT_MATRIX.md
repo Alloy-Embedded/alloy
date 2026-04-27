@@ -57,7 +57,7 @@ relies on.
 | `runtime-device-boundary` | `foundational` | boundary script + descriptor contract smoke |
 | `clock-reset-startup` | `foundational` | descriptor smoke + host-MMIO + Renode runtime validation |
 | `gpio` | `foundational` | descriptor smoke + host-MMIO + Renode runtime validation |
-| `uart` | `foundational` | descriptor smoke + host-MMIO + Renode runtime validation. Extended coverage (Phase 1-3): baudrate ±2% validation, oversampling, FIFO, status flags + clear, interrupt arm/disarm, LIN (enable + break send/detect/clear), RS-485 DE, half-duplex, smartcard, IrDA; `async::uart::wait_for<InterruptKind>`. Compile-tested on nucleo_g071rb / nucleo_f401re / same70_xplained. HW spot-check pending (task 7). See [UART.md](UART.md). |
+| `uart` | `foundational` | descriptor smoke + host-MMIO + Renode runtime validation. Extended coverage (Phase 1-3): baudrate ±2% validation, oversampling, FIFO, status flags + clear, interrupt arm/disarm, LIN (enable + break send/detect/clear), RS-485 DE, half-duplex, smartcard, IrDA; `async::uart::wait_for<InterruptKind>`. 3-board hardware spot-check (`uart_probe_complete`) all pass: nucleo_g071rb (16 MHz, FIFO + LIN + DE + all flags OK), nucleo_f401re (42 MHz APB1, FIFO/ICR/RQR/DE correctly NotSupported, LIN enable + half-duplex + interrupts OK), same70_xplained (150 MHz, Microchip schema NotSupported path correct). See [UART.md](UART.md). |
 | `time` | `foundational` | descriptor smoke + canonical `time_probe` coverage |
 | `interrupt-event` | `foundational` | descriptor smoke + host-MMIO IRQ bridging coverage |
 | `dma` | `foundational` | descriptor smoke + host-MMIO DMA coverage + canonical `dma_probe` |

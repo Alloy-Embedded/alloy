@@ -62,6 +62,63 @@ struct uart_register_bank_base {
     static constexpr auto tc_sr_field = runtime::kInvalidFieldRef;
     static constexpr auto dr_field = runtime::kInvalidFieldRef;
 
+    // Extended ST registers (not in SemanticTraits)
+    static constexpr auto cr3_reg  = runtime::kInvalidRegisterRef;
+    static constexpr auto icr_reg  = runtime::kInvalidRegisterRef;
+    static constexpr auto rqr_reg  = runtime::kInvalidRegisterRef;
+
+    // CR1 extended fields
+    static constexpr auto cr1_over8_field   = runtime::kInvalidFieldRef;  // OVER8  bit 15
+    static constexpr auto cr1_fifoen_field  = runtime::kInvalidFieldRef;  // FIFOEN bit 29
+    static constexpr auto cr1_idleie_field  = runtime::kInvalidFieldRef;  // IDLEIE bit 4
+    static constexpr auto cr1_rxneie_field  = runtime::kInvalidFieldRef;  // RXNEIE bit 5
+    static constexpr auto cr1_tcie_field    = runtime::kInvalidFieldRef;  // TCIE   bit 6
+    static constexpr auto cr1_txeie_field   = runtime::kInvalidFieldRef;  // TXEIE  bit 7
+    static constexpr auto cr1_dedt_field    = runtime::kInvalidFieldRef;  // DEDT   bits [20:16]
+    static constexpr auto cr1_deat_field    = runtime::kInvalidFieldRef;  // DEAT   bits [25:21]
+
+    // CR2 extended fields
+    static constexpr auto cr2_lbdie_field   = runtime::kInvalidFieldRef;  // LBDIE  bit 6
+    static constexpr auto cr2_linen_field   = runtime::kInvalidFieldRef;  // LINEN  bit 14
+
+    // CR3 extended fields
+    static constexpr auto cr3_eie_field     = runtime::kInvalidFieldRef;  // EIE    bit 0
+    static constexpr auto cr3_iren_field    = runtime::kInvalidFieldRef;  // IREN   bit 1
+    static constexpr auto cr3_hdsel_field   = runtime::kInvalidFieldRef;  // HDSEL  bit 3
+    static constexpr auto cr3_scen_field    = runtime::kInvalidFieldRef;  // SCEN   bit 5
+    static constexpr auto cr3_ctsie_field   = runtime::kInvalidFieldRef;  // CTSIE  bit 10
+    static constexpr auto cr3_dem_field     = runtime::kInvalidFieldRef;  // DEM    bit 14
+    static constexpr auto cr3_txftie_field  = runtime::kInvalidFieldRef;  // TXFTIE bit 23
+    static constexpr auto cr3_rxftcfg_field = runtime::kInvalidFieldRef;  // RXFTCFG bit 24
+    static constexpr auto cr3_txftcfg_field = runtime::kInvalidFieldRef;  // TXFTCFG bit 29
+    static constexpr auto cr3_rxftie_field  = runtime::kInvalidFieldRef;  // RXFTIE  bit 27
+
+    // ISR (modern ST) status flags
+    static constexpr auto isr_pe_field      = runtime::kInvalidFieldRef;  // PE   bit 0
+    static constexpr auto isr_fe_field      = runtime::kInvalidFieldRef;  // FE   bit 1
+    static constexpr auto isr_ne_field      = runtime::kInvalidFieldRef;  // NE   bit 2
+    static constexpr auto isr_ore_field     = runtime::kInvalidFieldRef;  // ORE  bit 3
+    static constexpr auto isr_lbdf_field    = runtime::kInvalidFieldRef;  // LBDF bit 8
+    static constexpr auto isr_rxff_field    = runtime::kInvalidFieldRef;  // RXFF bit 24
+    static constexpr auto isr_txff_field    = runtime::kInvalidFieldRef;  // TXFF bit 25
+
+    // SR (legacy ST) status flags
+    static constexpr auto sr_pe_field       = runtime::kInvalidFieldRef;
+    static constexpr auto sr_fe_field       = runtime::kInvalidFieldRef;
+    static constexpr auto sr_ne_field       = runtime::kInvalidFieldRef;
+    static constexpr auto sr_ore_field      = runtime::kInvalidFieldRef;
+    static constexpr auto sr_lbdf_field     = runtime::kInvalidFieldRef;
+
+    // ICR (modern ST) clear flags
+    static constexpr auto icr_pecf_field    = runtime::kInvalidFieldRef;  // PECF  bit 0
+    static constexpr auto icr_fecf_field    = runtime::kInvalidFieldRef;  // FECF  bit 1
+    static constexpr auto icr_necf_field    = runtime::kInvalidFieldRef;  // NECF  bit 2
+    static constexpr auto icr_orecf_field   = runtime::kInvalidFieldRef;  // ORECF bit 3
+    static constexpr auto icr_lbdcf_field   = runtime::kInvalidFieldRef;  // LBDCF bit 8
+
+    // RQR request register
+    static constexpr auto rqr_sbkrq_field   = runtime::kInvalidFieldRef;  // SBKRQ bit 1
+
     static constexpr auto cr_reg = runtime::kInvalidRegisterRef;
     static constexpr auto mr_reg = runtime::kInvalidRegisterRef;
     static constexpr auto brgr_reg = runtime::kInvalidRegisterRef;
@@ -107,7 +164,7 @@ struct uart_register_bank_base {
     static constexpr auto us_rxchr_field = runtime::kInvalidFieldRef;
 };
 
-template <typename SemanticTraits>
+template <device::PeripheralId PId, typename SemanticTraits>
 struct st_uart_register_bank : uart_register_bank_base<SemanticTraits> {
     static constexpr bool is_st_style =
         SemanticTraits::kCr1Register.valid && SemanticTraits::kBrrRegister.valid;
@@ -158,6 +215,169 @@ struct st_uart_register_bank : uart_register_bank_base<SemanticTraits> {
         is_st_legacy_style ? SemanticTraits::kTcSrField : runtime::kInvalidFieldRef;
     static constexpr auto dr_field =
         is_st_legacy_style ? SemanticTraits::kDrField : runtime::kInvalidFieldRef;
+
+    // Extended registers — searched by suffix at compile time, stored as static constexpr.
+    // Consteval lambdas with if constexpr guarantee the suffix search is skipped when the
+    // register is absent (GCC evaluates both ternary branches even for constexpr conditions,
+    // which overflows the constexpr-ops limit on devices with large register databases).
+    static constexpr auto cr3_reg =
+        runtime::find_runtime_register_ref_by_suffix(PId, "cr3");
+    static constexpr auto icr_reg = []() consteval -> runtime::RegisterRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidRegisterRef; }
+        else { return runtime::find_runtime_register_ref_by_suffix(PId, "icr"); }
+    }();
+    static constexpr auto rqr_reg = []() consteval -> runtime::RegisterRef {
+        if constexpr (!is_st_style) { return runtime::kInvalidRegisterRef; }
+        else { return runtime::find_runtime_register_ref_by_suffix(PId, "rqr"); }
+    }();
+
+    // CR1 extended fields
+    static constexpr auto cr1_over8_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{15});
+    static constexpr auto cr1_fifoen_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{29});
+    static constexpr auto cr1_idleie_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{4});
+    static constexpr auto cr1_rxneie_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{5});
+    static constexpr auto cr1_tcie_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{6});
+    static constexpr auto cr1_txeie_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{7});
+    static constexpr auto cr1_dedt_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{16});
+    static constexpr auto cr1_deat_field =
+        !cr1_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{21});
+
+    // CR2 extended fields
+    static constexpr auto cr2_lbdie_field =
+        !cr2_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr2_reg.register_id, std::uint16_t{6});
+    static constexpr auto cr2_linen_field =
+        !cr2_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr2_reg.register_id, std::uint16_t{14});
+
+    // CR3 extended fields
+    static constexpr auto cr3_eie_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{0});
+    static constexpr auto cr3_iren_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{1});
+    static constexpr auto cr3_hdsel_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{3});
+    static constexpr auto cr3_scen_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{5});
+    static constexpr auto cr3_ctsie_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{10});
+    static constexpr auto cr3_dem_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{14});
+    static constexpr auto cr3_txftie_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{23});
+    static constexpr auto cr3_rxftcfg_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{24});
+    static constexpr auto cr3_txftcfg_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{29});
+    static constexpr auto cr3_rxftie_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{27});
+
+    // ISR fields (modern only) — consteval lambda guards prevent evaluating the field search
+    // when isr_reg is invalid (GCC evaluates both ternary branches even for constexpr conditions).
+    static constexpr auto isr_pe_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{0}); }
+    }();
+    static constexpr auto isr_fe_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{1}); }
+    }();
+    static constexpr auto isr_ne_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{2}); }
+    }();
+    static constexpr auto isr_ore_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{3}); }
+    }();
+    static constexpr auto isr_lbdf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{8}); }
+    }();
+    static constexpr auto isr_rxff_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{24}); }
+    }();
+    static constexpr auto isr_txff_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(isr_reg.register_id, std::uint16_t{25}); }
+    }();
+
+    // SR fields (legacy only) — consteval lambda guards prevent field search when sr_reg is invalid.
+    static constexpr auto sr_pe_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_legacy_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(sr_reg.register_id, std::uint16_t{0}); }
+    }();
+    static constexpr auto sr_fe_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_legacy_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(sr_reg.register_id, std::uint16_t{1}); }
+    }();
+    static constexpr auto sr_ne_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_legacy_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(sr_reg.register_id, std::uint16_t{2}); }
+    }();
+    static constexpr auto sr_ore_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_legacy_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(sr_reg.register_id, std::uint16_t{3}); }
+    }();
+    static constexpr auto sr_lbdf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_legacy_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(sr_reg.register_id, std::uint16_t{8}); }
+    }();
+
+    // ICR fields (modern only) — consteval lambda guards prevent field search when icr_reg is invalid.
+    static constexpr auto icr_pecf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(icr_reg.register_id, std::uint16_t{0}); }
+    }();
+    static constexpr auto icr_fecf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(icr_reg.register_id, std::uint16_t{1}); }
+    }();
+    static constexpr auto icr_necf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(icr_reg.register_id, std::uint16_t{2}); }
+    }();
+    static constexpr auto icr_orecf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(icr_reg.register_id, std::uint16_t{3}); }
+    }();
+    static constexpr auto icr_lbdcf_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_modern_style) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(icr_reg.register_id, std::uint16_t{8}); }
+    }();
+
+    // RQR fields — consteval lambda guard prevents field search when rqr_reg is invalid.
+    static constexpr auto rqr_sbkrq_field = []() consteval -> runtime::FieldRef {
+        if constexpr (!is_st_style) { return runtime::kInvalidFieldRef; }
+        else if constexpr (!rqr_reg.valid) { return runtime::kInvalidFieldRef; }
+        else { return runtime::find_runtime_field_ref_by_register_and_offset(rqr_reg.register_id, std::uint16_t{1}); }
+    }();
 };
 
 template <typename SemanticTraits>
@@ -218,23 +438,23 @@ struct microchip_usart_zw_register_bank : uart_register_bank_base<SemanticTraits
     static constexpr auto us_rxchr_field = SemanticTraits::kUsRxchrField;
 };
 
-template <typename SemanticTraits, runtime::UartSchema Schema>
+template <device::PeripheralId PId, typename SemanticTraits, runtime::UartSchema Schema>
 struct uart_register_bank : uart_register_bank_base<SemanticTraits> {};
 
-template <typename SemanticTraits>
-struct uart_register_bank<SemanticTraits, runtime::UartSchema::st_sci3_v2_1_cube>
-    : st_uart_register_bank<SemanticTraits> {};
+template <device::PeripheralId PId, typename SemanticTraits>
+struct uart_register_bank<PId, SemanticTraits, runtime::UartSchema::st_sci3_v2_1_cube>
+    : st_uart_register_bank<PId, SemanticTraits> {};
 
-template <typename SemanticTraits>
-struct uart_register_bank<SemanticTraits, runtime::UartSchema::st_sci2_v1_2_cube>
-    : st_uart_register_bank<SemanticTraits> {};
+template <device::PeripheralId PId, typename SemanticTraits>
+struct uart_register_bank<PId, SemanticTraits, runtime::UartSchema::st_sci2_v1_2_cube>
+    : st_uart_register_bank<PId, SemanticTraits> {};
 
-template <typename SemanticTraits>
-struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_uart_r>
+template <device::PeripheralId PId, typename SemanticTraits>
+struct uart_register_bank<PId, SemanticTraits, runtime::UartSchema::microchip_uart_r>
     : microchip_uart_r_register_bank<SemanticTraits> {};
 
-template <typename SemanticTraits>
-struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_usart_zw>
+template <device::PeripheralId PId, typename SemanticTraits>
+struct uart_register_bank<PId, SemanticTraits, runtime::UartSchema::microchip_usart_zw>
     : microchip_usart_zw_register_bank<SemanticTraits> {};
 
 }  // namespace detail
@@ -259,7 +479,7 @@ class port_handle {
     static constexpr auto schema =
         semantic_traits::kPresent ? detail::runtime::to_uart_schema(semantic_traits::kSchemaId)
                                   : detail::runtime::to_uart_schema(peripheral_traits::kSchemaId);
-    using register_bank = detail::uart_register_bank<semantic_traits, schema>;
+    using register_bank = detail::uart_register_bank<peripheral_id, semantic_traits, schema>;
 
     static constexpr auto base = peripheral_id == runtime_peripheral_id::none
                                      ? std::uintptr_t{0u}
@@ -302,6 +522,51 @@ class port_handle {
     static constexpr auto rxne_sr_field = register_bank::rxne_sr_field;
     static constexpr auto tc_sr_field = register_bank::tc_sr_field;
     static constexpr auto dr_field = register_bank::dr_field;
+
+    // Extended ST registers
+    static constexpr auto cr3_reg  = register_bank::cr3_reg;
+    static constexpr auto icr_reg  = register_bank::icr_reg;
+    static constexpr auto rqr_reg  = register_bank::rqr_reg;
+
+    // Extended fields
+    static constexpr auto cr1_over8_field   = register_bank::cr1_over8_field;
+    static constexpr auto cr1_fifoen_field  = register_bank::cr1_fifoen_field;
+    static constexpr auto cr1_idleie_field  = register_bank::cr1_idleie_field;
+    static constexpr auto cr1_rxneie_field  = register_bank::cr1_rxneie_field;
+    static constexpr auto cr1_tcie_field    = register_bank::cr1_tcie_field;
+    static constexpr auto cr1_txeie_field   = register_bank::cr1_txeie_field;
+    static constexpr auto cr1_dedt_field    = register_bank::cr1_dedt_field;
+    static constexpr auto cr1_deat_field    = register_bank::cr1_deat_field;
+    static constexpr auto cr2_lbdie_field   = register_bank::cr2_lbdie_field;
+    static constexpr auto cr2_linen_field   = register_bank::cr2_linen_field;
+    static constexpr auto cr3_eie_field     = register_bank::cr3_eie_field;
+    static constexpr auto cr3_iren_field    = register_bank::cr3_iren_field;
+    static constexpr auto cr3_hdsel_field   = register_bank::cr3_hdsel_field;
+    static constexpr auto cr3_scen_field    = register_bank::cr3_scen_field;
+    static constexpr auto cr3_ctsie_field   = register_bank::cr3_ctsie_field;
+    static constexpr auto cr3_dem_field     = register_bank::cr3_dem_field;
+    static constexpr auto cr3_txftie_field  = register_bank::cr3_txftie_field;
+    static constexpr auto cr3_rxftcfg_field = register_bank::cr3_rxftcfg_field;
+    static constexpr auto cr3_txftcfg_field = register_bank::cr3_txftcfg_field;
+    static constexpr auto cr3_rxftie_field  = register_bank::cr3_rxftie_field;
+    static constexpr auto isr_pe_field      = register_bank::isr_pe_field;
+    static constexpr auto isr_fe_field      = register_bank::isr_fe_field;
+    static constexpr auto isr_ne_field      = register_bank::isr_ne_field;
+    static constexpr auto isr_ore_field     = register_bank::isr_ore_field;
+    static constexpr auto isr_lbdf_field    = register_bank::isr_lbdf_field;
+    static constexpr auto isr_rxff_field    = register_bank::isr_rxff_field;
+    static constexpr auto isr_txff_field    = register_bank::isr_txff_field;
+    static constexpr auto sr_pe_field       = register_bank::sr_pe_field;
+    static constexpr auto sr_fe_field       = register_bank::sr_fe_field;
+    static constexpr auto sr_ne_field       = register_bank::sr_ne_field;
+    static constexpr auto sr_ore_field      = register_bank::sr_ore_field;
+    static constexpr auto sr_lbdf_field     = register_bank::sr_lbdf_field;
+    static constexpr auto icr_pecf_field    = register_bank::icr_pecf_field;
+    static constexpr auto icr_fecf_field    = register_bank::icr_fecf_field;
+    static constexpr auto icr_necf_field    = register_bank::icr_necf_field;
+    static constexpr auto icr_orecf_field   = register_bank::icr_orecf_field;
+    static constexpr auto icr_lbdcf_field   = register_bank::icr_lbdcf_field;
+    static constexpr auto rqr_sbkrq_field   = register_bank::rqr_sbkrq_field;
 
     static constexpr auto cr_reg = register_bank::cr_reg;
     static constexpr auto mr_reg = register_bank::mr_reg;
@@ -448,42 +713,58 @@ class port_handle {
 
     /// True when a parity error occurred (PE flag, ISR/SR bit 0).
     [[nodiscard]] auto parity_error() const -> bool {
-        return detail::read_status_flag<port_handle>(std::uint16_t{0});
+        if constexpr (is_st_modern_style)
+            return detail::read_field_bool(isr_pe_field);
+        else if constexpr (is_st_legacy_style)
+            return detail::read_field_bool(sr_pe_field);
+        return false;
     }
 
     /// True when a framing error occurred (FE flag, ISR/SR bit 1).
     [[nodiscard]] auto framing_error() const -> bool {
-        return detail::read_status_flag<port_handle>(std::uint16_t{1});
+        if constexpr (is_st_modern_style)
+            return detail::read_field_bool(isr_fe_field);
+        else if constexpr (is_st_legacy_style)
+            return detail::read_field_bool(sr_fe_field);
+        return false;
     }
 
     /// True when a noise error occurred (NE flag, ISR/SR bit 2).
     [[nodiscard]] auto noise_error() const -> bool {
-        return detail::read_status_flag<port_handle>(std::uint16_t{2});
+        if constexpr (is_st_modern_style)
+            return detail::read_field_bool(isr_ne_field);
+        else if constexpr (is_st_legacy_style)
+            return detail::read_field_bool(sr_ne_field);
+        return false;
     }
 
     /// True when an overrun error occurred (ORE flag, ISR/SR bit 3).
     [[nodiscard]] auto overrun_error() const -> bool {
-        return detail::read_status_flag<port_handle>(std::uint16_t{3});
+        if constexpr (is_st_modern_style)
+            return detail::read_field_bool(isr_ore_field);
+        else if constexpr (is_st_legacy_style)
+            return detail::read_field_bool(sr_ore_field);
+        return false;
     }
 
     /// Clear parity error flag (modern ST: ICR PECF bit 0).
     [[nodiscard]] auto clear_parity_error() const -> core::Result<void, core::ErrorCode> {
-        return detail::clear_status_flag_impl<port_handle>(0u);
+        return detail::clear_flag_field_impl(icr_pecf_field);
     }
 
     /// Clear framing error flag (modern ST: ICR FECF bit 1).
     [[nodiscard]] auto clear_framing_error() const -> core::Result<void, core::ErrorCode> {
-        return detail::clear_status_flag_impl<port_handle>(1u);
+        return detail::clear_flag_field_impl(icr_fecf_field);
     }
 
     /// Clear noise error flag (modern ST: ICR NECF bit 2).
     [[nodiscard]] auto clear_noise_error() const -> core::Result<void, core::ErrorCode> {
-        return detail::clear_status_flag_impl<port_handle>(2u);
+        return detail::clear_flag_field_impl(icr_necf_field);
     }
 
     /// Clear overrun error flag (modern ST: ICR ORECF bit 3).
     [[nodiscard]] auto clear_overrun_error() const -> core::Result<void, core::ErrorCode> {
-        return detail::clear_status_flag_impl<port_handle>(3u);
+        return detail::clear_flag_field_impl(icr_orecf_field);
     }
 
     // ------------------------------------------------------------------
@@ -531,14 +812,14 @@ class port_handle {
 
     /// True when the TX FIFO is full (TXFF / ISR bit 25 on modern ST).
     [[nodiscard]] auto tx_fifo_full() const -> bool {
-        return detail::read_status_flag<port_handle>(std::uint16_t{25});
+        return detail::read_field_bool(isr_txff_field);
     }
 
     /// True when the RX FIFO is empty (RXFE / ISR bit 24 on modern ST).
     [[nodiscard]] auto rx_fifo_empty() const -> bool {
         // ISR bit 24 = RXFF (full); bit 23 = TXFE (TX empty); empty flag
         // is the complement of RXFF. Return true (empty) when RXFF == 0.
-        return !detail::read_status_flag<port_handle>(std::uint16_t{24});
+        return !detail::read_field_bool(isr_rxff_field);
     }
 
     // ------------------------------------------------------------------
@@ -561,12 +842,16 @@ class port_handle {
 
     /// True when a LIN break has been detected (LBDF / ISR or SR bit 8).
     [[nodiscard]] auto lin_break_detected() const -> bool {
-        return detail::lin_break_detected_impl<port_handle>();
+        if constexpr (is_st_modern_style)
+            return detail::read_field_bool(isr_lbdf_field);
+        else if constexpr (is_st_legacy_style)
+            return detail::read_field_bool(sr_lbdf_field);
+        return false;
     }
 
     /// Clear the LIN break detection flag (LBDCF / ICR bit 8, modern ST).
     [[nodiscard]] auto clear_lin_break_flag() const -> core::Result<void, core::ErrorCode> {
-        return detail::clear_lin_break_flag_impl<port_handle>();
+        return detail::clear_flag_field_impl(icr_lbdcf_field);
     }
 
     /// Enable or disable single-wire half-duplex mode (HDSEL / CR3 bit 3).
