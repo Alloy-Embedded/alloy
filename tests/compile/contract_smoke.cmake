@@ -30,6 +30,9 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_rtc_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_watchdog_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_can_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_qspi_device_contract.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_sdmmc_device_contract.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_eth_device_contract.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_hal_usb_controller_concept.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_hal_usb_descriptor.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_usb_class_drivers.cpp

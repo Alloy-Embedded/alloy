@@ -81,6 +81,8 @@ using RouteDescriptor = device_contract::RouteDescriptor;
 using RuntimeRegisterRef = selected::runtime_driver_contract::RuntimeRegisterRef;
 using RuntimeFieldRef = selected::runtime_driver_contract::RuntimeFieldRef;
 using RuntimeIndexedFieldRef = selected::runtime_driver_contract::RuntimeIndexedFieldRef;
+using KernelClockSource = selected::runtime_driver_contract::KernelClockSource;
+using KernelClockSourceOption = selected::runtime_driver_contract::KernelClockSourceOption;
 inline constexpr auto invalid_register_ref = selected::runtime_driver_contract::kInvalidRegisterRef;
 inline constexpr auto invalid_field_ref = selected::runtime_driver_contract::kInvalidFieldRef;
 inline constexpr auto invalid_indexed_field_ref =
@@ -225,6 +227,10 @@ using DmaSemanticTraits = selected::runtime_driver_contract::DmaSemanticTraits<P
 #if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
 template <PeripheralId Id>
 using AdcSemanticTraits = selected::runtime_driver_contract::AdcSemanticTraits<Id>;
+template <PeripheralId Id>
+using AdcChannelOf = selected::runtime_driver_contract::AdcChannelOf<Id>;
+template <PeripheralId Id>
+using AdcChannel = selected::runtime_driver_contract::AdcChannel<Id>;
 #endif
 
 #if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
@@ -269,6 +275,33 @@ using PwmChannelSemanticTraits =
     selected::runtime_driver_contract::PwmChannelSemanticTraits<Id, Channel>;
 #endif
 
+#if ALLOY_DEVICE_QSPI_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using QspiSemanticTraits = selected::runtime_driver_contract::QspiSemanticTraits<Id>;
+inline constexpr auto qspi_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kQspiSemanticPeripherals};
+inline constexpr const auto& qspi_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kQspiSemanticPeripherals;
+#endif
+
+#if ALLOY_DEVICE_SDMMC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using SdmmcSemanticTraits = selected::runtime_driver_contract::SdmmcSemanticTraits<Id>;
+inline constexpr auto sdmmc_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kSdmmcSemanticPeripherals};
+inline constexpr const auto& sdmmc_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kSdmmcSemanticPeripherals;
+#endif
+
+#if ALLOY_DEVICE_ETH_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using EthSemanticTraits = selected::runtime_driver_contract::EthSemanticTraits<Id>;
+inline constexpr auto eth_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kEthSemanticPeripherals};
+inline constexpr const auto& eth_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kEthSemanticPeripherals;
+#endif
+
 }  // namespace runtime
 
 using BackendSchemaId = runtime::BackendSchemaId;
@@ -294,6 +327,8 @@ using RouteDescriptor = runtime::RouteDescriptor;
 using RuntimeRegisterRef = runtime::RuntimeRegisterRef;
 using RuntimeFieldRef = runtime::RuntimeFieldRef;
 using RuntimeIndexedFieldRef = runtime::RuntimeIndexedFieldRef;
+using KernelClockSource = runtime::KernelClockSource;
+using KernelClockSourceOption = runtime::KernelClockSourceOption;
 
 inline constexpr auto invalid_register_ref = runtime::invalid_register_ref;
 inline constexpr auto invalid_field_ref = runtime::invalid_field_ref;
@@ -354,6 +389,10 @@ using DmaSemanticTraits = runtime::DmaSemanticTraits<Peripheral, Signal>;
 #if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
 template <PeripheralId Id>
 using AdcSemanticTraits = runtime::AdcSemanticTraits<Id>;
+template <PeripheralId Id>
+using AdcChannelOf = runtime::AdcChannelOf<Id>;
+template <PeripheralId Id>
+using AdcChannel = runtime::AdcChannel<Id>;
 #endif
 
 #if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
@@ -393,6 +432,21 @@ using PwmSemanticTraits = runtime::PwmSemanticTraits<Id>;
 
 template <PeripheralId Id, std::size_t Channel>
 using PwmChannelSemanticTraits = runtime::PwmChannelSemanticTraits<Id, Channel>;
+#endif
+
+#if ALLOY_DEVICE_QSPI_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using QspiSemanticTraits = runtime::QspiSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_SDMMC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using SdmmcSemanticTraits = runtime::SdmmcSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_ETH_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using EthSemanticTraits = runtime::EthSemanticTraits<Id>;
 #endif
 
 template <PinId Id>
