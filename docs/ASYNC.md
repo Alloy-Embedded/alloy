@@ -167,6 +167,22 @@ The ISR (EXTI on STM32, PIO on SAME70) signals
 configured at the `hal::gpio` layer; the runtime wrapper itself does
 not implement a re-arm gap.
 
+### Watchdog (early-warning, crash-state capture)
+
+```cpp
+#include "runtime/async_watchdog.hpp"
+
+auto op = async::watchdog::wait_for<
+    hal::watchdog::InterruptKind::EarlyWarning>(wdg);
+```
+
+`wait_for<EarlyWarning>` is for **crash-state capture only** — a
+coroutine running below the EWI handler's priority gets a bounded
+window to dump state to a backup register before the watchdog resets
+the system. Recovery from a watchdog timeout defeats the watchdog's
+safety guarantee. See [WATCHDOG.md](WATCHDOG.md) for the per-vendor
+capability matrix.
+
 ## Composing with the scheduler
 
 ```cpp

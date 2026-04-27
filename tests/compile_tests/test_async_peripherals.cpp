@@ -108,6 +108,20 @@ struct MockAdcDmaChannel {
     static constexpr auto valid = true;
 };
 
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+// ── async watchdog wait_for (interrupt-driven) ───────────────────────────────
+struct MockWatchdogHandle {
+    static constexpr auto peripheral_id = alloy::device::PeripheralId::none;
+
+    [[nodiscard]] auto enable_interrupt(alloy::hal::watchdog::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto disable_interrupt(alloy::hal::watchdog::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+};
+#endif
+
 }  // namespace
 
 [[maybe_unused]] void compile_async_peripherals_api() {
@@ -184,4 +198,12 @@ struct MockAdcDmaChannel {
     // Also verify LinBreak kind compiles (task 4.2 — F401 LIN path coverage).
     [[maybe_unused]] const auto uart_lin =
         alloy::async::uart::wait_for<alloy::hal::uart::InterruptKind::LinBreak>(uart_port);
+
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+    // ── async::watchdog::wait_for — extend-watchdog-coverage task 3.2 ────────
+    MockWatchdogHandle wdg_handle;
+    [[maybe_unused]] const auto wdg_ewi =
+        alloy::async::watchdog::wait_for<
+            alloy::hal::watchdog::InterruptKind::EarlyWarning>(wdg_handle);
+#endif
 }

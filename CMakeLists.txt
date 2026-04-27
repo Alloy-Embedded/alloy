@@ -499,6 +499,7 @@ if(ALLOY_BUILD_EXAMPLES)
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE AND
        ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
         add_subdirectory(examples/watchdog_probe)
+        add_subdirectory(examples/watchdog_probe_complete)
     endif()
 
     if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld") AND

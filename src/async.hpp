@@ -7,6 +7,7 @@
 #include "runtime/async_spi.hpp"
 #include "runtime/async_timer.hpp"
 #include "runtime/async_uart.hpp"
+#include "runtime/async_watchdog.hpp"
 
 namespace alloy {
 

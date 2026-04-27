@@ -41,6 +41,10 @@ void exercise_watchdog_backend(const Handle& wdg) {
     [[maybe_unused]] const auto reset_on   = wdg.set_reset_on_timeout(true);
     [[maybe_unused]] const auto reset_off  = wdg.set_reset_on_timeout(false);
 
+    // Phase 2: kernel clock source (always NotSupported on current backends).
+    [[maybe_unused]] const auto kclk = wdg.set_kernel_clock_source(
+        alloy::hal::watchdog::KernelClockSource::Default);
+
     // Phase 2: typed interrupts + irq numbers.
     using K = alloy::hal::watchdog::InterruptKind;
     [[maybe_unused]] const auto irq_arm = wdg.enable_interrupt(K::EarlyWarning);
