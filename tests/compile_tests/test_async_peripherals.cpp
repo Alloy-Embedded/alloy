@@ -108,6 +108,20 @@ struct MockAdcDmaChannel {
     static constexpr auto valid = true;
 };
 
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+// ── async DAC wait_for (interrupt-driven) ────────────────────────────────────
+struct MockDacHandle {
+    static constexpr auto peripheral_id = alloy::device::PeripheralId::none;
+
+    [[nodiscard]] auto enable_interrupt(alloy::hal::dac::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+    [[nodiscard]] auto disable_interrupt(alloy::hal::dac::InterruptKind) const -> ResultVoid {
+        return alloy::core::Ok();
+    }
+};
+#endif
+
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
 // ── async watchdog wait_for (interrupt-driven) ───────────────────────────────
 struct MockWatchdogHandle {
@@ -198,6 +212,17 @@ struct MockWatchdogHandle {
     // Also verify LinBreak kind compiles (task 4.2 — F401 LIN path coverage).
     [[maybe_unused]] const auto uart_lin =
         alloy::async::uart::wait_for<alloy::hal::uart::InterruptKind::LinBreak>(uart_port);
+
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+    // ── async::dac::wait_for — extend-dac-coverage task 3.2 ──────────────────
+    MockDacHandle dac_handle;
+    [[maybe_unused]] const auto dac_tc =
+        alloy::async::dac::wait_for<
+            alloy::hal::dac::InterruptKind::TransferComplete>(dac_handle);
+    [[maybe_unused]] const auto dac_ur =
+        alloy::async::dac::wait_for<
+            alloy::hal::dac::InterruptKind::Underrun>(dac_handle);
+#endif
 
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
     // ── async::watchdog::wait_for — extend-watchdog-coverage task 3.2 ────────

@@ -733,6 +733,57 @@ inline auto modify_indexed_field(const IndexedFieldRef& field, std::size_t index
     return core::Ok();
 }
 
+/// Compute the actual bit offset for channel `index` honouring bit_stride_bits.
+[[nodiscard]] constexpr auto indexed_channel_bit_offset(const IndexedFieldRef& field,
+                                                         std::size_t index) -> std::uint32_t {
+    return static_cast<std::uint32_t>(field.bit_offset) +
+           static_cast<std::uint32_t>(index) * static_cast<std::uint32_t>(field.bit_stride_bits);
+}
+
+/// Like indexed_field_mask but accounts for per-channel bit_stride_bits.
+[[nodiscard]] constexpr auto indexed_channel_mask(const IndexedFieldRef& field,
+                                                   std::size_t index) -> std::uint32_t {
+    if (!field.valid || field.bit_width == 0u) {
+        return 0u;
+    }
+    const auto bit_off = indexed_channel_bit_offset(field, index);
+    if (field.bit_width >= 32u || (bit_off + field.bit_width) > 32u) {
+        return 0xFFFF'FFFFu;
+    }
+    return ((1u << field.bit_width) - 1u) << bit_off;
+}
+
+/// Read–modify–write for indexed fields where each channel occupies a
+/// distinct bit range defined by (bit_offset + index × bit_stride_bits).
+inline auto modify_indexed_channel_field(const IndexedFieldRef& field, std::size_t index,
+                                          std::uint32_t value)
+    -> core::Result<void, core::ErrorCode> {
+    if (!field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+    const auto addr    = indexed_field_address(field, index);
+    const auto bit_off = indexed_channel_bit_offset(field, index);
+    const auto mask    = indexed_channel_mask(field, index);
+    auto current       = read_mmio32(addr);
+    current &= ~mask;
+    current |= (value << bit_off) & mask;
+    write_mmio32(addr, current);
+    return core::Ok();
+}
+
+/// Read a single channel's field value using bit_stride_bits addressing.
+[[nodiscard]] inline auto read_indexed_channel_field(const IndexedFieldRef& field,
+                                                      std::size_t index)
+    -> core::Result<std::uint32_t, core::ErrorCode> {
+    if (!field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+    const auto addr    = indexed_field_address(field, index);
+    const auto bit_off = indexed_channel_bit_offset(field, index);
+    const auto mask    = indexed_channel_mask(field, index);
+    return core::Ok<std::uint32_t>((read_mmio32(addr) & mask) >> bit_off);
+}
+
 [[nodiscard]] inline auto read_field(const FieldRef& field)
     -> core::Result<std::uint32_t, core::ErrorCode> {
     if (!field.valid) {
