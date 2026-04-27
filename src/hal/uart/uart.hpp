@@ -681,6 +681,32 @@ class port_handle {
         return config_.peripheral_clock_hz;
     }
 
+    /// Select the kernel clock source feeding the UART baud-rate generator.
+    /// Gated on non-empty `kKernelClockSourceOptions`; validates `src` against
+    /// the published options list. Returns NotSupported when:
+    ///   - the peripheral has no published options (e.g. SAME70 UART/USART), OR
+    ///   - `src` is not in the descriptor's `kKernelClockSourceOptions` set, OR
+    ///   - `kKernelClockSelectorField` is not yet published in the device DB.
+    [[nodiscard]] auto set_kernel_clock_source(device::KernelClockSource src) const
+        -> core::Result<void, core::ErrorCode> {
+        if constexpr (semantic_traits::kKernelClockSourceOptions.size() == 0u) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            for (const auto& opt : semantic_traits::kKernelClockSourceOptions) {
+                if (opt.valid && opt.source == src) {
+                    if constexpr (!semantic_traits::kKernelClockSelectorField.valid) {
+                        return core::Err(core::ErrorCode::NotSupported);
+                    } else {
+                        return detail::runtime::modify_field(
+                            semantic_traits::kKernelClockSelectorField,
+                            static_cast<std::uint32_t>(opt.field_value));
+                    }
+                }
+            }
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+    }
+
     // ------------------------------------------------------------------
     // Phase 2: Status flags
     // ------------------------------------------------------------------
@@ -900,6 +926,37 @@ class port_handle {
     [[nodiscard]] auto set_irda_mode(bool enable) const
         -> core::Result<void, core::ErrorCode> {
         return detail::set_irda_mode_impl(*this, enable);
+    }
+
+    // ------------------------------------------------------------------
+    // Phase 3: Multiprocessor / wakeup
+    // ------------------------------------------------------------------
+
+    /// Set the node address for multiprocessor mute mode (CR2 ADD field).
+    /// `len` selects 4-bit (`Bits4`) or 7-bit (`Bits7`) address matching.
+    /// Returns NotSupported until the ADD / ADDM7 fields are published in
+    /// the device DB.
+    [[nodiscard]] auto set_address(std::uint8_t /*addr*/, AddressLength /*len*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Enable or disable mute mode (MME / CR1 bit 13).
+    /// In mute mode the UART ignores frames that don't match the node address.
+    /// Returns NotSupported until the MME field is published in the device DB.
+    [[nodiscard]] auto mute_until_address(bool /*enable*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    /// Enable or disable UART wakeup from Stop mode (UESM / CR1 bit 23).
+    /// `trigger` selects the wakeup condition: address match, RXNE, or start bit.
+    /// Configured via WUS field (CR3 bits [21:20]) on modern ST peripherals.
+    /// Returns NotSupported until the UESM / WUS fields are published in the
+    /// device DB.
+    [[nodiscard]] auto enable_wakeup_from_stop(WakeupTrigger /*trigger*/) const
+        -> core::Result<void, core::ErrorCode> {
+        return core::Err(core::ErrorCode::NotSupported);
     }
 
     template <typename DmaChannel>

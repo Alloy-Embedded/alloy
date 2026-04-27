@@ -106,6 +106,20 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
     [[maybe_unused]] const auto dedt     = uart.set_de_deassertion_time(3u);
     [[maybe_unused]] const auto sc       = uart.set_smartcard_mode(false);
     [[maybe_unused]] const auto irda     = uart.set_irda_mode(false);
+
+    // ---- Phase 1: kernel clock source (task 1.4) ----
+    // Returns NotSupported when kKernelClockSelectorField is invalid (all
+    // current devices). Compiles on all backends regardless.
+    [[maybe_unused]] const auto clk_src =
+        uart.set_kernel_clock_source(alloy::device::KernelClockSource::pclk2);
+
+    // ---- Phase 3: multiprocessor / wakeup (tasks 3.5–3.6) ----
+    [[maybe_unused]] const auto set_addr =
+        uart.set_address(0x42u, alloy::hal::uart::AddressLength::Bits7);
+    [[maybe_unused]] const auto mute_en =
+        uart.mute_until_address(true);
+    [[maybe_unused]] const auto wakeup =
+        uart.enable_wakeup_from_stop(alloy::hal::uart::WakeupTrigger::AddressMatch);
 }
 
 }  // namespace
