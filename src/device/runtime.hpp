@@ -302,6 +302,15 @@ inline constexpr const auto& eth_semantic_peripheral_ids =
     selected::runtime_driver_contract::kEthSemanticPeripherals;
 #endif
 
+#if ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using UsbSemanticTraits = selected::runtime_driver_contract::UsbSemanticTraits<Id>;
+inline constexpr auto usb_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kUsbSemanticPeripherals};
+inline constexpr const auto& usb_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kUsbSemanticPeripherals;
+#endif
+
 }  // namespace runtime
 
 using BackendSchemaId = runtime::BackendSchemaId;
@@ -447,6 +456,11 @@ using SdmmcSemanticTraits = runtime::SdmmcSemanticTraits<Id>;
 #if ALLOY_DEVICE_ETH_SEMANTICS_AVAILABLE
 template <PeripheralId Id>
 using EthSemanticTraits = runtime::EthSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using UsbSemanticTraits = runtime::UsbSemanticTraits<Id>;
 #endif
 
 template <PinId Id>
