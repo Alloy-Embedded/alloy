@@ -77,6 +77,7 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_sx1276.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_rc522.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_fm25v10.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_ota_client.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )

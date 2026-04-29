@@ -1,4 +1,14 @@
-# Name,   Type, SubType, Offset,  Size, Flags
-nvs,      data, nvs,     0x9000,  0x5000,
-phy_init, data, phy,     0xe000,  0x1000,
-factory,  app,  factory, 0x10000, 0x3F0000,
+# ESP32 DevKit partition table — MCUboot-compatible OTA layout
+#
+# MCUboot port for ESP32 is flashed to 0x1000 (ROM loads it as the
+# second-stage bootloader). This table covers the remaining 4 MB flash.
+#
+# Slot sizes are equal (0x1F0000 = ~1.94 MB each) so MCUboot swap mode works.
+# Total used: 0x3F0000 + 0x10000 = 4 MB.
+#
+# Name,      Type, SubType,  Offset,    Size
+nvs,         data, nvs,      0x9000,    0x5000,
+otadata,     data, ota,      0xe000,    0x2000,
+ota_0,       app,  ota_0,    0x10000,   0x1F0000,
+ota_1,       app,  ota_1,    0x200000,  0x1F0000,
+scratch,     data, 0xff,     0x3F0000,  0x10000,

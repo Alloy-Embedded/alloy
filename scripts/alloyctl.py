@@ -18,6 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+ALLOY_MCUBOOT_VERSION = "2.1.0"  # pinned MCUboot version for imgtool compatibility
+
 
 @dataclass(frozen=True)
 class ConnectorInfo:
@@ -41,6 +43,12 @@ class BoardConfig:
     esptool_app_offset: str = "0x0"  # flash offset for the app binary
     esptool_partition_table: str = ""  # path to partition table bin (relative to repo root)
     toolchain_file: str = "cmake/toolchains/arm-none-eabi.cmake"
+    # MCUboot integration (empty/zero = not configured for this board)
+    mcuboot_primary_offset: str = ""    # hex addr of primary application slot
+    mcuboot_primary_size: int = 0       # primary (= secondary) slot size in bytes
+    mcuboot_secondary_offset: str = ""  # hex addr of secondary slot
+    mcuboot_secondary_on_ext_flash: bool = False  # True if secondary slot is on SPI/QSPI flash
+    mcuboot_boot_size: int = 0          # bootloader region size in bytes
 
 
 @dataclass(frozen=True)
@@ -61,6 +69,13 @@ BOARDS: dict[str, BoardConfig] = {
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
+        # MCUboot: 2 MB internal flash + W25Q external flash
+        # boot=256KB on internal (0x00400000) | primary=1MB on internal | secondary=1MB on W25Q
+        mcuboot_primary_offset="0x00440000",
+        mcuboot_primary_size=0x100000,
+        mcuboot_secondary_offset="0x00000000",   # relative offset in W25Q
+        mcuboot_secondary_on_ext_flash=True,
+        mcuboot_boot_size=0x40000,
     ),
     "same70_xpld": BoardConfig(
         "same70_xplained",
@@ -71,6 +86,11 @@ BOARDS: dict[str, BoardConfig] = {
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
+        mcuboot_primary_offset="0x00440000",
+        mcuboot_primary_size=0x100000,
+        mcuboot_secondary_offset="0x00000000",
+        mcuboot_secondary_on_ext_flash=True,
+        mcuboot_boot_size=0x40000,
     ),
     "nucleo_g071rb": BoardConfig(
         "nucleo_g071rb",
@@ -82,6 +102,12 @@ BOARDS: dict[str, BoardConfig] = {
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
         True,
+        # MCUboot: 128 KB flash, 2 KB pages
+        # boot=32KB (0x8000) | primary=44KB (0xB000) | secondary=44KB | scratch=8KB
+        mcuboot_primary_offset="0x08008000",
+        mcuboot_primary_size=0xB000,
+        mcuboot_secondary_offset="0x08013000",
+        mcuboot_boot_size=0x8000,
     ),
     "nucleo_f401re": BoardConfig(
         "nucleo_f401re",
@@ -93,6 +119,13 @@ BOARDS: dict[str, BoardConfig] = {
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
         True,
+        # MCUboot: 512 KB flash, variable-size sectors
+        # boot=128KB (sectors 0-4: 16+16+16+16+64) | primary=128KB (s5) | secondary=128KB (s6)
+        # scratch=128KB (s7); all slot sectors uniform at 128 KB for swap compatibility
+        mcuboot_primary_offset="0x08020000",
+        mcuboot_primary_size=0x20000,
+        mcuboot_secondary_offset="0x08040000",
+        mcuboot_boot_size=0x20000,
     ),
     "esp32c3_devkitm": BoardConfig(
         "esp32c3_devkitm",
@@ -641,10 +674,214 @@ def cmd_configure(args: argparse.Namespace) -> None:
     ensure_configured(cfg, args.build_type, build_tests=args.build_tests)
 
 
+# ── MCUboot helpers ───────────────────────────────────────────────────────────
+
+def _find_imgtool() -> list[str]:
+    """Return the command prefix for imgtool; prefers installed CLI entry-point."""
+    if shutil.which("imgtool"):
+        return ["imgtool"]
+    return [sys.executable, "-m", "imgtool"]
+
+
+def _sign_with_mcuboot(
+    elf: Path,
+    slot_size: int,
+    version: str,
+    key: str | None,
+    pad: bool = False,
+) -> Path:
+    """Convert ELF → raw binary then sign with MCUboot image header + optional trailer.
+
+    *key* = None  → dev/unsigned mode (``--pad-header`` only).
+    *pad* = True  → pad image to *slot_size* and append swap-pending trailer
+                    (needed when writing to the secondary slot).
+    Returns the path of the signed ``*-signed.bin``.
+    """
+    bin_path = elf.with_suffix(".bin")
+    objcopy = (
+        shutil.which("arm-none-eabi-objcopy")
+        or shutil.which("riscv32-esp-elf-objcopy")
+        or shutil.which("xtensa-esp32-elf-objcopy")
+        or "arm-none-eabi-objcopy"
+    )
+    run([objcopy, "-O", "binary", str(elf), str(bin_path)])
+
+    out_path = elf.parent / f"{elf.stem}-{version}-signed.bin"
+    cmd = [
+        *_find_imgtool(), "sign",
+        "--header-size", "0x200",
+        "--align", "8",
+        "--version", version,
+        "--pad-header",
+        "--slot-size", hex(slot_size),
+    ]
+    if key:
+        cmd.extend(["--key", key])
+    if pad:
+        cmd.append("--pad")
+    cmd.extend([str(bin_path), str(out_path)])
+    run(cmd)
+    print(f"signed: {out_path}")
+    return out_path
+
+
+def _flash_mcuboot(cfg: BoardConfig, args: argparse.Namespace, backend: str) -> None:
+    """Flash MCUboot bootloader to boot region + signed app to primary slot."""
+    if not cfg.mcuboot_primary_offset:
+        raise SystemExit(die(
+            f"MCUboot not configured for board: {cfg.board}\n"
+            f"Add mcuboot_* fields to BOARDS['{cfg.board}'] in alloyctl.py."
+        ))
+
+    boot_path = getattr(args, "mcuboot_bootloader", None)
+    if not boot_path:
+        raise SystemExit(die(
+            "--mcuboot-bootloader <path> is required.\n"
+            f"Download the pre-built {cfg.board} MCUboot binary (v{ALLOY_MCUBOOT_VERSION}) "
+            "from the alloy GitHub Release assets."
+        ))
+    boot_bin = Path(boot_path)
+    if not boot_bin.exists():
+        raise SystemExit(die(f"bootloader binary not found: {boot_bin}"))
+
+    example_dir = cfg.build_dir / "examples" / args.target
+    signed_candidates = sorted(example_dir.glob("*-signed.bin"))
+    if not signed_candidates:
+        raise SystemExit(die(
+            f"no signed binary found for {args.target}.\n"
+            f"Run: alloy bundle --board {cfg.board} --with-mcuboot"
+        ))
+    app_bin = signed_candidates[-1]
+
+    if backend == "openocd":
+        require_tool("openocd")
+        print(f"[mcuboot] flashing bootloader → 0x08000000")
+        run(list(cfg.openocd_args) + ["-c", f'program "{boot_bin}" verify exit'])
+        print(f"[mcuboot] flashing signed app  → primary slot {cfg.mcuboot_primary_offset}")
+        run(list(cfg.openocd_args) + [
+            "-c", f'program "{app_bin}" verify reset exit {cfg.mcuboot_primary_offset}'
+        ])
+    elif backend == "stm32cube":
+        cli = find_stm32_programmer_cli()
+        if cli is None:
+            raise SystemExit(die("STM32_Programmer_CLI not found"))
+        run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100",
+             "-w", str(boot_bin), "--address", "0x08000000", "-v"])
+        run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100",
+             "-w", str(app_bin), "--address", cfg.mcuboot_primary_offset, "-v", "-rst"])
+    else:
+        raise SystemExit(die(f"--mcuboot flash not supported with backend '{backend}'"))
+
+
+def _recover_secondary_slot(cfg: BoardConfig, args: argparse.Namespace) -> None:
+    """Sign ELF with swap-pending trailer and flash to secondary slot."""
+    if not cfg.mcuboot_secondary_offset:
+        raise SystemExit(die(f"MCUboot secondary slot not configured for board: {cfg.board}"))
+    if cfg.mcuboot_secondary_on_ext_flash:
+        raise SystemExit(die(
+            f"The secondary slot for {cfg.board} is on external SPI/QSPI flash.\n"
+            "Use the OTA client firmware (drivers/ota/ota_client.hpp) to write the slot."
+        ))
+    if not cfg.mcuboot_primary_size:
+        raise SystemExit(die(f"mcuboot_primary_size not set for board: {cfg.board}"))
+
+    imgtool_info = _detect_python_package("imgtool")
+    if not imgtool_info["found"]:
+        raise SystemExit(die(
+            f"imgtool not installed; run: pip install imgtool"
+            f"  (MCUboot {ALLOY_MCUBOOT_VERSION})"
+        ))
+
+    elf_path = cfg.build_dir / "examples" / args.target / f"{args.target}.elf"
+    if not elf_path.exists():
+        raise SystemExit(die(
+            f"ELF not found: {elf_path}\n"
+            f"Run: alloy build --board {cfg.board} --target {args.target}"
+        ))
+
+    version = getattr(args, "version", None) or "0.0.1"
+    key = getattr(args, "key", None)
+
+    # --pad embeds the MCUboot swap-pending trailer at end of slot
+    pending_bin = _sign_with_mcuboot(
+        elf_path, cfg.mcuboot_primary_size, version, key, pad=True
+    )
+
+    backend = select_flash_backend(cfg, getattr(args, "flash_backend", "auto"), True)
+    if backend == "openocd":
+        require_tool("openocd")
+        print(f"[mcuboot] flashing pending image → secondary slot {cfg.mcuboot_secondary_offset}")
+        run(list(cfg.openocd_args) + [
+            "-c", f'program "{pending_bin}" verify reset exit {cfg.mcuboot_secondary_offset}'
+        ])
+    elif backend == "stm32cube":
+        cli = find_stm32_programmer_cli()
+        if cli is None:
+            raise SystemExit(die("STM32_Programmer_CLI not found"))
+        run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100",
+             "-w", str(pending_bin), "--address", cfg.mcuboot_secondary_offset, "-v", "-rst"])
+    else:
+        raise SystemExit(die(f"secondary slot flash not supported with backend '{backend}'"))
+
+
+def _doctor_check_mcuboot(check_fn) -> None:
+    """MCUboot-specific preflight for `alloy doctor --check mcuboot`."""
+    imgtool = _detect_python_package("imgtool")
+    check_fn(
+        "imgtool installed",
+        imgtool["found"],
+        f"pip install imgtool  (MCUboot {ALLOY_MCUBOOT_VERSION})",
+    )
+    if imgtool["found"] and imgtool.get("version"):
+        pinned_mm = ALLOY_MCUBOOT_VERSION.split(".")[:2]
+        found_mm = (imgtool["version"] or "0.0").split(".")[:2]
+        check_fn(
+            f"imgtool version ~{'.'.join(pinned_mm)}.x (pinned: {ALLOY_MCUBOOT_VERSION})",
+            pinned_mm == found_mm,
+            f"pip install imgtool=={ALLOY_MCUBOOT_VERSION}",
+        )
+
+
+# ── Command handlers ──────────────────────────────────────────────────────────
+
 def cmd_bundle(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
     ensure_configured(cfg, args.build_type, build_tests=True)
     build(cfg, cfg.bundle_target, args.jobs)
+
+    if not getattr(args, "with_mcuboot", False):
+        return
+
+    if not cfg.mcuboot_primary_size:
+        raise SystemExit(die(
+            f"MCUboot not configured for board: {cfg.board}\n"
+            f"Create boards/{cfg.board}/mcuboot/memory_map.cmake and add mcuboot_* fields to BOARDS."
+        ))
+
+    imgtool_info = _detect_python_package("imgtool")
+    if not imgtool_info["found"]:
+        raise SystemExit(die(
+            f"imgtool not installed; run: pip install imgtool\n"
+            f"(pinned MCUboot version: {ALLOY_MCUBOOT_VERSION})"
+        ))
+
+    version = getattr(args, "version", None) or "0.0.1"
+    key = getattr(args, "key", None)
+
+    signed: list[Path] = []
+    for target in cfg.firmware_targets:
+        elf_path = cfg.build_dir / "examples" / target / f"{target}.elf"
+        if elf_path.exists():
+            out = _sign_with_mcuboot(elf_path, cfg.mcuboot_primary_size, version, key)
+            signed.append(out)
+
+    if not signed:
+        print("[warn] no ELF artifacts found under examples/; build the bundle first")
+        return
+
+    print(f"\nMCUboot signing complete — {len(signed)} image(s) for MCUboot v{ALLOY_MCUBOOT_VERSION}:")
+    for p in signed:
+        print(f"  {p}")
 
 
 def cmd_flash(args: argparse.Namespace) -> None:
@@ -653,6 +890,10 @@ def cmd_flash(args: argparse.Namespace) -> None:
         ensure_configured(cfg, args.build_type, build_tests=False)
         build(cfg, args.target, args.jobs)
     backend = select_flash_backend(cfg, args.flash_backend, args.recover)
+
+    if getattr(args, "mcuboot", False):
+        _flash_mcuboot(cfg, args, backend)
+        return
 
     if args.dry_run:
         format_lines(flash_plan_lines(cfg, args.target, backend, args.recover))
@@ -727,6 +968,10 @@ def cmd_monitor(args: argparse.Namespace) -> None:
 
 
 def cmd_recover(args: argparse.Namespace) -> None:
+    if getattr(args, "slot", "primary") == "secondary":
+        cfg = board_config(args.board)
+        _recover_secondary_slot(cfg, args)
+        return
     args.recover = True
     args.build_first = True
     cmd_flash(args)
@@ -1276,8 +1521,9 @@ def cmd_info(args: argparse.Namespace) -> None:
 
 
 def cmd_doctor(args: argparse.Namespace) -> None:
-    del args  # signature required by argparse dispatch
+    check_only = getattr(args, "check", None)
     failures: list[str] = []
+    warnings: list[str] = []
 
     def check(label: str, ok: bool, hint: str) -> None:
         status = "ok" if ok else "FAIL"
@@ -1285,6 +1531,21 @@ def cmd_doctor(args: argparse.Namespace) -> None:
         if not ok:
             print(f"       hint: {hint}")
             failures.append(label)
+
+    def warn(label: str, ok: bool, hint: str) -> None:
+        status = "ok" if ok else "warn"
+        print(f"[{status}] {label}")
+        if not ok:
+            print(f"       hint: {hint}")
+            warnings.append(label)
+
+    if check_only == "mcuboot":
+        _doctor_check_mcuboot(check)
+        if failures:
+            print(f"\n{len(failures)} check(s) failed.", file=sys.stderr)
+            raise SystemExit(1)
+        print("\nMCUboot preflight checks passed.")
+        return
 
     cmake = _detect_tool_version("cmake")
     check("cmake >= 3.25 on PATH", cmake["found"],
@@ -1302,6 +1563,10 @@ def cmd_doctor(args: argparse.Namespace) -> None:
     check("python pyserial", pyserial["found"],
           "pip install pyserial (needed for alloyctl monitor)")
 
+    imgtool = _detect_python_package("imgtool")
+    warn("python imgtool (optional: MCUboot image signing)", imgtool["found"],
+         f"pip install imgtool  (MCUboot {ALLOY_MCUBOOT_VERSION}; needed for --with-mcuboot)")
+
     manifest = _read_release_manifest()
     manifest_ref = (manifest.get("alloy_devices") or {}).get("ref") if isinstance(manifest, dict) else None
     detected_ref = _detected_alloy_devices_ref()
@@ -1317,7 +1582,10 @@ def cmd_doctor(args: argparse.Namespace) -> None:
     if failures:
         print(f"\n{len(failures)} check(s) failed.", file=sys.stderr)
         raise SystemExit(1)
-    print("\nAll preflight checks passed.")
+    if warnings:
+        print(f"\n{len(warnings)} optional tool(s) missing. Core checks passed.")
+    else:
+        print("\nAll preflight checks passed.")
 
 
 def cmd_new(args: argparse.Namespace) -> None:
@@ -1888,6 +2156,12 @@ def main() -> int:
     bundle_p = sub.add_parser("bundle")
     add_build_args(bundle_p)
     bundle_p.add_argument("-j", "--jobs", type=int, default=8)
+    bundle_p.add_argument("--with-mcuboot", action="store_true",
+                          help="sign all firmware ELFs with imgtool after building")
+    bundle_p.add_argument("--key", metavar="PEM",
+                          help="path to RSA/EC PEM signing key (omit for unsigned dev mode)")
+    bundle_p.add_argument("--version", metavar="X.Y.Z", default="0.0.1",
+                          help="firmware version string embedded in the MCUboot header")
     bundle_p.set_defaults(func=cmd_bundle)
 
     flash_p = sub.add_parser("flash")
@@ -1898,6 +2172,10 @@ def main() -> int:
     flash_p.add_argument("--dry-run", action="store_true")
     flash_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
     flash_p.add_argument("-j", "--jobs", type=int, default=8)
+    flash_p.add_argument("--mcuboot", action="store_true",
+                         help="flash MCUboot bootloader + signed app to primary slot")
+    flash_p.add_argument("--mcuboot-bootloader", metavar="PATH",
+                         help="path to pre-built MCUboot bootloader binary")
     flash_p.set_defaults(func=cmd_flash)
 
     recover_p = sub.add_parser("recover")
@@ -1906,6 +2184,12 @@ def main() -> int:
     recover_p.add_argument("--dry-run", action="store_true")
     recover_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
     recover_p.add_argument("-j", "--jobs", type=int, default=8)
+    recover_p.add_argument("--slot", choices=("primary", "secondary"), default="primary",
+                           help="primary = full recover-and-flash; secondary = MCUboot swap trigger")
+    recover_p.add_argument("--version", metavar="X.Y.Z", default="0.0.1",
+                           help="firmware version (used when signing for secondary slot)")
+    recover_p.add_argument("--key", metavar="PEM",
+                           help="PEM signing key for secondary-slot image (omit for unsigned)")
     recover_p.set_defaults(func=cmd_recover)
 
     mon_p = sub.add_parser("monitor")
@@ -1967,6 +2251,8 @@ def main() -> int:
     info_p.set_defaults(func=cmd_info)
 
     doctor_p = sub.add_parser("doctor", help="preflight check: toolchain, probe, python deps, ref")
+    doctor_p.add_argument("--check", choices=("mcuboot",), metavar="COMPONENT",
+                          help="run focused checks for a specific component (e.g. mcuboot)")
     doctor_p.set_defaults(func=cmd_doctor)
 
     run_p = sub.add_parser(
