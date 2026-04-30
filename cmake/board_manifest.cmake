@@ -86,6 +86,51 @@ function(
     # Falls back to GLOB_RECURSE for boards in ALLOY_CUSTOM_BOARD_DIR or nested
     # subdirectories.  The legacy if/elseif chain below remains as a fallback.
     if(NOT BOARD_NAME STREQUAL "custom" AND NOT BOARD_NAME STREQUAL "host")
+        # -- Stamp file fast-path (task 3.4) --------------------------------
+        # For boards whose board.json is at the canonical direct path, cache
+        # the resolved variables in a stamp file under CMAKE_BINARY_DIR.
+        # The stamp is invalidated automatically when board.json changes via
+        # CMAKE_CONFIGURE_DEPENDS.
+        set(_alloy_stamp_dir "${CMAKE_BINARY_DIR}/_alloy_board_stamps")
+        set(_alloy_stamp_file "${_alloy_stamp_dir}/${BOARD_NAME}.cmake")
+        set(_alloy_stamp_hit FALSE)
+        set(_alloy_json_for_stamp "")
+
+        set(_direct_json_fast "${CMAKE_SOURCE_DIR}/boards/${BOARD_NAME}/board.json")
+        if(EXISTS "${_direct_json_fast}")
+            # Register configure dependency so cmake re-runs when board.json changes
+            set_property(DIRECTORY PROPERTY
+                CMAKE_CONFIGURE_DEPENDS "${_direct_json_fast}")
+            set(_alloy_json_for_stamp "${_direct_json_fast}")
+
+            if(EXISTS "${_alloy_stamp_file}")
+                set(_ALLOY_STAMP_HASH "")
+                include("${_alloy_stamp_file}")
+                file(SHA256 "${_direct_json_fast}" _alloy_cur_hash)
+                if("${_ALLOY_STAMP_HASH}" STREQUAL "${_alloy_cur_hash}"
+                   AND NOT "${_ALLOY_STAMP_HASH}" STREQUAL "")
+                    set(_alloy_stamp_hit TRUE)
+                    set(_found    TRUE)
+                    set(_vendor   "${_ALLOY_STAMP_VENDOR}")
+                    set(_family   "${_ALLOY_STAMP_FAMILY}")
+                    set(_device   "${_ALLOY_STAMP_DEVICE}")
+                    set(_arch     "${_ALLOY_STAMP_ARCH}")
+                    set(_board_header   "${_ALLOY_STAMP_BOARD_HEADER}")
+                    set(_linker_script  "${_ALLOY_STAMP_LINKER_SCRIPT}")
+                    set(_mcu            "${_ALLOY_STAMP_MCU}")
+                    set(_flash_size_bytes             "${_ALLOY_STAMP_FLASH_SIZE_BYTES}")
+                    set(_supports_uart_logger         "${_ALLOY_STAMP_UART_LOGGER}")
+                    set(_supports_dma_probe           "${_ALLOY_STAMP_DMA_PROBE}")
+                    set(_supports_peripheral_examples "${_ALLOY_STAMP_PERIPHERAL_EXAMPLES}")
+                endif()
+            endif()
+        endif()
+
+        if(_alloy_stamp_hit)
+            # Skip JSON parsing — use cached values from stamp
+        else()
+        # -- End stamp file fast-path ----------------------------------------
+
         set(_json_candidates "")
 
         # 1. Direct subdirectory: boards/<name>/board.json
@@ -128,6 +173,32 @@ function(
                     continue()
                 endif()
             endif()
+
+            # -- Schema version check (task 3.3) ----------------------------------
+            # Reader supports: v1 (major=1).  Warn on unknown; fail on major > 1.
+            set(_ALLOY_BOARD_MANIFEST_READER_MAJOR 1)
+            string(JSON _j_schema ERROR_VARIABLE _je GET "${_json_content}" "\$schema")
+            if(NOT _je STREQUAL "" OR "${_j_schema}" STREQUAL "")
+                # No $schema field — silently accept (pre-schema boards)
+            else()
+                string(REGEX MATCH "/v([0-9]+)\\.json$" _schema_match "${_j_schema}")
+                if(_schema_match)
+                    string(REGEX REPLACE "/v([0-9]+)\\.json$" "\\1" _schema_major "${_j_schema}")
+                    if(_schema_major GREATER _ALLOY_BOARD_MANIFEST_READER_MAJOR)
+                        message(FATAL_ERROR
+                            "alloy board-manifest: ${_json_path}\n"
+                            "  Schema major version ${_schema_major} is newer than this CMake reader "
+                            "(supports up to v${_ALLOY_BOARD_MANIFEST_READER_MAJOR}).\n"
+                            "  Update alloy to a version that understands board-manifest v${_schema_major}.")
+                    elseif(_schema_major LESS _ALLOY_BOARD_MANIFEST_READER_MAJOR)
+                        message(WARNING
+                            "alloy board-manifest: ${_json_path}: "
+                            "schema v${_schema_major} is older than reader "
+                            "(v${_ALLOY_BOARD_MANIFEST_READER_MAJOR}) — consider upgrading the board.json.")
+                    endif()
+                endif()
+            endif()
+            # -- End schema version check -----------------------------------------
 
             # Extract required fields
             string(JSON _j_vendor   ERROR_VARIABLE _je GET "${_json_content}" "vendor")
@@ -192,9 +263,33 @@ function(
 
                 message(STATUS
                     "alloy board-manifest: '${BOARD_NAME}' resolved from ${_json_path}")
+
+                # Write stamp for next configure
+                if(_alloy_json_for_stamp AND "${_json_path}" STREQUAL "${_alloy_json_for_stamp}")
+                    file(SHA256 "${_json_path}" _alloy_new_hash)
+                    file(MAKE_DIRECTORY "${_alloy_stamp_dir}")
+                    file(WRITE "${_alloy_stamp_file}"
+"# alloy board-manifest stamp — auto-generated. Do not edit.
+# Invalidated automatically when board.json changes (CMAKE_CONFIGURE_DEPENDS).
+set(_ALLOY_STAMP_HASH \"${_alloy_new_hash}\")
+set(_ALLOY_STAMP_VENDOR \"${_vendor}\")
+set(_ALLOY_STAMP_FAMILY \"${_family}\")
+set(_ALLOY_STAMP_DEVICE \"${_device}\")
+set(_ALLOY_STAMP_ARCH \"${_arch}\")
+set(_ALLOY_STAMP_BOARD_HEADER \"${_board_header}\")
+set(_ALLOY_STAMP_LINKER_SCRIPT \"${_linker_script}\")
+set(_ALLOY_STAMP_MCU \"${_mcu}\")
+set(_ALLOY_STAMP_FLASH_SIZE_BYTES \"${_flash_size_bytes}\")
+set(_ALLOY_STAMP_UART_LOGGER \"${_supports_uart_logger}\")
+set(_ALLOY_STAMP_DMA_PROBE \"${_supports_dma_probe}\")
+set(_ALLOY_STAMP_PERIPHERAL_EXAMPLES \"${_supports_peripheral_examples}\")
+")
+                endif()
+
                 break()
             endif()
         endforeach()
+        endif()  # end else (stamp miss branch)
     endif()
     # -- End JSON auto-discovery ----------------------------------------------
 

@@ -275,21 +275,89 @@ jobs:
       env:
         TSAN_OPTIONS: halt_on_error=1:second_deadlock_stack=1
 
+  # Verify Mode A (package cache) device resolution:
+  # - packs a device tarball via pack_device.py
+  # - pre-extracts it into a cache dir (simulates a prefetch run)
+  # - configures CMake WITHOUT ALLOY_DEVICES_ROOT, using only the cache + ALLOY_OFFLINE=ON
+  # - confirms configure succeeds and sentinel exists
+  device-cache-smoke:
+    name: Mode A — device cache configure (no ALLOY_DEVICES_ROOT)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout alloy
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Checkout alloy-devices (pack source — NOT at the default ../alloy-devices path)
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices-src
+        ref: ${{ env.ALLOY_DEVICES_REF }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build gcc-arm-none-eabi
+
+    - name: Validate board manifests
+      run: python3 scripts/validate_board_manifest.py
+
+    - name: Pack st-stm32g0 device package
+      run: |
+        mkdir -p /tmp/alloy-device-cache
+        python3 scripts/pack_device.py \
+          --family-dir alloy-devices-src/st/stm32g0 \
+          --vendor st --family stm32g0 \
+          --version 1.0.0 \
+          --output /tmp/alloy-device-cache \
+          --update-checksums /tmp/alloy-device-cache/checksums-1.0.0.json
+        echo "Packed files:" && ls -la /tmp/alloy-device-cache/
+
+    - name: Extract package into cache (simulates prefetch / Mode A cache hit)
+      run: |
+        tar -xzf /tmp/alloy-device-cache/st-stm32g0-1.0.0.tar.gz \
+          -C /tmp/alloy-device-cache
+        echo "Sentinel:" && ls /tmp/alloy-device-cache/st/stm32g0/generated/runtime/types.hpp
+
+    - name: Configure CMake (Mode A — offline, pre-populated cache, no ALLOY_DEVICES_ROOT)
+      run: |
+        cmake -S . -B build-mode-a \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DALLOY_BOARD=nucleo_g071rb \
+          -DALLOY_DEVICE_CACHE_DIR=/tmp/alloy-device-cache \
+          -DALLOY_OFFLINE=ON \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
+
+    - name: Confirm Mode A sentinel is in cache
+      run: |
+        test -f /tmp/alloy-device-cache/st/stm32g0/generated/runtime/types.hpp \
+          && echo "✅ Mode A: sentinel found — device cache path verified" \
+          || { echo "❌ Mode A: sentinel missing"; exit 1; }
+
   # Summary job
   test-summary:
     name: Test Summary
     runs-on: ubuntu-latest
-    needs: [test]
+    needs: [test, device-cache-smoke]
     if: always()
 
     steps:
     - name: Check test results
       run: |
-        if [ "${{ needs.test.result }}" == "success" ]; then
-          echo "✅ All tests passed!"
-          exit 0
-        else
-          echo "❌ Some tests failed"
-          echo "Unit tests: ${{ needs.test.result }}"
-          exit 1
+        FAIL=0
+        if [ "${{ needs.test.result }}" != "success" ]; then
+          echo "❌ Unit tests: ${{ needs.test.result }}"
+          FAIL=1
         fi
+        if [ "${{ needs.device-cache-smoke.result }}" != "success" ]; then
+          echo "❌ Mode A cache smoke: ${{ needs.device-cache-smoke.result }}"
+          FAIL=1
+        fi
+        if [ $FAIL -eq 0 ]; then
+          echo "✅ All checks passed!"
+        fi
+        exit $FAIL

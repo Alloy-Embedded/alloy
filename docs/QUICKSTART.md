@@ -140,6 +140,25 @@ alloy configure --board nucleo_g071rb
 alloy build --board nucleo_g071rb --target blink
 ```
 
+### Device packages — no manual clone needed
+
+CMake resolves device headers automatically on first configure.
+No separate `alloy-devices` clone is required:
+
+```bash
+# One-liner: clone alloy, configure — device package auto-downloads on first run
+git clone https://github.com/alloy-rs/alloy && cd alloy
+cmake -DALLOY_BOARD=nucleo_g071rb -B build
+
+# Prefetch for offline / air-gapped builds
+python3 scripts/alloyctl.py device prefetch --family stm32g0
+
+# Pin to a local alloy-devices checkout (developer mode)
+cmake -DALLOY_DEVICES_ROOT=../alloy-devices -DALLOY_BOARD=nucleo_g071rb -B build
+```
+
+See [DEVICE_PACKAGES.md](DEVICE_PACKAGES.md) for cache dirs, offline mode, and version pinning.
+
 The legacy `python3 scripts/alloyctl.py ...` form remains a working alias during the
 transition; new docs and examples should use `alloy`.
 

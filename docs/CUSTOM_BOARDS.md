@@ -2,15 +2,49 @@
 
 Alloy supports two ways to declare a board:
 
-1. **In-tree foundational boards** -- maintained inside the runtime under `boards/<name>/`
-   and selected with `-DALLOY_BOARD=<name>`. These are the boards Alloy validates as part
-   of the project's release discipline.
+1. **In-tree foundational boards** -- maintained inside the runtime under `boards/<name>/`,
+   each described by a `board.json` manifest, and selected with `-DALLOY_BOARD=<name>`.
+   These are the boards Alloy validates as part of the project's release discipline.
 2. **Custom boards** -- declared in a downstream project's own repository and selected with
    `-DALLOY_BOARD=custom`. The downstream project owns its `board/` directory and edits
    pin assignments freely without forking the runtime.
 
 Both paths use the same `board -> public HAL -> alloy-devices` flow. The only difference is
 where the board sources live.
+
+### Adding an in-tree board with board.json
+
+The preferred way to add a new in-tree foundational board is via a `board.json` manifest.
+CMake discovers it automatically — no changes to `cmake/board_manifest.cmake` are needed:
+
+```bash
+# 1. Create board directory and board.json
+mkdir -p boards/my_custom_board
+cat > boards/my_custom_board/board.json << 'EOF'
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "my_custom_board",
+  "display_name": "My Custom Board",
+  "vendor": "st",
+  "family": "stm32g0",
+  "device": "stm32g071rb",
+  "arch": "cortex-m0plus",
+  "linker_script": "STM32G071RBT6.ld",
+  "board_header": "boards/my_custom_board/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "tier": 3
+}
+EOF
+
+# 2. Validate
+python3 scripts/validate_board_manifest.py
+
+# 3. Configure
+cmake -DALLOY_BOARD=my_custom_board -B build
+```
+
+See [PORTING_NEW_BOARD.md](PORTING_NEW_BOARD.md) for the full board.json field reference
+and the required source files (`board.hpp`, linker script).
 
 If you scaffold a project with `alloy new`, this contract is wired up for you. The recipe
 below documents the contract for users who consume Alloy without the CLI.

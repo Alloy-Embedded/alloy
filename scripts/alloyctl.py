@@ -281,6 +281,65 @@ BOARD_INSIGHTS: dict[str, BoardInsight] = {
     ),
 }
 
+def _discover_board_insights(root: Path = ROOT) -> dict[str, BoardInsight]:
+    """
+    Auto-discover BoardInsight entries from boards/**/board.json.
+    Builds a minimal insight from display_name, clock_profiles, and uart.debug fields.
+    Only boards NOT already in BOARD_INSIGHTS are added (hardcoded entries win).
+    """
+    extra: dict[str, BoardInsight] = {}
+    for manifest in sorted(root.glob("boards/**/board.json")):
+        try:
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+        board_id = data.get("board_id", "")
+        if not board_id or board_id in BOARD_INSIGHTS:
+            continue
+
+        display_name = data.get("display_name", board_id)
+
+        # Clock summary: join configured profiles or use a generic note
+        profiles = data.get("clock_profiles", [])
+        if profiles:
+            clock_summary = f"profile: {profiles[0]}" + (
+                f" (+{len(profiles)-1} more)" if len(profiles) > 1 else ""
+            )
+        else:
+            clock_summary = "clock profile not specified — see board.hpp"
+
+        # UART debug summary
+        uart = data.get("uart", {}).get("debug", {})
+        if uart:
+            peripheral = uart.get("peripheral", "UART?")
+            baud = uart.get("baud", 115200)
+            tx = uart.get("tx", "?")
+            rx = uart.get("rx", "?")
+            debug_uart_summary = f"{peripheral} @ {baud} 8N1 on {tx}(TX)/{rx}(RX)"
+            connectors: tuple[ConnectorInfo, ...] = (
+                ConnectorInfo(
+                    "debug-uart",
+                    peripheral,
+                    (f"{tx} -> TX", f"{rx} -> RX"),
+                ),
+            )
+        else:
+            debug_uart_summary = "debug UART not specified in board.json"
+            connectors = ()
+
+        extra[board_id] = BoardInsight(
+            display_name=display_name,
+            clock_summary=clock_summary,
+            debug_uart_summary=debug_uart_summary,
+            connectors=connectors,
+        )
+    return extra
+
+
+# Merge auto-discovered insights (board.json) — hardcoded entries always win.
+BOARD_INSIGHTS = {**BOARD_INSIGHTS, **_discover_board_insights()}
+
 MANIFEST_PATH = ROOT / "docs" / "RELEASE_MANIFEST.json"
 
 
@@ -597,7 +656,13 @@ def auto_port(cfg: BoardConfig) -> str:
 def board_insight(cfg: BoardConfig) -> BoardInsight:
     insight = BOARD_INSIGHTS.get(cfg.board)
     if insight is None:
-        raise SystemExit(die(f"missing board insight for: {cfg.board}"))
+        # Fallback: minimal insight synthesised from BoardConfig fields alone
+        return BoardInsight(
+            display_name=cfg.board,
+            clock_summary="(clock profile not recorded — add board.json or BOARD_INSIGHTS entry)",
+            debug_uart_summary=f"baud={cfg.uart_baud}",
+            connectors=(),
+        )
     return insight
 
 
@@ -629,21 +694,21 @@ def connector_alternative_lines(connectors: dict[str, ConnectorInfo]) -> list[st
     return ["valid alternatives:", *[f"  - {connector_summary(connectors[name])}" for name in sorted(connectors)]]
 
 
-def board_clock_guidance(cfg: BoardConfig, insight: BoardInsight) -> str:
+def board_clock_guidance(cfg: BoardConfig, _insight: BoardInsight) -> str:
     return (
         f"Use the published {cfg.board} clock profile as-is for bring-up and migration work; "
         "do not carry raw clock assumptions across boards."
     )
 
 
-def board_debug_guidance(cfg: BoardConfig, insight: BoardInsight) -> str:
+def board_debug_guidance(cfg: BoardConfig, _insight: BoardInsight) -> str:
     return (
         f"Use the documented {cfg.board} debug UART path first when validating logs, flash recovery, "
         "or monitor output."
     )
 
 
-def migration_watchpoints(left: BoardConfig, right: BoardConfig, left_insight: BoardInsight,
+def migration_watchpoints(_left: BoardConfig, _right: BoardConfig, left_insight: BoardInsight,
                           right_insight: BoardInsight, left_release: dict, right_release: dict) -> list[str]:
     notes = [
         f"retune clock assumptions from '{left_insight.clock_summary}' to '{right_insight.clock_summary}'",
@@ -2061,12 +2126,38 @@ def cmd_new(args: argparse.Namespace) -> None:
     print("  cmake --build build -j8")
 
 
+def _board_json_for(board: str, root: Path = ROOT) -> dict:
+    """Return parsed board.json for *board*, or {} if not found."""
+    manifest_path = root / "boards" / board / "board.json"
+    if manifest_path.exists():
+        try:
+            return json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
 def _starter_cmakelists(name: str, board: str) -> str:
+    data = _board_json_for(board)
+    uart = data.get("uart", {}).get("debug", {})
+    leds = data.get("leds", [])
+    led_comment = ""
+    if leds:
+        led = leds[0]
+        polarity = "active-high" if led.get("active_high") else "active-low"
+        led_comment = f"# LED '{led.get('name', 'led')}' on pin {led.get('pin', '?')} ({polarity})\n"
+    uart_comment = ""
+    if uart:
+        uart_comment = (
+            f"# Debug UART: {uart.get('peripheral', 'UART')} @ {uart.get('baud', 115200)} 8N1 "
+            f"on {uart.get('tx', '?')}(TX)/{uart.get('rx', '?')}(RX)\n"
+        )
+
     return f"""cmake_minimum_required(VERSION 3.25)
 
-# Starter firmware generated by `alloyctl new`.
+# Starter firmware generated by `alloyctl new --board {board}`.
 # See docs/CMAKE_CONSUMPTION.md in the alloy repo for the supported integration path.
-
+{led_comment}{uart_comment}
 set(ALLOY_BOARD {board} CACHE STRING "Target alloy board")
 set(ALLOY_ROOT "" CACHE PATH "Path to the alloy repo checkout")
 
@@ -2116,6 +2207,81 @@ See [docs/CMAKE_CONSUMPTION.md](https://github.com/) in the alloy repo for the s
 CMake consumption path and [docs/COOKBOOK.md](https://github.com/) for common runtime
 patterns.
 """
+
+
+def cmd_boards(args: argparse.Namespace) -> None:
+    """List all known boards discovered from board.json manifests."""
+    vendor_filter: str = getattr(args, "vendor", "") or ""
+    arch_filter: str = getattr(args, "arch", "") or ""
+    tier_filter: int | None = getattr(args, "tier", None)
+    json_out: bool = getattr(args, "json", False)
+
+    rows: list[dict] = []
+    for manifest in sorted(ROOT.glob("boards/**/board.json")):
+        try:
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+        board_id = data.get("board_id", "")
+        if not board_id:
+            continue
+
+        vendor = data.get("vendor", "")
+        family = data.get("family", "")
+        arch = data.get("arch", "")
+        tier = data.get("tier", 0)
+        display_name = data.get("display_name", board_id)
+        mcu = data.get("mcu", "")
+
+        if vendor_filter and vendor != vendor_filter:
+            continue
+        if arch_filter and arch != arch_filter:
+            continue
+        if tier_filter is not None and tier != tier_filter:
+            continue
+
+        rows.append({
+            "board_id": board_id,
+            "display_name": display_name,
+            "vendor": vendor,
+            "family": family,
+            "arch": arch,
+            "mcu": mcu,
+            "tier": tier,
+        })
+
+    if json_out:
+        print(json.dumps(rows, indent=2))
+        return
+
+    if not rows:
+        print("No boards found.")
+        return
+
+    # Table header
+    col_widths = {
+        "board_id":     max(len("BOARD"), max(len(r["board_id"]) for r in rows)),
+        "display_name": max(len("NAME"),  max(len(r["display_name"]) for r in rows)),
+        "family":       max(len("FAMILY"), max(len(r["family"]) for r in rows)),
+        "arch":         max(len("ARCH"),  max(len(r["arch"]) for r in rows)),
+        "mcu":          max(len("MCU"),   max(len(r["mcu"]) for r in rows)),
+    }
+    fmt = (
+        f"{{board_id:<{col_widths['board_id']}}}  "
+        f"{{display_name:<{col_widths['display_name']}}}  "
+        f"{{family:<{col_widths['family']}}}  "
+        f"{{arch:<{col_widths['arch']}}}  "
+        f"{{mcu:<{col_widths['mcu']}}}  {{tier}}"
+    )
+    sep = "  ".join("-" * w for w in col_widths.values()) + "  ----"
+    print(fmt.format(
+        board_id="BOARD", display_name="NAME", family="FAMILY",
+        arch="ARCH", mcu="MCU", tier="TIER"
+    ))
+    print(sep)
+    for r in rows:
+        print(fmt.format(**r))
 
 
 _CATEGORY_DEFAULTS: dict[str, str] = {
@@ -2747,6 +2913,13 @@ def main() -> int:
     run_p.add_argument("--settle-seconds", type=float, default=0.5,
                        help="delay between flash reset and monitor open")
     run_p.set_defaults(func=cmd_run)
+
+    boards_p = sub.add_parser("boards", help="list all known boards from board.json manifests")
+    boards_p.add_argument("--vendor", metavar="VENDOR", help="filter by vendor (e.g. st, microchip)")
+    boards_p.add_argument("--arch", metavar="ARCH", help="filter by architecture (e.g. cortex-m4)")
+    boards_p.add_argument("--tier", metavar="N", type=int, help="filter by tier (1, 2, or 3)")
+    boards_p.add_argument("--json", action="store_true", help="output as JSON")
+    boards_p.set_defaults(func=cmd_boards)
 
     new_p = sub.add_parser("new", help="scaffold a downstream firmware starter for a board")
     new_p.add_argument("--board", required=True, help="foundational board to target")
