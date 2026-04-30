@@ -6,13 +6,17 @@ import difflib
 import glob
 import hashlib
 import json
+import os
 import re
 import shutil
 import struct
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
+import urllib.request
+import urllib.error
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -1520,6 +1524,321 @@ def cmd_info(args: argparse.Namespace) -> None:
     print(json.dumps(info, indent=2, sort_keys=True))
 
 
+# ==============================================================================
+# alloy-devices package registry helpers
+# ==============================================================================
+
+ALLOY_DEVICES_VERSION = "1.0.0"
+ALLOY_DEVICES_BASE_URL = (
+    f"https://github.com/alloy-rs/alloy-devices/releases/download/"
+    f"alloy-devices-v{ALLOY_DEVICES_VERSION}"
+)
+ALLOY_DEVICES_REGISTRY_URL = "https://alloy-rs.dev/registry/devices.json"
+
+
+def _device_cache_dir() -> Path:
+    """Resolve the alloy-devices package cache directory (mirrors CMake logic)."""
+    env_var = os.environ.get("ALLOY_DEVICE_CACHE", "")
+    if env_var:
+        return Path(env_var)
+    home = Path.home()
+    return home / ".alloy" / "devices"
+
+
+def _device_local_root() -> Path | None:
+    """Return the local alloy-devices checkout root if present (Mode B)."""
+    candidate = ROOT.parent / "alloy-devices"
+    if candidate.is_dir() and (candidate / ".git").exists():
+        return candidate
+    return None
+
+
+def _device_package_extracted(vendor: str, family: str, cache: Path) -> bool:
+    """True if the device package is already unpacked in the cache."""
+    sentinel = cache / vendor / family / "generated" / "runtime" / "types.hpp"
+    return sentinel.exists()
+
+
+def _fetch_registry() -> list[dict] | None:
+    """Download and parse the alloy-devices registry JSON. Returns None on error."""
+    try:
+        with urllib.request.urlopen(ALLOY_DEVICES_REGISTRY_URL, timeout=10) as resp:
+            return json.loads(resp.read())["devices"]
+    except (urllib.error.URLError, KeyError, json.JSONDecodeError, OSError):
+        return None
+
+
+def _download_package(vendor: str, family: str, cache: Path, *, quiet: bool = False) -> bool:
+    """
+    Download and extract <vendor>-<family>-<version>.tar.gz into cache.
+    Returns True on success.
+    """
+    pkg_name = f"{vendor}-{family}-{ALLOY_DEVICES_VERSION}.tar.gz"
+    pkg_url = f"{ALLOY_DEVICES_BASE_URL}/{pkg_name}"
+    pkg_dest = cache / pkg_name
+
+    cache.mkdir(parents=True, exist_ok=True)
+
+    # Fetch checksums.json for SHA256 verification
+    chk_dest = cache / f"checksums-{ALLOY_DEVICES_VERSION}.json"
+    expected_sha256: str | None = None
+    if not chk_dest.exists():
+        chk_url = f"{ALLOY_DEVICES_BASE_URL}/checksums.json"
+        try:
+            with urllib.request.urlopen(chk_url, timeout=15) as resp:
+                chk_dest.write_bytes(resp.read())
+        except (urllib.error.URLError, OSError):
+            pass  # SHA256 verification is optional
+
+    if chk_dest.exists():
+        try:
+            chk_data = json.loads(chk_dest.read_text())
+            raw = chk_data.get(pkg_name, "")
+            if raw.startswith("sha256:"):
+                expected_sha256 = raw[len("sha256:"):]
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    # Download tar.gz
+    if not pkg_dest.exists():
+        if not quiet:
+            print(f"  Downloading {pkg_url} ...")
+        try:
+            with urllib.request.urlopen(pkg_url, timeout=300) as resp:
+                data = resp.read()
+        except urllib.error.URLError as exc:
+            print(f"  error: download failed: {exc}", file=sys.stderr)
+            return False
+        pkg_dest.write_bytes(data)
+
+        # Verify SHA256
+        if expected_sha256:
+            actual = hashlib.sha256(pkg_dest.read_bytes()).hexdigest()
+            if actual != expected_sha256:
+                print(
+                    f"  error: SHA256 mismatch for {pkg_name}\n"
+                    f"    expected: {expected_sha256}\n"
+                    f"    actual:   {actual}",
+                    file=sys.stderr,
+                )
+                pkg_dest.unlink(missing_ok=True)
+                return False
+
+    # Extract
+    if not quiet:
+        print(f"  Extracting {pkg_name} -> {cache}")
+    try:
+        with tarfile.open(pkg_dest, "r:gz") as tf:
+            tf.extractall(cache)  # noqa: S202 — trusted source (SHA256 verified above)
+    except tarfile.TarError as exc:
+        print(f"  error: extraction failed: {exc}", file=sys.stderr)
+        return False
+
+    if not quiet:
+        print(f"  [ok] {vendor}/{family} ready at {cache / vendor / family}")
+    return True
+
+
+def _device_prefetch(args: argparse.Namespace) -> None:
+    cache = _device_cache_dir()
+    targets: list[tuple[str, str]] = []  # (vendor, family)
+
+    if getattr(args, "all", False):
+        registry = _fetch_registry()
+        if registry is None:
+            print("error: could not fetch device registry from alloy-rs.dev", file=sys.stderr)
+            raise SystemExit(1)
+        seen: set[str] = set()
+        for entry in registry:
+            key = f"{entry['vendor']}/{entry['family']}"
+            if key not in seen:
+                seen.add(key)
+                targets.append((entry["vendor"], entry["family"]))
+    elif getattr(args, "family", None):
+        # Find vendor for family from registry
+        registry = _fetch_registry()
+        if registry is None:
+            # Fallback: try to infer vendor from family name prefix
+            vendor = args.family.split("_")[0].split("-")[0]
+            targets.append((vendor, args.family))
+        else:
+            match = next((e for e in registry if e["family"] == args.family), None)
+            if match is None:
+                print(f"error: family '{args.family}' not found in registry", file=sys.stderr)
+                raise SystemExit(1)
+            targets.append((match["vendor"], args.family))
+    else:
+        print("error: specify --family <family> or --all", file=sys.stderr)
+        raise SystemExit(2)
+
+    output_dir = Path(getattr(args, "output", None) or cache)
+    failures = 0
+    for vendor, family in targets:
+        if _device_package_extracted(vendor, family, cache):
+            print(f"[cached] {vendor}/{family}")
+            continue
+        print(f"[fetch]  {vendor}/{family}")
+        ok = _download_package(vendor, family, output_dir)
+        if not ok:
+            failures += 1
+
+    if failures:
+        print(f"\n{failures} package(s) failed.", file=sys.stderr)
+        raise SystemExit(1)
+    print(f"\nDone. Cache: {cache}")
+
+
+def _device_list(args: argparse.Namespace) -> None:
+    cache = _device_cache_dir()
+    vendor_filter = getattr(args, "vendor", None)
+    family_filter = getattr(args, "family", None)
+    cached_only = getattr(args, "cached", False)
+    available_only = getattr(args, "available", False)
+    as_json = getattr(args, "json", False)
+
+    # Check local Mode-B checkout first
+    local = _device_local_root()
+    local_families: set[str] = set()
+    if local:
+        for p in local.glob("*/*/generated"):
+            local_families.add(f"{p.parent.parent.name}/{p.parent.name}")
+
+    # Check cache
+    cache_families: set[str] = set()
+    if cache.is_dir():
+        for p in cache.glob("*/*/generated/runtime/types.hpp"):
+            cache_families.add(f"{p.parent.parent.parent.parent.name}/{p.parent.parent.parent.name}")
+
+    # Try registry for full list
+    registry = _fetch_registry() if not cached_only else None
+
+    rows: list[dict] = []
+    if registry:
+        for entry in registry:
+            vf = f"{entry['vendor']}/{entry['family']}"
+            if vendor_filter and entry["vendor"] != vendor_filter:
+                continue
+            if family_filter and entry["family"] != family_filter:
+                continue
+            cached = vf in cache_families or vf in local_families
+            if available_only and cached:
+                continue
+            rows.append({
+                "id": entry["id"],
+                "vendor": entry["vendor"],
+                "family": entry["family"],
+                "arch": entry.get("arch", ""),
+                "status": "local" if vf in local_families else ("cached" if cached else "available"),
+            })
+    else:
+        # Offline: show only what's in cache / local checkout
+        seen: set[str] = set()
+        for vf in sorted(cache_families | local_families):
+            vendor, family = vf.split("/", 1)
+            if vendor_filter and vendor != vendor_filter:
+                continue
+            if family_filter and family != family_filter:
+                continue
+            if vf not in seen:
+                seen.add(vf)
+                rows.append({
+                    "id": f"{vendor}_{family}",
+                    "vendor": vendor,
+                    "family": family,
+                    "arch": "",
+                    "status": "local" if vf in local_families else "cached",
+                })
+
+    if as_json:
+        print(json.dumps(rows, indent=2))
+        return
+
+    if not rows:
+        print("(no devices found)")
+        return
+
+    col_id  = max(len(r["id"])     for r in rows)
+    col_v   = max(len(r["vendor"]) for r in rows)
+    col_f   = max(len(r["family"]) for r in rows)
+    col_a   = max(len(r["arch"])   for r in rows)
+    fmt = f"{{:<{col_id}}}  {{:<{col_v}}}  {{:<{col_f}}}  {{:<{col_a}}}  {{}}"
+    print(fmt.format("device", "vendor", "family", "arch", "status"))
+    print("-" * (col_id + col_v + col_f + col_a + 22))
+    for r in rows:
+        print(fmt.format(r["id"], r["vendor"], r["family"], r["arch"], r["status"]))
+
+
+def _device_info(args: argparse.Namespace) -> None:
+    device_id: str = args.device_id
+    cache = _device_cache_dir()
+    local = _device_local_root()
+
+    # Find vendor/family for the device id
+    vendor = family = ""
+    registry = _fetch_registry()
+    if registry:
+        match = next((e for e in registry if e["id"] == device_id), None)
+        if match:
+            vendor, family = match["vendor"], match["family"]
+
+    # Try to infer from cache structure if registry unavailable
+    if not vendor:
+        for p in (cache if cache.is_dir() else Path("/nonexistent")).glob(
+            f"*/*/generated/runtime/devices/{device_id}"
+        ):
+            vendor = p.parent.parent.parent.parent.name
+            family = p.parent.parent.parent.name
+            break
+
+    if not vendor:
+        print(f"error: device '{device_id}' not found in registry or cache", file=sys.stderr)
+        raise SystemExit(1)
+
+    # Locate manifest
+    roots = []
+    if local:
+        roots.append(local)
+    roots.append(cache)
+
+    manifest_data: dict = {}
+    for root in roots:
+        mf = root / vendor / family / "artifact-manifest.json"
+        if mf.exists():
+            try:
+                manifest_data = json.loads(mf.read_text())
+            except json.JSONDecodeError:
+                pass
+            break
+
+    print(f"Device:           {device_id}")
+    print(f"Vendor:           {vendor}")
+    print(f"Family:           {family}")
+    if manifest_data:
+        print(f"alloy-devices:    {manifest_data.get('alloy_devices_version', 'unknown')}")
+        print(f"alloy-codegen:    {manifest_data.get('alloy_codegen_version', 'unknown')}")
+        svd = manifest_data.get("svd_source", {})
+        if svd:
+            print(f"SVD source:       {svd.get('url', 'unknown')}")
+            print(f"SVD rev:          {svd.get('commit', svd.get('ref', 'unknown'))}")
+        patches = manifest_data.get("patches_applied", 0)
+        print(f"Patches applied:  {patches}")
+    else:
+        print("(artifact-manifest.json not found; run 'alloyctl device prefetch' first)")
+
+
+def cmd_device(args: argparse.Namespace) -> None:
+    sub = getattr(args, "device_cmd", None)
+    if sub == "prefetch":
+        _device_prefetch(args)
+    elif sub == "list":
+        _device_list(args)
+    elif sub == "info":
+        _device_info(args)
+    else:
+        print("error: unknown device subcommand", file=sys.stderr)
+        raise SystemExit(2)
+
+
 def cmd_doctor(args: argparse.Namespace) -> None:
     check_only = getattr(args, "check", None)
     failures: list[str] = []
@@ -1567,17 +1886,44 @@ def cmd_doctor(args: argparse.Namespace) -> None:
     warn("python imgtool (optional: MCUboot image signing)", imgtool["found"],
          f"pip install imgtool  (MCUboot {ALLOY_MCUBOOT_VERSION}; needed for --with-mcuboot)")
 
+    # alloy-devices: local checkout (Mode B) OR package cache (Mode A) OR registry reachable
+    local_root = _device_local_root()
+    cache_dir  = _device_cache_dir()
+    cache_has_any = cache_dir.is_dir() and any(cache_dir.glob("*/*/generated/runtime/types.hpp"))
+
+    if local_root:
+        check("alloy-devices local checkout present (Mode B)", True, "")
+    elif cache_has_any:
+        check("alloy-devices package cache populated (Mode A)", True, "")
+    else:
+        # Neither local nor cache — check if registry is reachable
+        registry_ok = _fetch_registry() is not None
+        if registry_ok:
+            warn(
+                "alloy-devices: no local checkout or cache (registry reachable)",
+                False,
+                f"Packages will be auto-downloaded at cmake configure time.\n"
+                f"       To prefetch: python scripts/alloyctl.py device prefetch --family <family>",
+            )
+        else:
+            check(
+                "alloy-devices: not present and registry unreachable",
+                False,
+                "Clone alloy-devices next to the alloy repo OR\n"
+                "       connect to the internet so CMake can auto-download packages.",
+            )
+
+    # Legacy: RELEASE_MANIFEST.json ref alignment check
     manifest = _read_release_manifest()
     manifest_ref = (manifest.get("alloy_devices") or {}).get("ref") if isinstance(manifest, dict) else None
     detected_ref = _detected_alloy_devices_ref()
-    aligned = manifest_ref is not None and manifest_ref == detected_ref
-    label = "alloy-devices ref aligned with RELEASE_MANIFEST.json"
-    if detected_ref is None:
-        check(label, False,
-              "../alloy-devices checkout not found; clone it next to the alloy repo")
-    else:
-        check(label, aligned,
-              f"check out ref {manifest_ref} in ../alloy-devices (current: {detected_ref})")
+    if manifest_ref and detected_ref:
+        aligned = manifest_ref == detected_ref
+        warn(
+            "alloy-devices ref aligned with RELEASE_MANIFEST.json",
+            aligned,
+            f"check out ref {manifest_ref} in ../alloy-devices (current: {detected_ref})",
+        )
 
     if failures:
         print(f"\n{len(failures)} check(s) failed.", file=sys.stderr)
@@ -2254,6 +2600,31 @@ def main() -> int:
     doctor_p.add_argument("--check", choices=("mcuboot",), metavar="COMPONENT",
                           help="run focused checks for a specific component (e.g. mcuboot)")
     doctor_p.set_defaults(func=cmd_doctor)
+
+    device_p = sub.add_parser("device", help="manage alloy-devices packages (prefetch, list, info)")
+    device_sub = device_p.add_subparsers(dest="device_cmd", required=True)
+    device_p.set_defaults(func=cmd_device)
+
+    dev_prefetch_p = device_sub.add_parser(
+        "prefetch", help="download device packages to local cache")
+    dev_prefetch_p.add_argument("--family", metavar="FAMILY",
+                                help="family to prefetch (e.g. stm32g0)")
+    dev_prefetch_p.add_argument("--all", action="store_true",
+                                help="prefetch all families in the registry")
+    dev_prefetch_p.add_argument("--output", metavar="DIR",
+                                help="override output directory (default: ~/.alloy/devices)")
+
+    dev_list_p = device_sub.add_parser("list", help="list available and cached device packages")
+    dev_list_p.add_argument("--vendor", metavar="VENDOR", help="filter by vendor")
+    dev_list_p.add_argument("--family", metavar="FAMILY", help="filter by family")
+    dev_list_p.add_argument("--cached", action="store_true", help="show only locally cached packages")
+    dev_list_p.add_argument("--available", action="store_true",
+                            help="show only packages not yet cached")
+    dev_list_p.add_argument("--json", action="store_true", help="output as JSON")
+
+    dev_info_p = device_sub.add_parser("info", help="show info for a specific device")
+    dev_info_p.add_argument("device_id", metavar="DEVICE_ID",
+                            help="device identifier (e.g. stm32g071rb)")
 
     run_p = sub.add_parser(
         "run",

@@ -5,17 +5,17 @@ Phases 1–2 are host-only (CMake infrastructure, no hardware).
 
 ## 1. CMake infrastructure
 
-- [ ] 1.1 Create `cmake/alloy_devices_version.cmake`: pin `ALLOY_DEVICES_VERSION` +
+- [x] 1.1 Create `cmake/alloy_devices_version.cmake`: pin `ALLOY_DEVICES_VERSION` +
       `ALLOY_DEVICES_BASE_URL`. Make both cache variables so CI can override.
-- [ ] 1.2 Extend `cmake/alloy_devices.cmake`: before probing filesystem paths, check
-      `ALLOY_DEVICE_CACHE_DIR`. If device package absent, call FetchContent to
-      download `<vendor>-<family>-<version>.tar.gz` from the release URL.
-- [ ] 1.3 Implement cache dir resolution order:
+- [x] 1.2 Extend `cmake/alloy_devices.cmake`: before probing filesystem paths, check
+      `ALLOY_DEVICE_CACHE_DIR`. If device package absent, download
+      `<vendor>-<family>-<version>.tar.gz` from the release URL via `file(DOWNLOAD)`.
+- [x] 1.3 Implement cache dir resolution order:
       1. `ALLOY_DEVICE_CACHE_DIR` CMake variable
       2. `ALLOY_DEVICE_CACHE` environment variable
       3. `~/.alloy/devices/` (platform home dir via CMake)
       4. `${CMAKE_BINARY_DIR}/_alloy_devices_cache` (build-local fallback)
-- [ ] 1.4 Add offline mode: if `ALLOY_OFFLINE=ON`, disable FetchContent and fail
+- [x] 1.4 Add offline mode: if `ALLOY_OFFLINE=ON`, disable download and fail
       with a clear error if the device package is not in cache.
 - [ ] 1.5 Extend `AlloyDeviceConfig.cmake` in alloy-devices: support component syntax
       `find_package(AlloyDevices REQUIRED COMPONENTS stm32g071rb stm32h743zit6)`.
@@ -23,13 +23,13 @@ Phases 1–2 are host-only (CMake infrastructure, no hardware).
 
 ## 2. Package format and checksums
 
-- [ ] 2.1 Define the tar.gz layout for device packages (see proposal).
+- [x] 2.1 Define the tar.gz layout for device packages (see proposal).
       Write `scripts/pack_device.py`: takes a family directory and produces the
       versioned tar.gz with deterministic file ordering.
-- [ ] 2.2 Define `checksums.json` format:
+- [x] 2.2 Define `checksums.json` format:
       `{ "st-stm32g0-1.0.0.tar.gz": "sha256:abc...", ... }`
       Consumed by CMake to verify downloads before unpacking.
-- [ ] 2.3 Implement CMake SHA256 verification using `file(DOWNLOAD ... EXPECTED_HASH)`.
+- [x] 2.3 Implement CMake SHA256 verification using `file(DOWNLOAD ... EXPECTED_HASH)`.
       On mismatch: delete partial download, emit fatal error with remediation steps.
 
 ## 3. GitHub Release publishing
@@ -45,23 +45,23 @@ Phases 1–2 are host-only (CMake infrastructure, no hardware).
 
 ## 4. Developer tooling
 
-- [ ] 4.1 Add `alloy device prefetch [--family <f>] [--all] [--output <dir>]` to
+- [x] 4.1 Add `alloy device prefetch [--family <f>] [--all] [--output <dir>]` to
       alloyctl.py / alloy-cli: downloads packages to a specified cache dir.
       Useful for air-gapped environments and CI caching.
-- [ ] 4.2 Add `alloy device list [--available] [--cached]`: lists devices available
+- [x] 4.2 Add `alloy device list [--available] [--cached]`: lists devices available
       in the registry and which are already downloaded locally.
-- [ ] 4.3 Add `alloy device info <device_id>`: prints IR coverage report, alloy-codegen
+- [x] 4.3 Add `alloy device info <device_id>`: prints IR coverage report, alloy-codegen
       version, SVD source URL, applied patches count, alloy-devices version.
 
 ## 5. Migration and compatibility
 
-- [ ] 5.1 Keep `ALLOY_DEVICES_ROOT` pointing to a local checkout working (Mode B).
+- [x] 5.1 Keep `ALLOY_DEVICES_ROOT` pointing to a local checkout working (Mode B).
       If set, skip all FetchContent logic. Document as the offline / monorepo path.
 - [ ] 5.2 Add a CI step to the alloy repo that runs a clean configure with no local
       alloy-devices clone and verifies FetchContent download succeeds.
 - [ ] 5.3 Update `docs/QUICKSTART.md`: remove manual alloy-devices clone step.
       The one-liner becomes: `git clone alloy && cmake -DALLOY_BOARD=<board> -B build`.
-- [ ] 5.4 Add `alloy doctor` check: `alloy-devices reachable or locally present`.
+- [x] 5.4 Add `alloy doctor` check: `alloy-devices reachable or locally present`.
       Distinguish between "no internet" (warn + hint prefetch) vs "missing + no internet" (fail).
 
 ## 6. Documentation

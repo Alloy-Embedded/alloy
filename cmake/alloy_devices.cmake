@@ -2,16 +2,159 @@
 # alloy-devices Integration
 # ==============================================================================
 #
-# Resolves the selected board to a published descriptor tree in alloy-devices and
-# generates the stable import header consumed by src/device/selected.hpp.
+# Two resolution modes — tried in order:
 #
+#   Mode B (local checkout):
+#     Set ALLOY_DEVICES_ROOT to a directory that exists.
+#     The variable defaults to ../alloy-devices (sibling repo), which is the
+#     developer workflow.  If the directory does not exist, Mode A is tried.
+#
+#   Mode A (package registry / cache):
+#     Device packages are downloaded from GitHub Releases and unpacked to a
+#     local cache directory.  Cache resolution order:
+#       1. ALLOY_DEVICE_CACHE_DIR cmake variable
+#       2. ALLOY_DEVICE_CACHE environment variable
+#       3. ~/.alloy/devices/   (platform home)
+#       4. ${CMAKE_BINARY_DIR}/_alloy_devices_cache  (build-local fallback)
+#
+#   Offline mode (ALLOY_OFFLINE=ON):
+#     Disables all network downloads.  Fails with a clear error if the device
+#     package is not already in the cache.
+#
+
+include("${CMAKE_CURRENT_LIST_DIR}/alloy_devices_version.cmake")
 
 set(
     ALLOY_DEVICES_ROOT
     "${CMAKE_CURRENT_SOURCE_DIR}/../alloy-devices"
     CACHE PATH
-    "Path to the alloy-devices checkout"
+    "Path to a local alloy-devices checkout (Mode B). Leave at default to use the package registry."
 )
+
+set(ALLOY_DEVICE_CACHE_DIR "" CACHE PATH
+    "Override alloy-devices package cache directory (Mode A). Empty = auto-resolve.")
+mark_as_advanced(ALLOY_DEVICE_CACHE_DIR)
+
+option(ALLOY_OFFLINE "Disable network downloads; fail if device package not in cache" OFF)
+
+# ------------------------------------------------------------------------------
+# _alloy_resolve_device_cache_dir(<out_var>)
+# Returns the resolved device cache directory path (does not create it).
+# ------------------------------------------------------------------------------
+function(_alloy_resolve_device_cache_dir OUT_VAR)
+    if(ALLOY_DEVICE_CACHE_DIR AND NOT "${ALLOY_DEVICE_CACHE_DIR}" STREQUAL "")
+        set(${OUT_VAR} "${ALLOY_DEVICE_CACHE_DIR}" PARENT_SCOPE)
+        return()
+    endif()
+    if(DEFINED ENV{ALLOY_DEVICE_CACHE} AND NOT "$ENV{ALLOY_DEVICE_CACHE}" STREQUAL "")
+        set(${OUT_VAR} "$ENV{ALLOY_DEVICE_CACHE}" PARENT_SCOPE)
+        return()
+    endif()
+    if(CMAKE_HOST_WIN32)
+        set(_home_env "$ENV{USERPROFILE}")
+    else()
+        set(_home_env "$ENV{HOME}")
+    endif()
+    if(_home_env)
+        set(${OUT_VAR} "${_home_env}/.alloy/devices" PARENT_SCOPE)
+        return()
+    endif()
+    set(${OUT_VAR} "${CMAKE_BINARY_DIR}/_alloy_devices_cache" PARENT_SCOPE)
+endfunction()
+
+# ------------------------------------------------------------------------------
+# _alloy_ensure_device_package(<vendor> <family>)
+# Ensures the device package is unpacked in the cache directory.
+# Downloads from the registry if not present and ALLOY_OFFLINE is OFF.
+# ------------------------------------------------------------------------------
+function(_alloy_ensure_device_package vendor family)
+    _alloy_resolve_device_cache_dir(_cache_dir)
+
+    set(_sentinel "${_cache_dir}/${vendor}/${family}/generated/runtime/types.hpp")
+    if(EXISTS "${_sentinel}")
+        return()  # already cached and extracted
+    endif()
+
+    # Offline: cannot download
+    if(ALLOY_OFFLINE)
+        message(FATAL_ERROR
+            "alloy-devices: package '${vendor}-${family}' not in cache at '${_cache_dir}'.\n"
+            "  ALLOY_OFFLINE=ON — network downloads are disabled.\n"
+            "  Prefetch the package with:\n"
+            "    python scripts/alloyctl.py device prefetch --family ${family}\n"
+            "  Or point to a local checkout:\n"
+            "    cmake -DALLOY_DEVICES_ROOT=/path/to/alloy-devices ...")
+    endif()
+
+    set(_pkg_name "${vendor}-${family}-${ALLOY_DEVICES_VERSION}.tar.gz")
+    set(_pkg_url  "${ALLOY_DEVICES_BASE_URL}/${_pkg_name}")
+    set(_pkg_dest "${_cache_dir}/${_pkg_name}")
+
+    file(MAKE_DIRECTORY "${_cache_dir}")
+
+    # -- Step 1: fetch checksums.json for SHA256 verification ------------------
+    set(_chk_dest "${_cache_dir}/checksums-${ALLOY_DEVICES_VERSION}.json")
+    set(_expected_hash "")
+
+    if(NOT EXISTS "${_chk_dest}")
+        file(DOWNLOAD "${ALLOY_DEVICES_BASE_URL}/checksums.json" "${_chk_dest}"
+            TIMEOUT 30 STATUS _chk_status QUIET)
+        list(GET _chk_status 0 _chk_code)
+        if(NOT _chk_code EQUAL 0)
+            message(WARNING
+                "alloy-devices: could not fetch checksums.json — SHA256 verification skipped.\n"
+                "  Status: ${_chk_status}")
+            file(REMOVE "${_chk_dest}")
+        endif()
+    endif()
+
+    if(EXISTS "${_chk_dest}")
+        file(READ "${_chk_dest}" _chk_content)
+        string(JSON _sha256_raw ERROR_VARIABLE _json_err
+            GET "${_chk_content}" "${_pkg_name}")
+        if(NOT _json_err)
+            string(REGEX REPLACE "^sha256:" "" _expected_hash "${_sha256_raw}")
+        endif()
+    endif()
+
+    # -- Step 2: download package tar.gz ---------------------------------------
+    if(NOT EXISTS "${_pkg_dest}")
+        message(STATUS "alloy-devices: downloading ${_pkg_name} from ${ALLOY_DEVICES_BASE_URL}...")
+        if(_expected_hash)
+            file(DOWNLOAD "${_pkg_url}" "${_pkg_dest}"
+                TIMEOUT 300 SHOW_PROGRESS
+                EXPECTED_HASH "SHA256=${_expected_hash}"
+                STATUS _dl_status)
+        else()
+            file(DOWNLOAD "${_pkg_url}" "${_pkg_dest}"
+                TIMEOUT 300 SHOW_PROGRESS
+                STATUS _dl_status)
+        endif()
+
+        list(GET _dl_status 0 _dl_code)
+        if(NOT _dl_code EQUAL 0)
+            file(REMOVE "${_pkg_dest}")
+            message(FATAL_ERROR
+                "alloy-devices: download failed for '${_pkg_url}'.\n"
+                "  Error: ${_dl_status}\n"
+                "  Check your network.  To use a local checkout instead:\n"
+                "    cmake -DALLOY_DEVICES_ROOT=/path/to/alloy-devices ...")
+        endif()
+    endif()
+
+    # -- Step 3: extract -------------------------------------------------------
+    message(STATUS "alloy-devices: extracting ${_pkg_name} -> ${_cache_dir}")
+    file(ARCHIVE_EXTRACT INPUT "${_pkg_dest}" DESTINATION "${_cache_dir}")
+
+    if(NOT EXISTS "${_sentinel}")
+        message(FATAL_ERROR
+            "alloy-devices: extraction completed but expected file not found:\n"
+            "  ${_sentinel}\n"
+            "  The package structure may be incorrect.  Delete '${_pkg_dest}' and retry.")
+    endif()
+
+    message(STATUS "alloy-devices: ${vendor}/${family} ready at ${_cache_dir}/${vendor}/${family}")
+endfunction()
 
 set(ALLOY_DEVICES_MODULE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
@@ -79,9 +222,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_GENERATED_STARTUP_SOURCE "" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED FALSE PARENT_SCOPE)
 
-    get_filename_component(_devices_root "${ALLOY_DEVICES_ROOT}" ABSOLUTE)
-    set(ALLOY_DEVICES_ROOT_ABS "${_devices_root}" PARENT_SCOPE)
-
+    # -- Resolve board → vendor/family/device/arch ----------------------------
     alloy_map_board_to_device(
         "${ALLOY_BOARD}"
         _vendor
@@ -95,6 +236,36 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_NAME "${_device}" PARENT_SCOPE)
     set(ALLOY_DEVICE_ARCH "${_arch}" PARENT_SCOPE)
 
+    # -- Resolve _devices_root via Mode B then Mode A -------------------------
+    set(_devices_root "")
+
+    # Mode B: explicit or default local checkout
+    if(ALLOY_DEVICES_ROOT AND NOT "${ALLOY_DEVICES_ROOT}" STREQUAL "")
+        get_filename_component(_explicit_root "${ALLOY_DEVICES_ROOT}" ABSOLUTE)
+        if(EXISTS "${_explicit_root}")
+            set(_devices_root "${_explicit_root}")
+            message(STATUS "alloy-devices: Mode B — local checkout at ${_devices_root}")
+        endif()
+    endif()
+
+    # Mode A: package cache / auto-download
+    if(NOT _devices_root AND ALLOY_USE_ALLOY_DEVICES AND _vendor AND _family)
+        _alloy_resolve_device_cache_dir(_cache_dir)
+        set(_family_cache_sentinel "${_cache_dir}/${_vendor}/${_family}/generated/runtime/types.hpp")
+
+        if(NOT EXISTS "${_family_cache_sentinel}")
+            _alloy_ensure_device_package("${_vendor}" "${_family}")
+        endif()
+
+        if(EXISTS "${_family_cache_sentinel}")
+            set(_devices_root "${_cache_dir}")
+            message(STATUS "alloy-devices: Mode A — package cache at ${_cache_dir}")
+        endif()
+    endif()
+
+    set(ALLOY_DEVICES_ROOT_ABS "${_devices_root}" PARENT_SCOPE)
+
+    # -------------------------------------------------------------------------
     set(_selected_config_dir "${CMAKE_BINARY_DIR}/generated/alloy/device")
     file(MAKE_DIRECTORY "${_selected_config_dir}")
 
@@ -127,7 +298,7 @@ function(alloy_configure_selected_device)
     set(_startup_vectors "")
     set(_generated_startup_source "")
 
-    if(ALLOY_USE_ALLOY_DEVICES AND _vendor AND EXISTS "${_devices_root}")
+    if(ALLOY_USE_ALLOY_DEVICES AND _vendor AND _devices_root)
         set(_family_root "${_devices_root}/${_vendor}/${_family}")
         set(_startup_vectors
             "${_family_root}/generated/devices/${_device}/startup_vectors.cpp"
