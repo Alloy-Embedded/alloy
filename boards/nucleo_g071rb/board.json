@@ -1,0 +1,44 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "nucleo_g071rb",
+  "display_name": "Nucleo-G071RB",
+  "vendor": "st",
+  "family": "stm32g0",
+  "device": "stm32g071rb",
+  "arch": "cortex-m0plus",
+  "linker_script": "STM32G071RBT6.ld",
+  "board_header": "boards/nucleo_g071rb/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "mcu": "STM32G071RBT6",
+  "flash_size_bytes": 131072,
+  "debug": {
+    "probe": "stlink",
+    "openocd_cfg": "interface/stlink.cfg target/stm32g0x.cfg",
+    "stm32_programmer": true
+  },
+  "uart": {
+    "debug": { "peripheral": "USART2", "tx": "PA2", "rx": "PA3", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"],
+  "leds": [
+    { "name": "ld4", "pin": "PA5", "active_high": true }
+  ],
+  "buttons": [
+    { "name": "b1", "pin": "PC13", "active_low": true }
+  ],
+  "clock_profiles": ["default_pll_64mhz"],
+  "firmware_targets": [
+    "blink", "time_probe", "uart_logger", "watchdog_probe",
+    "rtc_probe", "timer_pwm_probe", "analog_probe"
+  ],
+  "bundle_target": "stm32g0_hardware_validation_bundle",
+  "build_dir_suffix": "hw/g071",
+  "mcuboot": {
+    "primary_offset": "0x08008000",
+    "primary_size_bytes": 45056,
+    "secondary_offset": "0x08013000",
+    "boot_size_bytes": 32768
+  },
+  "tier": 1,
+  "notes": "Official ST Nucleo board; ST-LINK v3 onboard; VCP exposed on USB. 128 KB flash, 2 KB pages."
+}

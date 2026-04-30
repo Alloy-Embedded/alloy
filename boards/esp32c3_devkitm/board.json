@@ -1,0 +1,27 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "esp32c3_devkitm",
+  "display_name": "ESP32-C3-DevKitM-1",
+  "vendor": "espressif",
+  "family": "esp32c3",
+  "device": "esp32c3",
+  "arch": "riscv32",
+  "linker_script": "esp32c3.ld",
+  "board_header": "boards/esp32c3_devkitm/board.hpp",
+  "toolchain": "riscv32-esp-elf",
+  "mcu": "ESP32-C3",
+  "flash_size_bytes": 4194304,
+  "debug": {
+    "esptool_chip": "esp32c3",
+    "esptool_app_offset": "0x10000"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "GPIO21", "rx": "GPIO20", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"],
+  "firmware_targets": ["hello_esp32c3"],
+  "bundle_target": "hello_esp32c3",
+  "build_dir_suffix": "hw/esp32c3",
+  "tier": 2,
+  "notes": "Espressif ESP32-C3 DevKitM-1; single-core RISC-V 160 MHz; 4 MB flash. USB-serial adapter required for UART monitor."
+}

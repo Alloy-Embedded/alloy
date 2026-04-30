@@ -102,6 +102,24 @@ Useful package variables:
 - `Alloy_BOARD_SOURCE_DIR`
 - `Alloy_LINKER_SCRIPT`
 
+## Automatic device resolution
+
+CMake automatically downloads the required `alloy-devices` package on first
+configure — no manual clone step needed.  See [DEVICE_PACKAGES.md](DEVICE_PACKAGES.md)
+for the full resolution order (local checkout → cache → auto-download) and
+how to use offline mode or a private package mirror.
+
+```bash
+# Default: auto-download to ~/.alloy/devices/ on first configure
+cmake -DALLOY_BOARD=nucleo_g071rb -B build
+
+# Pin to a local alloy-devices checkout (developer mode)
+cmake -DALLOY_DEVICES_ROOT=../alloy-devices -DALLOY_BOARD=nucleo_g071rb -B build
+
+# Offline — device package must already be in cache
+cmake -DALLOY_OFFLINE=ON -DALLOY_BOARD=nucleo_g071rb -B build
+```
+
 ## Validation
 
 The repo validates this flow with a dedicated downstream smoke project under `tests/downstream_package/`.

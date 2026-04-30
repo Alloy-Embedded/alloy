@@ -1,0 +1,27 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "esp32s3_devkitc",
+  "display_name": "ESP32-S3-DevKitC-1",
+  "vendor": "espressif",
+  "family": "esp32s3",
+  "device": "esp32s3",
+  "arch": "xtensa-lx7",
+  "linker_script": "esp32s3.ld",
+  "board_header": "boards/esp32s3_devkitc/board.hpp",
+  "toolchain": "xtensa-esp32s3-elf",
+  "mcu": "ESP32-S3",
+  "flash_size_bytes": 8388608,
+  "debug": {
+    "esptool_chip": "esp32s3",
+    "esptool_app_offset": "0x10000"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "GPIO43", "rx": "GPIO44", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"],
+  "firmware_targets": ["hello_esp32s3"],
+  "bundle_target": "hello_esp32s3",
+  "build_dir_suffix": "hw/esp32s3",
+  "tier": 2,
+  "notes": "Espressif ESP32-S3 DevKitC-1; dual-core Xtensa LX7 240 MHz; 8 MB flash; USB OTG capable."
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "nucleo_g0b1re",
+  "display_name": "Nucleo-G0B1RE",
+  "vendor": "st",
+  "family": "stm32g0",
+  "device": "stm32g0b1re",
+  "arch": "cortex-m0plus",
+  "linker_script": "STM32G0B1RET6.ld",
+  "board_header": "boards/nucleo_g0b1re/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "mcu": "STM32G0B1RET6",
+  "flash_size_bytes": 524288,
+  "debug": {
+    "probe": "stlink",
+    "openocd_cfg": "interface/stlink.cfg target/stm32g0x.cfg",
+    "stm32_programmer": true
+  },
+  "uart": {
+    "debug": { "peripheral": "USART2", "tx": "PA2", "rx": "PA3", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*"],
+  "leds": [
+    { "name": "ld4", "pin": "PA5", "active_high": true }
+  ],
+  "buttons": [
+    { "name": "b1", "pin": "PC13", "active_low": true }
+  ],
+  "clock_profiles": ["default_pll_64mhz"],
+  "firmware_targets": ["blink", "time_probe", "uart_logger", "watchdog_probe"],
+  "bundle_target": "stm32g0_hardware_validation_bundle",
+  "build_dir_suffix": "hw/g0b1",
+  "tier": 2,
+  "notes": "ST Nucleo-G0B1RE; 512 KB flash; same GPIO/UART pinout as G071RB."
+}

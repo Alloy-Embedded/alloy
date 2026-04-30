@@ -1,0 +1,31 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "raspberry_pi_pico",
+  "display_name": "Raspberry Pi Pico",
+  "vendor": "raspberrypi",
+  "family": "rp2040",
+  "device": "pico",
+  "arch": "cortex-m0plus",
+  "linker_script": "rp2040.ld",
+  "board_header": "boards/raspberry_pi_pico/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "mcu": "RP2040",
+  "flash_size_bytes": 2097152,
+  "debug": {
+    "probe": "cmsis-dap",
+    "openocd_cfg": "interface/cmsis-dap.cfg target/rp2040.cfg"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "GPIO0", "rx": "GPIO1", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*"],
+  "leds": [
+    { "name": "led", "pin": "GPIO25", "active_high": true }
+  ],
+  "clock_profiles": ["default_125mhz"],
+  "firmware_targets": ["blink", "time_probe", "uart_logger"],
+  "bundle_target": "rp2040_hardware_validation_bundle",
+  "build_dir_suffix": "hw/rp2040",
+  "tier": 2,
+  "notes": "Raspberry Pi Pico; dual-core Cortex-M0+; 2 MB QSPI flash; BOOTSEL button for UF2 flashing. Debug via SWD using a second Pico as picoprobe."
+}

@@ -66,7 +66,7 @@ Phases 1–2 are host-only (CMake infrastructure, no hardware).
 
 ## 6. Documentation
 
-- [ ] 6.1 `docs/DEVICE_PACKAGES.md`: how FetchContent download works, cache dirs,
+- [x] 6.1 `docs/DEVICE_PACKAGES.md`: how FetchContent download works, cache dirs,
       offline mode, version pinning, how to add a custom device package.
-- [ ] 6.2 Update `docs/CMAKE_CONSUMPTION.md`: mention automatic device resolution.
+- [x] 6.2 Update `docs/CMAKE_CONSUMPTION.md`: mention automatic device resolution.
 - [ ] 6.3 Update `docs/QUICKSTART.md`: new zero-step setup flow.

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "nrf52840_dk",
+  "display_name": "nRF52840-DK",
+  "vendor": "nordic",
+  "family": "nrf52840",
+  "device": "nrf52840",
+  "arch": "cortex-m4",
+  "linker_script": "nrf52840.ld",
+  "board_header": "boards/nrf52840_dk/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "mcu": "nRF52840",
+  "flash_size_bytes": 1048576,
+  "debug": {
+    "probe": "jlink",
+    "openocd_cfg": "interface/jlink.cfg target/nrf52.cfg"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "P0.06", "rx": "P0.08", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*"],
+  "leds": [
+    { "name": "led1", "pin": "P0.13", "active_low": true },
+    { "name": "led2", "pin": "P0.14", "active_low": true },
+    { "name": "led3", "pin": "P0.15", "active_low": true },
+    { "name": "led4", "pin": "P0.16", "active_low": true }
+  ],
+  "buttons": [
+    { "name": "button1", "pin": "P0.11", "active_low": true },
+    { "name": "button2", "pin": "P0.12", "active_low": true }
+  ],
+  "firmware_targets": ["blink"],
+  "bundle_target": "nrf52840_hardware_validation_bundle",
+  "build_dir_suffix": "hw/nrf52840",
+  "tier": 3,
+  "notes": "Nordic nRF52840-DK; Bluetooth 5 + IEEE 802.15.4; 1 MB flash; bring-up pending — Nordic GPIOTE schema not yet implemented."
+}

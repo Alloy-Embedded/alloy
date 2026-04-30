@@ -1,0 +1,28 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "esp32_devkit",
+  "display_name": "ESP32-DevKit",
+  "vendor": "espressif",
+  "family": "esp32",
+  "device": "esp32",
+  "arch": "xtensa-lx6",
+  "linker_script": "esp32.ld",
+  "board_header": "boards/esp32_devkit/board.hpp",
+  "toolchain": "xtensa-esp32-elf",
+  "mcu": "ESP32",
+  "flash_size_bytes": 4194304,
+  "debug": {
+    "esptool_chip": "esp32",
+    "esptool_app_offset": "0x10000",
+    "esptool_partition_table": "boards/esp32_devkit/partitions.csv"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "GPIO1", "rx": "GPIO3", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"],
+  "firmware_targets": ["hello_esp32"],
+  "bundle_target": "hello_esp32",
+  "build_dir_suffix": "hw/esp32",
+  "tier": 2,
+  "notes": "Generic ESP32-DevKit; dual-core Xtensa LX6 up to 240 MHz; 4 MB flash; onboard CP2102 USB-serial."
+}

@@ -1,0 +1,190 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "title": "Alloy Board Manifest v1",
+  "description": "Declarative description of a board supported by the alloy embedded C++ framework.",
+  "type": "object",
+  "required": ["board_id", "vendor", "family", "device", "arch", "linker_script", "board_header", "toolchain", "tier"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema URI; must reference alloy-rs.dev/schemas/board-manifest/v1.json"
+    },
+    "board_id": {
+      "type": "string",
+      "description": "Unique machine-readable board identifier. Must match the boards/ subdirectory name.",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable board name shown in CLI output (e.g. 'Nucleo-G071RB')."
+    },
+    "vendor": {
+      "type": "string",
+      "description": "MCU vendor identifier (e.g. 'st', 'microchip', 'espressif', 'raspberrypi', 'nordic').",
+      "pattern": "^[a-z0-9]+$"
+    },
+    "family": {
+      "type": "string",
+      "description": "MCU family identifier matching the alloy-devices package family name (e.g. 'stm32g0').",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "device": {
+      "type": "string",
+      "description": "Specific device identifier used to locate generated headers in alloy-devices (e.g. 'stm32g071rb').",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "arch": {
+      "type": "string",
+      "description": "CPU architecture used to select the compiler toolchain and startup code.",
+      "enum": ["cortex-m0plus", "cortex-m4", "cortex-m7", "riscv32", "xtensa-lx6", "xtensa-lx7", "avr", "native"]
+    },
+    "linker_script": {
+      "type": "string",
+      "description": "Linker script filename, relative to the board directory (e.g. 'STM32G071RBT6.ld')."
+    },
+    "board_header": {
+      "type": "string",
+      "description": "Path to board.hpp, relative to the repo root (e.g. 'boards/nucleo_g071rb/board.hpp')."
+    },
+    "toolchain": {
+      "type": "string",
+      "description": "Toolchain name; maps to cmake/toolchains/<toolchain>.cmake.",
+      "enum": ["arm-none-eabi", "riscv32-esp-elf", "xtensa-esp32-elf", "xtensa-esp32s3-elf", "avr-gcc", "native"]
+    },
+    "tier": {
+      "type": "integer",
+      "description": "Board support tier: 1 = primary (CI validated), 2 = secondary, 3 = community/experimental.",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "mcu": {
+      "type": "string",
+      "description": "Canonical part number (cosmetic; e.g. 'STM32G071RBT6')."
+    },
+    "flash_size_bytes": {
+      "type": "integer",
+      "description": "Internal flash size in bytes.",
+      "minimum": 0
+    },
+    "debug": {
+      "type": "object",
+      "description": "Debug probe and flash tool configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "probe": {
+          "type": "string",
+          "description": "Debug probe type: 'stlink', 'jlink', 'cmsis-dap', 'esptool', 'avrdude'."
+        },
+        "openocd_cfg": {
+          "type": "string",
+          "description": "Space-separated list of OpenOCD -f arguments (interface + target config files)."
+        },
+        "stm32_programmer": {
+          "type": "boolean",
+          "description": "True if STM32CubeProgrammer is supported as an alternative flash tool."
+        },
+        "esptool_chip": {
+          "type": "string",
+          "description": "esptool --chip argument (e.g. 'esp32c3', 'esp32s3')."
+        },
+        "esptool_app_offset": {
+          "type": "string",
+          "description": "Flash offset for the application binary (hex string, e.g. '0x10000')."
+        },
+        "esptool_partition_table": {
+          "type": "string",
+          "description": "Path to partition CSV, relative to repo root."
+        }
+      }
+    },
+    "uart": {
+      "type": "object",
+      "description": "UART configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "debug": {
+          "type": "object",
+          "description": "Debug/logging UART peripheral.",
+          "additionalProperties": false,
+          "required": ["peripheral", "tx", "rx", "baud"],
+          "properties": {
+            "peripheral": { "type": "string", "description": "Peripheral name (e.g. 'USART2')." },
+            "tx":         { "type": "string", "description": "TX pin label (e.g. 'PA2')." },
+            "rx":         { "type": "string", "description": "RX pin label (e.g. 'PA3')." },
+            "baud":       { "type": "integer", "description": "Default baud rate (e.g. 115200)." }
+          }
+        }
+      }
+    },
+    "serial_globs": {
+      "type": "array",
+      "description": "Glob patterns for the debug serial port device (used by alloyctl monitor).",
+      "items": { "type": "string" }
+    },
+    "leds": {
+      "type": "array",
+      "description": "On-board LEDs.",
+      "items": {
+        "type": "object",
+        "required": ["name", "pin"],
+        "additionalProperties": false,
+        "properties": {
+          "name":        { "type": "string",  "description": "LED label (e.g. 'ld4')." },
+          "pin":         { "type": "string",  "description": "GPIO pin (e.g. 'PA5')." },
+          "active_high": { "type": "boolean", "description": "True if LED is lit when pin is high (common-cathode)." },
+          "active_low":  { "type": "boolean", "description": "True if LED is lit when pin is low (common-anode)." }
+        }
+      }
+    },
+    "buttons": {
+      "type": "array",
+      "description": "On-board buttons.",
+      "items": {
+        "type": "object",
+        "required": ["name", "pin"],
+        "additionalProperties": false,
+        "properties": {
+          "name":       { "type": "string",  "description": "Button label (e.g. 'b1')." },
+          "pin":        { "type": "string",  "description": "GPIO pin (e.g. 'PC13')." },
+          "active_low": { "type": "boolean", "description": "True if button asserts low." }
+        }
+      }
+    },
+    "clock_profiles": {
+      "type": "array",
+      "description": "Named clock profiles available for this board (from clock_config.hpp).",
+      "items": { "type": "string" }
+    },
+    "firmware_targets": {
+      "type": "array",
+      "description": "CMake target names that can be built and flashed for this board.",
+      "items": { "type": "string" }
+    },
+    "bundle_target": {
+      "type": "string",
+      "description": "CMake target that builds all firmware_targets in one shot."
+    },
+    "build_dir_suffix": {
+      "type": "string",
+      "description": "Path suffix appended to the repo build/ directory for this board (e.g. 'hw/g071')."
+    },
+    "mcuboot": {
+      "type": "object",
+      "description": "MCUboot bootloader partition layout.",
+      "additionalProperties": false,
+      "properties": {
+        "primary_offset":      { "type": "string",  "description": "Primary slot start address (hex)." },
+        "primary_size_bytes":  { "type": "integer", "description": "Primary (= secondary) slot size in bytes." },
+        "secondary_offset":    { "type": "string",  "description": "Secondary slot start address (hex)." },
+        "secondary_on_ext_flash": { "type": "boolean", "description": "True if secondary slot is on external SPI/QSPI flash." },
+        "boot_size_bytes":     { "type": "integer", "description": "Bootloader region size in bytes." }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form notes about the board (connectors, errata, special setup)."
+    }
+  }
+}

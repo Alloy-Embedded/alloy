@@ -157,6 +157,80 @@ BOARDS: dict[str, BoardConfig] = {
     ),
 }
 
+
+def _discover_boards_from_json(root: Path = ROOT) -> dict[str, BoardConfig]:
+    """
+    Auto-discover boards from boards/**/board.json files and merge into BOARDS.
+    Board.json entries take precedence for fields that can be derived; missing
+    fields (like esptool specifics) fall back to the hardcoded entry if present.
+    """
+    extra: dict[str, BoardConfig] = {}
+    for manifest in sorted(root.glob("boards/**/board.json")):
+        try:
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+        board_id = data.get("board_id", "")
+        if not board_id or board_id in BOARDS:
+            continue  # already in hardcoded BOARDS; don't override
+
+        # Derive fields from board.json
+        suffix = data.get("build_dir_suffix", f"hw/{board_id}")
+        build_dir = root / "build" / suffix
+        bundle = data.get("bundle_target", "")
+        targets = tuple(data.get("firmware_targets", []))
+        baud = 115200
+        uart = data.get("uart", {}).get("debug", {})
+        if uart:
+            baud = uart.get("baud", 115200)
+        serial_globs = tuple(data.get("serial_globs", ()))
+        debug = data.get("debug", {})
+        openocd_cfg = debug.get("openocd_cfg", "")
+        openocd_args: tuple[str, ...] = ()
+        if openocd_cfg:
+            parts = ["openocd"] + [f for pair in zip(["-f"] * 10, openocd_cfg.split()) for f in pair]
+            openocd_args = tuple(parts[:2 + 2 * len(openocd_cfg.split())])
+        esptool_chip = debug.get("esptool_chip", "")
+        esptool_offset = debug.get("esptool_app_offset", "0x0")
+        esptool_pt = debug.get("esptool_partition_table", "")
+        toolchain_map = {
+            "arm-none-eabi":       "cmake/toolchains/arm-none-eabi.cmake",
+            "riscv32-esp-elf":     "cmake/toolchains/riscv32-esp-elf.cmake",
+            "xtensa-esp32-elf":    "cmake/toolchains/xtensa-esp32-elf.cmake",
+            "xtensa-esp32s3-elf":  "cmake/toolchains/xtensa-esp32s3-elf.cmake",
+            "avr-gcc":             "cmake/toolchains/avr-gcc.cmake",
+            "native":              "",
+        }
+        toolchain = toolchain_map.get(data.get("toolchain", "arm-none-eabi"), "")
+        mcuboot = data.get("mcuboot", {})
+        extra[board_id] = BoardConfig(
+            board=board_id,
+            build_dir=build_dir,
+            bundle_target=bundle,
+            firmware_targets=targets,
+            openocd_args=openocd_args,
+            uart_globs=serial_globs,
+            uart_baud=baud,
+            stm32_programmer_supported=debug.get("stm32_programmer", False),
+            esptool_chip=esptool_chip,
+            esptool_app_offset=esptool_offset,
+            esptool_partition_table=esptool_pt,
+            toolchain_file=toolchain,
+            mcuboot_primary_offset=mcuboot.get("primary_offset", ""),
+            mcuboot_primary_size=mcuboot.get("primary_size_bytes", 0),
+            mcuboot_secondary_offset=mcuboot.get("secondary_offset", ""),
+            mcuboot_secondary_on_ext_flash=mcuboot.get("secondary_on_ext_flash", False),
+            mcuboot_boot_size=mcuboot.get("boot_size_bytes", 0),
+        )
+    return extra
+
+
+# Merge auto-discovered boards (board.json) into the hardcoded BOARDS dict.
+# Hardcoded entries always win; board.json fills in boards not listed above.
+BOARDS = {**BOARDS, **_discover_boards_from_json()}
+
+
 BOARD_INSIGHTS: dict[str, BoardInsight] = {
     "esp32_devkit": BoardInsight(
         display_name="ESP32-DevKit",
@@ -1911,6 +1985,33 @@ def cmd_doctor(args: argparse.Namespace) -> None:
                 False,
                 "Clone alloy-devices next to the alloy repo OR\n"
                 "       connect to the internet so CMake can auto-download packages.",
+            )
+
+    # board.json validation
+    if check_only is None:
+        board_jsons = list(ROOT.glob("boards/**/board.json"))
+        if board_jsons:
+            bad = 0
+            for p in board_jsons:
+                try:
+                    data = json.loads(p.read_text())
+                    required = {"board_id", "vendor", "family", "device", "arch",
+                                "linker_script", "board_header", "toolchain", "tier"}
+                    missing = required - set(data.keys())
+                    if missing:
+                        bad += 1
+                except (json.JSONDecodeError, OSError):
+                    bad += 1
+            check(
+                f"board.json valid ({len(board_jsons)} boards)",
+                bad == 0,
+                f"{bad} board.json file(s) invalid — run: python scripts/validate_board_manifest.py",
+            )
+        else:
+            warn(
+                "board.json files (board-manifest-declarative spec)",
+                False,
+                "No board.json files found under boards/; run validate_board_manifest.py after migration",
             )
 
     # Legacy: RELEASE_MANIFEST.json ref alignment check

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "avr128da32_curiosity_nano",
+  "display_name": "AVR128DA32 Curiosity Nano",
+  "vendor": "microchip",
+  "family": "avr-da",
+  "device": "avr128da32",
+  "arch": "avr",
+  "linker_script": "avr128da32.ld",
+  "board_header": "boards/avr128da32_curiosity_nano/board.hpp",
+  "toolchain": "avr-gcc",
+  "mcu": "AVR128DA32",
+  "flash_size_bytes": 131072,
+  "debug": {
+    "probe": "cmsis-dap",
+    "openocd_cfg": "interface/cmsis-dap.cfg"
+  },
+  "uart": {
+    "debug": { "peripheral": "USART0", "tx": "PA0", "rx": "PA1", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*"],
+  "leds": [
+    { "name": "led0", "pin": "PC6", "active_low": true }
+  ],
+  "buttons": [
+    { "name": "sw0", "pin": "PC7", "active_low": true }
+  ],
+  "firmware_targets": ["blink", "uart_logger"],
+  "bundle_target": "avr_da_hardware_validation_bundle",
+  "build_dir_suffix": "hw/avr-da",
+  "tier": 2,
+  "notes": "Microchip AVR128DA32 Curiosity Nano; onboard nEDBG debugger (CMSIS-DAP + VCP); 128 KB flash."
+}

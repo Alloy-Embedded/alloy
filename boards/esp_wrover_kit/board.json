@@ -1,0 +1,32 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "esp_wrover_kit",
+  "display_name": "ESP-WROVER-KIT",
+  "vendor": "espressif",
+  "family": "esp32",
+  "device": "esp32-wroom32",
+  "arch": "xtensa-lx6",
+  "linker_script": "esp32.ld",
+  "board_header": "boards/esp_wrover_kit/board.hpp",
+  "toolchain": "xtensa-esp32-elf",
+  "mcu": "ESP32-WROVER-B",
+  "flash_size_bytes": 4194304,
+  "debug": {
+    "esptool_chip": "esp32",
+    "esptool_app_offset": "0x10000"
+  },
+  "uart": {
+    "debug": { "peripheral": "UART0", "tx": "GPIO1", "rx": "GPIO3", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbserial*", "/dev/cu.usbmodem*", "/dev/ttyUSB*", "/dev/ttyACM*"],
+  "leds": [
+    { "name": "led_r", "pin": "GPIO0",  "active_low": true },
+    { "name": "led_g", "pin": "GPIO2",  "active_low": true },
+    { "name": "led_b", "pin": "GPIO4",  "active_low": true }
+  ],
+  "firmware_targets": ["hello_esp32"],
+  "bundle_target": "hello_esp32",
+  "build_dir_suffix": "hw/esp_wrover",
+  "tier": 2,
+  "notes": "Espressif ESP-WROVER-KIT v4.1; onboard JTAG via FT2232HL; RGB LED; 4 MB PSRAM; 4 MB flash."
+}

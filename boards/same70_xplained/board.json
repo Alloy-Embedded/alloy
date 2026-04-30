@@ -1,0 +1,44 @@
+{
+  "$schema": "https://alloy-rs.dev/schemas/board-manifest/v1.json",
+  "board_id": "same70_xplained",
+  "display_name": "SAM E70 Xplained Ultra",
+  "vendor": "microchip",
+  "family": "same70",
+  "device": "atsame70q21b",
+  "arch": "cortex-m7",
+  "linker_script": "ATSAME70Q21.ld",
+  "board_header": "boards/same70_xplained/board.hpp",
+  "toolchain": "arm-none-eabi",
+  "mcu": "ATSAME70Q21B",
+  "flash_size_bytes": 2097152,
+  "debug": {
+    "probe": "cmsis-dap",
+    "openocd_cfg": "board/atmel_same70_xplained.cfg"
+  },
+  "uart": {
+    "debug": { "peripheral": "USART1", "tx": "PB4", "rx": "PA21", "baud": 115200 }
+  },
+  "serial_globs": ["/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"],
+  "leds": [
+    { "name": "led0", "pin": "PC8", "active_low": true }
+  ],
+  "buttons": [
+    { "name": "sw0", "pin": "PA11", "active_low": true }
+  ],
+  "clock_profiles": ["plla_150mhz"],
+  "firmware_targets": [
+    "blink", "time_probe", "uart_logger", "watchdog_probe", "analog_probe",
+    "rtc_probe", "timer_pwm_probe", "i2c_scan", "spi_probe", "dma_probe", "can_probe"
+  ],
+  "bundle_target": "same70_hardware_validation_bundle",
+  "build_dir_suffix": "hw/same70",
+  "mcuboot": {
+    "primary_offset": "0x00440000",
+    "primary_size_bytes": 1048576,
+    "secondary_offset": "0x00000000",
+    "secondary_on_ext_flash": true,
+    "boot_size_bytes": 262144
+  },
+  "tier": 1,
+  "notes": "Official Microchip SAME70 Xplained Ultra; EDBG onboard (CMSIS-DAP + VCP); W25Q SPI flash for secondary OTA slot; Ethernet PHY KSZ8081."
+}
