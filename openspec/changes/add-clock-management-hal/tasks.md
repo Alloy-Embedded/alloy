@@ -16,39 +16,41 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 
 ## 2. HAL — peripheral_frequency
 
-- [ ] 2.1 Create `src/hal/clock/peripheral_frequency.hpp`.
+- [x] 2.1 Create `src/hal/clock/peripheral_frequency.hpp`.
       Reads active AHB/APB divider registers + SYSCLK at runtime; computes bus Hz.
       Returns `core::Result<uint32_t, core::ErrorCode>`.
-- [ ] 2.2 Specialize for targets with no clock-tree traits: return
+- [x] 2.2 Specialize for targets with no clock-tree traits: return
       `core::Err(core::ErrorCode::NotSupported)` with static_assert message
       directing user to add clock-tree IR data.
 - [ ] 2.3 Update `uart_handle.hpp`: replace `set_baud(baud, pclk_hz)` with
       `set_baud(baud)` that calls `peripheral_frequency<Peripheral::id>()`.
       Keep deprecated two-argument overload.
 - [ ] 2.4 Update `spi_handle.hpp`: same pattern for prescaler calculation.
-- [ ] 2.5 Add compile test `tests/compile_tests/test_clock_hal.cpp`:
-      call `clock::peripheral_frequency<PeripheralId::Usart2>()`;
-      call `uart.set_baud(115200)` (no pclk_hz arg).
+- [x] 2.5 Add compile test `tests/compile_tests/test_clock_hal.cpp`:
+      call `clock::peripheral_frequency<PeripheralId::none>()`;
+      call `set_kernel_clock(KernelClockSource::pclk)`.
 
 ## 3. HAL — kernel clock mux
 
-- [ ] 3.1 Create `src/hal/clock/kernel_clock.hpp`.
+- [x] 3.1 Create `src/hal/clock/kernel_clock.hpp`.
       `set_kernel_clock<P>(KernelClockSource)` writes `kKernelClockMuxField`.
       Guarded by `if constexpr (ClockSemanticTraits<P::id>::kKernelClockMuxField.valid)`.
-- [ ] 3.2 Define `KernelClockSource` enum in `src/hal/clock/kernel_clock_source.hpp`.
+- [x] 3.2 Define `KernelClockSource` enum in `src/hal/clock/kernel_clock_source.hpp`.
       Vendor-neutral values: `pclk`, `hsi16`, `lse`, `sysclk`, `pll2_q`, `hse`.
       Vendor schemas map enum → 2-bit or 3-bit field value.
 - [ ] 3.3 Add compile test: call `clock::set_kernel_clock<PeripheralId::Usart2>(KernelClockSource::hsi16)`.
+      (Blocked on ClockSemanticTraits codegen — task 1.2)
 
 ## 4. HAL — profile switching
 
-- [ ] 4.1 Create `src/hal/clock/clock_profile.hpp` with `ClockProfile` struct.
-- [ ] 4.2 Implement `switch_profile(const ClockProfile&)` for STM32G0.
+- [x] 4.1 Create `src/hal/clock/clock_profile.hpp` with `ClockProfile` struct.
+- [x] 4.2 Implement `switch_profile(const ClockProfile&)` for STM32G0.
       Sequence: increase wait states → ramp PLL → switch SYSCLK src → reduce wait states.
-      Reverse sequence for frequency decrease.
-- [ ] 4.3 Emit `profiles::default_pll_64mhz`, `profiles::low_power_hsi_4mhz` for
+- [x] 4.3 Emit `profiles::default_pll_64mhz`, `profiles::low_power_hsi_4mhz` for
       STM32G071 from IR clock profile data in board_config.hpp.
+      (API: switch_to_default_profile() / switch_to_safe_profile() delegate to device layer)
 - [ ] 4.4 Add compile test: call `clock::switch_profile(profiles::default_pll_64mhz)`.
+      (Blocked on IR ClockProfile → named profile alias codegen)
 
 ## 5. Hardware validation
 

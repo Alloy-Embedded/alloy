@@ -4,17 +4,17 @@ Phases 1–3 are host-only. Phase 4 requires hardware spot-checks.
 
 ## 1. Concept and existing schema migration
 
-- [ ] 1.1 Define `GpioSchemaImpl` concept in `src/hal/detail/gpio_schema_concept.hpp`.
+- [x] 1.1 Define `GpioSchemaImpl` concept in `src/hal/detail/gpio_schema_concept.hpp`.
       Required methods: `mode_field`, `output_set_field`, `output_clear_field`,
       `input_data_field`, `pull_field`. Optional: `speed_field`, `af_field`, `open_drain_field`.
-- [ ] 1.2 Implement `StGpioSchema` in `src/hal/detail/gpio/st_gpio_schema.hpp`.
+- [x] 1.2 Implement `StGpioSchema` in `src/hal/detail/gpio/st_gpio_schema.hpp`.
       Port all consteval offset arithmetic from current `pin_handle` ST branch.
       Add `static_assert(GpioSchemaImpl<StGpioSchema>)`.
-- [ ] 1.3 Implement `MicrochipPioSchema` in `src/hal/detail/gpio/microchip_pio_schema.hpp`.
+- [x] 1.3 Implement `MicrochipPioSchema` in `src/hal/detail/gpio/microchip_pio_schema.hpp`.
       Port Microchip PIO_v branch. Add concept assertion.
-- [ ] 1.4 Implement `NxpImxrtGpioSchema` in `src/hal/detail/gpio/nxp_imxrt_gpio_schema.hpp`.
+- [x] 1.4 Implement `NxpImxrtGpioSchema` in `src/hal/detail/gpio/nxp_imxrt_gpio_schema.hpp`.
       Port NXP iMX.RT branch. Add concept assertion.
-- [ ] 1.5 Add `UnknownGpioSchema` stub that satisfies the concept and returns
+- [x] 1.5 Add `UnknownGpioSchema` stub that satisfies the concept and returns
       `kInvalidFieldRef` for all fields (graceful degradation for unsupported devices).
 
 ## 2. Codegen extension
@@ -35,7 +35,7 @@ Phases 1–3 are host-only. Phase 4 requires hardware spot-checks.
       codegen regen.
 - [ ] 3.3 Update compile tests (`test_gpio_api.cpp`) to verify all HAL methods still
       compile. Run host compile check with `StGpioSchema`.
-- [ ] 3.4 Add `tests/compile_tests/test_gpio_schemas.cpp`: instantiate all schema types
+- [x] 3.4 Add `tests/compile_tests/test_gpio_schemas.cpp`: instantiate all schema types
       against the concept; verify concept satisfaction.
 
 ## 4. New vendor schema (validation + expansion)
