@@ -467,6 +467,7 @@ if(ALLOY_BUILD_EXAMPLES)
 
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
         add_subdirectory(examples/analog_probe)
+        add_subdirectory(examples/analog_probe_complete)
     endif()
 
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
@@ -478,6 +479,7 @@ if(ALLOY_BUILD_EXAMPLES)
     # Board-specific examples
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
         add_subdirectory(examples/uart_logger)
+        add_subdirectory(examples/uart_probe_complete)
     endif()
 
     if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND

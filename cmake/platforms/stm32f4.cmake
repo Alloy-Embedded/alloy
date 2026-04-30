@@ -46,6 +46,7 @@ set(OPT_FLAGS
     -fdata-sections
     -fno-exceptions
     -fno-rtti
+    -fconstexpr-ops-limit=268435456
 )
 
 # Warning flags

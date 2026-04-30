@@ -283,7 +283,8 @@ inline auto bridge_stm32g0_dma_channel2() -> void {
 
 template <typename FieldEnum>
 inline auto bridge_stm32g0_dma_channel3() -> void {
-    if constexpr (has_dma1_isr_tcif3_v<FieldEnum> && has_dma1_ifcr_ctcif9_v<FieldEnum>) {
+    if constexpr (has_dma1_isr_tcif3_v<FieldEnum> && has_dma1_ifcr_ctcif9_v<FieldEnum> &&
+                  requires { hal::dma::PeripheralId::USART2; }) {
         bridge_dma_transfer_complete_if_set<FieldEnum::field_dma1_isr_tcif3,
                                             FieldEnum::field_dma1_ifcr_ctcif9,
                                             hal::dma::PeripheralId::USART2,
@@ -293,7 +294,8 @@ inline auto bridge_stm32g0_dma_channel3() -> void {
 
 template <typename FieldEnum>
 inline auto bridge_stm32g0_dma_channel4() -> void {
-    if constexpr (has_dma1_isr_tcif4_v<FieldEnum> && has_dma1_ifcr_ctcif13_v<FieldEnum>) {
+    if constexpr (has_dma1_isr_tcif4_v<FieldEnum> && has_dma1_ifcr_ctcif13_v<FieldEnum> &&
+                  requires { hal::dma::PeripheralId::USART2; }) {
         bridge_dma_transfer_complete_if_set<FieldEnum::field_dma1_isr_tcif4,
                                             FieldEnum::field_dma1_ifcr_ctcif13,
                                             hal::dma::PeripheralId::USART2,

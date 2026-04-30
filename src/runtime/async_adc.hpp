@@ -14,9 +14,11 @@
 //   async::adc::scan_dma<Peripheral, DmaChannel>(port, dma_channel, samples)
 //      -> Result<operation<adc_event::token<Peripheral>>, ErrorCode>
 //
-//      Multi-channel DMA scan. The DMA transfer-complete interrupt
-//      signals the token after every channel has been sampled into the
-//      caller's buffer.
+//      Multi-channel DMA scan. By default the DMA transfer-complete interrupt
+//      signals the token (CompletionTrigger::DmaTransferComplete). Pass
+//      CompletionTrigger::EndOfSequence to signal on ADC end-of-sequence
+//      instead, which gives per-channel precision when the ADC fires EOS
+//      before the DMA TC fires.
 
 #include <cstdint>
 #include <span>
@@ -28,6 +30,11 @@
 #include "runtime/async.hpp"
 
 namespace alloy::runtime::async::adc {
+
+enum class CompletionTrigger : std::uint8_t {
+    DmaTransferComplete = 0,
+    EndOfSequence       = 1,
+};
 
 template <device::PeripheralId Peripheral, typename PortHandle>
 [[nodiscard]] auto read(const PortHandle& port)
@@ -41,9 +48,10 @@ template <device::PeripheralId Peripheral, typename PortHandle>
     return core::Ok(operation_type{});
 }
 
-template <device::PeripheralId Peripheral, typename PortHandle, typename DmaChannel>
+template <device::PeripheralId Peripheral, typename PortHandle, typename DmaChannel,
+          CompletionTrigger Trigger = CompletionTrigger::DmaTransferComplete>
 [[nodiscard]] auto scan_dma(const PortHandle& port, const DmaChannel& dma_channel,
-                            std::span<std::uint16_t> samples)
+                             std::span<std::uint16_t> samples)
     -> core::Result<operation<alloy::runtime::adc_event::token<Peripheral>>,
                     core::ErrorCode> {
     using operation_type = operation<alloy::runtime::adc_event::token<Peripheral>>;
