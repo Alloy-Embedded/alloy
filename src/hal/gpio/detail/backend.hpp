@@ -1,8 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 #include "hal/detail/runtime_ops.hpp"
+#include "hal/detail/gpio_schema_concept.hpp"
+#include "hal/detail/gpio/st_gpio_schema.hpp"
+#include "hal/detail/gpio/microchip_pio_schema.hpp"
+#include "hal/detail/gpio/nxp_imxrt_gpio_schema.hpp"
+#include "hal/detail/gpio/unknown_gpio_schema.hpp"
 #include "hal/types.hpp"
 
 #include "core/error_code.hpp"
@@ -132,42 +138,105 @@ auto configure_microchip_pio(const GpioConfig& config) -> core::Result<void, cor
     return rt::write_register(PinHandle::pio_output_disable_field.reg, odr_bits.unwrap());
 }
 
+// ---------------------------------------------------------------------------
+// Generic configure/write/read via GpioSchemaImpl concept (task 3.1).
+// Used for new vendor schema types that don't have a dedicated implementation.
+// ---------------------------------------------------------------------------
+
+template <typename Schema, typename PinHandle>
+auto configure_gpio_generic(const GpioConfig& config) -> core::Result<void, core::ErrorCode>
+requires GpioSchemaImpl<Schema>
+{
+    constexpr auto base = PinHandle::peripheral_traits::kBaseAddress;
+    constexpr auto pin  = PinHandle::line_index;
+
+    const auto enable_result = rt::enable_gpio_port_runtime<PinHandle::peripheral_id>();
+    if (enable_result.is_err()) {
+        return enable_result;
+    }
+
+    // Optional: open-drain field
+    if constexpr (HasOpenDrainField<Schema>) {
+        const auto r = rt::modify_field(Schema::open_drain_field(base, pin),
+                                        config.drive == PinDrive::OpenDrain ? 1u : 0u);
+        if (r.is_err()) {
+            return r;
+        }
+    }
+
+    // Pull — skip silently if schema has no pull register (e.g. NXP iMXRT)
+    const auto pf = Schema::pull_field(base, pin);
+    if (pf.valid) {
+        const auto r = rt::modify_field(pf, pull_value(config.pull));
+        if (r.is_err()) {
+            return r;
+        }
+    }
+
+    // Direction + initial state
+    if (config.direction == PinDirection::Output) {
+        const auto state_field = config.initial_state == PinState::High
+                                     ? Schema::output_set_field(base, pin)
+                                     : Schema::output_clear_field(base, pin);
+        const auto bits = rt::field_bits(state_field, 1u);
+        if (bits.is_err()) {
+            return core::Err(core::ErrorCode{bits.unwrap_err()});
+        }
+        const auto wr = rt::write_register(state_field.reg, bits.unwrap());
+        if (wr.is_err()) {
+            return wr;
+        }
+        return rt::modify_field(Schema::mode_field(base, pin), 1u);
+    }
+    return rt::modify_field(Schema::mode_field(base, pin), 0u);
+}
+
 template <typename PinHandle>
 auto configure_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorCode> {
     if constexpr (!PinHandle::valid) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    constexpr auto schema = rt::gpio_schema_for<PinHandle>();
-    if constexpr (schema == rt::GpioSchema::st_gpio) {
+    // --- Type-based dispatch (task 3.1) ---
+    using Schema = typename PinHandle::schema_type;
+
+    if constexpr (std::is_same_v<Schema, StGpioSchema>) {
         const auto enable_result = rt::enable_gpio_port_runtime<PinHandle::peripheral_id>();
         if (enable_result.is_err()) {
             return enable_result;
         }
         return configure_st_gpio<PinHandle>(config);
     }
-    if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
+
+    if constexpr (std::is_same_v<Schema, MicrochipPioSchema>) {
         const auto clock_result = rt::enable_gpio_port_runtime<PinHandle::peripheral_id>();
         if (clock_result.is_err()) {
             return clock_result;
         }
         return configure_microchip_pio<PinHandle>(config);
     }
-    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+
+    if constexpr (std::is_same_v<Schema, NxpImxrtGpioSchema>) {
         const auto direction_result = rt::modify_field(
             PinHandle::direction_field, config.direction == PinDirection::Output ? 1u : 0u);
         if (direction_result.is_err()) {
             return direction_result;
         }
-
         if (config.direction == PinDirection::Output) {
             return rt::modify_field(PinHandle::output_value_field,
                                     config.initial_state == PinState::High ? 1u : 0u);
         }
-
         return core::Ok();
     }
 
+    // Generic new-vendor path: schema_type satisfies GpioSchemaImpl (task 3.1).
+    // Devices that were regenerated with codegen schema_type land here.
+    if constexpr (GpioSchemaImpl<Schema> && !std::is_same_v<Schema, UnknownGpioSchema>) {
+        return configure_gpio_generic<Schema, PinHandle>(config);
+    }
+
+    // Backward-compat guard: schema_type is UnknownGpioSchema — no implementation.
+    // If you see this error, add IR clock-tree data and regen the device.
     return core::Err(core::ErrorCode::NotSupported);
 }
 
@@ -181,9 +250,9 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    constexpr auto schema = rt::gpio_schema_for<PinHandle>();
+    using Schema = typename PinHandle::schema_type;
 
-    if constexpr (schema == rt::GpioSchema::st_gpio) {
+    if constexpr (std::is_same_v<Schema, StGpioSchema>) {
         const auto bits = rt::field_bits(
             state == PinState::High ? PinHandle::output_set_field : PinHandle::output_reset_field,
             1u);
@@ -193,7 +262,7 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
         return rt::write_register(PinHandle::output_set_field.reg, bits.unwrap());
     }
 
-    if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
+    if constexpr (std::is_same_v<Schema, MicrochipPioSchema>) {
         const auto state_field =
             state == PinState::High ? PinHandle::pio_set_field : PinHandle::pio_clear_field;
         const auto bits = rt::field_bits(state_field, 1u);
@@ -203,8 +272,21 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
         return rt::write_register(state_field.reg, bits.unwrap());
     }
 
-    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+    if constexpr (std::is_same_v<Schema, NxpImxrtGpioSchema>) {
         return rt::modify_field(PinHandle::output_value_field, state == PinState::High ? 1u : 0u);
+    }
+
+    // Generic new-vendor path via schema_type concept methods
+    if constexpr (GpioSchemaImpl<Schema> && !std::is_same_v<Schema, UnknownGpioSchema>) {
+        constexpr auto base = PinHandle::peripheral_traits::kBaseAddress;
+        constexpr auto pin  = PinHandle::line_index;
+        const auto field = state == PinState::High ? Schema::output_set_field(base, pin)
+                                                   : Schema::output_clear_field(base, pin);
+        const auto bits = rt::field_bits(field, 1u);
+        if (bits.is_err()) {
+            return core::Err(core::ErrorCode{bits.unwrap_err()});
+        }
+        return rt::write_register(field.reg, bits.unwrap());
     }
 
     return core::Err(core::ErrorCode::NotSupported);
@@ -216,9 +298,9 @@ auto read_gpio() -> core::Result<PinState, core::ErrorCode> {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    constexpr auto schema = rt::gpio_schema_for<PinHandle>();
+    using Schema = typename PinHandle::schema_type;
 
-    if constexpr (schema == rt::GpioSchema::st_gpio) {
+    if constexpr (std::is_same_v<Schema, StGpioSchema>) {
         const auto value = rt::read_field(PinHandle::input_field);
         if (value.is_err()) {
             return core::Err(core::ErrorCode{value.unwrap_err()});
@@ -226,7 +308,7 @@ auto read_gpio() -> core::Result<PinState, core::ErrorCode> {
         return core::Ok(value.unwrap() != 0u ? PinState::High : PinState::Low);
     }
 
-    if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
+    if constexpr (std::is_same_v<Schema, MicrochipPioSchema>) {
         const auto value = rt::read_field(PinHandle::pio_input_state_field);
         if (value.is_err()) {
             return core::Err(core::ErrorCode{value.unwrap_err()});
@@ -234,8 +316,19 @@ auto read_gpio() -> core::Result<PinState, core::ErrorCode> {
         return core::Ok(value.unwrap() != 0u ? PinState::High : PinState::Low);
     }
 
-    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+    if constexpr (std::is_same_v<Schema, NxpImxrtGpioSchema>) {
         const auto value = rt::read_field(PinHandle::input_field);
+        if (value.is_err()) {
+            return core::Err(core::ErrorCode{value.unwrap_err()});
+        }
+        return core::Ok(value.unwrap() != 0u ? PinState::High : PinState::Low);
+    }
+
+    // Generic new-vendor path via schema_type concept methods
+    if constexpr (GpioSchemaImpl<Schema> && !std::is_same_v<Schema, UnknownGpioSchema>) {
+        constexpr auto base = PinHandle::peripheral_traits::kBaseAddress;
+        constexpr auto pin  = PinHandle::line_index;
+        const auto value = rt::read_field(Schema::input_data_field(base, pin));
         if (value.is_err()) {
             return core::Err(core::ErrorCode{value.unwrap_err()});
         }

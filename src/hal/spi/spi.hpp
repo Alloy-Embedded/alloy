@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "hal/connect/connector.hpp"
+#include "hal/clock/peripheral_frequency.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
@@ -157,11 +158,31 @@ requires(Connector::valid) class port_handle {
         return detail::set_data_size_impl(*this, Bits);
     }
 
-    /// Set the SPI bit clock at runtime. Returns InvalidParameter when the
-    /// realised rate falls outside ±5 % of the requested rate.
+    /// Set the SPI bit clock at runtime using the kernel clock from SpiConfig.
+    ///
+    /// @deprecated Prefer set_clock_speed_auto(hz) — the HAL queries the peripheral
+    ///             clock automatically from the device clock tree.
+    ///             Use this overload only when no IR clock-tree data is available
+    ///             and config().peripheral_clock_hz is set manually.
+    ///
+    /// Will be removed in the next semver-minor release after all tier-1 devices
+    /// carry clock_tree IR data.  See docs/CLOCK_HAL.md.
+    ///
+    /// Returns InvalidParameter when the realised rate falls outside ±5 % of hz.
     [[nodiscard]] auto set_clock_speed(std::uint32_t hz) const
         -> core::Result<void, core::ErrorCode> {
         return detail::set_clock_speed_impl(*this, hz);
+    }
+
+    /// Auto-queries peripheral_frequency<peripheral_id>() and calls set_clock_speed(hz).
+    /// Returns the peripheral_frequency error if the clock cannot be determined.
+    [[nodiscard]] auto set_clock_speed_auto(std::uint32_t hz) const
+        -> core::Result<void, core::ErrorCode> {
+        const auto freq = hal::clock::peripheral_frequency<peripheral_id>();
+        if (freq.is_err()) {
+            return core::Err(freq.unwrap_err());
+        }
+        return detail::set_clock_speed_with_pclk_impl(*this, hz, freq.unwrap());
     }
 
     /// Returns the rate produced by the current BR / SCBR field encoding,

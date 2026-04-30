@@ -30,6 +30,8 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_rtc_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_watchdog_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_can_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_clock_hal.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_irq_hal.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_qspi_device_contract.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_sdmmc_device_contract.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_eth_device_contract.cpp

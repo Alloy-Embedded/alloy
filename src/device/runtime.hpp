@@ -311,6 +311,11 @@ inline constexpr const auto& usb_semantic_peripheral_ids =
     selected::runtime_driver_contract::kUsbSemanticPeripherals;
 #endif
 
+#if ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using IrqSemanticTraits = selected::runtime_driver_contract::IrqSemanticTraits<Id>;
+#endif
+
 }  // namespace runtime
 
 using BackendSchemaId = runtime::BackendSchemaId;
@@ -461,6 +466,11 @@ using EthSemanticTraits = runtime::EthSemanticTraits<Id>;
 #if ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE
 template <PeripheralId Id>
 using UsbSemanticTraits = runtime::UsbSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using IrqSemanticTraits = runtime::IrqSemanticTraits<Id>;
 #endif
 
 template <PinId Id>

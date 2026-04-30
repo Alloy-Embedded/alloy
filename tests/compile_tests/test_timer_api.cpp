@@ -48,12 +48,39 @@ void exercise_timer_extended(std::uint32_t clock_hz) {
     [[maybe_unused]] const auto cpol_r = timer.set_complementary_polarity(
         0u, alloy::hal::timer::Polarity::Inverted);
 
-    // ---- Phase 3: dead-time / break / encoder ----
+    // ---- Phase 3: dead-time / break / main output ----
+
+    // Raw DTG write
     [[maybe_unused]] const auto dt_r   = timer.set_dead_time(10u);
+
+    // ns_to_dtg — constexpr helper (close-timer-pwm-hal-gaps task 2.2)
+    // Implementation uses ceil(ns * clk / 1e9) for safety (guaranteed minimum dead-time).
+    // Range 0: 100ns @ 64MHz → ceil(6.4) = 7 ticks → DTG=7
+    static_assert(TimerHandle::ns_to_dtg(100u, 64'000'000u) == 7u);
+    // Range 0 upper boundary: 1984ns @ 64MHz → ceil(126.976) = 127 → DTG=127
+    static_assert(TimerHandle::ns_to_dtg(1984u, 64'000'000u) == 127u);
+    // Range 2 (0b110nnnnn): 4000ns @ 64MHz → 256 ticks → ceil/8=32 → code=0b11000000
+    static_assert((TimerHandle::ns_to_dtg(4000u, 64'000'000u) & 0b11100000u) == 0b11000000u);
+    // 0ns → 0
+    static_assert(TimerHandle::ns_to_dtg(0u, 64'000'000u) == 0u);
+
+    // High-level dead-time config (task 2.1)
+    [[maybe_unused]] const auto cfg_dt_r = timer.configure_dead_time(
+        alloy::hal::timer::DeadTimeConfig{.dtg = 6u, .enable_moe = true});
+
+    // Main output enable/disable (task 2.3)
+    [[maybe_unused]] const auto moe_r  = timer.enable_main_output(true);
+    [[maybe_unused]] const auto moe_r2 = timer.disable_main_output();
+
+    // Break control
     [[maybe_unused]] const auto brk_r  = timer.enable_break_input(true);
     [[maybe_unused]] const auto bpol_r = timer.set_break_polarity(alloy::hal::timer::Polarity::Active);
+    [[maybe_unused]] const auto cfg_brk_r = timer.configure_break(
+        alloy::hal::timer::BreakConfig{.enabled = true, .active_high = false, .auto_rearm = true});
     [[maybe_unused]] const bool  bact  = timer.break_active();
     [[maybe_unused]] const auto cbf_r  = timer.clear_break_flag();
+
+    // Encoder
     [[maybe_unused]] const auto enc_r  = timer.set_encoder_mode(
         alloy::hal::timer::EncoderMode::BothChannels);
     [[maybe_unused]] const auto epol_r = timer.set_encoder_polarity(

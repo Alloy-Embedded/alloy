@@ -4,50 +4,51 @@ Host-testable: phases 1–3. Phase 4 requires hardware (scope/analyzer to verify
 
 ## 1. IR additions
 
-- [ ] 1.1 Add BDTR register fields for STM32 TIM1 + TIM8 IR:
-      `kDtgField`, `kBkeField`, `kBkpField`, `kAoeField`, `kMoeField`.
-- [ ] 1.2 Add CCER complementary output fields:
-      `kCc1neField`, `kCc1npField`, `kCc2neField`, `kCc3neField`.
-- [ ] 1.3 Add SMCR slave mode fields:
-      `kSmsField` (3-bit, encoder modes), `kEceField`.
-- [ ] 1.4 Add CR1 fields: `kCmsField` (2-bit), `kOpmField`.
-- [ ] 1.5 Add DMA burst registers: `kDbaField`, `kDblField`, `kDmarReg`.
-- [ ] 1.6 Regen STM32G0 (TIM1) + STM32F4 (TIM1, TIM8); verify new fields valid.
-- [ ] 1.7 Update `cmake/hal-contracts/timer_pwm.json`:
-      move dead-time + break fields to `optional` (advanced timers only);
-      add encoder + center-aligned as `optional`.
+- [x] 1.1 Add BDTR semantic fields for STM32 TIM1 + TIM8 via bootstrap patches:
+      `kDtgField`, `kBkeField`, `kBkpField`, `kAoeField`, `kMoeField`, `kBreakFlagField`.
+      (alloy-devices: stm32g0-timer.yaml + stm32f4-timer.yaml patches created)
+- [x] 1.2 Add CCER complementary output fields via per-channel semantics:
+      `comp_enable_field`, `comp_polarity_field` per channel in `kChannels` list.
+- [x] 1.3 SMCR slave mode + CR1 fields via `kEncoderModeField`, `kCenterAlignedField`,
+      `kOnePulseField` semantics (already in existing G0 generated timer.hpp;
+      added to new timer.hpp.j2 template and G0/F4 bootstrap patches).
+- [ ] 1.4 DMA burst registers: `kDbaField`, `kDblField`, `kDmarReg` — deferred to next spec.
+- [ ] 1.5 Regen STM32G0 (TIM1) + STM32F4 (TIM1, TIM8); verify new fields from
+      BDTR + CCER patches are in FieldId enum and timer.hpp generated correctly.
+      (Depends on full SVD regen pipeline run — alloy-devices task 1.2 / 2.2)
+- [x] 1.6 Update `hal-contracts/timer.json`:
+      `kDtgField`, `kBkeField`, `kBkpField`, `kAoeField`, `kMoeField`, `kBreakFlagField`
+      moved to optional_fields. Channel fields added to channel_optional_fields.
 
 ## 2. Dead-time and complementary outputs
 
-- [ ] 2.1 Add `DeadTimeConfig` struct + `configure_dead_time(cfg)` to `timer_handle.hpp`.
-      Guard with `if constexpr (kDtgField.valid && kMoeField.valid)`.
-- [ ] 2.2 Implement `ns_to_dtg(ns, clk_hz)` as `static constexpr`.
-      Handles all four DTG encoding ranges (datasheet Table 83 for STM32).
-- [ ] 2.3 Implement `enable_main_output()` / `disable_main_output()`.
-- [ ] 2.4 Add compile test: call `configure_dead_time`, `enable_main_output`.
-      Call `ns_to_dtg(100, 64_000_000)` and verify result at compile time.
+- [x] 2.1 Add `DeadTimeConfig` struct + `configure_dead_time(cfg)` to `timer.hpp`.
+      Guarded by `if constexpr (!kDtgField.valid || !kMoeField.valid)`.
+- [x] 2.2 Implement `ns_to_dtg(ns, clk_hz)` as `static constexpr`.
+      All four DTG encoding ranges implemented (0b0xxxxxxx / 10xxxxxx / 110xxxxx / 111xxxxx).
+- [x] 2.3 Implement `enable_main_output()` / `disable_main_output()`.
+- [x] 2.4 Compile tests: `configure_dead_time`, `enable_main_output`,
+      `ns_to_dtg` static_asserts at 100ns/64MHz, 1984ns/64MHz, 4000ns/64MHz.
 
 ## 3. Break input
 
-- [ ] 3.1 Add `BreakConfig` struct + `configure_break(cfg)` to `timer_handle.hpp`.
-      Guard with `if constexpr (kBkeField.valid)`.
-- [ ] 3.2 Add compile test: call `configure_break({.enabled=true, .active_high=false})`.
+- [x] 3.1 Add `BreakConfig` struct + `configure_break(cfg)` to `timer.hpp`.
+      Guards `kBkeField`, `kBkpField`, `kAoeField` individually.
+- [x] 3.2 Fix `enable_break_input`, `set_break_polarity`, `break_active`,
+      `clear_break_flag` to use `kBkeField`, `kBkpField`, `kBreakFlagField`.
+- [x] 3.3 Compile test: `configure_break({.enabled=true, .active_high=false})`.
 
 ## 4. Encoder mode
 
-- [ ] 4.1 Add `EncoderMode` enum + `configure_encoder(mode)` to `timer_handle.hpp`.
-      Guard with `if constexpr (kSmsField.valid)`.
-- [ ] 4.2 Add `read_encoder_count()` that reads `kCntReg`.
-- [ ] 4.3 Add compile test: call `configure_encoder(EncoderMode::both)`,
-      `read_encoder_count()`.
+- [x] 4.1 `set_encoder_mode` already works via `kEncoderModeField` (existing code).
+- [x] 4.2 `get_count()` already reads `kCounterRegister` (existing code).
+- [x] 4.3 Compile tests already cover these via existing `exercise_timer_extended`.
 
 ## 5. Center-aligned and one-pulse mode
 
-- [ ] 5.1 Add `CenterAlignedMode` enum + `set_center_aligned(mode)`.
-      Guard with `if constexpr (kCmsField.valid)`.
-- [ ] 5.2 Add `enable_one_pulse_mode()`.
-      Guard with `if constexpr (kOpmField.valid)`.
-- [ ] 5.3 Add compile tests.
+- [x] 5.1 `set_center_aligned` works via `kCenterAlignedField` (existing code).
+- [x] 5.2 `set_one_pulse` works via `kOnePulseField` (existing code).
+- [x] 5.3 Compile tests covered in existing `exercise_timer_extended`.
 
 ## 6. Hardware validation
 
@@ -62,9 +63,12 @@ Host-testable: phases 1–3. Phase 4 requires hardware (scope/analyzer to verify
 
 ## 7. Documentation
 
-- [ ] 7.1 Update `docs/TIMER_HAL.md`: document dead-time, break, encoder, center-aligned.
-      Include `ns_to_dtg` usage example and all four DTG encoding ranges.
+- [x] 7.1 Create `docs/TIMER_HAL.md`: dead-time, break, encoder, center-aligned,
+      ns_to_dtg usage + 3-phase BLDC example, all four DTG encoding ranges,
+      vendor extension points section.
 - [ ] 7.2 Add `examples/bldc_pwm/` for nucleo_g071rb: 3-phase complementary PWM
       with dead-time using TIM1 (CH1/CH1N, CH2/CH2N, CH3/CH3N).
+      (Pending hardware validation — task 6.1 / 6.2)
 - [ ] 7.3 Add `examples/encoder_speed/` for nucleo_g071rb: quadrature encoder
       with speed calculation from timer overflow count.
+      (Pending hardware validation — task 6.3)

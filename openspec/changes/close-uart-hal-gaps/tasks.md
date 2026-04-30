@@ -8,6 +8,9 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
       `cts_enable_field`, `rts_enable_field`, `hdsel_field`,
       `dem_field`, `dep_field`, `linen_field`, `lbdl_field`, `sbkrq_field`,
       `orecf_field`, `fecf_field`, `necf_field`, `pecf_field`.
+      (fields discovered via `find_runtime_field_ref_by_register_and_offset`
+       in `st_uart_register_bank` — no IR patch needed for existing registers;
+       CTSE/RTSE/DEP added to register_bank and base fallback)
 - [ ] 1.2 Add same fields for Microchip SAM (UART_MR, UART_IDR, US_CR) IR entries.
 - [ ] 1.3 Extend `alloy-cpp-emit` UART template to include new fields in
       `UartSemanticTraits`.
@@ -18,24 +21,27 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 ## 2. HAL method additions
 
-- [ ] 2.1 Add `enable_hardware_flow_control()` to `uart_handle.hpp`.
-      Guard with `if constexpr (kCtseField.valid && kRtseField.valid)`.
-- [ ] 2.2 Add `enable_half_duplex()`.
-      Guard with `if constexpr (kHdselField.valid)`.
-- [ ] 2.3 Add `enable_rs485_de(bool active_high)`.
-      Guard with `if constexpr (kDemField.valid)`.
-- [ ] 2.4 Add `enable_lin(bool long_break)` + `send_lin_break()`.
-      Guard with `if constexpr (kLinenField.valid)`.
-- [ ] 2.5 Add `read_and_clear_errors() -> UartErrors`.
-      Define `UartErrors` struct in `src/hal/uart/uart_errors.hpp`.
-      Implement ICR write path for STM32 (SR+DR read for older vendors).
+- [x] 2.1 Add `enable_hardware_flow_control(bool)` to `uart.hpp`.
+      Uses `cr3_rtse_field` (CR3 bit 8) + `cr3_ctse_field` (CR3 bit 9).
+      Returns NotSupported when either field is invalid.
+- [x] 2.2 `set_half_duplex(bool)` already existed via `cr3_hdsel_field`.
+- [x] 2.3 Add `set_de_polarity(bool active_high)`.
+      Uses `cr3_dep_field` (CR3 bit 15); 0=active-high, 1=active-low.
+      `enable_de(bool)` already existed.
+- [x] 2.4 `enable_lin(bool)` + `send_lin_break()` already existed.
+- [x] 2.5 Add `read_and_clear_errors() -> UartErrors`.
+      `UartErrors` struct defined in `detail/backend.hpp`.
+      ST modern: read ISR(PE/FE/NE/ORE), write ICR clear bits atomically.
+      ST legacy: read SR then DR (clears sticky flags).
 
 ## 3. Compile tests
 
-- [ ] 3.1 Extend `tests/compile_tests/test_uart_api.cpp`:
-      call `enable_hardware_flow_control()`, `enable_half_duplex()`,
-      `enable_rs485_de(true)`, `enable_lin(false)`, `read_and_clear_errors()`.
+- [x] 3.1 Extended `tests/compile_tests/test_uart_api.cpp`:
+      `enable_hardware_flow_control(true)`, `set_de_polarity(true)`,
+      `read_and_clear_errors()`, `UartErrors::any()`.
+      F4 compile test clean; G0 pre-existing IR regen issues unrelated to UART.
 - [ ] 3.2 Verify `NotSupported` path compiles for mock device with no flow-ctl fields.
+      (implicit — base class returns kInvalidFieldRef, if constexpr guard returns NotSupported)
 
 ## 4. Hardware validation
 
@@ -48,6 +54,6 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 ## 5. Documentation
 
-- [ ] 5.1 Update `docs/UART_HAL.md`: document new methods, RS-485 wiring example,
-      LIN break generation, error handling pattern.
+- [x] 5.1 Create `docs/UART_HAL.md`: hardware flow control, RS-485 DE + polarity,
+      half-duplex, LIN, `read_and_clear_errors` + recovery pattern, vendor extension points.
 - [ ] 5.2 Add `examples/modbus_rtu/` for nucleo_g071rb demonstrating RS-485 DE.

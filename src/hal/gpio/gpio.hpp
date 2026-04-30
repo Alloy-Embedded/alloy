@@ -10,6 +10,13 @@
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
 
+// Schema type headers (gpio-schema-open-traits, tasks 1.2–1.5 + 3.1)
+#include "hal/detail/gpio_schema_concept.hpp"
+#include "hal/detail/gpio/st_gpio_schema.hpp"
+#include "hal/detail/gpio/microchip_pio_schema.hpp"
+#include "hal/detail/gpio/nxp_imxrt_gpio_schema.hpp"
+#include "hal/detail/gpio/unknown_gpio_schema.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
@@ -335,6 +342,42 @@ template <std::size_t... Index>
                : synth_field_ref(base_address, 0x94u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
+// ---------------------------------------------------------------------------
+// Schema-type resolution helpers (gpio-schema-open-traits, tasks 3.1–3.2)
+// ---------------------------------------------------------------------------
+
+/// Map GpioSchema enum → concrete schema type (backward-compat bridge, task 3.2).
+/// When codegen emits semantic_traits::schema_type, ResolveGpioSchemaType
+/// picks that up instead and this map is never consulted.
+template <hal::detail::runtime::GpioSchema S>
+struct GpioSchemaTypeFor {
+    using type = UnknownGpioSchema;
+};
+template <>
+struct GpioSchemaTypeFor<hal::detail::runtime::GpioSchema::st_gpio> {
+    using type = StGpioSchema;
+};
+template <>
+struct GpioSchemaTypeFor<hal::detail::runtime::GpioSchema::microchip_pio_v> {
+    using type = MicrochipPioSchema;
+};
+template <>
+struct GpioSchemaTypeFor<hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1> {
+    using type = NxpImxrtGpioSchema;
+};
+
+/// Prefer semantic_traits::schema_type (new codegen path, task 2.1).
+/// Falls back to GpioSchemaTypeFor<S> when the trait is absent (task 3.2).
+template <typename Traits, hal::detail::runtime::GpioSchema S,
+          bool HasSchemaType = requires { typename Traits::schema_type; }>
+struct ResolveGpioSchemaType {
+    using type = typename GpioSchemaTypeFor<S>::type;  // legacy enum-map path
+};
+template <typename Traits, hal::detail::runtime::GpioSchema S>
+struct ResolveGpioSchemaType<Traits, S, true> {
+    using type = typename Traits::schema_type;  // new codegen path
+};
+
 }  // namespace detail
 
 template <typename Pin>
@@ -361,6 +404,16 @@ struct pin_handle {
             ? hal::detail::runtime::GpioSchema::unknown
             : hal::detail::runtime::to_gpio_schema(peripheral_traits::kSchemaId);
     using semantic_traits = device::GpioSemanticTraits<pin_id>;
+
+    /// True when codegen has emitted semantic_traits::schema_type (task 2.1).
+    /// False = backward-compat path; schema_type mapped from kSchemaId enum.
+    static constexpr bool schema_type_from_codegen =
+        requires { typename semantic_traits::schema_type; };
+
+    /// The GPIO schema type: resolved from semantic_traits::schema_type when
+    /// present, otherwise mapped from the legacy GpioSchema enum (task 3.2).
+    using schema_type =
+        typename detail::ResolveGpioSchemaType<semantic_traits, schema>::type;
     static constexpr auto line_index =
         pin_traits::kPresent ? static_cast<int>(pin_traits::kPinNumber)
                              : (semantic_traits::kPresent ? static_cast<int>(semantic_traits::kLineIndex)
@@ -554,8 +607,20 @@ struct pin_handle {
             case hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1:
                 return direction_field.valid && input_field.valid && output_value_field.valid;
             default:
-                return false;
+                break;  // fall through to generic schema_type check below
         }
+
+        // Generic schema_type path (task 3.1): new vendor schemas emitted by
+        // codegen have schema == unknown but schema_type != UnknownGpioSchema.
+        // Validate by probing the concept-required field methods directly.
+        if constexpr (!std::is_same_v<schema_type, detail::UnknownGpioSchema>) {
+            constexpr auto base = peripheral_traits::kBaseAddress;
+            return schema_type::mode_field(base, line_index).valid &&
+                   schema_type::input_data_field(base, line_index).valid &&
+                   (schema_type::output_set_field(base, line_index).valid ||
+                    schema_type::output_clear_field(base, line_index).valid);
+        }
+        return false;
     }();
 
     [[nodiscard]] static consteval auto requirements() {

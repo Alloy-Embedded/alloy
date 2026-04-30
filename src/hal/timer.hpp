@@ -18,6 +18,24 @@ enum class CountDirection : std::uint8_t { Up, Down };
 
 enum class CenterAligned : std::uint8_t { Disabled, Mode1, Mode2, Mode3 };
 
+// ---- Dead-time config -----------------------------------------------------
+
+/// High-level dead-time configuration for advanced timers.
+struct DeadTimeConfig {
+    std::uint8_t dtg        = 0u;    ///< Raw DTG[7:0] value — use ns_to_dtg() to compute.
+    bool enable_moe         = true;  ///< Assert MOE (main output enable) after configuration.
+    bool auto_output_enable = false; ///< AOE: re-enable outputs automatically after break.
+};
+
+// ---- Break input config ---------------------------------------------------
+
+/// High-level break-input configuration for advanced timers.
+struct BreakConfig {
+    bool enabled       = false; ///< BKE: assert break enable.
+    bool active_high   = true;  ///< BKP: false = active-low.
+    bool auto_rearm    = false; ///< AOE: automatic output re-enable after break clears.
+};
+
 enum class CaptureCompareMode : std::uint8_t {
     Frozen,
     Active,
@@ -568,50 +586,222 @@ class handle {
         }
     }
 
-    /// Complementary output polarity: no dedicated field in current database → NotSupported.
+    /// Set complementary output polarity (CCER.CCxNP).
     [[nodiscard]] auto set_complementary_polarity(std::uint8_t channel,
                                                   Polarity polarity) const
         -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        (void)channel;
-        (void)polarity;
-        return core::Err(core::ErrorCode::NotSupported);
+        if constexpr (!semantic_traits::kHasComplementaryOutputs ||
+                      semantic_traits::kChannelCount == 0u) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            if (channel >= static_cast<std::uint8_t>(semantic_traits::kChannelCount)) {
+                return core::Err(core::ErrorCode::InvalidParameter);
+            }
+            auto do_set = [&]<std::size_t N>() -> core::Result<void, core::ErrorCode> {
+                using ch_traits = device::TimerChannelSemanticTraits<Peripheral, N>;
+                if constexpr (ch_traits::kComplementaryOutputPolarityField.valid) {
+                    return detail::runtime::modify_field(
+                        ch_traits::kComplementaryOutputPolarityField,
+                        static_cast<std::uint32_t>(polarity));
+                } else {
+                    return core::Err(core::ErrorCode::NotSupported);
+                }
+            };
+            if constexpr (semantic_traits::kChannelCount >= 4u) {
+                if (channel == 3u) {
+                    return do_set.template operator()<3u>();
+                }
+            }
+            if constexpr (semantic_traits::kChannelCount >= 3u) {
+                if (channel == 2u) {
+                    return do_set.template operator()<2u>();
+                }
+            }
+            if constexpr (semantic_traits::kChannelCount >= 2u) {
+                if (channel == 1u) {
+                    return do_set.template operator()<1u>();
+                }
+            }
+            return do_set.template operator()<0u>();
+        }
     }
 
-    // ---- Phase 3: dead-time / break / encoder -----------------------------
+    // ---- Phase 3: dead-time / break / main output -------------------------
 
-    /// Dead-time: kDeadtimeField not yet published in device database → NotSupported.
-    [[nodiscard]] auto set_dead_time(std::uint8_t cycles) const
+    /// Convert nanoseconds to DTG[7:0] for the given timer clock.
+    ///
+    /// Uses ceil(ns * clk_hz / 1e9) to guarantee the requested minimum dead-time.
+    /// Implements all four STM32 BDTR.DTG encoding ranges:
+    ///   0b0xxxxxxx  — DT = tDTS * DTG[6:0]          (1–127 ticks, up to ~1.98 µs @64MHz)
+    ///   0b10xxxxxx  — DT = tDTS * (64+n) * 2         (n∈[0,63], up to ~3.97 µs @64MHz)
+    ///   0b110xxxxx  — DT = tDTS * (32+n) * 8         (n∈[0,31], up to ~7.875 µs @64MHz)
+    ///   0b111xxxxx  — DT = tDTS * (32+n) * 16        (n∈[0,31], up to ~15.75 µs @64MHz)
+    /// Returns 0xFF (= 255 = maximum valid DTG) if ns exceeds the encodable range.
+    /// This coincides with the maximum legal DTG value (range 3, n=31), so the caller
+    /// should validate that the returned encoding meets their dead-time requirement.
+    [[nodiscard]] static constexpr auto ns_to_dtg(std::uint32_t ns,
+                                                   std::uint32_t timer_clk_hz) -> std::uint8_t {
+        if (timer_clk_hz == 0u || ns == 0u) {
+            return 0u;
+        }
+        const std::uint64_t clk = timer_clk_hz;
+        // dt_clk = ceil(ns * clk / 1e9)  — guaranteed minimum dead-time in ticks
+        const std::uint64_t dt_clk =
+            (static_cast<std::uint64_t>(ns) * clk + 999'999'999u) / 1'000'000'000u;
+
+        // Range 0: DT = dt_clk * 1,  code = 0b0xxxxxxx  (dt_clk ∈ [0, 127])
+        if (dt_clk <= 127u) {
+            return static_cast<std::uint8_t>(dt_clk);
+        }
+        // Range 1: DT = (64+n) * 2,  code = 0b10nnnnnn  (n ∈ [0, 63])
+        {
+            const std::uint64_t half = (dt_clk + 1u) / 2u;  // ceil(dt_clk / 2)
+            if (half >= 64u && half <= 127u) {
+                return static_cast<std::uint8_t>(0b10000000u | static_cast<std::uint8_t>(half - 64u));
+            }
+        }
+        // Range 2: DT = (32+n) * 8,  code = 0b110nnnnn  (n ∈ [0, 31])
+        {
+            const std::uint64_t eighth = (dt_clk + 7u) / 8u;  // ceil(dt_clk / 8)
+            if (eighth >= 32u && eighth <= 63u) {
+                return static_cast<std::uint8_t>(0b11000000u | static_cast<std::uint8_t>(eighth - 32u));
+            }
+        }
+        // Range 3: DT = (32+n) * 16, code = 0b111nnnnn  (n ∈ [0, 31])
+        {
+            const std::uint64_t sixteenth = (dt_clk + 15u) / 16u;  // ceil(dt_clk / 16)
+            if (sixteenth >= 32u && sixteenth <= 63u) {
+                return static_cast<std::uint8_t>(0b11100000u | static_cast<std::uint8_t>(sixteenth - 32u));
+            }
+        }
+        return 0xFFu;  // ns exceeds maximum encodable dead-time
+    }
+
+    /// Write DTG[7:0] directly (raw register encoding).
+    [[nodiscard]] auto set_dead_time(std::uint8_t dtg_raw) const
         -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        (void)cycles;
-        return core::Err(core::ErrorCode::NotSupported);
+        if constexpr (semantic_traits::kDtgField.valid) {
+            return detail::runtime::modify_field(semantic_traits::kDtgField,
+                                                 static_cast<std::uint32_t>(dtg_raw));
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
     }
 
-    /// Break input enable: kBreakEnableField not yet published → NotSupported.
+    /// High-level dead-time configuration: sets DTG, AOE, and optionally MOE.
+    [[nodiscard]] auto configure_dead_time(const DeadTimeConfig& cfg) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested timer is not published for the selected device.");
+        if constexpr (!semantic_traits::kDtgField.valid || !semantic_traits::kMoeField.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            if (auto r = detail::runtime::modify_field(semantic_traits::kDtgField,
+                                                        static_cast<std::uint32_t>(cfg.dtg));
+                r.is_err()) {
+                return r;
+            }
+            if constexpr (semantic_traits::kAoeField.valid) {
+                if (auto r = detail::runtime::modify_field(semantic_traits::kAoeField,
+                                                            cfg.auto_output_enable ? 1u : 0u);
+                    r.is_err()) {
+                    return r;
+                }
+            }
+            if (cfg.enable_moe) {
+                return detail::runtime::modify_field(semantic_traits::kMoeField, 1u);
+            }
+            return core::Ok();
+        }
+    }
+
+    /// Enable or disable the main output (BDTR.MOE).
+    [[nodiscard]] auto enable_main_output(bool enable = true) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested timer is not published for the selected device.");
+        if constexpr (semantic_traits::kMoeField.valid) {
+            return detail::runtime::modify_field(semantic_traits::kMoeField, enable ? 1u : 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+    }
+
+    /// Disable the main output (BDTR.MOE = 0).  Alias for enable_main_output(false).
+    [[nodiscard]] auto disable_main_output() const -> core::Result<void, core::ErrorCode> {
+        return enable_main_output(false);
+    }
+
+    /// Enable or disable the break input (BDTR.BKE).
     [[nodiscard]] auto enable_break_input(bool enable) const
         -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        (void)enable;
-        return core::Err(core::ErrorCode::NotSupported);
+        if constexpr (semantic_traits::kBkeField.valid) {
+            return detail::runtime::modify_field(semantic_traits::kBkeField, enable ? 1u : 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
     }
 
-    /// Break polarity: not yet published → NotSupported.
+    /// Set break input polarity (BDTR.BKP).
     [[nodiscard]] auto set_break_polarity(Polarity polarity) const
         -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        (void)polarity;
-        return core::Err(core::ErrorCode::NotSupported);
+        if constexpr (semantic_traits::kBkpField.valid) {
+            // Active = 0 (active-low), Inverted = 1 (active-high on STM32).
+            return detail::runtime::modify_field(semantic_traits::kBkpField,
+                                                 static_cast<std::uint32_t>(polarity));
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
     }
 
+    /// High-level break-input configuration: BKE, BKP, AOE in one call.
+    [[nodiscard]] auto configure_break(const BreakConfig& cfg) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested timer is not published for the selected device.");
+        if constexpr (!semantic_traits::kBkeField.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        } else {
+            if (auto r = detail::runtime::modify_field(semantic_traits::kBkeField,
+                                                        cfg.enabled ? 1u : 0u);
+                r.is_err()) {
+                return r;
+            }
+            if constexpr (semantic_traits::kBkpField.valid) {
+                if (auto r = detail::runtime::modify_field(semantic_traits::kBkpField,
+                                                            cfg.active_high ? 1u : 0u);
+                    r.is_err()) {
+                    return r;
+                }
+            }
+            if constexpr (semantic_traits::kAoeField.valid) {
+                return detail::runtime::modify_field(semantic_traits::kAoeField,
+                                                     cfg.auto_rearm ? 1u : 0u);
+            }
+            return core::Ok();
+        }
+    }
+
+    /// True if the break flag (SR.BIF) is set.
     [[nodiscard]] auto break_active() const -> bool {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        return false;
+        if constexpr (semantic_traits::kBreakFlagField.valid) {
+            const auto val = detail::runtime::read_field(semantic_traits::kBreakFlagField);
+            return val.is_ok() && val.unwrap() != 0u;
+        } else {
+            return false;
+        }
     }
 
+    /// Clear the break interrupt flag (SR.BIF ← 0).
     [[nodiscard]] auto clear_break_flag() const -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
-        return core::Err(core::ErrorCode::NotSupported);
+        if constexpr (semantic_traits::kBreakFlagField.valid) {
+            return detail::runtime::modify_field(semantic_traits::kBreakFlagField, 0u);
+        } else {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
     }
 
     [[nodiscard]] auto set_encoder_mode(EncoderMode mode) const

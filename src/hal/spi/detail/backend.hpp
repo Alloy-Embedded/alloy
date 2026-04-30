@@ -981,6 +981,50 @@ template <typename PortHandle>
     return core::Err(core::ErrorCode::NotSupported);
 }
 
+/// Like set_clock_speed_impl but uses an explicit kernel_hz.
+/// Used by set_clock_speed_auto (task 2.4, add-clock-management-hal).
+template <typename PortHandle>
+[[nodiscard]] auto set_clock_speed_with_pclk_impl(const PortHandle& port,
+                                                   std::uint32_t hz,
+                                                   std::uint32_t kernel_hz)
+    -> core::Result<void, core::ErrorCode> {
+    if (kernel_hz == 0u || hz == 0u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    std::uint32_t realised = 0u;
+    switch (rt::spi_schema_for<PortHandle>()) {
+        case rt::SpiSchema::st_spi2s1_v3_3_cube:
+        case rt::SpiSchema::st_spi2s1_v2_2_cube:
+            realised = compute_realised_clock_st<PortHandle>(kernel_hz, hz);
+            break;
+        case rt::SpiSchema::microchip_spi_zm:
+            realised = compute_realised_clock_microchip<PortHandle>(kernel_hz, hz);
+            break;
+        default:
+            return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    const auto diff = realised > hz ? realised - hz : hz - realised;
+    if (diff * 100u > hz * 5u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    if constexpr (PortHandle::br_field.valid) {
+        const auto br = st_spi_prescaler_bits(kernel_hz, hz);
+        if (br.is_err()) { return core::Err(core::ErrorCode{br.unwrap_err()}); }
+        return rt::modify_field(PortHandle::br_field, br.unwrap());
+    }
+    if constexpr (PortHandle::scbr_field.valid) {
+        const auto scbr = microchip_spi_scbr(kernel_hz, hz);
+        if (scbr.is_err()) { return core::Err(core::ErrorCode{scbr.unwrap_err()}); }
+        return rt::modify_field(PortHandle::scbr_field, scbr.unwrap());
+    }
+
+    static_cast<void>(port);
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
 // ---------- STM32 synthetic field accessors (CR1 / CR2 / SR positions) ----------
 
 template <typename PortHandle>

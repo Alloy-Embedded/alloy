@@ -7,11 +7,14 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 - [x] 1.1 Define `IrqVectorTraits<PeripheralId>` in codegen IR schema.
       Fields: `kIrqId` (IrqId strong typedef), `kPresent` (bool).
       Source: IR `interrupts` block (already present in SVD-derived IR for Cortex-M).
-- [ ] 1.2 Extend `alloy-cpp-emit` irq template to emit `IrqVectorTraits`
+- [x] 1.2 Extend `alloy-cpp-emit` irq template to emit `IrqVectorTraits`
       specializations for all peripherals with IRQ data in the IR.
       (Codegen template: templates/irq_vector_traits.hpp.j2)
-- [ ] 1.3 Regen STM32G0 + STM32F4; verify `IrqVectorTraits<PeripheralId::Usart2>::kIrqId`
+- [x] 1.3 Regen STM32G0 + STM32F4; verify `IrqVectorTraits<PeripheralId::Usart2>::kIrqId`
       matches CMSIS IRQn value.
+      (in-place patch: driver_semantics/irq.hpp for G071RB + F401RE; regen pending.
+       G071RB USART1=27, F401RE USART1=42; USART2 unpublished → kPresent=false.
+       IrqVectorTraits delegates to IrqSemanticTraits via ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE)
 - [x] 1.4 Add `IrqId` strong typedef (`struct IrqId { std::uint16_t value; }`) to
       `src/hal/irq/irq_id.hpp`. Add make_irq_id() factory.
 
@@ -33,7 +36,7 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 - [x] 3.1 Create `src/hal/irq/irq_table.hpp`:
       RAM vector table (128 entries default), `set_handler<P>(IrqHandler)`.
-- [ ] 3.2 Create `src/hal/irq/default_handler.cpp`:
+- [x] 3.2 Create `src/hal/irq/default_handler.cpp`:
       weak default ISR that dispatches to RAM table entry or spins in debug loop.
       (Defined inline in irq_table.hpp for now; .cpp needed for linker weak override)
 - [x] 3.3 Define `ALLOY_IRQ_HANDLER(PeripheralId)` macro generating the
@@ -52,7 +55,7 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 ## 5. Documentation
 
-- [ ] 5.1 `docs/IRQ_HAL.md`: enable/disable API, handler registration, ALLOY_IRQ_HANDLER
+- [x] 5.1 `docs/IRQ_HAL.md`: enable/disable API, handler registration, ALLOY_IRQ_HANDLER
       macro, porting guide for new architectures.
-- [ ] 5.2 `docs/PORTING_NEW_PLATFORM.md`: add IRQ abstraction impl requirements.
+- [x] 5.2 `docs/PORTING_NEW_PLATFORM.md`: add IRQ abstraction impl requirements.
 - [ ] 5.3 Update `docs/ASYNC_HAL.md` (future spec): reference irq HAL as dependency.

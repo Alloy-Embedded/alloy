@@ -1,6 +1,8 @@
 #include <string_view>
+#include <type_traits>
 
 #include "hal/gpio.hpp"
+#include "hal/detail/gpio_schema_concept.hpp"
 
 #include "device/runtime.hpp"
 #include "device/traits.hpp"
@@ -17,6 +19,12 @@ consteval auto gpio_is_usable() -> bool {
            PinHandle::operations().size() >= 1;
 }
 
+// Task 3.3: schema_type is always present and satisfies GpioSchemaImpl.
+template <typename PinHandle>
+consteval auto gpio_has_schema_type() -> bool {
+    return alloy::hal::gpio::detail::GpioSchemaImpl<typename PinHandle::schema_type>;
+}
+
 }  // namespace
 
 static_assert(alloy::device::SelectedDeviceTraits::available);
@@ -27,6 +35,8 @@ static_assert(LedHandle::valid);
 static_assert(LedHandle::peripheral_name == std::string_view{"GPIOA"});
 static_assert(LedHandle::line_index == 5);
 static_assert(gpio_is_usable<LedHandle>());
+static_assert(gpio_has_schema_type<LedHandle>());  // task 3.3
+static_assert(std::is_same_v<LedHandle::schema_type, alloy::hal::gpio::detail::StGpioSchema>);
 using LedViaApi = decltype(alloy::hal::gpio::open<alloy::device::pin<alloy::device::PinId::PA5>>(
     {.direction = alloy::hal::PinDirection::Output}));
 static_assert(LedViaApi::valid);
@@ -39,6 +49,8 @@ static_assert(LedHandle::valid);
 static_assert(LedHandle::peripheral_name == std::string_view{"GPIOA"});
 static_assert(LedHandle::line_index == 5);
 static_assert(gpio_is_usable<LedHandle>());
+static_assert(gpio_has_schema_type<LedHandle>());  // task 3.3
+static_assert(std::is_same_v<LedHandle::schema_type, alloy::hal::gpio::detail::StGpioSchema>);
 using LedViaApi = decltype(alloy::hal::gpio::open<alloy::device::pin<alloy::device::PinId::PA5>>(
     {.direction = alloy::hal::PinDirection::Output}));
 static_assert(LedViaApi::valid);
@@ -48,6 +60,8 @@ static_assert(LedHandle::valid);
 static_assert(LedHandle::peripheral_name == std::string_view{"GPIOA"});
 static_assert(LedHandle::line_index == 23);
 static_assert(gpio_is_usable<LedHandle>());
+static_assert(gpio_has_schema_type<LedHandle>());  // task 3.3
+static_assert(std::is_same_v<LedHandle::schema_type, alloy::hal::gpio::detail::MicrochipPioSchema>);
 using LedViaApi = decltype(alloy::hal::gpio::open<alloy::device::pin<alloy::device::PinId::PA23>>(
     {.direction = alloy::hal::PinDirection::Output}));
 static_assert(LedViaApi::valid);

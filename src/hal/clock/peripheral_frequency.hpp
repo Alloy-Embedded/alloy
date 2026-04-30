@@ -29,42 +29,36 @@ namespace detail {
 // Bus frequency helpers
 // ---------------------------------------------------------------------------
 
-/// Read SYSCLK Hz from the first active clock profile, or from a fallback.
+// Note: GCC rejects `requires { namespace_member(); }` in non-template
+// functions when the member does not exist (treated as hard error rather than
+// evaluating to false).  Use #if guards with the CMake-provided macros instead.
+
+/// Read SYSCLK Hz from the max clock profile, or 0 when no profile data.
+/// TODO: read live RCC SWS register for dynamic frequency.
 [[nodiscard]] inline auto current_sysclk_hz() -> std::uint32_t {
-    if constexpr (requires { device::current_system_clock_hz(); }) {
-        return device::current_system_clock_hz();
-    } else if constexpr (requires { device::ClockProfileTraits<device::default_clock_profile_id>::kSysclkHz; }) {
-        return device::ClockProfileTraits<device::default_clock_profile_id>::kSysclkHz;
-    } else {
-        return 0u;
-    }
+#if defined(ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE) && ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    return device::clock_config::max_clock_frequency_hz;
+#else
+    return 0u;
+#endif
 }
 
 /// Read AHB (HCLK) frequency.
+/// Conservative: assumes AHB prescaler = 1 (HCLK = SYSCLK).
 [[nodiscard]] inline auto current_hclk_hz() -> std::uint32_t {
-    if constexpr (requires { device::current_ahb_clock_hz(); }) {
-        return device::current_ahb_clock_hz();
-    } else {
-        return current_sysclk_hz();  // AHB divider = 1 (safe fallback)
-    }
+    return current_sysclk_hz();
 }
 
 /// Read APB1 (PCLK1) frequency.
+/// Conservative: assumes APB1 prescaler = 1 (PCLK1 = HCLK).
 [[nodiscard]] inline auto current_pclk1_hz() -> std::uint32_t {
-    if constexpr (requires { device::current_apb1_clock_hz(); }) {
-        return device::current_apb1_clock_hz();
-    } else {
-        return current_hclk_hz();  // APB1 divider = 1 (safe fallback)
-    }
+    return current_hclk_hz();
 }
 
 /// Read APB2 (PCLK2) frequency.
+/// Conservative: assumes APB2 prescaler = 1 (PCLK2 = HCLK).
 [[nodiscard]] inline auto current_pclk2_hz() -> std::uint32_t {
-    if constexpr (requires { device::current_apb2_clock_hz(); }) {
-        return device::current_apb2_clock_hz();
-    } else {
-        return current_hclk_hz();
-    }
+    return current_hclk_hz();
 }
 
 }  // namespace detail
@@ -81,54 +75,43 @@ namespace detail {
 /// Returns Err(NotSupported) if the device was compiled without clock-tree data.
 template <device::runtime::PeripheralId P>
 [[nodiscard]] auto peripheral_frequency() -> core::Result<std::uint32_t, core::ErrorCode> {
-    using rt = alloy::hal::detail::runtime;
+    namespace rt = alloy::hal::detail::runtime;
+    using PeripheralBusDomain = rt::PeripheralBusDomain;
 
-    if constexpr (requires {
-        rt::ClockSemanticTraits<P>::kBusHz;
-    }) {
-        // Generated ClockSemanticTraits present — return compile-time bus Hz
-        constexpr auto hz = rt::ClockSemanticTraits<P>::kBusHz;
-        if (hz == 0u) {
-            return core::Err(core::ErrorCode::NotSupported);
+    if constexpr (rt::ClockSemanticTraits<P>::kPresent) {
+        // Generated ClockSemanticTraits present — read live bus dividers.
+        constexpr auto domain = rt::ClockSemanticTraits<P>::kBusDomain;
+        if constexpr (domain == PeripheralBusDomain::apb2) {
+            return core::Ok(detail::current_pclk2_hz());
+        } else if constexpr (domain == PeripheralBusDomain::apb1) {
+            return core::Ok(detail::current_pclk1_hz());
+        } else if constexpr (domain == PeripheralBusDomain::ahb) {
+            return core::Ok(detail::current_hclk_hz());
+        } else {
+            return core::Ok(detail::current_sysclk_hz());
         }
-        return core::Ok(hz);
     } else if constexpr (requires {
         rt::PeripheralBusTraits<P>::kBusDomain;
     }) {
-        // Peripheral bus domain known — read live dividers
+        // PeripheralBusTraits fallback (hand-written board layer).
         constexpr auto domain = rt::PeripheralBusTraits<P>::kBusDomain;
-        using BusDomain = decltype(domain);
-        if constexpr (domain == BusDomain::apb2) {
+        if constexpr (domain == PeripheralBusDomain::apb2) {
             return core::Ok(detail::current_pclk2_hz());
-        } else if constexpr (domain == BusDomain::apb1) {
+        } else if constexpr (domain == PeripheralBusDomain::apb1) {
             return core::Ok(detail::current_pclk1_hz());
-        } else if constexpr (domain == BusDomain::ahb) {
+        } else if constexpr (domain == PeripheralBusDomain::ahb) {
             return core::Ok(detail::current_hclk_hz());
         } else {
             return core::Ok(detail::current_sysclk_hz());
         }
     } else {
-        // No clock-tree data — conservative fallback: APB1
-        const auto hz = detail::current_pclk1_hz();
+        // No clock-tree data — conservative fallback: APB1.
+        const std::uint32_t hz = detail::current_pclk1_hz();
         if (hz == 0u) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return core::Ok(hz);
+        return core::Ok(std::uint32_t{hz});
     }
-}
-
-// ---------------------------------------------------------------------------
-// Task 3.1 — set_kernel_clock<P>(KernelClockSource)
-// ---------------------------------------------------------------------------
-
-/// Set the kernel clock MUX for peripheral P.
-/// Writes the selector value to the RCC kernel-clock field for P.
-/// No-op (returns NotSupported) if P has no kernel clock selector.
-template <device::runtime::PeripheralId P>
-[[nodiscard]] auto set_kernel_clock(KernelClockSource) -> core::Result<void, core::ErrorCode> {
-    // Forward declaration — actual implementation in kernel_clock.hpp
-    // This overload is the "not supported" fallback.
-    return core::Err(core::ErrorCode::NotSupported);
 }
 
 }  // namespace alloy::hal::clock

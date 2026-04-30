@@ -107,6 +107,13 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
     [[maybe_unused]] const auto sc       = uart.set_smartcard_mode(false);
     [[maybe_unused]] const auto irda     = uart.set_irda_mode(false);
 
+    // ---- Phase 2: hardware flow control, DE polarity, error clearing ----
+    [[maybe_unused]] const auto hfc      = uart.enable_hardware_flow_control(true);
+    [[maybe_unused]] const auto dep      = uart.set_de_polarity(true);
+    [[maybe_unused]] const auto errs     = uart.read_and_clear_errors();
+    static_assert(noexcept(uart.read_and_clear_errors()) == false);
+    [[maybe_unused]] const bool any_err  = errs.any();
+
     // ---- Phase 1: kernel clock source (task 1.4) ----
     // Returns NotSupported when kKernelClockSelectorField is invalid (all
     // current devices). Compiles on all backends regardless.

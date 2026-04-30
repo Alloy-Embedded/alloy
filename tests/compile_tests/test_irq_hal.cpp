@@ -68,3 +68,20 @@ void test_dispatch() {
 
 static_assert(std::is_same_v<decltype(set_handler<PeripheralId::none>(nullptr)),
                               core::Result<void, core::ErrorCode>>);
+
+// --- Board-specific: verify IrqVectorTraits reflects published IRQ lines ---
+// add-irq-vector-hal task 1.3 verification.
+
+#if defined(ALLOY_BOARD_NUCLEO_G071RB)
+// G071RB USART1: single combined IRQ 27.
+static_assert(IrqVectorTraits<PeripheralId::USART1>::kPresent);
+static_assert(IrqVectorTraits<PeripheralId::USART1>::kIrqId.value == 27u);
+static_assert(kHasIrq<PeripheralId::USART1>);
+#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
+// F401RE USART1: IRQ 42 (primary line).
+static_assert(IrqVectorTraits<PeripheralId::USART1>::kPresent);
+static_assert(IrqVectorTraits<PeripheralId::USART1>::kIrqId.value == 42u);
+// USART2: not yet published — expect kPresent=false.
+static_assert(!IrqVectorTraits<PeripheralId::USART2>::kPresent);
+static_assert(!kHasIrq<PeripheralId::USART2>);
+#endif

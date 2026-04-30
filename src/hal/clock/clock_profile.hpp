@@ -29,34 +29,34 @@ struct ClockProfile {
 ///   decrease: switch SYSCLK → lower PLL → reduce flash wait-states
 ///
 /// Returns Ok on success, Err(NotSupported) if the profile is not compiled in.
-template <device::ClockProfileId Id>
+template <device::clock_config::ProfileId Id>
 [[nodiscard]] inline auto switch_profile() -> core::Result<void, core::ErrorCode> {
-    if constexpr (requires { device::apply_clock_profile<Id>(); }) {
-        const bool ok = device::apply_clock_profile<Id>();
-        return ok ? core::Ok() : core::Err(core::ErrorCode::IoError);
-    } else {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
+#if defined(ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE) && ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    if (device::clock_config::apply_profile<Id>()) { return core::Ok(); }
+    return core::Err(core::ErrorCode::HardwareError);
+#else
+    return core::Err(core::ErrorCode::NotSupported);
+#endif
 }
 
 /// Switch to the device default clock profile (fastest profile available).
 [[nodiscard]] inline auto switch_to_default_profile() -> core::Result<void, core::ErrorCode> {
-    if constexpr (requires { device::apply_default_clock_profile(); }) {
-        const bool ok = device::apply_default_clock_profile();
-        return ok ? core::Ok() : core::Err(core::ErrorCode::IoError);
-    } else {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
+#if defined(ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE) && ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    if (device::clock_config::apply_default()) { return core::Ok(); }
+    return core::Err(core::ErrorCode::HardwareError);
+#else
+    return core::Err(core::ErrorCode::NotSupported);
+#endif
 }
 
 /// Switch to the safe (lowest-power, always-works) clock profile.
 [[nodiscard]] inline auto switch_to_safe_profile() -> core::Result<void, core::ErrorCode> {
-    if constexpr (requires { device::apply_safe_clock_profile(); }) {
-        const bool ok = device::apply_safe_clock_profile();
-        return ok ? core::Ok() : core::Err(core::ErrorCode::IoError);
-    } else {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
+#if defined(ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE) && ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    if (device::clock_config::apply_safe()) { return core::Ok(); }
+    return core::Err(core::ErrorCode::HardwareError);
+#else
+    return core::Err(core::ErrorCode::NotSupported);
+#endif
 }
 
 }  // namespace alloy::hal::clock

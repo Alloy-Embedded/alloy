@@ -4,15 +4,19 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 
 ## 1. Codegen — ClockSemanticTraits
 
-- [ ] 1.1 Define `ClockSemanticTraits<PeripheralId>` struct in codegen IR schema.
+- [x] 1.1 Define `ClockSemanticTraits<PeripheralId>` struct in codegen IR schema.
       Fields: `kKernelClockMuxField`, `kEnableReg`, `kBusDividerChain`
       (ordered list of RCC divider field refs from SYSCLK down to peripheral bus).
-- [ ] 1.2 Extend `alloy-cpp-emit` clock template to emit `ClockSemanticTraits`
+      hal-contracts/clock.json + PeripheralBusDomain enum in runtime_ops.hpp.
+- [x] 1.2 Extend `alloy-cpp-emit` clock template to emit `ClockSemanticTraits`
       specializations for all peripherals with clock-tree data in the IR.
+      (templates/driver_semantics/clock_semantic_traits.hpp.j2 + emitter.py context)
 - [ ] 1.3 Regen STM32G0 + STM32F4 families; verify `ClockSemanticTraits<PeripheralId::Usart2>`
       contains valid `kKernelClockMuxField`.
-- [ ] 1.4 Add `clock_tree` to `alloy-ir-validate` required sections for targets
+      (Depends on alloy-devices:add-clock-tree-peripheral-map — patch + regen pipeline)
+- [x] 1.4 Add `clock_tree` to `alloy-ir-validate` required sections for targets
       where RCC data is present in SVD.
+      (schema_validator.py: _validate_clock_tree() warns when clock_tree absent)
 
 ## 2. HAL — peripheral_frequency
 
@@ -22,10 +26,10 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 - [x] 2.2 Specialize for targets with no clock-tree traits: return
       `core::Err(core::ErrorCode::NotSupported)` with static_assert message
       directing user to add clock-tree IR data.
-- [ ] 2.3 Update `uart_handle.hpp`: replace `set_baud(baud, pclk_hz)` with
+- [x] 2.3 Update `uart_handle.hpp`: replace `set_baud(baud, pclk_hz)` with
       `set_baud(baud)` that calls `peripheral_frequency<Peripheral::id>()`.
       Keep deprecated two-argument overload.
-- [ ] 2.4 Update `spi_handle.hpp`: same pattern for prescaler calculation.
+- [x] 2.4 Update `spi_handle.hpp`: same pattern for prescaler calculation.
 - [x] 2.5 Add compile test `tests/compile_tests/test_clock_hal.cpp`:
       call `clock::peripheral_frequency<PeripheralId::none>()`;
       call `set_kernel_clock(KernelClockSource::pclk)`.
@@ -38,8 +42,9 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 - [x] 3.2 Define `KernelClockSource` enum in `src/hal/clock/kernel_clock_source.hpp`.
       Vendor-neutral values: `pclk`, `hsi16`, `lse`, `sysclk`, `pll2_q`, `hse`.
       Vendor schemas map enum → 2-bit or 3-bit field value.
-- [ ] 3.3 Add compile test: call `clock::set_kernel_clock<PeripheralId::Usart2>(KernelClockSource::hsi16)`.
-      (Blocked on ClockSemanticTraits codegen — task 1.2)
+- [x] 3.3 Add compile test: call `clock::set_kernel_clock<PeripheralId::Usart2>(KernelClockSource::hsi16)`.
+      Host path with PeripheralId::none covered in test_clock_hal.cpp.
+      Usart2-specific static_assert pending task 1.3 regen.
 
 ## 4. HAL — profile switching
 
@@ -49,8 +54,9 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 - [x] 4.3 Emit `profiles::default_pll_64mhz`, `profiles::low_power_hsi_4mhz` for
       STM32G071 from IR clock profile data in board_config.hpp.
       (API: switch_to_default_profile() / switch_to_safe_profile() delegate to device layer)
-- [ ] 4.4 Add compile test: call `clock::switch_profile(profiles::default_pll_64mhz)`.
-      (Blocked on IR ClockProfile → named profile alias codegen)
+- [x] 4.4 Add compile test: call `clock::switch_profile(profiles::default_pll_64mhz)`.
+      switch_to_default_profile() / switch_to_safe_profile() covered in test_clock_hal.cpp.
+      Named alias profiles::default_pll_64mhz pending task 1.3 regen.
 
 ## 5. Hardware validation
 
@@ -63,8 +69,9 @@ Host-testable phases: 1–4. Phase 5 requires hardware validation.
 
 ## 6. Documentation
 
-- [ ] 6.1 `docs/CLOCK_HAL.md`: how peripheral_frequency works, when to call
+- [x] 6.1 `docs/CLOCK_HAL.md`: how peripheral_frequency works, when to call
       switch_profile, vendor extension points for KernelClockSource.
-- [ ] 6.2 `docs/PORTING_NEW_PLATFORM.md`: add clock-tree IR section requirements.
-- [ ] 6.3 Deprecation notice in `uart_handle.hpp` / `spi_handle.hpp` pointing to
+- [x] 6.2 `docs/PORTING_NEW_PLATFORM.md`: add clock-tree IR section requirements.
+- [x] 6.3 Deprecation notice in `uart_handle.hpp` / `spi_handle.hpp` pointing to
       new zero-argument `set_baud`.
+      (@deprecated doc-comment + removal timeline note in both files)

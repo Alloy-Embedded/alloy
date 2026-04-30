@@ -48,6 +48,17 @@ enum class AddressLength : std::uint8_t { Bits4, Bits7 };
 
 enum class WakeupTrigger : std::uint8_t { AddressMatch, RxneNonEmpty, StartBit };
 
+/// Aggregated UART error flags returned by read_and_clear_errors().
+struct UartErrors {
+    bool overrun = false;   ///< ORE — receive shift register overwrote RDR
+    bool framing = false;   ///< FE  — stop bit not detected
+    bool noise   = false;   ///< NE  — noise detected on the line
+    bool parity  = false;   ///< PE  — parity mismatch
+    [[nodiscard]] constexpr bool any() const noexcept {
+        return overrun || framing || noise || parity;
+    }
+};
+
 }  // namespace alloy::hal::uart
 
 namespace alloy::hal::uart::detail {
@@ -747,6 +758,53 @@ auto set_baudrate_impl(const PortHandle& handle, std::uint32_t bps)
     return core::Err(core::ErrorCode::NotSupported);
 }
 
+/// Like set_baudrate_impl but uses an explicit clock_hz instead of
+/// handle.config().peripheral_clock_hz.  Used by set_baudrate_auto and the
+/// two-argument set_baudrate(bps, clock_hz) overload (task 2.3).
+template <typename PortHandle>
+auto set_baudrate_with_clock_impl(const PortHandle& handle, std::uint32_t bps,
+                                   std::uint32_t clock_hz)
+    -> core::Result<void, core::ErrorCode> {
+    if (clock_hz == 0u || bps == 0u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    if constexpr (PortHandle::is_st_style) {
+        const auto divisor = (clock_hz + bps / 2u) / bps;
+        if (divisor == 0u || divisor > 0xFFFFu) {
+            return core::Err(core::ErrorCode::OutOfRange);
+        }
+        const auto realised = clock_hz / divisor;
+        const auto diff = (realised > bps) ? (realised - bps) : (bps - realised);
+        if (diff * 100u > bps * 2u) {
+            return core::Err(core::ErrorCode::OutOfRange);
+        }
+        return rt::write_register(PortHandle::brr_reg, divisor);
+    }
+    if constexpr (PortHandle::is_microchip_uart_r || PortHandle::is_microchip_usart_zw) {
+        const auto cd = (clock_hz + 8u * bps) / (16u * bps);
+        if (cd == 0u || cd > 0xFFFFu) {
+            return core::Err(core::ErrorCode::OutOfRange);
+        }
+        const auto realised = clock_hz / (16u * cd);
+        const auto diff = (realised > bps) ? (realised - bps) : (bps - realised);
+        if (diff * 100u > bps * 2u) {
+            return core::Err(core::ErrorCode::OutOfRange);
+        }
+        const auto brgr_field = PortHandle::is_microchip_uart_r ? PortHandle::cd_field
+                                                                 : PortHandle::us_cd_field;
+        const auto reg = PortHandle::is_microchip_uart_r ? PortHandle::brgr_reg
+                                                         : PortHandle::us_brgr_reg;
+        const auto v = build_register_value(std::array{FieldWrite{brgr_field, cd}});
+        if (v.is_err()) {
+            return core::Err(core::ErrorCode{v.unwrap_err()});
+        }
+        return rt::write_register(reg, v.unwrap());
+    }
+    static_cast<void>(handle);
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
 // set_oversampling: OVER8 bit in CR1 (ST-style only).
 // STM32G0/F4/H7: CR1 bit 3 is TE; OVER8 is bit 15 per RM.
 // UART must be disabled (UE=0) while OVER8 is changed; re-enabled after.
@@ -967,6 +1025,65 @@ auto set_de_deassertion_time_impl(const PortHandle&, std::uint8_t sample_times)
         return rt::modify_field(PortHandle::cr1_dedt_field, std::uint32_t{sample_times} & 0x1Fu);
     }
     return core::Err(core::ErrorCode::NotSupported);
+}
+
+template <typename PortHandle>
+auto enable_hardware_flow_control_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (PortHandle::is_st_style) {
+        // RTSE: CR3 bit 8 — RTS output enable
+        // CTSE: CR3 bit 9 — CTS enable (gates TX when CTS is asserted)
+        if (!PortHandle::cr3_rtse_field.valid || !PortHandle::cr3_ctse_field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        auto r = rt::modify_field(PortHandle::cr3_rtse_field, enable ? 1u : 0u);
+        if (!r) { return r; }
+        return rt::modify_field(PortHandle::cr3_ctse_field, enable ? 1u : 0u);
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+template <typename PortHandle>
+auto set_de_polarity_impl(const PortHandle&, bool active_high)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (PortHandle::is_st_style) {
+        // DEP: CR3 bit 15 — 0 = active-high (DE asserted = pin high), 1 = active-low
+        if (!PortHandle::cr3_dep_field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(PortHandle::cr3_dep_field, active_high ? 0u : 1u);
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+template <typename PortHandle>
+auto read_and_clear_errors_impl(const PortHandle&) -> UartErrors {
+    UartErrors errs{};
+    if constexpr (PortHandle::is_st_modern_style) {
+        errs.parity  = read_field_bool(PortHandle::isr_pe_field);
+        errs.framing = read_field_bool(PortHandle::isr_fe_field);
+        errs.noise   = read_field_bool(PortHandle::isr_ne_field);
+        errs.overrun = read_field_bool(PortHandle::isr_ore_field);
+        // Clear via ICR: write 1 to PECF(0), FECF(1), NECF(2), ORECF(3)
+        const std::uint32_t clear_mask =
+            (errs.parity  ? 1u : 0u) |
+            (errs.framing ? 2u : 0u) |
+            (errs.noise   ? 4u : 0u) |
+            (errs.overrun ? 8u : 0u);
+        if (clear_mask != 0u && PortHandle::icr_reg.valid) {
+            rt::write_register(PortHandle::icr_reg, clear_mask);
+        }
+    } else if constexpr (PortHandle::is_st_legacy_style) {
+        // Flags are cleared by reading SR followed by DR
+        errs.parity  = read_field_bool(PortHandle::sr_pe_field);
+        errs.framing = read_field_bool(PortHandle::sr_fe_field);
+        errs.noise   = read_field_bool(PortHandle::sr_ne_field);
+        errs.overrun = read_field_bool(PortHandle::sr_ore_field);
+        if (PortHandle::dr_reg.valid) {
+            rt::read_register(PortHandle::dr_reg);  // clears sticky flags
+        }
+    }
+    return errs;
 }
 
 template <typename PortHandle>

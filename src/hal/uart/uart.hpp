@@ -7,6 +7,7 @@
 
 #include "hal/types.hpp"
 #include "hal/uart/detail/backend.hpp"
+#include "hal/clock/peripheral_frequency.hpp"
 
 #include "hal/connect/connector.hpp"
 #include "core/error_code.hpp"
@@ -86,8 +87,11 @@ struct uart_register_bank_base {
     static constexpr auto cr3_iren_field    = runtime::kInvalidFieldRef;  // IREN   bit 1
     static constexpr auto cr3_hdsel_field   = runtime::kInvalidFieldRef;  // HDSEL  bit 3
     static constexpr auto cr3_scen_field    = runtime::kInvalidFieldRef;  // SCEN   bit 5
+    static constexpr auto cr3_rtse_field    = runtime::kInvalidFieldRef;  // RTSE   bit 8
+    static constexpr auto cr3_ctse_field    = runtime::kInvalidFieldRef;  // CTSE   bit 9
     static constexpr auto cr3_ctsie_field   = runtime::kInvalidFieldRef;  // CTSIE  bit 10
     static constexpr auto cr3_dem_field     = runtime::kInvalidFieldRef;  // DEM    bit 14
+    static constexpr auto cr3_dep_field     = runtime::kInvalidFieldRef;  // DEP    bit 15
     static constexpr auto cr3_txftie_field  = runtime::kInvalidFieldRef;  // TXFTIE bit 23
     static constexpr auto cr3_rxftcfg_field = runtime::kInvalidFieldRef;  // RXFTCFG bit 24
     static constexpr auto cr3_txftcfg_field = runtime::kInvalidFieldRef;  // TXFTCFG bit 29
@@ -278,12 +282,21 @@ struct st_uart_register_bank : uart_register_bank_base<SemanticTraits> {
     static constexpr auto cr3_scen_field =
         !cr3_reg.valid ? runtime::kInvalidFieldRef :
         runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{5});
+    static constexpr auto cr3_rtse_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{8});
+    static constexpr auto cr3_ctse_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{9});
     static constexpr auto cr3_ctsie_field =
         !cr3_reg.valid ? runtime::kInvalidFieldRef :
         runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{10});
     static constexpr auto cr3_dem_field =
         !cr3_reg.valid ? runtime::kInvalidFieldRef :
         runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{14});
+    static constexpr auto cr3_dep_field =
+        !cr3_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{15});
     static constexpr auto cr3_txftie_field =
         !cr3_reg.valid ? runtime::kInvalidFieldRef :
         runtime::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, std::uint16_t{23});
@@ -463,6 +476,7 @@ struct uart_register_bank<PId, SemanticTraits, runtime::UartSchema::microchip_us
 // WakeupTrigger) are defined in backend.hpp (included above) so the backend
 // implementation can use them without circular includes.
 
+
 template <typename Connector>
 class port_handle {
    public:
@@ -543,8 +557,11 @@ class port_handle {
     static constexpr auto cr3_iren_field    = register_bank::cr3_iren_field;
     static constexpr auto cr3_hdsel_field   = register_bank::cr3_hdsel_field;
     static constexpr auto cr3_scen_field    = register_bank::cr3_scen_field;
+    static constexpr auto cr3_rtse_field    = register_bank::cr3_rtse_field;
+    static constexpr auto cr3_ctse_field    = register_bank::cr3_ctse_field;
     static constexpr auto cr3_ctsie_field   = register_bank::cr3_ctsie_field;
     static constexpr auto cr3_dem_field     = register_bank::cr3_dem_field;
+    static constexpr auto cr3_dep_field     = register_bank::cr3_dep_field;
     static constexpr auto cr3_txftie_field  = register_bank::cr3_txftie_field;
     static constexpr auto cr3_rxftcfg_field = register_bank::cr3_rxftcfg_field;
     static constexpr auto cr3_txftcfg_field = register_bank::cr3_txftcfg_field;
@@ -666,6 +683,32 @@ class port_handle {
     [[nodiscard]] auto set_baudrate(std::uint32_t bps) const
         -> core::Result<void, core::ErrorCode> {
         return detail::set_baudrate_impl(*this, bps);
+    }
+
+    /// Set baudrate using an explicit kernel clock.
+    ///
+    /// @deprecated Prefer set_baudrate_auto(bps) — the HAL queries the peripheral
+    ///             clock automatically from the device clock tree.
+    ///             Use this overload only when no IR clock-tree data is available
+    ///             and you know the kernel clock at the call site.
+    ///
+    /// Will be removed in the next semver-minor release after all tier-1 devices
+    /// carry clock_tree IR data.  See docs/CLOCK_HAL.md.
+    [[nodiscard]] auto set_baudrate(std::uint32_t bps, std::uint32_t clock_hz) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_baudrate_with_clock_impl(*this, bps, clock_hz);
+    }
+
+    /// Auto-queries peripheral_frequency<peripheral_id>() and calls set_baudrate.
+    /// Returns the peripheral_frequency error if the clock cannot be determined.
+    /// This is the zero-arg clock version described in task 2.3 (add-clock-management-hal).
+    [[nodiscard]] auto set_baudrate_auto(std::uint32_t bps) const
+        -> core::Result<void, core::ErrorCode> {
+        const auto freq = hal::clock::peripheral_frequency<peripheral_id>();
+        if (freq.is_err()) {
+            return core::Err(freq.unwrap_err());
+        }
+        return detail::set_baudrate_with_clock_impl(*this, bps, freq.unwrap());
     }
 
     /// Set oversampling ratio. The UART must NOT be transmitting/receiving
@@ -926,6 +969,30 @@ class port_handle {
     [[nodiscard]] auto set_irda_mode(bool enable) const
         -> core::Result<void, core::ErrorCode> {
         return detail::set_irda_mode_impl(*this, enable);
+    }
+
+    /// Enable or disable hardware RTS/CTS flow control (RTSE + CTSE / CR3 bits 8-9).
+    /// Returns NotSupported on targets that don't publish CR3 or have no CTS/RTS pins.
+    [[nodiscard]] auto enable_hardware_flow_control(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_hardware_flow_control_impl(*this, enable);
+    }
+
+    /// Set the RS-485 DE pin polarity (DEP / CR3 bit 15).
+    /// active_high=true → DE is high when asserted (default for most transceivers).
+    /// active_high=false → DE is low when asserted (inverted DE).
+    /// Returns NotSupported when DEP field is not published.
+    [[nodiscard]] auto set_de_polarity(bool active_high) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::set_de_polarity_impl(*this, active_high);
+    }
+
+    /// Read all UART error flags and clear them atomically.
+    /// On ST modern targets: reads ISR, writes ICR to clear.
+    /// On ST legacy targets: reads SR then DR (clears sticky flags).
+    /// On unsupported backends: returns all-false UartErrors.
+    [[nodiscard]] auto read_and_clear_errors() const -> UartErrors {
+        return detail::read_and_clear_errors_impl(*this);
     }
 
     // ------------------------------------------------------------------
