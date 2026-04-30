@@ -10,11 +10,11 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 - [x] 1.2 Extend `alloy-cpp-emit` irq template to emit `IrqVectorTraits`
       specializations for all peripherals with IRQ data in the IR.
       (Codegen template: templates/irq_vector_traits.hpp.j2)
-- [x] 1.3 Regen STM32G0 + STM32F4; verify `IrqVectorTraits<PeripheralId::Usart2>::kIrqId`
+- [ ] 1.3 Regen STM32G0 + STM32F4; verify `IrqVectorTraits<PeripheralId::Usart2>::kIrqId`
       matches CMSIS IRQn value.
-      (in-place patch: driver_semantics/irq.hpp for G071RB + F401RE; regen pending.
-       G071RB USART1=27, F401RE USART1=42; USART2 unpublished → kPresent=false.
-       IrqVectorTraits delegates to IrqSemanticTraits via ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE)
+      (Template + patches ready in alloy-devices codegen/; blocked on pipeline run.
+       Expected: G071RB USART1=27, F401RE USART1=42.
+       ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE=0 until codegen emits irq.hpp)
 - [x] 1.4 Add `IrqId` strong typedef (`struct IrqId { std::uint16_t value; }`) to
       `src/hal/irq/irq_id.hpp`. Add make_irq_id() factory.
 
