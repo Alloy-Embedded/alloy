@@ -405,6 +405,7 @@ endif()
 
 add_library(Alloy::hal ALIAS alloy-hal)
 add_library(alloy::alloy ALIAS alloy-hal)   # lowercase alias used by drivers/examples
+add_library(alloy::hal ALIAS alloy-hal)     # case-flexible alias for downstream code
 set_target_properties(alloy-hal PROPERTIES EXPORT_NAME hal)
 
 # Export HAL library for use by examples and tests
@@ -585,6 +586,11 @@ configure_file(
     @ONLY
 )
 
+# Auto-load helpers immediately so downstream consumers using
+# add_subdirectory() / FetchContent_MakeAvailable get
+# alloy_add_runtime_executable(...) without ceremony.
+include("${ALLOY_PACKAGE_CONFIG_DIR}/AlloyHelpers.cmake")
+
 write_basic_package_version_file(
     "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyConfigVersion.cmake"
     VERSION "${PROJECT_VERSION}"
@@ -597,6 +603,54 @@ export(TARGETS alloy-hal
 )
 
 message(STATUS "Alloy build-tree package config: ${ALLOY_PACKAGE_CONFIG_DIR}")
+
+# ==============================================================================
+# Install-Tree CMake Package Export
+# ==============================================================================
+#
+# Lets external consumers call ``find_package(alloy CONFIG)`` from a system
+# prefix after ``cmake --install <build>``.  The build-tree export above stays
+# unchanged for in-tree development.
+
+option(ALLOY_INSTALL "Install Alloy headers + CMake package config" "${PROJECT_IS_TOP_LEVEL}")
+
+if(ALLOY_INSTALL)
+    include(GNUInstallDirs)
+
+    set(ALLOY_INSTALL_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/Alloy")
+
+    install(TARGETS alloy-hal
+        EXPORT AlloyTargets
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    )
+
+    install(EXPORT AlloyTargets
+        NAMESPACE Alloy::
+        DESTINATION "${ALLOY_INSTALL_CMAKE_DIR}"
+        FILE AlloyTargets.cmake
+    )
+
+    install(FILES
+        "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyConfig.cmake"
+        "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyConfigVersion.cmake"
+        "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyHelpers.cmake"
+        DESTINATION "${ALLOY_INSTALL_CMAKE_DIR}"
+    )
+
+    # Ship public C++ headers under <prefix>/include/alloy/.
+    install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/alloy"
+        FILES_MATCHING
+            PATTERN "*.hpp"
+            PATTERN "*.h"
+    )
+
+    message(STATUS "Alloy install prefix CMake config: "
+                   "${CMAKE_INSTALL_PREFIX}/${ALLOY_INSTALL_CMAKE_DIR}")
+endif()
 
 # ==============================================================================
 # Build System Validation Targets
