@@ -299,6 +299,9 @@ function(alloy_configure_selected_device)
     set(_family_root "")
     set(_startup_vectors "")
     set(_generated_startup_source "")
+    # alloy.device.v2.1 flat-struct codegen format (alloy/device/ tree)
+    set(_codegen_format_available 0)
+    set(_codegen_device_dir "")
 
     if(ALLOY_USE_ALLOY_DEVICES AND _vendor AND _devices_root)
         set(_family_root "${_devices_root}/${_vendor}/${_family}")
@@ -427,6 +430,23 @@ function(alloy_configure_selected_device)
         endif()
     endif()
 
+    # -- alloy.device.v2.1 flat-struct codegen format --------------------------
+    # Detected when alloy/device/<vendor>/<family>/<device>/peripheral_traits.h
+    # and peripheral_id.hpp exist (written by alloy-cli / alloy-codegen).
+    if(_vendor AND _family AND _device)
+        set(_codegen_device_dir
+            "${CMAKE_CURRENT_SOURCE_DIR}/device/${_vendor}/${_family}/${_device}"
+        )
+        if(
+            EXISTS "${_codegen_device_dir}/peripheral_traits.h"
+            AND EXISTS "${_codegen_device_dir}/peripheral_id.hpp"
+        )
+            set(_codegen_format_available 1)
+            message(STATUS
+                "alloy-codegen: v2.1 artifacts at ${_codegen_device_dir}")
+        endif()
+    endif()
+
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE_INT "${_contract_available}")
     set(ALLOY_DEVICE_RUNTIME_AVAILABLE_INT "${_runtime_available}")
     set(ALLOY_DEVICE_STARTUP_AVAILABLE_INT "${_startup_available}")
@@ -450,6 +470,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_ETH_SEMANTICS_AVAILABLE_INT "${_eth_semantics_available}")
     set(ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE_INT "${_usb_semantics_available}")
     set(ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE_INT "${_irq_semantics_available}")
+    set(ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE_INT "${_codegen_format_available}")
     set(ALLOY_DEVICE_SELECTED_VENDOR "${_vendor}")
     set(ALLOY_DEVICE_SELECTED_FAMILY "${_family}")
     set(ALLOY_DEVICE_SELECTED_NAME "${_device}")
@@ -461,11 +482,21 @@ function(alloy_configure_selected_device)
         @ONLY
     )
 
-    set(
-        ALLOY_DEVICE_INCLUDE_DIRS
-        "${_devices_root};${CMAKE_BINARY_DIR}/generated"
-        PARENT_SCOPE
-    )
+    # When codegen format is present, prepend the alloy/device/ tree so that
+    # #include "st/stm32g0/stm32g071rb/peripheral_traits.h" works from any TU.
+    if(_codegen_format_available)
+        set(
+            ALLOY_DEVICE_INCLUDE_DIRS
+            "${CMAKE_CURRENT_SOURCE_DIR}/device;${_devices_root};${CMAKE_BINARY_DIR}/generated"
+            PARENT_SCOPE
+        )
+    else()
+        set(
+            ALLOY_DEVICE_INCLUDE_DIRS
+            "${_devices_root};${CMAKE_BINARY_DIR}/generated"
+            PARENT_SCOPE
+        )
+    endif()
     set(ALLOY_DEVICE_SELECTED_CONFIG_HEADER "${_selected_config_header}" PARENT_SCOPE)
     set(ALLOY_DEVICE_FAMILY_ROOT "${_family_root}" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "${_startup_vectors}" PARENT_SCOPE)
@@ -494,6 +525,8 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE "${_usb_semantics_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE "${_irq_semantics_available}" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED "${_descriptor_runtime_enabled}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE "${_codegen_format_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_CODEGEN_DIR "${_codegen_device_dir}" PARENT_SCOPE)
 
     if(_device)
         set(ALLOY_MCU "${_device}" PARENT_SCOPE)

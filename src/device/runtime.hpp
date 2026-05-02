@@ -532,4 +532,35 @@ inline auto route() noexcept -> void {
 }  // namespace alloy::pinmux
 #endif
 
+// ---------------------------------------------------------------------------
+// alloy.device.v2.1 codegen format — concept-based flat-struct dispatch
+// Present when alloy-cli/alloy-codegen wrote artifacts to alloy/device/<v>/<f>/<d>/.
+// ---------------------------------------------------------------------------
+#if ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE
+#include "device/concepts.hpp"
+
+namespace alloy::device {
+
+/// Flat-struct peripheral traits namespace (mirrors selected::device_traits).
+namespace traits = selected::device_traits;
+
+// When the legacy descriptor runtime is absent, expose PeripheralId and
+// kPeripheralCount at the alloy::device level for ergonomic access.
+// When both formats are present, the legacy PeripheralId wins at this scope;
+// use alloy::device::traits::PeripheralId to reach the codegen enum.
+#if !ALLOY_DEVICE_RUNTIME_AVAILABLE
+using PeripheralId = selected::PeripheralId;
+inline constexpr std::size_t kPeripheralCount = selected::kPeripheralCount;
+#endif
+
+/// Returns the base address for any PeripheralSpec type P.
+/// Usage: alloy::device::base<usart1>()
+template <PeripheralSpec P>
+[[nodiscard]] constexpr auto base() noexcept -> std::uintptr_t {
+    return P::kBaseAddress;
+}
+
+}  // namespace alloy::device
+#endif
+
 #include "device/dev.hpp"

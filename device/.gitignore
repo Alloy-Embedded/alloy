@@ -1,0 +1,6 @@
+# This directory is populated by alloy-cli / alloy-codegen at project-init time.
+# All contents are auto-generated — do not hand-edit.
+# The folder itself is tracked; its contents are not.
+*
+!.gitignore
+!.gitkeep
