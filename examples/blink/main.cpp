@@ -1,43 +1,46 @@
 /**
  * @file main.cpp
- * @brief Universal LED Blink Example — lite HAL
+ * @brief Universal LED Blink — Alloy lite HAL
  *
- * Board-independent LED blink using the Alloy HAL lite API.
- * Works on any supported board by changing ALLOY_BOARD at build time.
+ * Board-independent LED blink.  The same source compiles for every supported
+ * board; the build system selects the right board header via ALLOY_BOARD_*.
  *
- * Supported boards:
- *   same70_xplained  — SAME70 Xplained Ultra (green LED PC8)
- *   nucleo_g0b1re    — STM32 Nucleo-G0B1RE   (green LED PA5)
- *   nucleo_g071rb    — STM32 Nucleo-G071RB   (green LED PA5)
- *   nucleo_f401re    — STM32 Nucleo-F401RE   (green LED PA5)
- *   nucleo_f722ze    — STM32 Nucleo-F722ZE   (green LED PB0)
+ * Build & flash:
+ *   python3 scripts/alloyctl.py flash --board <board> --target blink --build-first
  */
 
-#if defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
+// clang-format off
+#if   defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
     #include "same70_xplained/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
-    #include "nucleo_g0b1re/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_G071RB)
     #include "nucleo_g071rb/board.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
+    #include "nucleo_g0b1re/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "nucleo_f401re/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
-    #include "nucleo_f722ze/board.hpp"
 #elif defined(ALLOY_BOARD_RASPBERRY_PI_PICO)
     #include "raspberry_pi_pico/board.hpp"
 #elif defined(ALLOY_BOARD_ESP32_DEVKIT)
     #include "esp32_devkit/board.hpp"
 #elif defined(ALLOY_BOARD_ESP_WROVER_KIT)
     #include "esp_wrover_kit/board.hpp"
+#elif defined(ALLOY_BOARD_ESP32C3_DEVKITM)
+    #include "esp32c3_devkitm/board.hpp"
+#elif defined(ALLOY_BOARD_ESP32S3_DEVKITC)
+    #include "esp32s3_devkitc/board.hpp"
+#elif defined(ALLOY_BOARD_AVR128DA32_CURIOSITY_NANO)
+    #include "avr128da32_curiosity_nano/board.hpp"
 #else
-    #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
+    #error "Unsupported board. Pass -DALLOY_BOARD=<board> or use alloyctl."
 #endif
+// clang-format on
 
 #include <cstdint>
 
 namespace {
 
-// ~500 ms busy-wait at typical MCU clock frequencies (adjust per board).
+// Busy-wait ~500 ms at typical board clock speeds.
+// Replaced by a SysTick delay once that example lands.
 inline void busy_delay() noexcept {
     for (volatile std::uint32_t i = 0u; i < 2'000'000u; ++i) {}
 }
@@ -51,6 +54,4 @@ int main() {
         board::led::toggle();
         busy_delay();
     }
-
-    return 0;
 }

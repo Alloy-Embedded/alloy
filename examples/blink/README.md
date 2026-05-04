@@ -1,154 +1,132 @@
-# Universal Blink LED Example
+# blink — Universal LED Blink
 
-## Overview
+Blinks the onboard LED on every supported Alloy board.  
+One source file, zero board-specific code in `main.cpp`.
 
-This example demonstrates the **power of the Alloy HAL abstraction** - a single source file that compiles and runs on multiple microcontroller architectures without modification.
+## Supported boards
 
-## Supported Boards
+| Board | MCU | Arch | LED | Flash tool |
+|---|---|---|---|---|
+| `same70_xplained` | ATSAME70Q21B | Cortex-M7 | PC8 (active-LOW) | OpenOCD |
+| `nucleo_g071rb` | STM32G071RBT6 | Cortex-M0+ | PA5 | OpenOCD / STM32CubeProg |
+| `nucleo_g0b1re` | STM32G0B1RET6 | Cortex-M0+ | PA5 | OpenOCD / STM32CubeProg |
+| `nucleo_f401re` | STM32F401RET6 | Cortex-M4 | PA5 | OpenOCD / STM32CubeProg |
+| `raspberry_pi_pico` | RP2040 | Cortex-M0+ | GP25 | UF2 drag-and-drop |
+| `esp32_devkit` | ESP32 | Xtensa LX6 | GPIO2 | esptool |
+| `esp32c3_devkitm` | ESP32-C3 | RISC-V RV32 | GPIO8 | esptool |
+| `esp32s3_devkitc` | ESP32-S3 | Xtensa LX7 | GPIO8 | esptool |
+| `esp_wrover_kit` | ESP32 | Xtensa LX6 | GPIO2 (green ch.) | esptool |
+| `avr128da32_curiosity_nano` | AVR128DA32 | AVR | PC6 (active-LOW) | avrdude |
 
-| Board | MCU | Architecture | LED Pin | Clock |
-|-------|-----|--------------|---------|-------|
-| **SAME70 Xplained** | ATSAME70Q21 | ARM Cortex-M7 | PC8 (green) | 12 MHz (HSI) |
-| **Nucleo-G0B1RE** | STM32G0B1RET6 | ARM Cortex-M0+ | PA5 (green) | 64 MHz (PLL) |
+## Prerequisites
 
-## How It Works
+- **ARM boards** — `arm-none-eabi-gcc`, `openocd`, CMake ≥ 3.25, Ninja
+- **ESP32 boards** — Espressif toolchain + `esptool.py`
+- **AVR** — `avr-gcc`, `avrdude`
+- `alloyctl` — `python3 scripts/alloyctl.py` (no install needed)
 
-The example uses **conditional compilation** to include the correct board header:
+## Build & flash
 
-```cpp
-#if defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
-    #include "same70_xplained/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
-    #include "nucleo_g0b1re/board.hpp"
-#endif
+### alloyctl (recommended)
+
+One command builds and flashes in a single step:
+
+```bash
+python3 scripts/alloyctl.py flash --board <board> --target blink --build-first
 ```
 
-The build system automatically defines the correct `ALLOY_BOARD_*` macro based on the selected board.
+Examples:
 
-### Application Code
+```bash
+# SAME70 Xplained Ultra
+python3 scripts/alloyctl.py flash --board same70_xplained --target blink --build-first
 
-The application code is **100% portable**:
+# Nucleo-G071RB
+python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink --build-first
+
+# Nucleo-F401RE
+python3 scripts/alloyctl.py flash --board nucleo_f401re --target blink --build-first
+
+# Raspberry Pi Pico  (builds the UF2; drag to RPI-RP2 drive)
+python3 scripts/alloyctl.py build --board raspberry_pi_pico --target blink
+
+# ESP32-DevKit
+python3 scripts/alloyctl.py flash --board esp32_devkit --target blink --build-first
+
+# ESP32-C3-DevKitM
+python3 scripts/alloyctl.py flash --board esp32c3_devkitm --target blink --build-first
+```
+
+#### Build only (no hardware needed)
+
+```bash
+python3 scripts/alloyctl.py build --board nucleo_g071rb --target blink
+# ELF/HEX/BIN land in build/hw/g071/examples/blink/
+```
+
+#### Flash only (already built)
+
+```bash
+python3 scripts/alloyctl.py flash --board same70_xplained --target blink
+```
+
+#### Use STM32CubeProgrammer instead of OpenOCD (STM32 boards)
+
+```bash
+python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink \
+    --build-first --flash-backend stm32cube
+```
+
+### Raw CMake (any board)
+
+```bash
+# Configure
+cmake -S . -B build/blink \
+    -G Ninja \
+    -DCMAKE_BUILD_TYPE=MinSizeRel \
+    -DALLOY_BOARD=nucleo_g071rb \
+    -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+    -DALLOY_BUILD_EXAMPLES=ON
+
+# Build
+cmake --build build/blink --target blink -j8
+
+# Flash (OpenOCD example)
+openocd -f interface/stlink.cfg -f target/stm32g0x.cfg \
+    -c "program build/blink/examples/blink/blink.elf verify reset exit"
+```
+
+## Expected output
+
+The onboard LED toggles every ~500 ms (busy-wait delay, no SysTick yet).
+
+```
+LED ON  →  500 ms  →  LED OFF  →  500 ms  →  repeat
+```
+
+## How it works
+
+`main.cpp` is 100 % portable:
 
 ```cpp
 int main() {
-    board::init();              // Initialize hardware
-
+    board::init();          // clock + GPIO setup (board-specific)
     while (true) {
-        board::led::on();       // Turn LED on
-        SysTickTimer::delay_ms<board::BoardSysTick>(500);
-
-        board::led::off();      // Turn LED off
-        SysTickTimer::delay_ms<board::BoardSysTick>(500);
+        board::led::toggle();
+        busy_delay();
     }
 }
 ```
 
-**Same code, multiple architectures!**
+The build system defines `ALLOY_BOARD_<NAME>` from `--board <name>`, which
+selects the correct `boards/<board>/board.hpp` via `#elif` chains.
+`board::init()` is implemented in `boards/<board>/board.cpp` and compiled in
+by the example's `CMakeLists.txt`.
 
-## Building
+## Adding a new board
 
-### For SAME70 Xplained
-
-```bash
-make same70-blink-build
-```
-
-### For Nucleo-G0B1RE
-
-```bash
-make nucleo-g0b1re-blink-build
-```
-
-## Flashing
-
-### SAME70 Xplained
-
-```bash
-make same70-blink-flash
-```
-
-### Nucleo-G0B1RE
-
-```bash
-make nucleo-g0b1re-blink-flash
-```
-
-## Expected Behavior
-
-The green onboard LED blinks at 1 Hz (500ms ON, 500ms OFF) on both boards.
-
-## Binary Size Comparison
-
-| Board | Flash Used | RAM Used | Total Binary |
-|-------|-----------|----------|--------------|
-| SAME70 Xplained | ~900 bytes | ~200 bytes | ~1.1 KB |
-| Nucleo-G0B1RE | 1028 bytes | 8232 bytes | ~9.3 KB |
-
-**Note**: STM32G0 uses more RAM due to 8KB stack allocation.
-
-## Adding New Boards
-
-To add support for a new board:
-
-1. **Create board support package** in `boards/<board_name>/`
-   - `board.hpp` - Board API declaration
-   - `board.cpp` - Hardware initialization
-   - `board_config.hpp` - Hardware configuration
-
-2. **Implement board API**:
-   ```cpp
-   namespace board {
-       void init();           // Initialize hardware
-
-       namespace led {
-           void init();       // Initialize LED GPIO
-           void on();         // Turn LED on
-           void off();        // Turn LED off
-       }
-
-       using BoardSysTick = SysTick<CLOCK_HZ>;
-   }
-   ```
-
-3. **Update build system**:
-   - Add board to `CMakeLists.txt` examples section
-   - Add `ALLOY_BOARD_*` conditional in `main.cpp`
-
-## Architecture
-
-```
-examples/blink/main.cpp (portable application)
-        ↓
-    board API (board::init, board::led::*)
-        ↓
-boards/<board>/board.cpp (board-specific)
-        ↓
-typed runtime + HAL layer
-        ↓
-    Hardware registers
-```
-
-## Key Features
-
-- **Zero runtime overhead** - Compile-time selection
-- **Type-safe** - Platform types resolved at compile time
-- **Clean abstraction** - Application code knows nothing about hardware
-- **Easy to port** - Just add board support package
-
-## Testing
-
-Compile for both boards to verify portability:
-
-```bash
-# Build for SAME70
-make same70-blink-build
-
-# Build for STM32
-make nucleo-g0b1re-blink-build
-```
-
-Both should compile without warnings or errors.
-
-## License
-
-Copyright (c) 2025 Alloy Project
+1. Create `boards/<new_board>/board.hpp` and `board.cpp` implementing:
+   - `board::init()` — clock + LED GPIO init
+   - `board::led::toggle()` — toggle the LED
+2. Add an `#elif defined(ALLOY_BOARD_<NEW_BOARD_UPPER>)` branch in `main.cpp`.
+3. Add a `board.json` in `boards/<new_board>/` so alloyctl auto-discovers it.
