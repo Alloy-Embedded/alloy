@@ -94,6 +94,12 @@ alloy_add_catch2_test(test_shared_scheduler
     LABELS unit smp
 )
 
+# Test: OtaClient<Net, Flash> — download + SHA-256 verify + MCUboot trailer
+alloy_add_catch2_test(test_ota_client
+    SOURCES test_ota_client.cpp
+    LABELS unit ota
+)
+
 # ==============================================================================
 # Test Summary
 # ==============================================================================
@@ -104,4 +110,5 @@ message(STATUS "  ✓ Core: Result<T,E>, Error")
 message(STATUS "  ✓ HAL:  GPIO, Clock Concepts")
 message(STATUS "  ✓ Utility: Logger core")
 message(STATUS "  ✓ SMP:  Channel ordering, CrossCoreChannel")
+message(STATUS "  ✓ OTA:  OtaClient download + SHA-256 + MCUboot trailer")
 message(STATUS "========================================")
