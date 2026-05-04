@@ -59,7 +59,6 @@
 #include <string_view>
 
 #include "device/concepts.hpp"
-#include "device/rcc_gate_table.hpp"
 
 namespace alloy::hal::adc::lite {
 
@@ -428,6 +427,7 @@ class port {
     ///
     /// @param cfg  Configuration (defaults are safe for all families).
     static void configure(const Config& cfg = {}) noexcept {
+        clock_on();
         if constexpr (kIsSimple) {
             init_simple(cfg);
         } else {
@@ -666,29 +666,29 @@ class port {
     // Clock gate — sourced from alloy.device.v2.1 flat-struct kRccEnable
     // -----------------------------------------------------------------------
 
-    /// Enable the peripheral clock (APBx/AHBx ENR bit).
+    /// Enable the peripheral clock and deassert reset (if kRccReset present).
     ///
-    /// Requires `ALLOY_DEVICE_RCC_TABLE_AVAILABLE` at build time (set by the
-    /// `alloy_device_rcc_table` CMake target) to actually write the register.
-    static void clock_on() noexcept
-        requires (requires { P::kRccEnable; })
-    {
-#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
-        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) |= gate.mask;
-#endif
+    /// Uses the typed `P::kRccEnable = { addr, mask }` emitted by alloy-codegen v0.4+.
+    /// No-op when the peripheral has no kRccEnable field.
+    static void clock_on() noexcept {
+        if constexpr (requires { P::kRccEnable; }) {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccEnable.addr) |= P::kRccEnable.mask;
+        }
+        if constexpr (requires { P::kRccReset; }) {
+            // Assert then release reset so the peripheral starts from a known state.
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccReset.addr) |=  P::kRccReset.mask;
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccReset.addr) &= ~P::kRccReset.mask;
+        }
     }
 
     /// Disable the peripheral clock.
-    static void clock_off() noexcept
-        requires (requires { P::kRccEnable; })
-    {
-#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
-        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) &= ~gate.mask;
-#endif
+    static void clock_off() noexcept {
+        if constexpr (requires { P::kRccEnable; }) {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccEnable.addr) &= ~P::kRccEnable.mask;
+        }
     }
 
     port() = delete;

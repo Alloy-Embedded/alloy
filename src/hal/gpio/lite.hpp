@@ -49,7 +49,6 @@
 #include <string_view>
 
 #include "device/concepts.hpp"
-#include "device/rcc_gate_table.hpp"
 
 namespace alloy::hal::gpio::lite {
 
@@ -216,6 +215,7 @@ class port {
         Pull         pull      = Pull::None,
         OutputType   ot        = OutputType::PushPull
     ) noexcept {
+        clock_on();
         set_mode(pin, Mode::AF);
         set_af(pin, af_number);
         set_speed(pin, speed);
@@ -229,6 +229,7 @@ class port {
         Speed        speed = Speed::Low,
         OutputType   ot    = OutputType::PushPull
     ) noexcept {
+        clock_on();
         set_mode(pin, Mode::Output);
         set_speed(pin, speed);
         set_output_type(pin, ot);
@@ -236,12 +237,14 @@ class port {
 
     /// Configure a pin as a digital input.
     static void configure_input(std::uint8_t pin, Pull pull = Pull::None) noexcept {
+        clock_on();
         set_mode(pin, Mode::Input);
         set_pull(pin, pull);
     }
 
     /// Configure a pin for analog use (ADC / DAC input, lowest leakage).
     static void configure_analog(std::uint8_t pin) noexcept {
+        clock_on();
         set_mode(pin, Mode::Analog);
         set_pull(pin, Pull::None);
     }
@@ -386,29 +389,29 @@ class port {
     // Clock gate — sourced from alloy.device.v2.1 flat-struct kRccEnable
     // -----------------------------------------------------------------------
 
-    /// Enable the peripheral clock (AHBx ENR bit on STM32 GPIO ports).
+    /// Enable the peripheral clock and deassert reset (if kRccReset present).
     ///
-    /// Requires `ALLOY_DEVICE_RCC_TABLE_AVAILABLE` at build time (set by the
-    /// `alloy_device_rcc_table` CMake target) to actually write the register.
-    static void clock_on() noexcept
-        requires (requires { P::kRccEnable; })
-    {
-#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
-        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) |= gate.mask;
-#endif
+    /// Uses the typed `P::kRccEnable = { addr, mask }` emitted by alloy-codegen v0.4+.
+    /// No-op when the peripheral has no kRccEnable field.
+    static void clock_on() noexcept {
+        if constexpr (requires { P::kRccEnable; }) {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccEnable.addr) |= P::kRccEnable.mask;
+        }
+        if constexpr (requires { P::kRccReset; }) {
+            // Assert then release reset so the peripheral starts from a known state.
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccReset.addr) |=  P::kRccReset.mask;
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccReset.addr) &= ~P::kRccReset.mask;
+        }
     }
 
     /// Disable the peripheral clock.
-    static void clock_off() noexcept
-        requires (requires { P::kRccEnable; })
-    {
-#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
-        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) &= ~gate.mask;
-#endif
+    static void clock_off() noexcept {
+        if constexpr (requires { P::kRccEnable; }) {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            *reinterpret_cast<volatile std::uint32_t*>(P::kRccEnable.addr) &= ~P::kRccEnable.mask;
+        }
     }
 
     port() = delete;

@@ -61,15 +61,13 @@ jobs:
           src/core
           src/device
           src/arch
-          src/hal/connect
-          src/hal/claim
           src/hal/gpio
           src/hal/uart
+          src/hal/spi
+          src/hal/i2c
           src/logger
           boards
-          tests/compile_tests
           examples/blink
-          examples/uart_logger
         )
         FAILED=0
         while IFS= read -r file; do
