@@ -39,7 +39,6 @@
 #include <string_view>
 
 #include "device/concepts.hpp"
-#include "device/rcc_gate_table.hpp"
 
 namespace alloy::hal::uart::lite {
 
