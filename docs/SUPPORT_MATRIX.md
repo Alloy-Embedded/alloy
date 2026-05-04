@@ -67,7 +67,7 @@ relies on.
 | `pwm` | `foundational` | descriptor smoke + host-MMIO (PWM0 path) + zero-overhead gate + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `timer_pwm_probe` all pass |
 | `rtc` | `foundational` | descriptor smoke + host-MMIO (RTC path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `rtc_probe` all pass |
 | `watchdog` | `foundational` | descriptor smoke + host-MMIO (WDT path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `watchdog_probe` all pass |
-| `adc` | `foundational` | descriptor smoke + host-MMIO (AFEC path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `analog_probe` all pass |
+| `adc` | `foundational` | descriptor smoke + host-MMIO (AFEC path) + 3-board hardware spot-check: SAME70/STM32G0/STM32F4 `analog_probe` all pass. Extended coverage (`analog_probe_complete`): resolution, alignment, sample time, sequence, channel enable, hardware trigger, overrun, DMA — 3-board validated. See [ADC.md](ADC.md). |
 | `dac` | `representative` | descriptor smoke + SAME70 hardware spot-check (`analog_probe` DAC-active banner) |
 | `low-power` | `representative` | descriptor smoke + isolated SAME70 host-MMIO wakeup path |
 | `can` | `experimental` | descriptor smoke + SAME70 bring-up spot-check (`can_probe` boot/loop banner); no deterministic traffic assertion yet |

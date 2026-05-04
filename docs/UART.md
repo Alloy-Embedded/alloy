@@ -1,7 +1,7 @@
 # Alloy UART HAL
 
-`alloy::hal::uart` is the typed, descriptor-backed UART abstraction. A
-`port_handle<Connector>` is a zero-overhead value type that carries the
+`alloy::hal::uart` is the typed, descriptor-backed UART abstraction.
+`uart::port<Connector>` is a zero-overhead value type that carries the
 peripheral's full register map, a runtime config, and every capability method.
 
 All vendor differences — ST SCI3 (modern: ISR/TDR/RDR), ST SCI2 (legacy:
@@ -24,16 +24,17 @@ using DebugUartConnector = alloy::hal::connection::connector<
     alloy::hal::connection::rx<alloy::device::PinId::PA3,
                                alloy::device::SignalId::signal_rx>>;
 
-auto uart = alloy::hal::uart::open<DebugUartConnector>({
+// uart::open<C>() returns uart::port<C> — the public connector-typed handle.
+alloy::hal::uart::port<DebugUartConnector> uart{{
     .baudrate            = alloy::hal::Baudrate::e115200,
     .data_bits           = alloy::hal::DataBits::Eight,
     .parity              = alloy::hal::Parity::None,
     .stop_bits           = alloy::hal::StopBits::One,
     .flow_control        = alloy::hal::FlowControl::None,
     .peripheral_clock_hz = 64'000'000u,
-});
+}};
 
-uart.configure();
+uart.configure();  // connects GPIO pins + initialises UART registers
 uart.write(std::as_bytes(std::span{"Hello\r\n"}));
 ```
 
@@ -185,6 +186,15 @@ uart.enable_lin(false);
 at constexpr time by register suffix search. Returns `NotSupported`
 on Microchip backends.
 
+### Hardware flow control
+
+```cpp
+// CTS/RTS handshaking — requires dedicated CTS/RTS pins routed in connector.
+uart.enable_hardware_flow_control(true);  // CR3[9] CTSE + CR3[8] RTSE
+```
+
+Returns `NotSupported` on SAME70 UART-R (no CTS/RTS in register map).
+
 ### RS-485 Driver Enable (DE)
 
 ```cpp
@@ -192,7 +202,8 @@ on Microchip backends.
 // CR1[25:21] DEAT, CR1[20:16] DEDT — range [0, 31].
 uart.set_de_assertion_time(1u);
 uart.set_de_deassertion_time(1u);
-uart.enable_de(true);   // CR3[14] DEM — output DE signal on configured pin
+uart.set_de_polarity(true);   // CR3[15] DEP — false=active-high, true=active-low
+uart.enable_de(true);         // CR3[14] DEM — drive DE signal on configured pin
 ```
 
 ### Half-duplex
@@ -210,12 +221,50 @@ uart.set_irda_mode(true);       // CR3[1] IREN — IrDA SIR encoding
 
 Both return `NotSupported` on Microchip USART-ZW (SAME70).
 
+### Multiprocessor / address-match wakeup
+
+```cpp
+enum class AddressLength : uint8_t { Bits4, Bits7 };
+
+uart.set_address(0x42u, AddressLength::Bits7);  // CR2 ADD field
+uart.mute_until_address(true);                  // CR1[2] MME — enter mute mode
+```
+
+### Wakeup from Stop mode
+
+```cpp
+enum class WakeupTrigger : uint8_t { AddressMatch, RxneNonEmpty, StartBit };
+
+uart.enable_wakeup_from_stop(WakeupTrigger::AddressMatch);  // CR1[23] UESM + CR3[20:19] WUS
+```
+
+Returns `NotSupported` on F4/F1 and Microchip backends (no UESM field).
+
+### Bulk error read-and-clear
+
+```cpp
+alloy::hal::uart::UartErrors errs = uart.read_and_clear_errors();
+// UartErrors: bool parity, framing, noise, overrun + any()
+if (errs.any()) {
+    // At least one error occurred since the last call.
+}
+```
+
+SCI3: reads ISR[3:0], writes ICR to atomically clear. SCI2: reads SR then DR
+(clearing sticky flags as a side effect). Microchip: returns all-false.
+
 ---
 
 ## DMA transfers
 
 ```cpp
-// Configure channels first.
+// Enable DMA request generation for TX / RX (CR3 DMAT / DMAR bits).
+// Call before starting the DMA channel; the channel itself is configured
+// separately via hal::dma::channel<>.
+uart.enable_dma_tx(true);   // CR3[7] DMAT
+uart.enable_dma_rx(true);   // CR3[6] DMAR
+
+// Configure the DMA channel for the peripheral.
 uart.configure_tx_dma(tx_dma_channel);
 uart.configure_rx_dma(rx_dma_channel);
 
@@ -271,14 +320,18 @@ half-duplex direction switching.
 | FIFO (`enable_fifo`, thresholds) | ✓ | ✗ | ✗ | ✗ |
 | `tx_complete / tx_register_empty` | ✓ | ✓ | ✗ | ✗ |
 | `parity/framing/noise/overrun` | ✓ | ✓ | ✗ | ✗ |
-| `clear_*` flags | ✓ (ICR) | ✗ | ✗ | ✗ |
+| `read_and_clear_errors()` | ✓ (ICR) | ✓ (SR+DR) | ✗ | ✗ |
+| `clear_*` individual flags | ✓ (ICR) | ✗ | ✗ | ✗ |
 | `enable_interrupt` (Tc/Txe/Rxne) | ✓ | ✓ | ✗ | ✗ |
-| `enable_lin` | ✓ | ✓ | ✗ | ✗ |
-| `send_lin_break` | ✓ | ✓ | ✗ | ✗ |
-| RS-485 DE | ✓ | ✓ | ✗ | ✗ |
+| `enable_hardware_flow_control` | ✓ | ✓ | ✗ | ✗ |
+| `enable_lin` + `send_lin_break` | ✓ | ✓ | ✗ | ✗ |
+| RS-485 DE (`enable_de`, polarity) | ✓ | ✓ | ✗ | ✗ |
 | `set_half_duplex` | ✓ | ✓ | ✗ | ✗ |
 | `set_smartcard_mode` | ✓ | ✓ | ✗ | ✗ |
 | `set_irda_mode` | ✓ | ✓ | ✗ | ✗ |
+| `enable_wakeup_from_stop` | ✓ (UESM) | ✗ | ✗ | ✗ |
+| multiprocessor (`set_address`) | ✓ | ✓ | ✗ | ✗ |
+| `enable_dma_tx/rx` (CR3 bits) | ✓ | ✓ | ✗ | ✗ |
 | DMA (write_dma / read_dma) | ✓ | ✓ | ✓ | ✗ |
 | `async::uart::wait_for<Kind>` | ✓ | ✓ | ✗ | ✗ |
 

@@ -14,7 +14,7 @@ using DebugUartConnector = alloy::hal::connection::connector<
     alloy::device::PeripheralId::USART0,
     alloy::hal::connection::tx<alloy::device::PinId::PA0, alloy::device::SignalId::signal_tx>,
     alloy::hal::connection::rx<alloy::device::PinId::PA1, alloy::device::SignalId::signal_rx>>;
-using DebugUart = alloy::hal::uart::port_handle<DebugUartConnector>;
+using DebugUart = alloy::hal::uart::port<DebugUartConnector>;
 
 inline constexpr std::uint32_t kDebugUartPeripheralClockHz =
     avr128da32_curiosity_nano::ClockConfig::pclk_freq_hz;

@@ -125,30 +125,21 @@ Every method `static_assert(valid)` first; gates the body via
       no overrun across 60 s.
 - [ ] 6.2 STM32G0 Nucleo: same matrix.
 - [ ] 6.3 STM32F4 Nucleo: same matrix.
-- [ ] 6.4 Update `docs/SUPPORT_MATRIX.md` `adc` row to record the
+- [x] 6.4 Update `docs/SUPPORT_MATRIX.md` `adc` row to record the
       extended-coverage validation (single line note + link to
       `docs/ADC.md`).
 
 ## 7. Documentation
 
-- [ ] 7.1 `docs/ADC.md` — comprehensive guide:
-      - The model (typed Channel, capability gates, error semantics).
-      - Single-shot recipe (configure → enable → start → ready → read).
-      - Sequence-without-DMA recipe (set_sequence + read_sequence).
-      - Continuous DMA scan recipe (set_sequence + set_continuous +
-        configure_dma + async::adc::scan_dma).
-      - Hardware-trigger recipe (set_hardware_trigger + TIM update).
-      - Internal channels (Vrefint, VBat, TempSensor) — discovery
-        and voltage conversion notes (with calibration deferred to
-        a future change).
-      - Overrun handling.
-      - "modm migration" table: each modm `Adc::*` API → alloy
-        equivalent.
-      - Per-vendor capability matrix: which backends expose
-        per-channel enable, hardware trigger, etc.
-- [ ] 7.2 Reference `docs/ADC.md` from `docs/ASYNC.md` (under the
+- [x] 7.1 `docs/ADC.md` — comprehensive guide:
+      Created with: model, single-shot + SAME70 quick-start, resolution,
+      alignment, continuous, sample time, sequence, per-channel enable,
+      hardware trigger, overrun, DMA, async, capability matrix, related links.
+- [x] 7.2 Reference `docs/ADC.md` from `docs/ASYNC.md` (under the
       ADC section) and `docs/COOKBOOK.md` (where applicable).
-- [ ] 7.3 Cross-link from `docs/SUPPORT_MATRIX.md` `adc` row.
+- [x] 7.3 Cross-link from `docs/SUPPORT_MATRIX.md` `adc` row.
+      Done — ADC row updated + "See [ADC.md](ADC.md)" added.
+      ADC section in ASYNC.md now links to ADC.md.
 
 ## 8. Out-of-scope follow-ups (filed but not done in this change)
 

@@ -326,3 +326,8 @@ template <PeripheralId Peripheral, std::size_t Channel>
 #endif
 
 }  // namespace alloy::hal::dac
+
+// alloy.device.v2.1 concept-based DAC — no descriptor-runtime required.
+// StDac (kTemplate="dac", kIpVersion starts with "dacif"):
+//   dacif_v1_1_Cube (F4/G4) and dacif_v3_0_Cube (G0/H7) — same register layout.
+#include "hal/dac/lite.hpp"

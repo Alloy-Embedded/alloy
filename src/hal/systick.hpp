@@ -166,3 +166,7 @@ inline void delay_us(core::u32 delay_us) {
 }
 
 }  // namespace alloy::systick
+
+// alloy.device.v2.1 Cortex-M SysTick driver — no descriptor-runtime required.
+// timer<ClockHz>: polling (delay_ms_poll/delay_us_poll) and interrupt modes.
+#include "hal/systick/lite.hpp"

@@ -433,6 +433,7 @@ function(alloy_configure_selected_device)
     # -- alloy.device.v2.1 flat-struct codegen format --------------------------
     # Detected when alloy/device/<vendor>/<family>/<device>/peripheral_traits.h
     # and peripheral_id.hpp exist (written by alloy-cli / alloy-codegen).
+    set(_codegen_rcc_enable_available 0)
     if(_vendor AND _family AND _device)
         set(_codegen_device_dir
             "${CMAKE_CURRENT_SOURCE_DIR}/device/${_vendor}/${_family}/${_device}"
@@ -444,6 +445,12 @@ function(alloy_configure_selected_device)
             set(_codegen_format_available 1)
             message(STATUS
                 "alloy-codegen: v2.1 artifacts at ${_codegen_device_dir}")
+        endif()
+        # rcc_enable.hpp is a newer artifact (added post v2.1); guard separately
+        # so projects with only the older peripheral_traits.h + peripheral_id.hpp
+        # pair still compile without the clock-gate helpers.
+        if(EXISTS "${_codegen_device_dir}/rcc_enable.hpp")
+            set(_codegen_rcc_enable_available 1)
         endif()
     endif()
 
@@ -471,6 +478,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_USB_SEMANTICS_AVAILABLE_INT "${_usb_semantics_available}")
     set(ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE_INT "${_irq_semantics_available}")
     set(ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE_INT "${_codegen_format_available}")
+    set(ALLOY_DEVICE_CODEGEN_RCC_ENABLE_AVAILABLE_INT "${_codegen_rcc_enable_available}")
     set(ALLOY_DEVICE_SELECTED_VENDOR "${_vendor}")
     set(ALLOY_DEVICE_SELECTED_FAMILY "${_family}")
     set(ALLOY_DEVICE_SELECTED_NAME "${_device}")
@@ -526,6 +534,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_IRQ_SEMANTICS_AVAILABLE "${_irq_semantics_available}" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED "${_descriptor_runtime_enabled}" PARENT_SCOPE)
     set(ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE "${_codegen_format_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_CODEGEN_RCC_ENABLE_AVAILABLE "${_codegen_rcc_enable_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_CODEGEN_DIR "${_codegen_device_dir}" PARENT_SCOPE)
 
     if(_device)

@@ -21,13 +21,23 @@
 ///   0x24 AFRH    — alternate function high (pins 8–15), 4 bits per pin
 ///   0x28 BRR     — bit reset only (G0/G4/H7; use BSRR[31:16] on others)
 ///
+/// IMPORTANT: the caller must enable the GPIO clock before calling any
+/// configure* method.  With alloy-codegen v2.1 and `hal/rcc.hpp`:
+/// @code
+///   namespace dev = alloy::device::traits;
+///   dev::peripheral_on<dev::gpioa>();   // iopaen set + ioparst cleared
+/// @endcode
+///
 /// Typical usage (configure PA2 as USART2 TX on STM32G071):
 /// @code
-///   #include "hal/gpio/lite.hpp"
+///   #include "hal/gpio.hpp"
+///   #include "hal/rcc.hpp"
 ///   #include "device/runtime.hpp"
 ///
-///   using Gpioa = alloy::hal::gpio::lite::port<alloy::device::traits::gpioa>;
+///   namespace dev = alloy::device::traits;
+///   using Gpioa = alloy::hal::gpio::lite::port<dev::gpioa>;
 ///
+///   dev::peripheral_on<dev::gpioa>();
 ///   // PA2 = USART2 TX on G071: AF1
 ///   Gpioa::configure_af(2, 1);   // pin 2, AF1
 ///   Gpioa::set_speed(2, alloy::hal::gpio::lite::Speed::High);
@@ -39,6 +49,7 @@
 #include <string_view>
 
 #include "device/concepts.hpp"
+#include "device/rcc_gate_table.hpp"
 
 namespace alloy::hal::gpio::lite {
 
@@ -275,6 +286,129 @@ class port {
     /// Read all 16 pins from IDR as a bitmask.
     [[nodiscard]] static auto read_all() noexcept -> std::uint16_t {
         return static_cast<std::uint16_t>(r().idr & 0xFFFFu);
+    }
+
+    // -----------------------------------------------------------------------
+    // Output latch read (ODR)
+    // -----------------------------------------------------------------------
+
+    /// Read the current output-latch state of one pin (from ODR, not IDR).
+    ///
+    /// Useful when a pin is in output mode and the external line may be
+    /// overdriven (e.g. open-drain wired-OR): reading IDR gives the actual
+    /// line voltage, while reading ODR gives what the driver last wrote.
+    [[nodiscard]] static auto read_output(std::uint8_t pin) noexcept -> bool {
+        return ((r().odr >> pin) & 1u) != 0u;
+    }
+
+    /// Read all 16 output-latch bits from ODR as a bitmask.
+    [[nodiscard]] static auto read_output_all() noexcept -> std::uint16_t {
+        return static_cast<std::uint16_t>(r().odr & 0xFFFFu);
+    }
+
+    // -----------------------------------------------------------------------
+    // Atomic partial port write
+    // -----------------------------------------------------------------------
+
+    /// Write multiple output pins atomically using a single BSRR write.
+    ///
+    /// Only pins where `mask` has a 1 bit are affected; other pins are
+    /// unchanged.  The set/reset is atomic — no read-modify-write.
+    ///
+    /// @param value  Desired pin state for masked pins (1 = high, 0 = low).
+    /// @param mask   Bitmask of pins to update (16-bit, one bit per pin).
+    static void write_port(std::uint16_t value, std::uint16_t mask) noexcept {
+        // BSRR [15:0] = set bits, [31:16] = reset bits.
+        const std::uint32_t set_bits   = static_cast<std::uint32_t>(value & mask);
+        const std::uint32_t reset_bits = static_cast<std::uint32_t>(static_cast<std::uint16_t>(~value) & mask);
+        r().bsrr = set_bits | (reset_bits << 16u);
+    }
+
+    // -----------------------------------------------------------------------
+    // Pin lock
+    // -----------------------------------------------------------------------
+
+    /// Lock the configuration of one pin using the LCKR key sequence.
+    ///
+    /// After a successful lock, MODER / OTYPER / OSPEEDR / PUPDR / AFR for
+    /// this pin are write-protected until the next reset.  The lock is
+    /// applied by the mandatory hardware sequence:
+    ///   write LCKK=1 + LCKx, write LCKK=0 + LCKx,
+    ///   write LCKK=1 + LCKx, read LCKR, read LCKR.
+    ///
+    /// @param pin  Pin number 0–15.
+    /// @returns true if the lock was accepted (LCKK bit is set after the
+    ///          sequence), false if the sequence was rejected (e.g. the pin
+    ///          was already locked by a different combination).
+    [[nodiscard]] static auto lock_pin(std::uint8_t pin) noexcept -> bool {
+        const std::uint32_t lckk   = std::uint32_t{1u} << 16u;   ///< LCKK (bit 16)
+        const std::uint32_t pinbit = std::uint32_t{1u} << pin;
+        r().lckr = lckk | pinbit;   // step 1: LCKK=1 + LCKx=1
+        r().lckr = pinbit;          // step 2: LCKK=0 + LCKx=1
+        r().lckr = lckk | pinbit;   // step 3: LCKK=1 + LCKx=1
+        (void)r().lckr;             // step 4: read (optional per RM, needed by some cores)
+        return (r().lckr & lckk) != 0u;  // LCKK=1 → lock active
+    }
+
+    // -----------------------------------------------------------------------
+    // Device-data bridge — sourced from alloy.device.v2.1 flat-struct
+    // -----------------------------------------------------------------------
+
+    /// Returns the NVIC IRQ line for this peripheral.
+    ///
+    /// For GPIO, the EXTI line number equals the pin number (device-specific
+    /// grouping: EXTI0–4 are individual vectors; EXTI5–9 and EXTI10–15 share
+    /// vectors on most STM32 families).  The returned value is the raw NVIC
+    /// vector number from the device artifact, not the pin number.
+    ///
+    /// Sourced from `P::kIrqLines[idx]` (flat-struct v2.1).
+    [[nodiscard]] static constexpr auto irq_number(std::size_t idx = 0u) noexcept
+        -> std::uint32_t {
+        if constexpr (requires { P::kIrqLines[0]; }) {
+            return static_cast<std::uint32_t>(P::kIrqLines[idx]);
+        } else {
+            static_assert(sizeof(P) == 0,
+                "P::kIrqLines not present; upgrade device artifact to v2.1");
+            return 0u;
+        }
+    }
+
+    /// Returns the number of IRQ lines for this peripheral.
+    /// Sourced from `P::kIrqCount` (flat-struct v2.1). Returns 0 if absent.
+    [[nodiscard]] static constexpr auto irq_count() noexcept -> std::size_t {
+        if constexpr (requires { P::kIrqCount; }) {
+            return static_cast<std::size_t>(P::kIrqCount);
+        }
+        return 0u;
+    }
+
+    // -----------------------------------------------------------------------
+    // Clock gate — sourced from alloy.device.v2.1 flat-struct kRccEnable
+    // -----------------------------------------------------------------------
+
+    /// Enable the peripheral clock (AHBx ENR bit on STM32 GPIO ports).
+    ///
+    /// Requires `ALLOY_DEVICE_RCC_TABLE_AVAILABLE` at build time (set by the
+    /// `alloy_device_rcc_table` CMake target) to actually write the register.
+    static void clock_on() noexcept
+        requires (requires { P::kRccEnable; })
+    {
+#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
+        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) |= gate.mask;
+#endif
+    }
+
+    /// Disable the peripheral clock.
+    static void clock_off() noexcept
+        requires (requires { P::kRccEnable; })
+    {
+#if defined(ALLOY_DEVICE_RCC_TABLE_AVAILABLE)
+        constexpr auto gate = device::detail::find_rcc_gate(P::kRccEnable);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+        *reinterpret_cast<volatile std::uint32_t*>(gate.addr) &= ~gate.mask;
+#endif
     }
 
     port() = delete;

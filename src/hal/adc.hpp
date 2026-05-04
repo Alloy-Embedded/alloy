@@ -669,3 +669,10 @@ template <PeripheralId Peripheral>
 #endif
 
 }  // namespace alloy::hal::adc
+
+// alloy.device.v2.1 concept-based ADC — no descriptor-runtime required.
+// Supports:
+//   StSimpleAdc (kIpVersion starts with "aditf4"): F0 / G0 simplified ADC.
+//   StModernAdc (kIpVersion contains "aditf5"): G4 / H7 full ADC.
+// NOT supported: legacy F1 / F2 / F4 ADC (kIpVersion "aditf2_v…").
+#include "hal/adc/lite.hpp"

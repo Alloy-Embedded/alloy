@@ -1013,3 +1013,8 @@ template <PeripheralId Peripheral>
 #endif
 
 }  // namespace alloy::hal::timer
+
+// alloy.device.v2.1 concept-based timer — no descriptor-runtime required.
+// Supports any ST TIM peripheral (kTemplate == "tim"): basic, general-purpose,
+// advanced (TIM1/TIM8) with optional PWM output (StPwmTimer requires kSignalCount >= 1).
+#include "hal/timer/lite.hpp"

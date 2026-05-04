@@ -411,3 +411,9 @@ template <PeripheralId Peripheral, std::size_t Channel>
 #endif
 
 }  // namespace alloy::hal::pwm
+
+// alloy.device.v2.1: PWM is provided by hal/timer/lite.hpp (StPwmTimer concept).
+// Include hal/timer.hpp and use port<P>::configure_pwm_ch / set_duty / enable_ch.
+// No separate hal/pwm/lite.hpp is needed — timer and PWM share the same STM32 TIM
+// peripheral and the same port<P> type.
+#include "hal/timer/lite.hpp"

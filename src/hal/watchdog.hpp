@@ -354,3 +354,8 @@ template <device::PeripheralId Peripheral>
 #endif
 
 }  // namespace alloy::hal
+
+// alloy.device.v2.1 concept-based watchdog — no descriptor-runtime required.
+// StIwdg (kTemplate="iwdg"): all STM32 IWDG families (v1_1 and v2_0).
+// StWwdg (kTemplate="wwdg"): all STM32 WWDG families.
+#include "hal/watchdog/lite.hpp"

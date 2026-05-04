@@ -4,20 +4,33 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 ## 1. IR / codegen additions
 
-- [ ] 1.1 Add UART IR fields for STM32G0 + STM32F4 families:
+- [x] 1.1 Add UART IR fields for STM32G0 + STM32F4 families:
       `cts_enable_field`, `rts_enable_field`, `hdsel_field`,
       `dem_field`, `dep_field`, `linen_field`, `lbdl_field`, `sbkrq_field`,
       `orecf_field`, `fecf_field`, `necf_field`, `pecf_field`.
-      (fields discovered via `find_runtime_field_ref_by_register_and_offset`
-       in `st_uart_register_bank` — no IR patch needed for existing registers;
-       CTSE/RTSE/DEP added to register_bank and base fallback)
+      All 12 fields in `st_uart_register_bank` (uart.hpp); `cr2_lbdl_field`
+      added to both base fallback and sci3 bank (bit 5 of CR2).
 - [ ] 1.2 Add same fields for Microchip SAM (UART_MR, UART_IDR, US_CR) IR entries.
-- [ ] 1.3 Extend `alloy-cpp-emit` UART template to include new fields in
-      `UartSemanticTraits`.
+      (SAM basic UART has no HFC/half-duplex → returns kInvalidFieldRef correctly.
+       SAM USART US_CR.RTSEN/RTSDIS handling deferred — mapped in _UART_REG_TO_SEMANTICS
+       as kSamRtsenField/kSamRtsdisField for future SAM USART backend branch.)
+- [x] 1.3 Extend `alloy-cpp-emit` UART template to include new fields in
+      `UartSemanticTraits`. Base struct + per-peripheral template slots added to
+      `uart.hpp.j2`. Generate `kInvalidFieldRef` until SVD ingest explicitly extracts
+      CR3/ICR/RQR field IDs into the FieldId enum (those enumerators don't exist yet —
+      HAL register bank via `find_runtime_field_ref_by_register_and_offset` is the
+      authoritative source for these fields for now).
 - [ ] 1.4 Regen STM32G0 + SAME70; verify new fields appear in generated traits.
-- [ ] 1.5 Update `cmake/hal-contracts/uart.json`:
+      (Codegen side unblocked: `_enrich_uart_peripherals()` in emitter.py now auto-resolves
+       kCtseField/kRtseField/kDemField/kDepField/kHdselField/kLbdlField/kLinenField/
+       kSbkrqField/kPecfField/kFecfField/kNecfField/kOrecfField/kUeField/kTeField/kReField/
+       kBrrField/kTxeField/kRxneField/kKernelClockSelectorField from IR register data.
+       Pending: run full regen with IR JSON from SVD ingest pipeline to produce updated
+       register_fields.hpp + driver_semantics/uart.hpp and confirm no kInvalidFieldRef for
+       named fields. IR JSON not stored in repo — requires alloy-codegen pipeline.)
+- [x] 1.5 Update `cmake/hal-contracts/uart.json`:
       move `hardware_flow_ctl`, `half_duplex_field`, `rs485_de_field` to `optional`;
-      add `lin_fields` group as optional.
+      add `lin_fields` group as optional. Version bumped to 1.1.0.
 
 ## 2. HAL method additions
 
@@ -40,8 +53,9 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
       `enable_hardware_flow_control(true)`, `set_de_polarity(true)`,
       `read_and_clear_errors()`, `UartErrors::any()`.
       F4 compile test clean; G0 pre-existing IR regen issues unrelated to UART.
-- [ ] 3.2 Verify `NotSupported` path compiles for mock device with no flow-ctl fields.
-      (implicit — base class returns kInvalidFieldRef, if constexpr guard returns NotSupported)
+- [x] 3.2 Verify `NotSupported` path compiles for mock device with no flow-ctl fields.
+      (implicit — base class returns kInvalidFieldRef, if constexpr guard returns NotSupported;
+       covered by SAME70 path in test_uart_api.cpp: is_st_style=false → NotSupported returned.)
 
 ## 4. Hardware validation
 
@@ -56,4 +70,6 @@ Host-testable: phases 1–3. Phase 4 requires hardware.
 
 - [x] 5.1 Create `docs/UART_HAL.md`: hardware flow control, RS-485 DE + polarity,
       half-duplex, LIN, `read_and_clear_errors` + recovery pattern, vendor extension points.
-- [ ] 5.2 Add `examples/modbus_rtu/` for nucleo_g071rb demonstrating RS-485 DE.
+- [x] 5.2 Add `examples/modbus_rtu/` for nucleo_g071rb demonstrating RS-485 DE.
+      main.cpp: USART1 (PA9/PA10/PA12-DE), enable_de(true), set_de_polarity(active-high),
+      read_and_clear_errors() each loop. CMakeLists.txt mirrors blink pattern.

@@ -17,6 +17,8 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_gpio_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_public_api_aliases.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_uart_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_uart_port.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_uart_pin_guard.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_i2c_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_spi_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_i2c_shared_bus_api.cpp

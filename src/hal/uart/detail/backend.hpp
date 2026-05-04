@@ -1112,4 +1112,32 @@ auto set_irda_mode_impl(const PortHandle&, bool enable)
     return core::Err(core::ErrorCode::NotSupported);
 }
 
+/// Enable or disable DMA transmitter request — CR3.DMAT (bit 7).
+template <typename PortHandle>
+auto enable_dma_tx_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (PortHandle::is_st_style) {
+        const auto field = st_tx_dma_field<PortHandle>();
+        if (!field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(field, enable ? 1u : 0u);
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
+/// Enable or disable DMA receiver request — CR3.DMAR (bit 6).
+template <typename PortHandle>
+auto enable_dma_rx_impl(const PortHandle&, bool enable)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (PortHandle::is_st_style) {
+        const auto field = st_rx_dma_field<PortHandle>();
+        if (!field.valid) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+        return rt::modify_field(field, enable ? 1u : 0u);
+    }
+    return core::Err(core::ErrorCode::NotSupported);
+}
+
 }  // namespace alloy::hal::uart::detail

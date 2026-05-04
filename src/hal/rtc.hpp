@@ -715,3 +715,8 @@ template <PeripheralId Peripheral>
 #endif
 
 }  // namespace alloy::hal::rtc
+
+// ---------------------------------------------------------------------------
+// Lite driver (no descriptor-runtime dependency)
+// ---------------------------------------------------------------------------
+#include "hal/rtc/lite.hpp"

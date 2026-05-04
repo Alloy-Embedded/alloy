@@ -17,7 +17,7 @@
 // after the operation completes to prevent re-signalling on subsequent events.
 
 #include "device/runtime.hpp"
-#include "hal/uart/detail/backend.hpp"  // InterruptKind enum
+#include "hal/uart/detail/backend.hpp"  // InterruptKind enum (alloy::hal::uart::)
 #include "runtime/event.hpp"
 
 namespace alloy::runtime::uart_event {

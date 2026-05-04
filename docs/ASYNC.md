@@ -135,6 +135,9 @@ single conversion. `scan_dma` waits on the DMA transfer-complete
 interrupt of a multi-channel scan, with each channel's sample landing in
 the caller's buffer.
 
+See [ADC.md](ADC.md) for the full per-vendor capability matrix, sequence
+configuration, and the hardware trigger recipe.
+
 ### Timer
 
 ```cpp

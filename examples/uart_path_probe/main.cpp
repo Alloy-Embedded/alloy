@@ -56,7 +56,7 @@ constexpr auto kBlinkMs = 333u;
     #error "Select one ALLOY_UART_PROBE_* candidate"
 #endif
 
-using ProbeUart = alloy::hal::uart::port_handle<ProbeConnector>;
+using ProbeUart = alloy::hal::uart::port<ProbeConnector>;
 
 }  // namespace
 

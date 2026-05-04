@@ -79,6 +79,7 @@ struct uart_register_bank_base {
     static constexpr auto cr1_deat_field    = runtime::kInvalidFieldRef;  // DEAT   bits [25:21]
 
     // CR2 extended fields
+    static constexpr auto cr2_lbdl_field    = runtime::kInvalidFieldRef;  // LBDL   bit 5
     static constexpr auto cr2_lbdie_field   = runtime::kInvalidFieldRef;  // LBDIE  bit 6
     static constexpr auto cr2_linen_field   = runtime::kInvalidFieldRef;  // LINEN  bit 14
 
@@ -262,6 +263,9 @@ struct st_uart_register_bank : uart_register_bank_base<SemanticTraits> {
         runtime::find_runtime_field_ref_by_register_and_offset(cr1_reg.register_id, std::uint16_t{21});
 
     // CR2 extended fields
+    static constexpr auto cr2_lbdl_field =
+        !cr2_reg.valid ? runtime::kInvalidFieldRef :
+        runtime::find_runtime_field_ref_by_register_and_offset(cr2_reg.register_id, std::uint16_t{5});
     static constexpr auto cr2_lbdie_field =
         !cr2_reg.valid ? runtime::kInvalidFieldRef :
         runtime::find_runtime_field_ref_by_register_and_offset(cr2_reg.register_id, std::uint16_t{6});
@@ -551,6 +555,7 @@ class port_handle {
     static constexpr auto cr1_txeie_field   = register_bank::cr1_txeie_field;
     static constexpr auto cr1_dedt_field    = register_bank::cr1_dedt_field;
     static constexpr auto cr1_deat_field    = register_bank::cr1_deat_field;
+    static constexpr auto cr2_lbdl_field    = register_bank::cr2_lbdl_field;
     static constexpr auto cr2_lbdie_field   = register_bank::cr2_lbdie_field;
     static constexpr auto cr2_linen_field   = register_bank::cr2_linen_field;
     static constexpr auto cr3_eie_field     = register_bank::cr3_eie_field;
@@ -995,6 +1000,20 @@ class port_handle {
         return detail::read_and_clear_errors_impl(*this);
     }
 
+    /// Enable or disable DMA transmitter request — CR3.DMAT (bit 7).
+    /// Returns NotSupported on non-ST targets or when the field is not published.
+    [[nodiscard]] auto enable_dma_tx(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_dma_tx_impl(*this, enable);
+    }
+
+    /// Enable or disable DMA receiver request — CR3.DMAR (bit 6).
+    /// Returns NotSupported on non-ST targets or when the field is not published.
+    [[nodiscard]] auto enable_dma_rx(bool enable) const
+        -> core::Result<void, core::ErrorCode> {
+        return detail::enable_dma_rx_impl(*this, enable);
+    }
+
     // ------------------------------------------------------------------
     // Phase 3: Multiprocessor / wakeup
     // ------------------------------------------------------------------
@@ -1093,15 +1112,5 @@ class port_handle {
    private:
     Config config_{};
 };
-
-template <typename Connector>
-[[nodiscard]] constexpr auto open(Config config = {}) -> port_handle<Connector> {
-    static_assert(port_handle<Connector>::valid,
-                  "Requested UART route has no valid descriptor-backed route for the selected "
-                  "device/package. If you used ergonomic role aliases such as hal::tx<Pin> or "
-                  "hal::rx<Pin>, retry with an explicit expert signal alias such as "
-                  "hal::tx<Pin, alloy::dev::sig::signal_txd1>. Canonical forms remain supported." );
-    return port_handle<Connector>{config};
-}
 
 }  // namespace alloy::hal::uart

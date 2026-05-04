@@ -29,6 +29,9 @@
 /// 1 when alloy-cli/alloy-codegen wrote alloy.device.v2.1 artifacts to
 /// alloy/device/<vendor>/<family>/<device>/ — struct-based peripheral traits.
 #define ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE @ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE_INT@
+/// 1 when rcc_enable.hpp is present alongside peripheral_traits.h.
+/// Requires re-generating with alloy-codegen ≥ this commit.
+#define ALLOY_DEVICE_CODEGEN_RCC_ENABLE_AVAILABLE @ALLOY_DEVICE_CODEGEN_RCC_ENABLE_AVAILABLE_INT@
 
 #if @ALLOY_DEVICE_RUNTIME_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/types.hpp"
@@ -121,6 +124,9 @@
 #if @ALLOY_DEVICE_CODEGEN_FORMAT_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/@ALLOY_DEVICE_SELECTED_NAME@/peripheral_id.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/@ALLOY_DEVICE_SELECTED_NAME@/peripheral_traits.h"
+#if @ALLOY_DEVICE_CODEGEN_RCC_ENABLE_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/@ALLOY_DEVICE_SELECTED_NAME@/rcc_enable.hpp"
+#endif
 #endif
 
 namespace alloy::device::selected {

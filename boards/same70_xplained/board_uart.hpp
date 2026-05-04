@@ -15,7 +15,7 @@ using DebugUartConnector = alloy::hal::connection::connector<
     alloy::hal::connection::tx<alloy::device::PinId::PB4, alloy::device::SignalId::signal_txd1>,
     alloy::hal::connection::rx<alloy::device::PinId::PA21,
                                alloy::device::SignalId::signal_rxd1>>;
-using DebugUart = alloy::hal::uart::port_handle<DebugUartConnector>;
+using DebugUart = alloy::hal::uart::port<DebugUartConnector>;
 
 inline constexpr std::uint32_t kDebugUartPeripheralClockHz =
     same70_xplained::ClockConfig::pclk_freq_hz;

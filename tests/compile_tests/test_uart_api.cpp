@@ -114,6 +114,12 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
     static_assert(noexcept(uart.read_and_clear_errors()) == false);
     [[maybe_unused]] const bool any_err  = errs.any();
 
+    // ---- Phase 3 (uart-lite-full-surface): DMA enable ----
+    // enable_dma_tx / enable_dma_rx: CR3 DMAT/DMAR bits.
+    // Returns NotSupported when the DMA field is not published by the device DB.
+    [[maybe_unused]] const auto dma_tx = uart.enable_dma_tx(true);
+    [[maybe_unused]] const auto dma_rx = uart.enable_dma_rx(false);
+
     // ---- Phase 1: kernel clock source (task 1.4) ----
     // Returns NotSupported when kKernelClockSelectorField is invalid (all
     // current devices). Compiles on all backends regardless.

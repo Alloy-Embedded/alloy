@@ -15,7 +15,7 @@ using DebugUartConnector = alloy::hal::connection::connector<
     alloy::device::PeripheralId::UART0,
     alloy::hal::connection::tx<alloy::device::PinId::GPIO21, alloy::device::SignalId::signal_tx>,
     alloy::hal::connection::rx<alloy::device::PinId::GPIO20, alloy::device::SignalId::signal_rx>>;
-using DebugUart = alloy::hal::uart::port_handle<DebugUartConnector>;
+using DebugUart = alloy::hal::uart::port<DebugUartConnector>;
 
 inline constexpr std::uint32_t kDebugUartPeripheralClockHz =
     esp32c3_devkitm::ClockConfig::pclk_freq_hz;
