@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_g071rb, same70_xplained, rp2040_zero, raspberry_pi_pico]
+        board: [nucleo_g071rb, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
         example: [blink, uart_echo]
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +32,19 @@ jobs:
       - uses: carlosperate/arm-none-eabi-gcc-action@v1
         with:
           release: "14.2.Rel1"
+      - name: cache xtensa toolchain
+        if: matrix.board == 'esp_wrover_kit'
+        id: xtensa-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.alloy/tools/xtensa-esp-elf
+          key: xtensa-esp-elf-16.1.0_20260609-linux-x86_64
+      - name: install xtensa toolchain
+        if: matrix.board == 'esp_wrover_kit' && steps.xtensa-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.alloy/tools && cd ~/.alloy/tools
+          curl -sL -o x.tar.xz "https://github.com/espressif/crosstool-NG/releases/download/esp-16.1.0_20260609/xtensa-esp-elf-16.1.0_20260609-x86_64-linux-gnu.tar.xz"
+          tar xf x.tar.xz && rm x.tar.xz
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
       - name: build ${{ matrix.example }} for ${{ matrix.board }}

@@ -212,13 +212,19 @@ def _flash_esptool(elf: Path, probe: dict[str, Any]) -> str:
     port = probe.get("port")
     if not port:
         candidates = sorted(Path("/dev").glob("cu.usbserial*"))
-        if len(candidates) != 1:
+        if len(candidates) == 1:
+            port = str(candidates[0])
+        elif (len(candidates) == 2
+              and candidates[0].name[:-1] == candidates[1].name[:-1]):
+            # Dual-channel FTDI (WROVER-KIT FT2232H): channel A is JTAG,
+            # channel B — the higher suffix — is the UART wired for flashing.
+            port = str(candidates[1])
+        else:
             names = ", ".join(str(c) for c in candidates) or "(none)"
             raise EmitError(
                 f"could not auto-pick a serial port (found: {names}) — "
                 "set probe.port in board.json or plug exactly one board"
             )
-        port = str(candidates[0])
 
     write_args = []
     if "partitions" in probe:
