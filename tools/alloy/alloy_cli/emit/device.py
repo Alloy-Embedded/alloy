@@ -112,6 +112,11 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             lines.append(
                 f"    static constexpr std::uint8_t ch_{chname} = {periph['channels'][chname]}u;"
             )
+        for reqname in sorted(periph.get("dma_requests", {})):
+            lines.append(
+                f"    static constexpr std::uint8_t dmareq_{reqname} = "
+                f"{periph['dma_requests'][reqname]}u;"
+            )
         for cname in sorted(periph.get("companions", {})):
             lines.append(
                 f"    using {cname}_t = alloy::dev::{periph['companions'][cname]}_t;"

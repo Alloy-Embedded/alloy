@@ -58,6 +58,38 @@ struct adc_impl<Inst> {
         }
         return static_cast<std::uint16_t>(r().DR);
     }
+
+    // --- DMA burst hooks (RM0444: DMAEN/DMACFG/CONT only writable while
+    // ADSTART=0). begin() configures but does NOT start — the caller arms
+    // the DMA channel first, then kick() starts conversions. ---
+    static void dma_burst_begin(std::uint8_t channel) {
+        r().CHSELR = 1u << channel;
+        while (IP::ccrdy.read(r()) == 0u) {
+        }
+        // Flag hygiene (w1c): stale CCRDY breaks the NEXT channel-select
+        // handshake; stale EOC/EOS/OVR from a previous burst BLOCK the
+        // ADC's DMA requests entirely (RM0444 overrun management) and
+        // dma.wait() would spin forever.
+        r().ISR = IP::ccrdy.mask | IP::eoc.mask | IP::eos.mask | IP::ovr.mask;
+        IP::dmaen.set(r());
+        IP::cont.set(r());
+        IP::ovrmod.set(r());  // overwrite on overrun keeps the stream honest
+    }
+
+    static void dma_burst_kick() { IP::adstart.set(r()); }
+
+    static void dma_burst_end() {
+        IP::adstp.set(r());
+        while (IP::adstart.read(r()) != 0u) {
+        }
+        IP::cont.clear(r());
+        IP::dmaen.clear(r());
+        IP::ovrmod.clear(r());
+    }
+
+    [[nodiscard]] static std::uintptr_t dr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().DR);
+    }
 };
 
 }  // namespace alloy::hal

@@ -1,0 +1,5 @@
+[project]
+name = "dma_probe"
+
+[board]
+id = "nucleo_g0b1re"

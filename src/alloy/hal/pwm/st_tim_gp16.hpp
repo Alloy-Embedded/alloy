@@ -74,6 +74,23 @@ struct pwm_impl<Inst> {
             default: break;
         }
     }
+
+    // --- DMA hooks: waveform streaming on the UPDATE request. Items
+    // written by DMA are RAW compare values (0..period_ticks()-1), not
+    // normalized duties — scale on the memory side. ---
+    static void dma_update_begin() { IP::ude.set(r()); }
+    static void dma_update_end() { IP::ude.clear(r()); }
+    // (period_ticks — the raw tick count per period — already exists above
+    // as the driver's static state, set by enable().)
+
+    [[nodiscard]] static std::uintptr_t duty_addr(unsigned channel) {
+        switch (channel) {
+            case 1: return reinterpret_cast<std::uintptr_t>(&r().CCR1);
+            case 2: return reinterpret_cast<std::uintptr_t>(&r().CCR2);
+            case 3: return reinterpret_cast<std::uintptr_t>(&r().CCR3);
+            default: return reinterpret_cast<std::uintptr_t>(&r().CCR4);
+        }
+    }
 };
 
 }  // namespace alloy::hal

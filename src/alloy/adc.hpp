@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
 
 #include "alloy/core/types.hpp"
 #include "alloy/hal/adc/adc_impl.hpp"
@@ -28,6 +29,26 @@ public:
     // Blocking single conversion of the given channel (raw counts).
     [[nodiscard]] std::uint16_t read(std::uint8_t channel) const {
         return hal::adc_impl<Inst>::read(channel);
+    }
+
+    // DMA burst: N continuous conversions of one channel straight to RAM.
+    // Blocking (returns when the buffer is full); only exists where the
+    // driver has DMA hooks AND the chip data carries the request ID.
+    template <class Chan>
+    [[nodiscard]] bool read_burst(const Chan& dma, std::uint8_t channel,
+                                  std::span<std::uint16_t> out) const
+        requires requires {
+            hal::adc_impl<Inst>::dma_burst_begin(channel);
+            Inst::dmareq_conv;
+        }
+    {
+        hal::adc_impl<Inst>::dma_burst_begin(channel);
+        dma.start_p2m_u16(hal::adc_impl<Inst>::dr_addr(), out, Inst::dmareq_conv);
+        hal::adc_impl<Inst>::dma_burst_kick();
+        const bool ok = dma.wait();
+        dma.stop();
+        hal::adc_impl<Inst>::dma_burst_end();
+        return ok;
     }
 
 private:

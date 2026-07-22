@@ -34,7 +34,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
-                             "irq": bool(chip.get("interrupts"))}
+                             "irq": bool(chip.get("interrupts")),
+                             # DMA: chip declares a dma1 controller instance.
+                             "dma": "dma1" in chip["peripherals"]}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -272,6 +274,15 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "inline constexpr bool adc_has_temp = false;\n"
             "inline constexpr std::uint8_t adc_vref_channel = 0u;\n"
             "inline constexpr std::uint8_t adc_temp_channel = 0u;"
+        )
+
+    if "dma1" in chip["peripherals"]:
+        decls.append("using dma_t = alloy::dev::dma1_t;")
+    else:
+        decls.append(
+            "// No DMA controller in this chip's data yet; the tag keeps\n"
+            "// caps-guarded generic lambdas compiling (never instantiated).\n"
+            "struct dma_t {};"
         )
 
     caps_body = "\n".join(
