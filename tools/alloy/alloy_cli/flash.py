@@ -79,6 +79,35 @@ def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
     )
 
 
+def find_serial_port(probe: dict[str, Any]) -> str:
+    """Locate the board's serial port (flash + monitor).
+
+    usbserial* covers USB-UART bridges (FTDI/CP210x/CH34x); usbmodem*
+    covers CDC probes (ST-Link VCP, EDBG). BOOTSEL boards have no serial.
+    """
+    if port := probe.get("port"):
+        return str(port)
+    kind = probe.get("kind", "")
+    if kind == "bootsel":
+        raise EmitError(
+            "this board flashes over BOOTSEL mass-storage and exposes no "
+            "serial port — wire a USB-serial adapter to use the UART"
+        )
+    pattern = "cu.usbmodem*" if kind in ("stlink", "cmsis-dap") else "cu.usbserial*"
+    candidates = sorted(Path("/dev").glob(pattern))
+    if len(candidates) == 1:
+        return str(candidates[0])
+    if len(candidates) == 2 and candidates[0].name[:-1] == candidates[1].name[:-1]:
+        # Dual-channel FTDI (WROVER-KIT FT2232H): channel A is JTAG,
+        # channel B — the higher suffix — is the UART.
+        return str(candidates[1])
+    names = ", ".join(str(c) for c in candidates) or "(none)"
+    raise EmitError(
+        f"could not auto-pick a serial port (found: {names}) — "
+        "set probe.port in board.json or plug exactly one board"
+    )
+
+
 # ── UF2 (BOOTSEL mass-storage) ──────────────────────────────────────────────
 
 _UF2_MAGIC_START0 = 0x0A324655  # contract-ok: UF2 file-format magic, not a silicon fact
@@ -209,22 +238,7 @@ def _flash_esptool(elf: Path, probe: dict[str, Any]) -> str:
         check=True,
     )
 
-    port = probe.get("port")
-    if not port:
-        candidates = sorted(Path("/dev").glob("cu.usbserial*"))
-        if len(candidates) == 1:
-            port = str(candidates[0])
-        elif (len(candidates) == 2
-              and candidates[0].name[:-1] == candidates[1].name[:-1]):
-            # Dual-channel FTDI (WROVER-KIT FT2232H): channel A is JTAG,
-            # channel B — the higher suffix — is the UART wired for flashing.
-            port = str(candidates[1])
-        else:
-            names = ", ".join(str(c) for c in candidates) or "(none)"
-            raise EmitError(
-                f"could not auto-pick a serial port (found: {names}) — "
-                "set probe.port in board.json or plug exactly one board"
-            )
+    port = find_serial_port(probe)
 
     write_args = []
     if "partitions" in probe:

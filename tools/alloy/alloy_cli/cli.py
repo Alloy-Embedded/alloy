@@ -22,15 +22,27 @@ from .emit.common import EmitError
 from .project import Project, ProjectError, load_project
 
 _MAIN_CPP = """\
-// Portable blink — identical bytes on every supported board.
+// Portable hello — blink AND echo, so the board never looks dead after a
+// flash. Identical bytes on every supported board; zero #ifdefs.
 #include <alloy/board.hpp>
-using namespace alloy::literals;
+
+#include <cstdint>
 
 int main() {
     board::init();
+    auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
+    uart.write("alloy hello: blinking + echoing\\r\\n");
+
+    std::uint32_t last_toggle = alloy::uptime_ms();
     while (true) {
-        board::led.toggle();
-        alloy::sleep_for(500ms);
+        std::uint8_t byte{};
+        if (uart.read(byte)) {
+            uart.write(byte);
+        }
+        if (alloy::uptime_ms() - last_toggle >= 500u) {
+            board::led.toggle();
+            last_toggle = alloy::uptime_ms();
+        }
     }
 }
 """
@@ -41,6 +53,9 @@ name = "{name}"
 
 [board]
 id = "{board}"
+
+[alloy]
+root = "{root}"
 """
 
 _GITIGNORE = """\
@@ -57,16 +72,26 @@ def _project(args: argparse.Namespace) -> Project:
 
 
 def cmd_new(args: argparse.Namespace) -> int:
+    from .project import _find_alloy_root  # noqa: PLC0415
+
     target = Path(args.name)
     if target.exists():
         print(f"error: {target} already exists", file=sys.stderr)
         return 1
+    alloy_root = _find_alloy_root(Path.cwd())
+    boards_dir = alloy_root / "boards"
+    if not (boards_dir / args.board / "board.json").exists():
+        known = sorted(p.name for p in boards_dir.iterdir() if (p / "board.json").exists())
+        print(f"error: unknown board '{args.board}' — known: {', '.join(known)}", file=sys.stderr)
+        return 1
     (target / "src").mkdir(parents=True)
-    (target / "alloy.toml").write_text(_ALLOY_TOML.format(name=target.name, board=args.board))
+    (target / "alloy.toml").write_text(
+        _ALLOY_TOML.format(name=target.name, board=args.board, root=alloy_root)
+    )
     (target / "src" / "main.cpp").write_text(_MAIN_CPP)
     (target / ".gitignore").write_text(_GITIGNORE)
-    print(f"created {target}/ (board: {args.board})")
-    print(f"next:  cd {target} && alloy build")
+    print(f"created {target}/ (board: {args.board}, framework: {alloy_root})")
+    print(f"next:  cd {target} && alloy run")
     return 0
 
 
@@ -119,6 +144,29 @@ def cmd_flash(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_monitor(args: argparse.Namespace) -> int:
+    from .monitor import monitor  # noqa: PLC0415
+
+    project = _project(args)
+    monitor(project.load_board())
+    return 0
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    from .emit.common import EmitError  # noqa: PLC0415
+    from .monitor import monitor  # noqa: PLC0415
+
+    rc = cmd_flash(args)
+    if rc != 0:
+        return rc
+    project = _project(args)
+    try:
+        monitor(project.load_board())
+    except EmitError as exc:
+        print(f"note: {exc}")
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="alloy", description=__doc__)
     parser.add_argument("--version", action="version", version=__version__)
@@ -133,7 +181,8 @@ def main() -> None:
     p_boards.add_argument("--project", default=".")
     p_boards.set_defaults(func=cmd_boards)
 
-    for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash)):
+    for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash),
+                      ("monitor", cmd_monitor), ("run", cmd_run)):
         p = sub.add_parser(cmd)
         p.add_argument("--project", default=".")
         p.add_argument("--board", help="override the board declared in alloy.toml")

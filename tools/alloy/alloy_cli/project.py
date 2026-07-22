@@ -94,7 +94,17 @@ def load_project(project_dir: Path, board_override: str | None = None) -> Projec
     except KeyError as exc:
         raise ProjectError(f"{toml_path}: missing required key {exc}") from exc
 
-    alloy_root = _find_alloy_root(root)
+    # Out-of-repo projects: `alloy new` records the framework root it was
+    # scaffolded against; in-repo examples keep discovery by walking up.
+    if recorded_root := data.get("alloy", {}).get("root"):
+        alloy_root = Path(recorded_root).expanduser().resolve()
+        if not (alloy_root / "boards").is_dir():
+            raise ProjectError(
+                f"{toml_path}: [alloy] root = {recorded_root} does not look like "
+                "an alloy checkout (no boards/ dir)"
+            )
+    else:
+        alloy_root = _find_alloy_root(root)
     return Project(
         root=root,
         name=name,

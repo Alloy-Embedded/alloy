@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
-        example: [blink, uart_echo]
+        example: [blink, uart_echo, hello]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,3 +50,28 @@ jobs:
       - name: build ${{ matrix.example }} for ${{ matrix.board }}
         working-directory: alloy/examples/${{ matrix.example }}
         run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}
+
+  # NORTH_STAR guard #8: no feature ships unless CI compiles what it emits —
+  # `alloy new` scaffolds must build, out-of-repo, exactly as a user would.
+  scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: scaffold and build out-of-repo
+        run: |
+          cd "$RUNNER_TEMP"
+          ALLOY_ROOT="$GITHUB_WORKSPACE/alloy" uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy new demo --board nucleo_g071rb
+          cd demo
+          uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy build
