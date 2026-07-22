@@ -129,6 +129,40 @@ def _flash_uf2(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -> str:
             if time.time() > deadline:
                 raise EmitError(f"{volume} never appeared — is the board in BOOTSEL mode?")
             time.sleep(0.5)
-    shutil.copy(uf2_path, volume / uf2_path.name)
-    print(f"copied {uf2_path.name} ({len(uf2) // 1024} KiB) to {volume} — board reboots itself")
+        time.sleep(1.0)  # let the mount settle: an immediate open can ENXIO
+
+    # The device reboots the instant the last block lands, so ENXIO during
+    # write/close with the volume gone is SUCCESS, and an open() during mount
+    # settling deserves a retry.
+    import os  # noqa: PLC0415
+
+    dst = volume / uf2_path.name
+    for attempt in range(5):
+        try:
+            fd = os.open(dst, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+            try:
+                os.write(fd, uf2)
+                os.fsync(fd)
+            finally:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
+            break
+        except OSError as exc:
+            if exc.errno == 6 and not volume.exists():
+                break  # rebooted mid-write: all blocks were streamed
+            if attempt == 4:
+                raise EmitError(f"could not write {dst}: {exc}") from exc
+            time.sleep(1.0)
+
+    deadline = time.time() + 15
+    while volume.exists() and time.time() < deadline:
+        time.sleep(0.5)
+    if volume.exists():
+        raise EmitError(
+            "RPI-RP2 is still mounted — the bootrom did not accept the image "
+            "(bad boot2 checksum or malformed UF2)"
+        )
+    print(f"flashed {uf2_path.name} ({len(uf2) // 1024} KiB) — bootrom accepted the image and rebooted")
     return "uf2-bootsel"
