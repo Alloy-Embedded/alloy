@@ -32,6 +32,13 @@
     "adc": {
       "peripheral": "afec0",
       "label": "internal temp sensor ch11"
+    },
+    "spi": {
+      "peripheral": "spi0",
+      "sck": "pd22",
+      "miso": "pd20",
+      "mosi": "pd21",
+      "label": "SPI0 on EXT1/Arduino headers (SPCK=PD22, MISO=PD20, MOSI=PD21, function B)"
     }
   },
   "probe": {

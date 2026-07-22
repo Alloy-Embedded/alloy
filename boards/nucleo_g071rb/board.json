@@ -37,6 +37,13 @@
       "scl": "pb8",
       "sda": "pb9",
       "label": "Arduino D15/D14 (AF6, internal pull-ups)"
+    },
+    "spi": {
+      "peripheral": "spi1",
+      "sck": "pb3",
+      "miso": "pb4",
+      "mosi": "pb5",
+      "label": "SPI1 on PB3/PB4/PB5 (Arduino D3/D5/D4, morpho CN10) — keeps LD4/PA5 free; set hardware-proven by old-alloy lite_hal_probe"
     }
   },
   "probe": {

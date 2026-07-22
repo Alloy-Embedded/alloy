@@ -5,15 +5,34 @@
   "chip": "st/stm32f722",
   "clock_profile": "pll_180mhz",
   "roles": {
-    "led": { "pin": "pb0", "active": "high", "label": "LD1 (green; LD2 blue=PB7, LD3 red=PB14)" },
-    "button": { "pin": "pc13", "active": "high", "label": "B1 USER (Nucleo-144: pressed = high)" },
+    "led": {
+      "pin": "pb0",
+      "active": "high",
+      "label": "LD1 (green; LD2 blue=PB7, LD3 red=PB14)"
+    },
+    "button": {
+      "pin": "pc13",
+      "active": "high",
+      "label": "B1 USER (Nucleo-144: pressed = high)"
+    },
     "debug_uart": {
       "peripheral": "usart3",
       "tx": "pd8",
       "rx": "pd9",
       "baud": 115200,
       "label": "ST-Link VCP (USART3 — Nucleo-144 wiring)"
+    },
+    "spi": {
+      "peripheral": "spi1",
+      "sck": "pa5",
+      "miso": "pa6",
+      "mosi": "pa7",
+      "label": "SPI1 on Arduino D13/D12/D11 = PA5/PA6/PA7 (CN7, per UM1974 Nucleo-144 pinout — old repo had no SPI map for this board); no LED conflict"
     }
   },
-  "probe": { "kind": "stlink", "runner": "openocd", "chip_id": "STM32F722ZETx" }
+  "probe": {
+    "kind": "stlink",
+    "runner": "openocd",
+    "chip_id": "STM32F722ZETx"
+  }
 }

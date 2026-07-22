@@ -1,0 +1,5 @@
+[project]
+name = "spi_loopback"
+
+[board]
+id = "nucleo_g0b1re"

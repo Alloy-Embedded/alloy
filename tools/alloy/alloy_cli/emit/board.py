@@ -29,7 +29,8 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
     _require(profile is not None, f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
-                             "led_pwm": False, "adc": False, "i2c": False}
+                             "led_pwm": False, "adc": False, "i2c": False,
+                             "spi": False}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -154,6 +155,33 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "};"
         )
 
+    spi_role = roles.get("spi")
+    if spi_role:
+        for key in ("peripheral", "sck", "miso", "mosi"):
+            _require(key in spi_role, f"board {board['id']}: spi role missing '{key}'")
+        _require(spi_role["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: spi peripheral '{spi_role['peripheral']}' not in chip data")
+        caps["spi"] = True
+        decls.append(
+            f"using spi = alloy::spi::bind<alloy::dev::{spi_role['peripheral']}_t,\n"
+            f"                             alloy::spi::sck<alloy::dev::{spi_role['sck']}_t>,\n"
+            f"                             alloy::spi::miso<alloy::dev::{spi_role['miso']}_t>,\n"
+            f"                             alloy::spi::mosi<alloy::dev::{spi_role['mosi']}_t>,\n"
+            f"                             clock_profile>;"
+        )
+    else:
+        decls.append(
+            "// No SPI role declared; stub keeps caps-guarded code compiling.\n"
+            "struct spi {\n"
+            "    struct null_handle {\n"
+            "        std::uint8_t xfer(std::uint8_t) const { return 0u; }\n"
+            "        void write(std::span<const std::uint8_t>) const {}\n"
+            "        void transfer(std::span<std::uint8_t>) const {}\n"
+            "    };\n"
+            "    static null_handle open(alloy::spi::config = {}) { return {}; }\n"
+            "};"
+        )
+
     adc_role = roles.get("adc")
     if adc_role:
         _require("peripheral" in adc_role, f"board {board['id']}: adc role missing 'peripheral'")
@@ -204,6 +232,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 #include "alloy/i2c.hpp"
 #include "alloy/pwm.hpp"
 #include "alloy/routes_gen.hpp"
+#include "alloy/spi.hpp"
 #include "alloy/time.hpp"
 #include "alloy/uart.hpp"{extra_include_block}
 
@@ -213,6 +242,8 @@ struct clock_profile {{
     static constexpr std::uint32_t sysclk_hz = {profile['sysclk_hz']}u;
     static constexpr std::uint32_t ahb_hz = {profile['ahb_hz']}u;
     static constexpr std::uint32_t apb_hz = {profile['apb_hz']}u;
+    // Mirrors apb_hz when the chip data declares no second APB bus.
+    static constexpr std::uint32_t apb2_hz = {profile.get('apb2_hz', profile['apb_hz'])}u;
 }};
 inline constexpr std::uint32_t system_clock_hz = clock_profile::sysclk_hz;
 

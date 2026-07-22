@@ -17,7 +17,7 @@ SIGNALS = {
     "in", "out",
 }
 
-CLOCK_NODES = {"sysclk", "ahb", "apb"}
+CLOCK_NODES = {"sysclk", "ahb", "apb", "apb2"}
 
 
 class EmitError(RuntimeError):

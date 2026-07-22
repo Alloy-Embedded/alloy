@@ -75,6 +75,7 @@ struct bind {
         switch (Inst::kernel) {
             case clock_node::ahb: return Clock::ahb_hz;
             case clock_node::apb: return Clock::apb_hz;
+            case clock_node::apb2: return Clock::apb2_hz;
             case clock_node::sysclk: return Clock::sysclk_hz;
         }
         return Clock::sysclk_hz;

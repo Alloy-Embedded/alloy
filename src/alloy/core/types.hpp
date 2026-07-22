@@ -56,7 +56,7 @@ struct irq_line {
 // Which clock a peripheral's kernel runs from. Codegen maps the chip data's
 // kernel_clock string onto this enum; drivers resolve it against the board's
 // clock profile.
-enum class clock_node : std::uint8_t { sysclk, ahb, apb };
+enum class clock_node : std::uint8_t { sysclk, ahb, apb, apb2 };
 
 // Pin-mux signals. Codegen validates chip-data signal names against this
 // list and fails generation on unknown names (facts fail at generation,
