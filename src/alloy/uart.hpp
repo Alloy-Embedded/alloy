@@ -55,7 +55,19 @@ public:
 private:
     template <class, class, class, class>
     friend struct bind;
+    template <class>
+    friend struct rom_bind;
     handle() = default;
+};
+
+// For UARTs fully configured by a boot ROM/bootloader (classic ESP32 UART0):
+// no pin routing, no clock math — open() defers entirely to the driver.
+template <class Inst>
+struct rom_bind {
+    static handle<Inst> open(config c = {}) {
+        hal::uart_impl<Inst>::enable(0u, c.baud);
+        return handle<Inst>{};
+    }
 };
 
 template <class Inst, class Tx, class Rx, class Clock>

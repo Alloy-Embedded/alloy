@@ -61,7 +61,7 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
         includes += "\n\n// HAL drivers matching this chip's IP versions (data-driven selection).\n"
         includes += "\n".join(f'#include "{inc}"' for inc in sorted(driver_includes))
 
-    irq_numbers = {i["name"]: i["number"] for i in chip["interrupts"]}
+    irq_numbers = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
 
     # Companion aliases require their target struct to be declared first:
     # emit in dependency order (companions are acyclic by lint).

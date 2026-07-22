@@ -64,18 +64,26 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 
     uart = roles.get("debug_uart")
     if uart:
-        for key in ("peripheral", "tx", "rx"):
-            _require(key in uart, f"board {board['id']}: debug_uart missing '{key}'")
+        _require("peripheral" in uart, f"board {board['id']}: debug_uart missing 'peripheral'")
         _require(uart["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: debug_uart peripheral '{uart['peripheral']}' not in chip data")
         caps["debug_uart"] = True
-        decls.append(
-            f"using debug_uart = alloy::uart::bind<alloy::dev::{uart['peripheral']}_t,\n"
-            f"                                     alloy::uart::tx<alloy::dev::{uart['tx']}_t>,\n"
-            f"                                     alloy::uart::rx<alloy::dev::{uart['rx']}_t>,\n"
-            f"                                     clock_profile>;\n"
-            f"inline constexpr std::uint32_t debug_uart_baud = {uart.get('baud', 115200)}u;"
-        )
+        if uart.get("mode") == "rom":
+            # Boot-ROM-configured UART (classic ESP32 UART0): no pin routing.
+            decls.append(
+                f"using debug_uart = alloy::uart::rom_bind<alloy::dev::{uart['peripheral']}_t>;\n"
+                f"inline constexpr std::uint32_t debug_uart_baud = {uart.get('baud', 115200)}u;"
+            )
+        else:
+            for key in ("tx", "rx"):
+                _require(key in uart, f"board {board['id']}: debug_uart missing '{key}'")
+            decls.append(
+                f"using debug_uart = alloy::uart::bind<alloy::dev::{uart['peripheral']}_t,\n"
+                f"                                     alloy::uart::tx<alloy::dev::{uart['tx']}_t>,\n"
+                f"                                     alloy::uart::rx<alloy::dev::{uart['rx']}_t>,\n"
+                f"                                     clock_profile>;\n"
+                f"inline constexpr std::uint32_t debug_uart_baud = {uart.get('baud', 115200)}u;"
+            )
     else:
         decls.append(
             "// This board declares no debug UART; the stub keeps\n"

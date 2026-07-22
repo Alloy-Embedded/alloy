@@ -61,6 +61,9 @@ def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
     if probe.get("kind") == "bootsel":
         return _flash_uf2(chip, elf, probe)
 
+    if probe.get("kind") == "esptool":
+        return _flash_esptool(elf, probe)
+
     if shutil.which("st-flash") and probe.get("kind") == "stlink":
         flash_base = next(m["base"] for m in chip["memories"] if m["kind"] == "flash")
         bin_path = elf.with_suffix(".bin")
@@ -166,3 +169,68 @@ def _flash_uf2(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -> str:
         )
     print(f"flashed {uf2_path.name} ({len(uf2) // 1024} KiB) — bootrom accepted the image and rebooted")
     return "uf2-bootsel"
+
+
+# ── esptool (classic ESP32 under resident IDF bootloader) ───────────────────
+
+
+def _generate_partition_table(partitions: list[list[Any]], out_bin: Path) -> None:
+    """Minimal ESP-IDF partition table (ported verbatim from the old repo's
+    hardware-validated alloyctl fallback: 0xAA50 entries + MD5 marker,
+    padded to 0xC00)."""
+    import hashlib  # noqa: PLC0415
+
+    type_map = {"app": 0x00, "data": 0x01}
+    sub_map = {"factory": 0x00, "ota_0": 0x10, "ota_1": 0x11,
+               "nvs": 0x02, "phy": 0x01, "otadata": 0x00}
+    entries = b""
+    for name, type_s, subtype_s, offset_s, size_s in partitions:
+        t = type_map.get(type_s, None)
+        s = sub_map.get(subtype_s, None)
+        if t is None or s is None:
+            raise EmitError(f"partition {name}: unknown type/subtype {type_s}/{subtype_s}")
+        entry = struct.pack("<BBII", t, s, int(offset_s, 16), int(size_s, 16))
+        entry += name.encode("ascii").ljust(16, b"\x00")[:16] + b"\x00\x00\x00\x00"
+        entries += b"\xaa\x50" + entry
+    md5_marker = b"\xeb\xeb" + b"\xff" * 14 + hashlib.md5(entries).digest()
+    out_bin.write_bytes((entries + md5_marker).ljust(0xC00, b"\xff"))
+
+
+def _flash_esptool(elf: Path, probe: dict[str, Any]) -> str:
+    esptool = shutil.which("esptool") or shutil.which("esptool.py")
+    if esptool is None:
+        raise EmitError("esptool not found on PATH (pip install esptool)")
+    chip_id = probe["chip_id"]
+
+    app_bin = elf.with_suffix(".bin")
+    subprocess.run(
+        [esptool, "--chip", chip_id, "elf2image", "--dont-append-digest",
+         "--output", str(app_bin), str(elf)],
+        check=True,
+    )
+
+    port = probe.get("port")
+    if not port:
+        candidates = sorted(Path("/dev").glob("cu.usbserial*"))
+        if len(candidates) != 1:
+            names = ", ".join(str(c) for c in candidates) or "(none)"
+            raise EmitError(
+                f"could not auto-pick a serial port (found: {names}) — "
+                "set probe.port in board.json or plug exactly one board"
+            )
+        port = str(candidates[0])
+
+    write_args = []
+    if "partitions" in probe:
+        pt_bin = elf.with_name("partition_table.bin")
+        _generate_partition_table(probe["partitions"], pt_bin)
+        write_args += [probe.get("pt_offset", "0x8000"), str(pt_bin)]
+    write_args += [probe.get("app_offset", "0x10000"), str(app_bin)]
+
+    subprocess.run(
+        [esptool, "--chip", chip_id, "--port", port, "--baud", "460800",
+         "write-flash", *write_args],
+        check=True,
+    )
+    # The factory bootloader at 0x1000 is deliberately untouched.
+    return "esptool"

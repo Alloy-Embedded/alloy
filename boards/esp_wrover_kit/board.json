@@ -1,0 +1,28 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "esp_wrover_kit",
+  "name": "Espressif ESP-WROVER-KIT",
+  "chip": "espressif/esp32",
+  "clock_profile": "bootloader_defaults",
+  "roles": {
+    "led": { "pin": "pa2", "active": "low", "label": "RGB green channel (GPIO2; R=GPIO0, B=GPIO4)" },
+    "debug_uart": {
+      "peripheral": "uart0",
+      "mode": "rom",
+      "baud": 115200,
+      "label": "UART0 via onboard FT2232H (ROM-configured 115200 8N1 on GPIO1/GPIO3)"
+    }
+  },
+  "probe": {
+    "kind": "esptool",
+    "chip_id": "esp32",
+    "app_offset": "0x10000",
+    "pt_offset": "0x8000",
+    "partitions": [
+      ["nvs", "data", "nvs", "0x9000", "0x5000"],
+      ["phy_init", "data", "phy", "0xe000", "0x1000"],
+      ["factory", "app", "factory", "0x10000", "0x3F0000"]
+    ],
+    "note": "Relies on the factory-resident ESP-IDF 2nd-stage bootloader at 0x1000 (never reflashed)"
+  }
+}
