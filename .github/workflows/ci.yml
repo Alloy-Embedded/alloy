@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  contract-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: NORTH_STAR guards (no silicon facts in hand-written code, no ifdefs in examples)
+        run: ./scripts/check_contract.sh
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [nucleo_g071rb, same70_xplained]
+        example: [blink, uart_echo]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: build ${{ matrix.example }} for ${{ matrix.board }}
+        working-directory: alloy/examples/${{ matrix.example }}
+        run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}

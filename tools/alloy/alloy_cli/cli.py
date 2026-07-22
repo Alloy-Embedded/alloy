@@ -50,7 +50,10 @@ compile_commands.json
 
 
 def _project(args: argparse.Namespace) -> Project:
-    return load_project(Path(getattr(args, "project", ".") or "."))
+    return load_project(
+        Path(getattr(args, "project", ".") or "."),
+        board_override=getattr(args, "board", None),
+    )
 
 
 def cmd_new(args: argparse.Namespace) -> int:
@@ -133,6 +136,7 @@ def main() -> None:
     for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash)):
         p = sub.add_parser(cmd)
         p.add_argument("--project", default=".")
+        p.add_argument("--board", help="override the board declared in alloy.toml")
         p.set_defaults(func=func)
 
     args = parser.parse_args()

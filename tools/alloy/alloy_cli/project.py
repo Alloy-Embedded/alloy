@@ -29,13 +29,15 @@ class Project:
     alloy_root: Path
     devices_root: Path
 
+    # Per-board trees: switching boards must never reuse another board's
+    # CMake cache (cached CPU flags) or stale generated headers.
     @property
     def gen_dir(self) -> Path:
-        return self.root / ".alloy" / "generated"
+        return self.root / ".alloy" / "generated" / self.board_id
 
     @property
     def build_dir(self) -> Path:
-        return self.root / ".alloy" / "build-tree"
+        return self.root / ".alloy" / "build-tree" / self.board_id
 
     @property
     def board_json(self) -> Path:
@@ -80,7 +82,7 @@ def _find_devices_root(alloy_root: Path) -> Path:
     )
 
 
-def load_project(project_dir: Path) -> Project:
+def load_project(project_dir: Path, board_override: str | None = None) -> Project:
     root = project_dir.resolve()
     toml_path = root / "alloy.toml"
     if not toml_path.exists():
@@ -88,7 +90,7 @@ def load_project(project_dir: Path) -> Project:
     data = tomllib.loads(toml_path.read_text())
     try:
         name = data["project"]["name"]
-        board_id = data["board"]["id"]
+        board_id = board_override or data["board"]["id"]
     except KeyError as exc:
         raise ProjectError(f"{toml_path}: missing required key {exc}") from exc
 
