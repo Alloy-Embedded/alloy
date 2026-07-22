@@ -33,10 +33,15 @@ int main() {
     uart.write("alloy analog_probe\r\n");
     while (true) {
         if constexpr (board::caps::adc) {
-            uart.write("vref_raw=");
-            write_u32(uart, adc.read(board::adc_vref_channel));
-            uart.write(" temp_raw=");
-            write_u32(uart, adc.read(board::adc_temp_channel));
+            if constexpr (board::adc_has_vref) {
+                uart.write("vref_raw=");
+                write_u32(uart, adc.read(board::adc_vref_channel));
+                uart.write(" ");
+            }
+            if constexpr (board::adc_has_temp) {
+                uart.write("temp_raw=");
+                write_u32(uart, adc.read(board::adc_temp_channel));
+            }
             uart.write("\r\n");
         } else {
             uart.write("adc: not available on this board\r\n");

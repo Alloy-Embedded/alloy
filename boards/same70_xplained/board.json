@@ -5,15 +5,38 @@
   "chip": "microchip/atsame70q21",
   "clock_profile": "plla_150mhz",
   "roles": {
-    "led": { "pin": "pc8", "active": "low", "label": "LED0 (green)" },
-    "button": { "pin": "pa11", "active": "low", "pull": "up", "label": "SW0 USER" },
+    "led": {
+      "pin": "pc8",
+      "active": "low",
+      "label": "LED0 (green)"
+    },
+    "button": {
+      "pin": "pa11",
+      "active": "low",
+      "pull": "up",
+      "label": "SW0 USER"
+    },
     "debug_uart": {
       "peripheral": "usart1",
       "tx": "pb4",
       "rx": "pa21",
       "baud": 115200,
       "label": "EDBG VCP"
+    },
+    "i2c": {
+      "peripheral": "twihs0",
+      "scl": "pa4",
+      "sda": "pa3",
+      "label": "Xplained EXT/Arduino I2C (TWIHS0, function A)"
+    },
+    "adc": {
+      "peripheral": "afec0",
+      "label": "internal temp sensor ch11"
     }
   },
-  "probe": { "kind": "cmsis-dap", "runner": "openocd", "chip_id": "ATSAME70Q21B" }
+  "probe": {
+    "kind": "cmsis-dap",
+    "runner": "openocd",
+    "chip_id": "ATSAME70Q21B"
+  }
 }

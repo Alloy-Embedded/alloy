@@ -164,10 +164,12 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
         decls.append(
             f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, clock_profile>;"
         )
-        for chname in sorted(chip["peripherals"][periph_name].get("channels", {})):
+        channels = chip["peripherals"][periph_name].get("channels", {})
+        for chname in ("vref", "temp"):
+            present = chname in channels
             decls.append(
-                f"inline constexpr std::uint8_t adc_{chname}_channel = "
-                f"alloy::dev::{periph_name}_t::ch_{chname};"
+                f"inline constexpr bool adc_has_{chname} = {'true' if present else 'false'};\n"
+                f"inline constexpr std::uint8_t adc_{chname}_channel = {channels.get(chname, 0)}u;"
             )
     else:
         decls.append(
@@ -178,6 +180,8 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "    };\n"
             "    static null_handle open(alloy::adc::config = {}) { return {}; }\n"
             "};\n"
+            "inline constexpr bool adc_has_vref = false;\n"
+            "inline constexpr bool adc_has_temp = false;\n"
             "inline constexpr std::uint8_t adc_vref_channel = 0u;\n"
             "inline constexpr std::uint8_t adc_temp_channel = 0u;"
         )
