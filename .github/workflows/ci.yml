@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_g071rb, same70_xplained]
+        board: [nucleo_g071rb, same70_xplained, rp2040_zero, raspberry_pi_pico]
         example: [blink, uart_echo]
     steps:
       - uses: actions/checkout@v4
