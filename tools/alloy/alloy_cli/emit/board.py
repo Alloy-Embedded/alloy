@@ -395,13 +395,20 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
             role_init.append("    button.init();")
 
     role_block = "\n".join(role_init)
+    # Xtensa: take the vectors over from the ROM (VECBASE) before anything
+    # can enable an interrupt line; the symbol lives in arch/xtensa/vectors.S.
+    vectors_decl = ""
+    vectors_call = ""
+    if arch_ns == "xtensa" and chip.get("interrupts"):
+        vectors_decl = 'extern "C" void alloy_vectors_install();\n\n'
+        vectors_call = "    alloy_vectors_install();\n"
     return f"""{BANNER}// Board: {board['id']} — role + clock bring-up
 #include "alloy/board.hpp"
 
 #include "alloy/arch/{arch_ns}/systick.hpp"
 #include "alloy/hal/clock_program.hpp"
 
-namespace board {{
+{vectors_decl}namespace board {{
 namespace {{
 
 // Clock profile '{board['clock_profile']}' resolved from chip data.
@@ -412,7 +419,7 @@ constexpr alloy::clock_step kClockProgram[] = {{
 }}  // namespace
 
 bool init() {{
-    const bool clock_ok = alloy::hal::run_clock_program(kClockProgram);
+{vectors_call}    const bool clock_ok = alloy::hal::run_clock_program(kClockProgram);
     // SysTick counts the CPU clock (sysclk). On failure the chip is still on
     // its boot clock; keep the timebase honest.
     const std::uint32_t core_hz = clock_ok ? clock_profile::sysclk_hz : {boot_hz}u;

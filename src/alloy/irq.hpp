@@ -1,5 +1,6 @@
-// User-facing interrupt layer (Cortex-M v1; the ESP32 phase will swap the
-// NVIC calls for an arch dispatch without changing this API).
+// User-facing interrupt layer — arch-neutral: line enable/disable go
+// through alloy::arch::irq_line_*, implemented per arch (Cortex-M NVIC;
+// Xtensa interrupt matrix + level-1 CPU-line allocator + INTENABLE).
 //
 // Model: the generated vector table emits one weak wrapper per IRQ line
 // that calls alloy_irq_dispatch(n); dispatch indexes a RAM slot table of
@@ -17,7 +18,6 @@
 
 #include <cstdint>
 
-#include "alloy/arch/cortex_m/nvic.hpp"
 #include "alloy/arch/irq.hpp"
 #include "alloy/core/types.hpp"
 
@@ -50,15 +50,9 @@ inline void attach(alloy::irq_line line, handler fn, void* ctx = nullptr) {
     arch::irq_restore(saved);
 }
 
-inline void enable(alloy::irq_line line) {
-    arch::cortex_m::nvic::set_priority(line.number, 0x80);
-    arch::cortex_m::nvic::clear_pending(line.number);
-    arch::cortex_m::nvic::enable(line.number);
-}
+inline void enable(alloy::irq_line line) { arch::irq_line_enable(line.number); }
 
-inline void disable(alloy::irq_line line) {
-    arch::cortex_m::nvic::disable(line.number);
-}
+inline void disable(alloy::irq_line line) { arch::irq_line_disable(line.number); }
 
 inline void detach(alloy::irq_line line) {
     disable(line);

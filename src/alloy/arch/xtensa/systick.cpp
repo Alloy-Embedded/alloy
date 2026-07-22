@@ -20,12 +20,14 @@ namespace alloy::arch {
 
 irq_state irq_save() {
     std::uint32_t ps;
-    __asm volatile("rsil %0, 15" : "=a"(ps));
+    // "memory" keeps stores to shared state (irq slots, cpu2src) from being
+    // hoisted/sunk across the critical-section boundary.
+    __asm volatile("rsil %0, 15" : "=a"(ps)::"memory");
     return ps;
 }
 
 void irq_restore(irq_state state) {
-    __asm volatile("wsr %0, ps\n\trsync" ::"a"(state));
+    __asm volatile("wsr %0, ps\n\trsync" ::"a"(state) : "memory");
 }
 
 }  // namespace alloy::arch

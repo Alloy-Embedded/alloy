@@ -16,4 +16,11 @@ using irq_state = std::uint32_t;
 // Restore the state returned by irq_save().
 void irq_restore(irq_state state);
 
+// Per-arch interrupt-line control consumed by alloy::irq (implemented in
+// arch/cortex_m/irq_dispatch.cpp via the NVIC, arch/xtensa/irq_ctrl.cpp via
+// the interrupt matrix + INTENABLE). `n` is the chip-data irq number: an
+// NVIC line on Cortex-M, a matrix SOURCE on Xtensa.
+void irq_line_enable(unsigned n);
+void irq_line_disable(unsigned n);
+
 }  // namespace alloy::arch

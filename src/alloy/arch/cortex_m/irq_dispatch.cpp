@@ -11,3 +11,17 @@ extern "C" void alloy_irq_dispatch(unsigned n) {
         s.fn(s.ctx);
     }
 }
+
+#include "alloy/arch/cortex_m/nvic.hpp"
+
+namespace alloy::arch {
+
+void irq_line_enable(unsigned n) {
+    cortex_m::nvic::set_priority(n, 0x80);  // mid-scale default (top bits)
+    cortex_m::nvic::clear_pending(n);
+    cortex_m::nvic::enable(n);
+}
+
+void irq_line_disable(unsigned n) { cortex_m::nvic::disable(n); }
+
+}  // namespace alloy::arch

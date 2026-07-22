@@ -113,7 +113,7 @@ def _emit_xtensa_linker(chip: dict[str, Any]) -> str:
     bootloader; +0x10 origins leave room for the image segment header;
     literals placed before text for l32r negative offsets)."""
     mem = {m["name"]: m for m in chip["memories"]}
-    for req in ("irom", "drom", "iram", "dram"):
+    for req in ("irom", "drom", "iram", "dram", "vectors"):
         if req not in mem:
             raise EmitError(f"xtensa linker needs memory '{req}' in chip data")
 
@@ -125,6 +125,7 @@ MEMORY
 {{
     DROM (r)   : ORIGIN = {mem['drom']['base']}, LENGTH = {mem['drom']['size']}
     IROM (rx)  : ORIGIN = {mem['irom']['base']}, LENGTH = {mem['irom']['size']}
+    VECTORS (rx) : ORIGIN = {mem['vectors']['base']}, LENGTH = {mem['vectors']['size']}
     IRAM (rwx) : ORIGIN = {mem['iram']['base']}, LENGTH = {mem['iram']['size']}
     DRAM (rw)  : ORIGIN = {mem['dram']['base']}, LENGTH = {mem['dram']['size']}
 }}
@@ -133,6 +134,13 @@ _stack_top = ORIGIN(DRAM) + LENGTH(DRAM);
 
 SECTIONS
 {{
+    /* XEA2 relocatable vector table + level-1 handlers: 1 KiB-aligned,
+     * loaded to IRAM by the resident bootloader, pointed at by VECBASE. */
+    .alloy.vectors : ALIGN(1024)
+    {{
+        KEEP(*(.alloy.vectors))
+    }} > VECTORS
+
     .rodata : ALIGN(4)
     {{
         *(.rodata .rodata.*)
@@ -161,15 +169,14 @@ SECTIONS
         __fini_array_end = .;
     }} > IROM
 
-    _sidata = LOADADDR(.data);
-
+    /* No AT> flash LMA and no _sidata on xtensa: esptool images sections
+     * by VMA and the resident bootloader loads .data straight into DRAM —
+     * a flash LMA would be an unloadable trap (see startup.cpp note). */
     .data : ALIGN(4)
     {{
-        _sdata = .;
         *(.data .data.*)
         . = ALIGN(4);
-        _edata = .;
-    }} > DRAM AT> IROM
+    }} > DRAM
 
     .bss (NOLOAD) : ALIGN(4)
     {{

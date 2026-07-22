@@ -18,7 +18,7 @@ from .common import EmitError, cpp_ip_namespace
 from .device import emit_device_header, emit_routes_header
 from .ip import emit_ip_header
 from .linker import emit_linker_script
-from .vectors import emit_vector_table
+from .vectors import emit_vector_table, emit_xtensa_irq_data
 
 _ARCH_NS = {
     "armv6m": "cortex_m",
@@ -78,6 +78,8 @@ def generate(project: Project) -> list[Path]:
     _write(gen / "board.cpp", emit_board_source(board, chip, db.registers, arch_ns), written)
     if chip.get("interrupts") and arch_ns == "cortex_m":
         _write(gen / "vector_table.c", emit_vector_table(chip), written)
+    elif chip.get("interrupts") and arch_ns == "xtensa":
+        _write(gen / "irq_data.c", emit_xtensa_irq_data(chip, db.registers), written)
     _write(gen / "linker.ld", emit_linker_script(chip, arch_ns), written)
     if "boot" in chip:
         from .boot import emit_boot2  # noqa: PLC0415

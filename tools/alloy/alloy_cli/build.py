@@ -98,7 +98,7 @@ def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
                 runtime_sources: list[Path]) -> str:
     gen = project.gen_dir
     gen_sources = [gen / "board.cpp"]
-    for optional in ("vector_table.c", "boot2.c"):
+    for optional in ("vector_table.c", "boot2.c", "irq_data.c"):
         if (gen / optional).exists():
             gen_sources.append(gen / optional)
     src_list = "\n    ".join(

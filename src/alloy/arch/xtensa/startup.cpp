@@ -4,9 +4,6 @@
 
 extern "C" {
 
-extern std::uint32_t _sidata;
-extern std::uint32_t _sdata;
-extern std::uint32_t _edata;
 extern std::uint32_t _sbss;
 extern std::uint32_t _ebss;
 
@@ -19,10 +16,11 @@ extern init_fn __init_array_end[];
 int main();
 
 [[noreturn]] void _alloy_startup() {
-    std::uint32_t* src = &_sidata;
-    for (std::uint32_t* dst = &_sdata; dst < &_edata; ++dst, ++src) {
-        *dst = *src;
-    }
+    // NO .data copy here: esptool images ELF sections by their VMA, so the
+    // resident bootloader loads .data straight into DRAM — a second copy
+    // from _sidata (the AT> flash address, which is NOT in the image at
+    // that offset) would corrupt it. Latent-bug fix from the IRQ-phase
+    // audit; .bss/init arrays remain ours.
     for (std::uint32_t* dst = &_sbss; dst < &_ebss; ++dst) {
         *dst = 0u;
     }

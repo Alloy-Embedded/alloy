@@ -12,8 +12,11 @@ namespace alloy::arch::xtensa {
 // Record the CPU clock for CCOUNT-based delays. Called by board::init().
 void systick_init(std::uint32_t core_hz);
 
-// v1: no interrupts are ever enabled on Xtensa (polled timebase, polled
-// drivers). Kept for board::init() symmetry with Cortex-M.
-inline void enable_irq() {}
+// Drop PS.INTLEVEL to 0: level-1 interrupts (the only ones alloy enables)
+// become deliverable. Called at the end of board::init().
+inline void enable_irq() {
+    std::uint32_t tmp;
+    __asm volatile("rsil %0, 0" : "=a"(tmp));
+}
 
 }  // namespace alloy::arch::xtensa
