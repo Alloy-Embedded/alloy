@@ -102,6 +102,20 @@ def cmd_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_flash(args: argparse.Namespace) -> int:
+    from .flash import flash  # noqa: PLC0415
+
+    project = _project(args)
+    generate(project)
+    board = project.load_board()
+    db = load_database(project.devices_root)
+    chip = db.chips[board["chip"]]
+    elf = build(project, chip)
+    runner = flash(board, chip, elf)
+    print(f"\nflashed {elf.name} via {runner}")
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="alloy", description=__doc__)
     parser.add_argument("--version", action="version", version=__version__)
@@ -116,7 +130,7 @@ def main() -> None:
     p_boards.add_argument("--project", default=".")
     p_boards.set_defaults(func=cmd_boards)
 
-    for cmd, func in (("gen", cmd_gen), ("build", cmd_build)):
+    for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash)):
         p = sub.add_parser(cmd)
         p.add_argument("--project", default=".")
         p.set_defaults(func=func)
