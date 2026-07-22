@@ -34,6 +34,14 @@ struct pwm_impl<Inst> {
     static rw32& hsch_duty(unsigned ch) {
         return alloy::reg_at(Inst::base, IP::HSCH_DUTY_offset, IP::HSCH_DUTY_stride, ch);
     }
+    static rw32& hsch_conf1(unsigned ch) {
+        return alloy::reg_at(Inst::base, IP::HSCH_CONF1_offset, IP::HSCH_CONF1_stride, ch);
+    }
+
+    // DUTY only takes effect after CONF1.DUTY_START latches it (auto-clears).
+    static void latch_duty(unsigned ch) {
+        IP::duty_start.write(hsch_conf1(ch), 1u);
+    }
     static rw32& hstimer_conf(unsigned t) {
         return alloy::reg_at(Inst::base, IP::HSTIMER_CONF_offset, IP::HSTIMER_CONF_stride, t);
     }
@@ -59,6 +67,7 @@ struct pwm_impl<Inst> {
         IP::timer_sel.write(conf0, 0u);
         hsch_hpoint(ch) = 0u;
         hsch_duty(ch) = 0u;
+        latch_duty(ch);
         IP::sig_out_en.write(conf0, 1u);
     }
 
@@ -66,6 +75,7 @@ struct pwm_impl<Inst> {
         const std::uint32_t steps =
             (static_cast<std::uint32_t>(duty) << kDutyResBits) / 65535u;
         hsch_duty(channel - 1u) = steps << 4;  // [3:0] = dither, unused
+        latch_duty(channel - 1u);
     }
 };
 
