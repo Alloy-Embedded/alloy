@@ -38,7 +38,18 @@
       "sck": "pd22",
       "miso": "pd20",
       "mosi": "pd21",
-      "label": "SPI0 on EXT1/Arduino headers (SPCK=PD22, MISO=PD20, MOSI=PD21, function B)"
+      "label": "SPI0 on EXT1/Arduino headers (SPCK=PD22, MISO=PD20, MOSI=PD21, function B); CS software PD25 (EXT1 pin 15, NPCS1 como GPIO)",
+      "cs": "pd25"
+    },
+    "eeprom": {
+      "bus": "i2c",
+      "kind": "at24mac402",
+      "addr": "0x57",
+      "id_addr": "0x5F",
+      "page_size": 16,
+      "bytes": 256,
+      "wp": "pc11",
+      "label": "AT24MAC402 U600: EEPROM 256B @0x57, bloco identidade @0x5F (EUI-48 em 0x9A, serial em 0x80), WP em PC11 (baixo = gravavel); 0x37 e o alias de write-protect do mesmo chip"
     }
   },
   "probe": {

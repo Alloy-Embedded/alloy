@@ -34,6 +34,17 @@ public:
     }
 };
 
+// No-op stand-in for OPTIONAL role pins (spi_cs, eeprom_wp) on boards that
+// don't wire them — keeps `if constexpr (caps)` discarded branches valid.
+struct null_output {
+    static void init() {}
+    void set_high() const {}
+    void set_low() const {}
+    void toggle() const {}
+    void on() const {}
+    void off() const {}
+};
+
 template <class Pin, class Polarity = active_high_t>
 class input {
     static constexpr bool inverted = std::same_as<Polarity, active_low_t>;

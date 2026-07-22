@@ -44,7 +44,7 @@ concept DelayNs = requires(T d, std::uint32_t ns) {
 // I2C controller. bool results are honest v1 error reporting: false = NACK
 // or bus error (NACK detection is THE error that matters on I2C).
 template <class T>
-concept I2cBus = requires(T& b, std::uint8_t addr, std::span<std::uint8_t> rd,
+concept I2cBus = requires(const T& b, std::uint8_t addr, std::span<std::uint8_t> rd,
                           std::span<const std::uint8_t> wr) {
     { b.write(addr, wr) } -> std::same_as<bool>;
     { b.read(addr, rd) } -> std::same_as<bool>;
@@ -53,8 +53,10 @@ concept I2cBus = requires(T& b, std::uint8_t addr, std::span<std::uint8_t> rd,
 
 // SPI controller (bus only; chip-selects are plain OutputPins — the
 // SpiDevice sharing layer comes later, embedded-hal style).
+// Checked on const T& because handles are stateless and drivers hold them
+// by const reference — a conforming bus must expose const methods.
 template <class T>
-concept SpiBus = requires(T& b, std::uint8_t byte, std::span<std::uint8_t> buf,
+concept SpiBus = requires(const T& b, std::uint8_t byte, std::span<std::uint8_t> buf,
                           std::span<const std::uint8_t> cbuf) {
     { b.xfer(byte) } -> std::same_as<std::uint8_t>;
     b.write(cbuf);

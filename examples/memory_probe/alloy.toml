@@ -1,0 +1,5 @@
+[project]
+name = "memory_probe"
+
+[board]
+id = "same70_xplained"

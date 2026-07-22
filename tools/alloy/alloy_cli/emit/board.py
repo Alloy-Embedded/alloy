@@ -30,7 +30,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
-                             "spi": False}
+                             "spi": False, "eeprom": False}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -169,6 +169,20 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             f"                             alloy::spi::mosi<alloy::dev::{spi_role['mosi']}_t>,\n"
             f"                             clock_profile>;"
         )
+        if "cs" in spi_role:
+            _require(spi_role["cs"] in chip.get("pins", {}),
+                     f"board {board['id']}: spi cs pin '{spi_role['cs']}' not in chip data")
+            decls.append(
+                "inline constexpr bool spi_has_cs = true;\n"
+                "// Chip-select is active-low; drivers use set_high/set_low directly.\n"
+                f"inline constexpr alloy::gpio::output<alloy::dev::{spi_role['cs']}_t, "
+                f"alloy::gpio::active_low_t> spi_cs{{}};"
+            )
+        else:
+            decls.append(
+                "inline constexpr bool spi_has_cs = false;\n"
+                "inline constexpr alloy::gpio::null_output spi_cs{};"
+            )
     else:
         decls.append(
             "// No SPI role declared; stub keeps caps-guarded code compiling.\n"
@@ -179,7 +193,49 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "        void transfer(std::span<std::uint8_t>) const {}\n"
             "    };\n"
             "    static null_handle open(alloy::spi::config = {}) { return {}; }\n"
-            "};"
+            "};\n"
+            "inline constexpr bool spi_has_cs = false;\n"
+            "inline constexpr alloy::gpio::null_output spi_cs{};"
+        )
+
+    eeprom_role = roles.get("eeprom")
+    if eeprom_role:
+        _require("addr" in eeprom_role, f"board {board['id']}: eeprom role missing 'addr'")
+        _require(eeprom_role.get("bus", "i2c") == "i2c",
+                 f"board {board['id']}: eeprom role only supports bus 'i2c' for now")
+        _require("i2c" in roles,
+                 f"board {board['id']}: eeprom role needs the i2c role on the same board")
+        caps["eeprom"] = True
+        decls.append(
+            f"inline constexpr std::uint8_t eeprom_addr = {int(eeprom_role['addr'], 16)}u;\n"
+            f"// 0 = the part has no separate identity/serial block.\n"
+            f"inline constexpr std::uint8_t eeprom_id_addr = {int(eeprom_role.get('id_addr', '0x0'), 16)}u;\n"
+            f"inline constexpr std::uint8_t eeprom_page_size = {eeprom_role.get('page_size', 16)}u;\n"
+            f"inline constexpr std::uint16_t eeprom_bytes = {eeprom_role.get('bytes', 256)}u;"
+        )
+        if "wp" in eeprom_role:
+            _require(eeprom_role["wp"] in chip.get("pins", {}),
+                     f"board {board['id']}: eeprom wp pin '{eeprom_role['wp']}' not in chip data")
+            decls.append(
+                "// Drive LOW to enable EEPROM writes (WP is active-high protect).\n"
+                "inline constexpr bool eeprom_has_wp = true;\n"
+                f"inline constexpr alloy::gpio::output<alloy::dev::{eeprom_role['wp']}_t, "
+                f"alloy::gpio::active_high_t> eeprom_wp{{}};"
+            )
+        else:
+            decls.append(
+                "inline constexpr bool eeprom_has_wp = false;\n"
+                "inline constexpr alloy::gpio::null_output eeprom_wp{};"
+            )
+    else:
+        decls.append(
+            "// No EEPROM declared; zeros keep caps-guarded code compiling.\n"
+            "inline constexpr std::uint8_t eeprom_addr = 0u;\n"
+            "inline constexpr std::uint8_t eeprom_id_addr = 0u;\n"
+            "inline constexpr std::uint8_t eeprom_page_size = 0u;\n"
+            "inline constexpr std::uint16_t eeprom_bytes = 0u;\n"
+            "inline constexpr bool eeprom_has_wp = false;\n"
+            "inline constexpr alloy::gpio::null_output eeprom_wp{};"
         )
 
     adc_role = roles.get("adc")
