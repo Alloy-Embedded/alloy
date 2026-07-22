@@ -21,6 +21,15 @@ def emit_linker_script(chip: dict[str, Any]) -> str:
     if flash is None or ram is None:
         raise EmitError("chip data must declare flash and ram memories")
 
+    boot_section = ""
+    if "boot" in chip:
+        boot_section = """    .boot2 :
+    {
+        KEEP(*(.boot2))
+    } > FLASH
+
+"""
+
     return f"""{_BANNER}/* Chip: {chip['vendor']}/{chip['part']} */
 
 MEMORY
@@ -35,7 +44,7 @@ _estack = ORIGIN(RAM) + LENGTH(RAM);
 
 SECTIONS
 {{
-    .isr_vector :
+{boot_section}    .isr_vector :
     {{
         KEEP(*(.isr_vector))
     }} > FLASH

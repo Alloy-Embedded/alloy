@@ -16,8 +16,11 @@ if grep -rnE "$addr_pattern" "$root/src/alloy" --include='*.hpp' --include='*.cp
     echo "FAIL: hardware address in hand-written C++ (facts must come from alloy-devices)"
     fail=1
 fi
+# Explicit, auditable exceptions carry a `contract-ok: <reason>` line comment
+# (file-format magics like UF2). Grep for contract-ok to review them all.
 if grep -rnE "$addr_pattern" "$root/tools/alloy/alloy_cli" --include='*.py' \
-    | grep -vE "0xFFFF'?FFFF"; then
+    | grep -vE "0xFFFF'?FFFF" \
+    | grep -v "contract-ok:"; then
     echo "FAIL: hardware address hardcoded in the code generator"
     fail=1
 fi

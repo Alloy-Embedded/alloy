@@ -77,5 +77,9 @@ def generate(project: Project) -> list[Path]:
     _write(gen / "board.cpp", emit_board_source(board, chip, db.registers, arch_ns), written)
     _write(gen / "vector_table.c", emit_vector_table(chip), written)
     _write(gen / "linker.ld", emit_linker_script(chip), written)
+    if "boot" in chip:
+        from .boot import emit_boot2  # noqa: PLC0415
+
+        _write(gen / "boot2.c", emit_boot2(chip), written)
 
     return written

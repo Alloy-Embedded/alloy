@@ -1,0 +1,23 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "raspberry_pi_pico",
+  "name": "Raspberry Pi Pico",
+  "chip": "raspberrypi/rp2040",
+  "clock_profile": "pll_125mhz",
+  "roles": {
+    "led": { "pin": "pa25", "active": "high", "label": "onboard LED (GPIO25)" },
+    "debug_uart": {
+      "peripheral": "uart0",
+      "tx": "pa0",
+      "rx": "pa1",
+      "baud": 115200,
+      "label": "UART0 on GP0/GP1 (header pins 1/2 — needs external USB-serial adapter)"
+    }
+  },
+  "probe": {
+    "kind": "bootsel",
+    "runner": "uf2",
+    "family_id": "0xE48BFF56",
+    "volume": "/Volumes/RPI-RP2"
+  }
+}

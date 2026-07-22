@@ -63,8 +63,23 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
 
     irq_numbers = {i["name"]: i["number"] for i in chip["interrupts"]}
 
+    # Companion aliases require their target struct to be declared first:
+    # emit in dependency order (companions are acyclic by lint).
+    ordered: list[str] = []
+    pending = sorted(chip["peripherals"])
+    while pending:
+        progressed = False
+        for name in list(pending):
+            deps = chip["peripherals"][name].get("companions", {}).values()
+            if all(d in ordered for d in deps):
+                ordered.append(name)
+                pending.remove(name)
+                progressed = True
+        if not progressed:
+            raise EmitError(f"companion cycle among peripherals: {pending}")
+
     blocks: list[str] = []
-    for name in sorted(chip["peripherals"]):
+    for name in ordered:
         periph = chip["peripherals"][name]
         vendor, ip = cpp_ip_namespace(periph["ip"])
         lines = [
@@ -84,6 +99,10 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             if node not in CLOCK_NODES:
                 raise EmitError(f"{name}: kernel_clock '{node}' not representable (skeleton supports {sorted(CLOCK_NODES)})")
             lines.append(f"    static constexpr alloy::clock_node kernel = alloy::clock_node::{node};")
+        for cname in sorted(periph.get("companions", {})):
+            lines.append(
+                f"    using {cname}_t = alloy::dev::{periph['companions'][cname]}_t;"
+            )
         lines.append("};")
         lines.append(f"inline constexpr {name}_t {name}{{}};")
         blocks.append("\n".join(lines))
@@ -91,13 +110,11 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
     pin_blocks: list[str] = []
     for pname in sorted(chip.get("pins", {})):
         pin = chip["pins"][pname]
-        port_periph = next(
-            (cand for cand in (f"gpio{pin['port']}", f"pio{pin['port']}")
-             if cand in chip["peripherals"]),
-            None,
-        )
+        candidates = ([pin["bank"]] if "bank" in pin else
+                      [f"gpio{pin['port']}", f"pio{pin['port']}"])
+        port_periph = next((c for c in candidates if c in chip["peripherals"]), None)
         if port_periph is None:
-            raise EmitError(f"pin {pname}: no gpio{pin['port']}/pio{pin['port']} peripheral in chip data")
+            raise EmitError(f"pin {pname}: none of {candidates} is a peripheral in chip data")
         lines = [
             f"struct {pname}_t {{",
             f"    using port_t = {port_periph}_t;",

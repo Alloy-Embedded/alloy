@@ -78,10 +78,10 @@ def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
 
 # ── UF2 (BOOTSEL mass-storage) ──────────────────────────────────────────────
 
-_UF2_MAGIC_START0 = 0x0A324655
-_UF2_MAGIC_START1 = 0x9E5D5157
-_UF2_MAGIC_END = 0x0AB16F30
-_UF2_FLAG_FAMILY_ID = 0x00002000
+_UF2_MAGIC_START0 = 0x0A324655  # contract-ok: UF2 file-format magic, not a silicon fact
+_UF2_MAGIC_START1 = 0x9E5D5157  # contract-ok: UF2 file-format magic
+_UF2_MAGIC_END = 0x0AB16F30  # contract-ok: UF2 file-format magic
+_UF2_FLAG_FAMILY_ID = 0x00002000  # contract-ok: UF2 header flag
 
 
 def _elf_to_uf2(elf: Path, flash_base: int, family_id: int) -> bytes:

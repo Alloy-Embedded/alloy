@@ -79,20 +79,31 @@ struct bind {
         return Clock::sysclk_hz;
     }
 
+    // Route payload -> mux value per kind: af_fixed carries an AF number,
+    // funcsel a FUNCSEL value; both reach the pin driver's make_af().
+    template <class Route>
+    static constexpr std::uint8_t mux_value() {
+        static_assert(Route::k == routes::kind::af_fixed ||
+                          Route::k == routes::kind::funcsel,
+                      "route kind not implemented yet (full_matrix/psel pending)");
+        if constexpr (Route::k == routes::kind::af_fixed) {
+            return Route::af;
+        } else {
+            return Route::funcsel;
+        }
+    }
+
     static handle<Inst> open(config c) {
         using tx_route = routes::route<tx_pin, Inst, signal::tx>;
         using rx_route = routes::route<rx_pin, Inst, signal::rx>;
-        static_assert(tx_route::k == routes::kind::af_fixed &&
-                          rx_route::k == routes::kind::af_fixed,
-                      "walking skeleton implements af_fixed routing only");
 
         if (detail_opened) {
             __builtin_trap();  // double-open: honest runtime guard
         }
         detail_opened = true;
 
-        hal::pin_impl<tx_pin>::make_af(tx_route::af);
-        hal::pin_impl<rx_pin>::make_af(rx_route::af);
+        hal::pin_impl<tx_pin>::make_af(mux_value<tx_route>());
+        hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
         hal::uart_impl<Inst>::enable(kernel_hz(), c.baud);
         return handle<Inst>{};
     }
