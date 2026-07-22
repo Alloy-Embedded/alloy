@@ -61,11 +61,18 @@ code that consumes generated facts by name.
 
 ## Scope discipline (v1)
 
-ST STM32G0 first, then SAME70, then RP2040. nRF52840 is the proof that "new family = data
-only" works. ESP32-C3 is its own tier later. Classic ESP32 (Xtensa LX6 — no systimer,
-second-stage bootloader) and AVR (needs rw8 overlays + freestanding audit) are explicitly
-deferred. Depth before breadth: 3 boards that fully work beat 588 admitted devices with 3
-working.
+ST STM32G0 first, then SAME70, then RP2040 — all three hardware-validated 2026-07-22.
+nRF52840 remains the proof that "new family = data only" works. AVR (needs rw8 overlays +
+freestanding audit) stays deferred. Depth before breadth: boards that fully work beat 588
+admitted devices with 3 working.
+
+**Amendment (2026-07-22, owner decision):** classic ESP32 (Xtensa LX6) is promoted to the
+active queue — the owner's validation hardware is an ESP-WROVER-KIT. The schedule-killer
+risks the audit flagged are contained by explicit v1 constraints, honestly surfaced in
+caps: the app is RAM-only and loaded by the boot ROM (no second-stage bootloader, no
+XIP/flash cache), clocks stay at ROM/XTAL defaults (no clock-tree bring-up; timebase =
+CCOUNT/CCOMPARE), and only GPIO-matrix routing + UART0 + GPIO are in scope. Anything
+beyond that (XIP, PSRAM, Wi-Fi, 240 MHz) is explicitly out until the family earns it.
 
 ## Known traps (from the audit — do not repeat)
 
