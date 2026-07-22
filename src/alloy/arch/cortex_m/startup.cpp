@@ -24,6 +24,14 @@ extern init_fn __init_array_end[];
 int main();
 
 [[noreturn]] void Reset_Handler() {
+    // Point VTOR at our vector table. Architectural SCB register (0xE000ED08);
+    // required on chips whose boot flow enters us with VTOR elsewhere (RP2040
+    // boot2, bootloaders), harmless where the table is already at the boot
+    // address. Every supported core implements VTOR (M0+ w/ VTOR, M4, M7).
+    extern const std::uint32_t g_vector_table[];
+    *reinterpret_cast<volatile std::uint32_t*>(0xE000ED08u) =
+        reinterpret_cast<std::uint32_t>(&g_vector_table[0]);
+
     // Copy initialized data from flash to RAM.
     std::uint32_t* src = &_sidata;
     for (std::uint32_t* dst = &_sdata; dst < &_edata; ++dst, ++src) {

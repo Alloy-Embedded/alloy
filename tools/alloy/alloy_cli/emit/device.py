@@ -40,8 +40,13 @@ def _gate_args(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
     reg = register_by_name(ip_doc, gate["register"])
     addr = int(owner["base"], 16) + int(reg["offset"], 16)
     args = f"{hex32(addr)}, 1u << {gate['bit']}u"
-    if gate.get("style", "rmw") == "write_set":
+    style = gate.get("style", "rmw")
+    if style == "write_set":
         args += ", alloy::clock_gate::style::write_set"
+    elif style == "reset_release":
+        done = register_by_name(ip_doc, gate["done_register"])
+        done_addr = int(owner["base"], 16) + int(done["offset"], 16)
+        args += f", alloy::clock_gate::style::reset_release, {hex32(done_addr)}"
     return args
 
 

@@ -29,6 +29,7 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
 
     members: list[str] = []
     asserts: list[str] = []
+    array_consts: list[str] = []
     cursor = 0
     pad = 0
     for reg in regs:
@@ -43,6 +44,20 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                 raise EmitError(f"{vendor}/{ip}: unaligned gap before {reg['name']}")
             members.append(f"        std::uint32_t _reserved{pad}[{gap // 4}];")
             pad += 1
+        arr = reg.get("array")
+        if arr:
+            # Register arrays live outside the struct: offset/stride/count
+            # constants consumed via alloy::reg_at.
+            array_consts.append(
+                f"    static constexpr std::uintptr_t {reg['name']}_offset = {reg['offset']};\n"
+                f"    static constexpr unsigned {reg['name']}_stride = {arr['stride']}u;\n"
+                f"    static constexpr unsigned {reg['name']}_count = {arr['count']}u;"
+            )
+            span = arr["count"] * arr["stride"]
+            members.append(f"        std::uint32_t _array{pad}[{span // 4}];  // {reg['name']}[{arr['count']}]")
+            pad += 1
+            cursor = offset + span
+            continue
         members.append(f"        {_ACCESS_TYPE[reg['access']]} {reg['name']};")
         asserts.append(
             f"    static_assert(offsetof(regs, {reg['name']}) == {reg['offset']});"
@@ -62,7 +77,15 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
             seen[name] = reg["name"]
             width = f.get("width", 1)
             rep = f.get("repeat")
-            if rep:
+            if reg.get("array"):
+                # Array registers have no struct member — fields become
+                # raw_field constants used with alloy::reg_at.
+                if rep:
+                    raise EmitError(f"{vendor}/{ip}: repeat fields inside array register {reg['name']} unsupported")
+                accessors.append(
+                    f"    static constexpr alloy::raw_field {name}{{{f['bit']}u, {width}u}};"
+                )
+            elif rep:
                 accessors.append(
                     f"    template <unsigned I>\n"
                     f"        requires (I < {rep['count']}u)\n"
@@ -76,8 +99,9 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                 )
 
     body = "\n".join(members)
-    assert_block = "\n".join(asserts)
-    accessor_block = "\n\n".join(accessors)
+    assert_block = "\n".join(asserts + [
+        f"    static_assert(sizeof(regs) >= {regs[-1]['offset']});" ] if not asserts else asserts)
+    accessor_block = "\n\n".join(array_consts + accessors)
     return f"""{BANNER}// IP: {vendor}/{ip} (alloy.registers.v1)
 #pragma once
 

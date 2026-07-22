@@ -49,4 +49,30 @@ struct field_t {
 template <auto Member, unsigned Pos, unsigned Width = 1>
 inline constexpr field_t<Member, Pos, Width> field{};
 
+// Field of a register accessed by computed address (register ARRAYS like
+// RP2040 IO_BANK0 GPIOx_CTRL), where pointer-to-member binding is impossible.
+struct raw_field {
+    unsigned pos;
+    unsigned width;
+
+    [[nodiscard]] constexpr std::uint32_t raw_mask() const {
+        return (width == 32u) ? 0xFFFF'FFFFu : ((1u << width) - 1u);
+    }
+    [[nodiscard]] constexpr std::uint32_t mask() const { return raw_mask() << pos; }
+
+    void write(rw32& r, std::uint32_t value) const {
+        r = (r & ~mask()) | ((value & raw_mask()) << pos);
+    }
+    [[nodiscard]] std::uint32_t read(const volatile std::uint32_t& r) const {
+        return (r & mask()) >> pos;
+    }
+};
+
+// Element i of a register array: base + offset + i*stride.
+inline rw32& reg_at(std::uintptr_t base, std::uintptr_t offset,
+                    unsigned stride, unsigned i) {
+    return *reinterpret_cast<rw32*>(base + offset +
+                                    static_cast<std::uintptr_t>(stride) * i);
+}
+
 }  // namespace alloy

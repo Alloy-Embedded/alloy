@@ -10,29 +10,43 @@
 
 namespace alloy {
 
-// A peripheral clock-enable bit: absolute register address + mask + write
-// style, all resolved by codegen from device data.
-//   rmw       — read-modify-write the enable bit (ST RCC *ENR registers)
-//   write_set — the register is a write-only SET register; write the mask
-//               directly (Microchip PMC_PCERx — an RMW would read garbage)
+// A peripheral clock-enable/reset-release bit: absolute register address(es)
+// + mask + style, all resolved by codegen from device data.
+//   rmw           — read-modify-write the enable bit (ST RCC *ENR registers)
+//   write_set     — write-only SET register; write the mask directly
+//                   (Microchip PMC_PCERx — an RMW would read garbage)
+//   reset_release — CLEAR the bit to release the block from reset, then poll
+//                   the same bit high in done_reg (RP2040 RESETS/RESET_DONE)
 struct clock_gate {
-    enum class style : std::uint8_t { rmw, write_set };
+    enum class style : std::uint8_t { rmw, write_set, reset_release };
     std::uintptr_t reg;
     std::uint32_t mask;
     style kind = style::rmw;
+    std::uintptr_t done_reg = 0;
 };
 
 inline void gate_on(clock_gate g) {
     auto& r = *reinterpret_cast<rw32*>(g.reg);
-    if (g.kind == clock_gate::style::write_set) {
-        r = g.mask;
-        return;  // set-registers are write-only; nothing meaningful to read back
+    switch (g.kind) {
+        case clock_gate::style::write_set:
+            r = g.mask;  // write-only set-register; nothing meaningful to read back
+            return;
+        case clock_gate::style::reset_release: {
+            r = r & ~g.mask;
+            auto& done = *reinterpret_cast<ro32*>(g.done_reg);
+            while ((done & g.mask) == 0u) {
+            }
+            return;
+        }
+        case clock_gate::style::rmw: {
+            r = r | g.mask;
+            // Read back to guarantee the enable has taken effect before the
+            // first peripheral access (several vendors' bus bridges need it).
+            const std::uint32_t readback = r;
+            (void)readback;
+            return;
+        }
     }
-    r = r | g.mask;
-    // Read back to guarantee the enable has taken effect before the first
-    // peripheral access (required on several vendors' bus bridges).
-    const std::uint32_t readback = r;
-    (void)readback;
 }
 
 struct irq_line {
