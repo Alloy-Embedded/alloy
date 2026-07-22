@@ -82,8 +82,7 @@ struct bind {
 
     template <class Route, class Pin>
     static void route_pin() {
-        constexpr std::uint8_t mux =
-            (Route::k == routes::kind::af_fixed) ? Route::af : Route::funcsel;
+        constexpr std::uint8_t mux = routes::mux_value<Route>();
         // I2C pads must be open-drain where the mux doesn't imply it (ST);
         // drivers that need it expose make_af_od, others fall back.
         if constexpr (requires { hal::pin_impl<Pin>::make_af_od(mux); }) {

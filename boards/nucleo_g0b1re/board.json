@@ -5,15 +5,37 @@
   "chip": "st/stm32g0b1",
   "clock_profile": "pll_64mhz",
   "roles": {
-    "led": { "pin": "pa5", "active": "high", "label": "LD4 (green, D13)" },
-    "button": { "pin": "pc13", "active": "low", "label": "B1 USER" },
+    "led": {
+      "pin": "pa5",
+      "active": "high",
+      "label": "LD4 (green, D13)"
+    },
+    "button": {
+      "pin": "pc13",
+      "active": "low",
+      "label": "B1 USER"
+    },
     "debug_uart": {
       "peripheral": "usart2",
       "tx": "pa2",
       "rx": "pa3",
       "baud": 115200,
       "label": "ST-Link VCP"
+    },
+    "led_pwm": {
+      "peripheral": "tim2",
+      "channel": 1,
+      "pin": "pa5",
+      "label": "LD4 via TIM2_CH1 (AF2)"
+    },
+    "adc": {
+      "peripheral": "adc",
+      "label": "internal vref/temp channels"
     }
   },
-  "probe": { "kind": "stlink", "runner": "openocd", "chip_id": "STM32G0B1RETx" }
+  "probe": {
+    "kind": "stlink",
+    "runner": "openocd",
+    "chip_id": "STM32G0B1RETx"
+  }
 }

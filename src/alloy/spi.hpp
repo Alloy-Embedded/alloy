@@ -81,8 +81,7 @@ struct bind {
     template <class Pin, alloy::signal S>
     static void route_pin() {
         using R = routes::route<Pin, Inst, S>;
-        constexpr std::uint8_t mux = (R::k == routes::kind::af_fixed) ? R::af : R::funcsel;
-        hal::pin_impl<Pin>::make_af(mux);
+        hal::pin_impl<Pin>::make_af(routes::mux_value<R>());
     }
 
     static handle<Inst> open(config c = {}) {

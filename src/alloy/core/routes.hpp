@@ -28,4 +28,17 @@ struct route;
 template <class Pin, class Periph, alloy::signal S>
 concept routable = requires { route<Pin, Periph, S>::k; };
 
+// Route payload -> mux value for the pin driver's make_af(). if-constexpr
+// (not ?:) so only the payload the kind actually carries is instantiated.
+template <class Route>
+constexpr std::uint8_t mux_value() {
+    static_assert(Route::k == kind::af_fixed || Route::k == kind::funcsel,
+                  "route kind not implemented yet (full_matrix/psel pending)");
+    if constexpr (Route::k == kind::af_fixed) {
+        return Route::af;
+    } else {
+        return Route::funcsel;
+    }
+}
+
 }  // namespace alloy::routes

@@ -99,6 +99,10 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             if node not in CLOCK_NODES:
                 raise EmitError(f"{name}: kernel_clock '{node}' not representable (skeleton supports {sorted(CLOCK_NODES)})")
             lines.append(f"    static constexpr alloy::clock_node kernel = alloy::clock_node::{node};")
+        for chname in sorted(periph.get("channels", {})):
+            lines.append(
+                f"    static constexpr std::uint8_t ch_{chname} = {periph['channels'][chname]}u;"
+            )
         for cname in sorted(periph.get("companions", {})):
             lines.append(
                 f"    using {cname}_t = alloy::dev::{periph['companions'][cname]}_t;"

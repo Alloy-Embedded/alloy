@@ -58,9 +58,7 @@ struct bind {
 
     static handle<Inst, Channel> open(config c = {}) {
         using pin_route = routes::route<Pin, Inst, Sig>;
-        constexpr std::uint8_t mux =
-            (pin_route::k == routes::kind::af_fixed) ? pin_route::af : pin_route::funcsel;
-        hal::pin_impl<Pin>::make_af(mux);
+        hal::pin_impl<Pin>::make_af(routes::mux_value<pin_route>());
         hal::pwm_impl<Inst>::enable(kernel_hz(), c.freq_hz, Channel);
         return handle<Inst, Channel>{};
     }

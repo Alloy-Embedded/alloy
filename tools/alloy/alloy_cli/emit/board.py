@@ -28,7 +28,8 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
     profile = chip["clock"]["profiles"].get(profile_name)
     _require(profile is not None, f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
 
-    caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False}
+    caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
+                             "led_pwm": False, "adc": False}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -100,6 +101,59 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "inline constexpr std::uint32_t debug_uart_baud = 0u;"
         )
 
+    led_pwm = roles.get("led_pwm")
+    if led_pwm:
+        for key in ("peripheral", "channel", "pin"):
+            _require(key in led_pwm, f"board {board['id']}: led_pwm missing '{key}'")
+        _require(led_pwm["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: led_pwm peripheral '{led_pwm['peripheral']}' not in chip data")
+        caps["led_pwm"] = True
+        ch = led_pwm["channel"]
+        decls.append(
+            f"using led_pwm = alloy::pwm::bind<alloy::dev::{led_pwm['peripheral']}_t, {ch}u,\n"
+            f"                                 alloy::dev::{led_pwm['pin']}_t,\n"
+            f"                                 alloy::signal::ch{ch}, clock_profile>;"
+        )
+    else:
+        decls.append(
+            "// No PWM-capable LED declared; stub keeps caps-guarded code compiling.\n"
+            "struct led_pwm {\n"
+            "    struct null_handle {\n"
+            "        void set_duty(std::uint16_t) const {}\n"
+            "        void off() const {}\n"
+            "    };\n"
+            "    static null_handle open(alloy::pwm::config = {}) { return {}; }\n"
+            "};"
+        )
+
+    adc_role = roles.get("adc")
+    if adc_role:
+        _require("peripheral" in adc_role, f"board {board['id']}: adc role missing 'peripheral'")
+        periph_name = adc_role["peripheral"]
+        _require(periph_name in chip["peripherals"],
+                 f"board {board['id']}: adc peripheral '{periph_name}' not in chip data")
+        caps["adc"] = True
+        decls.append(
+            f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, clock_profile>;"
+        )
+        for chname in sorted(chip["peripherals"][periph_name].get("channels", {})):
+            decls.append(
+                f"inline constexpr std::uint8_t adc_{chname}_channel = "
+                f"alloy::dev::{periph_name}_t::ch_{chname};"
+            )
+    else:
+        decls.append(
+            "// No ADC role declared; stub keeps caps-guarded code compiling.\n"
+            "struct adc {\n"
+            "    struct null_handle {\n"
+            "        std::uint16_t read(std::uint8_t) const { return 0u; }\n"
+            "    };\n"
+            "    static null_handle open(alloy::adc::config = {}) { return {}; }\n"
+            "};\n"
+            "inline constexpr std::uint8_t adc_vref_channel = 0u;\n"
+            "inline constexpr std::uint8_t adc_temp_channel = 0u;"
+        )
+
     caps_body = "\n".join(
         f"inline constexpr bool {name} = {'true' if value else 'false'};"
         for name, value in sorted(caps.items())
@@ -112,8 +166,10 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 
 #include <cstdint>
 
+#include "alloy/adc.hpp"
 #include "alloy/device.hpp"
 #include "alloy/gpio.hpp"
+#include "alloy/pwm.hpp"
 #include "alloy/routes_gen.hpp"
 #include "alloy/time.hpp"
 #include "alloy/uart.hpp"{extra_include_block}
