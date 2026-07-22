@@ -45,7 +45,7 @@ public:
             __builtin_trap();  // CNDTR is 16-bit
         }
         impl::template setup<Ch>(impl::dir::periph_to_mem, false, impl::width::b16,
-                                 periph_reg,
+                                 impl::width::b16, periph_reg,
                                  reinterpret_cast<std::uintptr_t>(dst.data()),
                                  static_cast<std::uint16_t>(dst.size()), request);
         impl::template start<Ch>();
@@ -58,8 +58,11 @@ public:
         if (src.empty() || src.size() > 0xFFFF) {
             __builtin_trap();
         }
+        // psize=b32: halfword writes through the APB bridge duplicate into
+        // both halves of 32-bit-capable registers (TIM2 CCR); the engine
+        // zero-extends each 16-bit memory item into the word write.
         impl::template setup<Ch>(impl::dir::mem_to_periph, true, impl::width::b16,
-                                 periph_reg,
+                                 impl::width::b32, periph_reg,
                                  reinterpret_cast<std::uintptr_t>(src.data()),
                                  static_cast<std::uint16_t>(src.size()), request);
         impl::template start<Ch>();

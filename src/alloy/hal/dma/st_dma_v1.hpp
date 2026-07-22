@@ -63,10 +63,16 @@ struct dma_impl<Inst> {
     static void enable_controller() { alloy::gate_on(Inst::gate); }
 
     // Program one channel (must be idle). Peripheral address is fixed;
-    // memory increments. Item count is in ITEMS of `w`, not bytes.
+    // memory increments. Item count is in ITEMS of `msize`, not bytes.
+    // msize/psize are separate: a halfword WRITE through the APB bridge is
+    // duplicated across the word, which corrupts 32-bit-capable peripheral
+    // registers (TIM2 CCR1 read back with the halfword repeated in BOTH
+    // halves on real silicon — compare value in the millions, LED stuck on) — peripheral-bound streams use psize=b32 and the engine
+    // zero-extends each 16-bit memory item (RM0444 width/endianness table).
     template <unsigned Ch>
-    static void setup(dir d, bool circular, width w, std::uintptr_t periph_addr,
-                      std::uintptr_t mem_addr, std::uint16_t items, std::uint8_t request) {
+    static void setup(dir d, bool circular, width msize, width psize,
+                      std::uintptr_t periph_addr, std::uintptr_t mem_addr,
+                      std::uint16_t items, std::uint8_t request) {
         static_assert(Ch >= 1 && Ch <= Inst::ch_count,
                       "channel outside this DMA instance (chip data ch_count)");
         stop<Ch>();
@@ -75,11 +81,11 @@ struct dma_impl<Inst> {
         cpar<Ch>() = static_cast<std::uint32_t>(periph_addr);
         cmar<Ch>() = static_cast<std::uint32_t>(mem_addr);
         cndtr<Ch>() = items;
-        const auto wbits = static_cast<std::uint32_t>(w);
         ccr<Ch>() = (d == dir::mem_to_periph ? IP::dir.mask() : 0u) |
                     (circular ? IP::circ.mask() : 0u) |
                     IP::minc.mask() |
-                    (wbits << IP::psize.pos) | (wbits << IP::msize.pos) |
+                    (static_cast<std::uint32_t>(psize) << IP::psize.pos) |
+                    (static_cast<std::uint32_t>(msize) << IP::msize.pos) |
                     (0x2u << IP::pl.pos);  // high priority, above default traffic
     }
 
