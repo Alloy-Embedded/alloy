@@ -1,0 +1,5 @@
+[project]
+name = "uart_echo"
+
+[board]
+id = "nucleo_g071rb"
