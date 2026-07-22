@@ -28,7 +28,7 @@ _KIND_CPP = {
 }
 
 
-def _gate_expr(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
+def _gate_args(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
                periph_name: str, periph: dict[str, Any]) -> str | None:
     gate = periph.get("gate")
     if gate is None:
@@ -39,7 +39,10 @@ def _gate_expr(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
     ip_doc = registers[owner["ip"]]
     reg = register_by_name(ip_doc, gate["register"])
     addr = int(owner["base"], 16) + int(reg["offset"], 16)
-    return f"alloy::clock_gate{{{hex32(addr)}, 1u << {gate['bit']}u}}"
+    args = f"{hex32(addr)}, 1u << {gate['bit']}u"
+    if gate.get("style", "rmw") == "write_set":
+        args += ", alloy::clock_gate::style::write_set"
+    return args
 
 
 def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
@@ -64,9 +67,9 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             f"    using ip = alloy::ip::{vendor}::{ip};",
             f"    static constexpr std::uintptr_t base = {hex32(int(periph['base'], 16))};",
         ]
-        gate = _gate_expr(chip, registers, name, periph)
-        if gate:
-            lines.append(f"    static constexpr alloy::clock_gate gate{{{gate.removeprefix('alloy::clock_gate{').removesuffix('}')}}};")
+        gate_args = _gate_args(chip, registers, name, periph)
+        if gate_args:
+            lines.append(f"    static constexpr alloy::clock_gate gate{{{gate_args}}};")
         if "irq" in periph:
             lines.append(
                 f"    static constexpr alloy::irq_line irq{{{irq_numbers[periph['irq']]}}};"

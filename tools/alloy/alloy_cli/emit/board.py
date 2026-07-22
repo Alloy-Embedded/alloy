@@ -187,8 +187,9 @@ constexpr alloy::clock_step kClockProgram[] = {{
 
 bool init() {{
     const bool clock_ok = alloy::hal::run_clock_program(kClockProgram);
-    // On failure the chip is still on its boot clock; keep the timebase honest.
-    const std::uint32_t core_hz = clock_ok ? clock_profile::ahb_hz : {boot_hz}u;
+    // SysTick counts the CPU clock (sysclk). On failure the chip is still on
+    // its boot clock; keep the timebase honest.
+    const std::uint32_t core_hz = clock_ok ? clock_profile::sysclk_hz : {boot_hz}u;
     alloy::arch::{arch_ns}::systick_init(core_hz);
 {role_block}
     alloy::arch::{arch_ns}::enable_irq();

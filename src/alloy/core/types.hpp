@@ -10,15 +10,24 @@
 
 namespace alloy {
 
-// A peripheral clock-enable bit: absolute register address + mask,
-// both resolved by codegen from device data.
+// A peripheral clock-enable bit: absolute register address + mask + write
+// style, all resolved by codegen from device data.
+//   rmw       — read-modify-write the enable bit (ST RCC *ENR registers)
+//   write_set — the register is a write-only SET register; write the mask
+//               directly (Microchip PMC_PCERx — an RMW would read garbage)
 struct clock_gate {
+    enum class style : std::uint8_t { rmw, write_set };
     std::uintptr_t reg;
     std::uint32_t mask;
+    style kind = style::rmw;
 };
 
 inline void gate_on(clock_gate g) {
     auto& r = *reinterpret_cast<rw32*>(g.reg);
+    if (g.kind == clock_gate::style::write_set) {
+        r = g.mask;
+        return;  // set-registers are write-only; nothing meaningful to read back
+    }
     r = r | g.mask;
     // Read back to guarantee the enable has taken effect before the first
     // peripheral access (required on several vendors' bus bridges).
