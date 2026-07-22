@@ -6,6 +6,7 @@
 
 #include <concepts>
 #include <cstdint>
+#include <span>
 
 namespace alloy {
 
@@ -38,6 +39,33 @@ concept ByteStream = ByteSink<T> && ByteSource<T>;
 template <class T>
 concept DelayNs = requires(T d, std::uint32_t ns) {
     d.delay_ns(ns);
+};
+
+// I2C controller. bool results are honest v1 error reporting: false = NACK
+// or bus error (NACK detection is THE error that matters on I2C).
+template <class T>
+concept I2cBus = requires(T& b, std::uint8_t addr, std::span<std::uint8_t> rd,
+                          std::span<const std::uint8_t> wr) {
+    { b.write(addr, wr) } -> std::same_as<bool>;
+    { b.read(addr, rd) } -> std::same_as<bool>;
+    { b.write_read(addr, wr, rd) } -> std::same_as<bool>;
+};
+
+// SPI controller (bus only; chip-selects are plain OutputPins — the
+// SpiDevice sharing layer comes later, embedded-hal style).
+template <class T>
+concept SpiBus = requires(T& b, std::uint8_t byte, std::span<std::uint8_t> buf,
+                          std::span<const std::uint8_t> cbuf) {
+    { b.xfer(byte) } -> std::same_as<std::uint8_t>;
+    b.write(cbuf);
+    b.transfer(buf);  // in-place: TX buf, RX overwrites it
+};
+
+// PWM output with normalized 16-bit duty (0 = off, 0xFFFF = full on).
+template <class T>
+concept PwmChannel = requires(T& p, std::uint16_t duty) {
+    p.set_duty(duty);
+    p.off();
 };
 
 }  // namespace alloy

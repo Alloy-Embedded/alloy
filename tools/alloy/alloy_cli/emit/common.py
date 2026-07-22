@@ -13,6 +13,7 @@ SIGNALS = {
     "tx", "rx", "cts", "rts", "ck",
     "sck", "miso", "mosi", "cs",
     "scl", "sda",
+    "ch1", "ch2", "ch3", "ch4",
     "in", "out",
 }
 
