@@ -9,6 +9,11 @@
 // sit behind AHB IF1, memory behind IF0 (SIF/DIF per direction). L3
 // channels are 1-based (ST-doc style); XDMAC registers are 0-based.
 // M7 caches are never enabled by alloy startup — no cache maintenance.
+//
+// SILICON-FOUND: the memory-side master (IF0) reads SRAM but NOT the
+// embedded flash — a .rodata source raised a read bus error on the real
+// SAME70 Xplained. Memory-to-peripheral sources must live in RAM (the ST
+// dma_v1, by contrast, reads flash fine).
 
 #pragma once
 

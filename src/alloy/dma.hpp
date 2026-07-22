@@ -52,6 +52,8 @@ public:
     }
 
     // One-shot memory -> peripheral, byte items (UART TX and friends).
+    // The source must be DMA-visible RAM: on SAME70 the XDMAC cannot read
+    // embedded flash (bus error) — copy .rodata payloads to RAM first.
     void start_m2p_u8(std::span<const std::uint8_t> src, std::uintptr_t periph_reg,
                       std::uint8_t request) const {
         if (src.empty() || src.size() > 0xFFFF) {

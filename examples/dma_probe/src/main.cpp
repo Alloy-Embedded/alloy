@@ -108,10 +108,16 @@ int main() {
 
     [&uart]<class Dma, class Uart = board::debug_uart>(Dma*) {
         if constexpr (HasDma<Dma> && board::caps::debug_uart) {
+            // RAM copy: on SAME70 the XDMAC memory-side master (IF0) reads
+            // SRAM but not necessarily embedded flash — a .rodata source
+            // raised a read bus error on real silicon.
             static constexpr char kMsg[] =
                 "uart tx DMA: esta linha inteira saiu da memoria sem a CPU\r\n";
-            const auto* bytes = reinterpret_cast<const std::uint8_t*>(kMsg);
-            const std::span<const std::uint8_t> payload{bytes, sizeof(kMsg) - 1};
+            static std::uint8_t ram_msg[sizeof(kMsg) - 1];
+            for (unsigned i = 0; i < sizeof(kMsg) - 1; ++i) {
+                ram_msg[i] = static_cast<std::uint8_t>(kMsg[i]);
+            }
+            const std::span<const std::uint8_t> payload{ram_msg, sizeof(kMsg) - 1};
             if constexpr (requires(alloy::dma::channel<Dma, 3>& c) {
                               uart.write_dma(c, payload);
                           }) {
