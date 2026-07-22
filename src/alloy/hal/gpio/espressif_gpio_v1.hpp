@@ -61,6 +61,27 @@ struct pin_impl<Pin> {
         }
     }
 
+    // Matrix routing for open-drain bidirectional signals (I2C): output
+    // signal via FUNC_OUT_SEL, pad in open-drain, input side routed by the
+    // SAME signal index (ESP32 I2C shares in/out indexes), and — when the
+    // chip data provides the pin's IO_MUX register — GPIO function select,
+    // input buffer and weak pull-up.
+    static void make_af_od(std::uint8_t matrix_signal) {
+        make_af(matrix_signal);
+        auto& pin_reg = alloy::reg_at(Port::base, IP::PIN_offset, IP::PIN_stride, index);
+        IP::pad_driver.write(pin_reg, 1u);
+        auto& in_sel = alloy::reg_at(Port::base, IP::FUNC_IN_SEL_CFG_offset,
+                                     IP::FUNC_IN_SEL_CFG_stride, matrix_signal);
+        IP::in_func_sel.write(in_sel, index);
+        IP::in_sig_sel.write(in_sel, 1u);
+        if constexpr (requires { Pin::iomux_reg; }) {
+            auto& mux = *reinterpret_cast<rw32*>(Pin::iomux_reg);
+            Pin::iomux_ip::mcu_sel.write(mux, 2u);  // GPIO/matrix function
+            Pin::iomux_ip::fun_ie.write(mux, 1u);
+            Pin::iomux_ip::fun_wpu.write(mux, 1u);
+        }
+    }
+
     static void make_input() {
         if constexpr (bank1) {
             r().ENABLE1_W1TC = bit;

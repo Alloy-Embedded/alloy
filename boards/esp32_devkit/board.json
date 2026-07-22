@@ -21,6 +21,12 @@
       "channel": 1,
       "pin": "pa2",
       "label": "onboard LED via LEDC HSCH0 (GPIO matrix sig 71)"
+    },
+    "i2c": {
+      "peripheral": "i2c0",
+      "scl": "pa22",
+      "sda": "pa21",
+      "label": "I2C0 on the conventional DevKit pins (GPIO22 SCL / GPIO21 SDA)"
     }
   },
   "probe": {

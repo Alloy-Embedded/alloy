@@ -141,6 +141,13 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             lines.append(
                 f"    static constexpr alloy::clock_gate mux_unlock{{{hex32(addr)}, 1u << {unlock['bit']}u}};"
             )
+        iomux = pin.get("iomux")
+        if iomux:
+            owner = chip["peripherals"][iomux["peripheral"]]
+            addr = int(owner["base"], 16) + int(iomux["offset"], 16)
+            vendor, ip = cpp_ip_namespace(owner["ip"])
+            lines.append(f"    using iomux_ip = alloy::ip::{vendor}::{ip};")
+            lines.append(f"    static constexpr std::uintptr_t iomux_reg = {hex32(addr)};")
         lines.append("};")
         pin_blocks.append("\n".join(lines))
 
