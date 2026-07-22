@@ -2,4 +2,4 @@
 name = "blink"
 
 [board]
-id = "nucleo_g071rb"
+id = "same70_xplained"

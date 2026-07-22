@@ -1,0 +1,19 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "same70_xplained",
+  "name": "Microchip SAM E70 Xplained",
+  "chip": "microchip/atsame70q21",
+  "clock_profile": "plla_150mhz",
+  "roles": {
+    "led": { "pin": "pc8", "active": "low", "label": "LED0 (green)" },
+    "button": { "pin": "pa11", "active": "low", "pull": "up", "label": "SW0 USER" },
+    "debug_uart": {
+      "peripheral": "usart1",
+      "tx": "pb4",
+      "rx": "pa21",
+      "baud": 115200,
+      "label": "EDBG VCP"
+    }
+  },
+  "probe": { "kind": "cmsis-dap", "runner": "openocd", "chip_id": "ATSAME70Q21B" }
+}

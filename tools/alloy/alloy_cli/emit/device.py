@@ -86,15 +86,28 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
     pin_blocks: list[str] = []
     for pname in sorted(chip.get("pins", {})):
         pin = chip["pins"][pname]
-        port_periph = f"gpio{pin['port']}"
-        if port_periph not in chip["peripherals"]:
-            raise EmitError(f"pin {pname}: no peripheral {port_periph} in chip data")
-        pin_blocks.append(
-            f"struct {pname}_t {{\n"
-            f"    using port_t = {port_periph}_t;\n"
-            f"    static constexpr unsigned index = {pin['index']}u;\n"
-            f"}};"
+        port_periph = next(
+            (cand for cand in (f"gpio{pin['port']}", f"pio{pin['port']}")
+             if cand in chip["peripherals"]),
+            None,
         )
+        if port_periph is None:
+            raise EmitError(f"pin {pname}: no gpio{pin['port']}/pio{pin['port']} peripheral in chip data")
+        lines = [
+            f"struct {pname}_t {{",
+            f"    using port_t = {port_periph}_t;",
+            f"    static constexpr unsigned index = {pin['index']}u;",
+        ]
+        unlock = pin.get("mux_unlock")
+        if unlock:
+            owner = chip["peripherals"][unlock["peripheral"]]
+            reg = register_by_name(registers[owner["ip"]], unlock["register"])
+            addr = int(owner["base"], 16) + int(reg["offset"], 16)
+            lines.append(
+                f"    static constexpr alloy::clock_gate mux_unlock{{{hex32(addr)}, 1u << {unlock['bit']}u}};"
+            )
+        lines.append("};")
+        pin_blocks.append("\n".join(lines))
 
     body = "\n\n".join(blocks + pin_blocks)
     return f"""{BANNER}// Chip: {chip['vendor']}/{chip['part']} (alloy.chip.v1)

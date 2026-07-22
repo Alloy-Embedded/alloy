@@ -38,10 +38,10 @@ def _cpu_flags(chip: dict[str, Any]) -> str:
     cpu = _CPU_BY_CORE.get(core["name"]) or _CPU_BY_ARCH.get(core["arch"])
     if cpu is None:
         raise EmitError(f"no CPU mapping for core {core['name']} / arch {core['arch']}")
-    flags = f"-mcpu={cpu} -mthumb"
-    if not core.get("fpu", False):
-        flags += " -mfloat-abi=soft"
-    return flags
+    # Soft-float everywhere for now, even on FPU parts: hard-float needs a
+    # CPACR enable in the arch startup before the first FP instruction.
+    # TODO(arch): enable CP10/CP11 on armv7em, then honor core.fpu here.
+    return f"-mcpu={cpu} -mthumb -mfloat-abi=soft"
 
 
 def _toolchain_cmake(cpu_flags: str) -> str:

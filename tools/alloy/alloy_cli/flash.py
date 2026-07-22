@@ -20,6 +20,7 @@ _OPENOCD_TARGET = {
     "stm32g0": "stm32g0x",
     "stm32f4": "stm32f4x",
     "stm32g4": "stm32g4x",
+    "same70": "atsamv",
 }
 
 _OPENOCD_INTERFACE = {

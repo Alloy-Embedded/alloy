@@ -166,7 +166,10 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
     if "led" in roles:
         role_init.append("    led.init();\n    led.off();")
     if "button" in roles:
-        role_init.append("    button.init();")
+        if roles["button"].get("pull") == "up":
+            role_init.append("    button.init_pullup();")
+        else:
+            role_init.append("    button.init();")
 
     role_block = "\n".join(role_init)
     return f"""{BANNER}// Board: {board['id']} — role + clock bring-up
