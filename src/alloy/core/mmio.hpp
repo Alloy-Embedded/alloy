@@ -21,6 +21,7 @@ template <auto Member, unsigned Pos, unsigned Width = 1>
 struct field_t {
     static_assert(Pos < 32 && Width >= 1 && Width <= 32 && Pos + Width <= 32);
 
+    static constexpr unsigned pos = Pos;
     static constexpr std::uint32_t raw_mask =
         (Width == 32) ? 0xFFFF'FFFFu : ((1u << Width) - 1u);
     static constexpr std::uint32_t mask = raw_mask << Pos;

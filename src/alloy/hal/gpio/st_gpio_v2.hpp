@@ -52,6 +52,15 @@ struct pin_impl<Pin> {
         IP::template moder<index>.write(r(), 0b10);  // alternate function
     }
 
+    // AF with open-drain + weak internal pull-up (I2C pads). The ~40 kΩ
+    // internal pull is enough for short-wire scanning; real buses want
+    // external pull-ups.
+    static void make_af_od(std::uint8_t af) {
+        make_af(af);
+        IP::template ot<index>.write(r(), 1u);
+        IP::template pupdr<index>.write(r(), 0b01);
+    }
+
     static void set_high() { r().BSRR = 1u << index; }
     static void set_low() { r().BSRR = 1u << (index + 16u); }
 

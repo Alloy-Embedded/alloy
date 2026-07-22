@@ -29,7 +29,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
     _require(profile is not None, f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
-                             "led_pwm": False, "adc": False}
+                             "led_pwm": False, "adc": False, "i2c": False}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -126,6 +126,34 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "};"
         )
 
+    i2c_role = roles.get("i2c")
+    if i2c_role:
+        for key in ("peripheral", "scl", "sda"):
+            _require(key in i2c_role, f"board {board['id']}: i2c role missing '{key}'")
+        _require(i2c_role["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: i2c peripheral '{i2c_role['peripheral']}' not in chip data")
+        caps["i2c"] = True
+        decls.append(
+            f"using i2c = alloy::i2c::bind<alloy::dev::{i2c_role['peripheral']}_t,\n"
+            f"                             alloy::i2c::scl<alloy::dev::{i2c_role['scl']}_t>,\n"
+            f"                             alloy::i2c::sda<alloy::dev::{i2c_role['sda']}_t>,\n"
+            f"                             clock_profile>;"
+        )
+    else:
+        decls.append(
+            "// No I2C role declared; stub keeps caps-guarded code compiling.\n"
+            "struct i2c {\n"
+            "    struct null_handle {\n"
+            "        bool write(std::uint8_t, std::span<const std::uint8_t>) const { return false; }\n"
+            "        bool read(std::uint8_t, std::span<std::uint8_t>) const { return false; }\n"
+            "        bool write_read(std::uint8_t, std::span<const std::uint8_t>,\n"
+            "                        std::span<std::uint8_t>) const { return false; }\n"
+            "        bool probe(std::uint8_t) const { return false; }\n"
+            "    };\n"
+            "    static null_handle open(alloy::i2c::config = {}) { return {}; }\n"
+            "};"
+        )
+
     adc_role = roles.get("adc")
     if adc_role:
         _require("peripheral" in adc_role, f"board {board['id']}: adc role missing 'peripheral'")
@@ -169,6 +197,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 #include "alloy/adc.hpp"
 #include "alloy/device.hpp"
 #include "alloy/gpio.hpp"
+#include "alloy/i2c.hpp"
 #include "alloy/pwm.hpp"
 #include "alloy/routes_gen.hpp"
 #include "alloy/time.hpp"

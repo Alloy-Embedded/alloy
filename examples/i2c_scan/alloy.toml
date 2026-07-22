@@ -1,0 +1,5 @@
+[project]
+name = "i2c_scan"
+
+[board]
+id = "nucleo_g0b1re"

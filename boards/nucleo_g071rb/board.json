@@ -31,6 +31,12 @@
     "adc": {
       "peripheral": "adc",
       "label": "internal vref/temp channels"
+    },
+    "i2c": {
+      "peripheral": "i2c1",
+      "scl": "pb8",
+      "sda": "pb9",
+      "label": "Arduino D15/D14 (AF6, internal pull-ups)"
     }
   },
   "probe": {
