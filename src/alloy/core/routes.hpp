@@ -30,14 +30,21 @@ concept routable = requires { route<Pin, Periph, S>::k; };
 
 // Route payload -> mux value for the pin driver's make_af(). if-constexpr
 // (not ?:) so only the payload the kind actually carries is instantiated.
+// full_matrix routes hand their output-signal index to make_af (the ESP32
+// pin driver writes it into FUNC_OUT_SEL); input-side matrix routing is
+// the consuming driver's job.
 template <class Route>
 constexpr std::uint8_t mux_value() {
-    static_assert(Route::k == kind::af_fixed || Route::k == kind::funcsel,
-                  "route kind not implemented yet (full_matrix/psel pending)");
+    static_assert(Route::k == kind::af_fixed || Route::k == kind::funcsel ||
+                      Route::k == kind::full_matrix,
+                  "route kind not implemented yet (psel pending)");
     if constexpr (Route::k == kind::af_fixed) {
         return Route::af;
-    } else {
+    } else if constexpr (Route::k == kind::funcsel) {
         return Route::funcsel;
+    } else {
+        static_assert(Route::matrix_signal < 256, "matrix signal exceeds mux byte");
+        return static_cast<std::uint8_t>(Route::matrix_signal);
     }
 }
 

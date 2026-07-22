@@ -47,6 +47,20 @@ struct pin_impl<Pin> {
         }
     }
 
+    // Route a peripheral OUTPUT signal to this pin through the GPIO matrix.
+    // With OEN_SEL left 0 the peripheral drives the output enable; the pad
+    // enable is set too (harmless, matches esp-idf behavior).
+    static void make_af(std::uint8_t matrix_signal) {
+        auto& sel = alloy::reg_at(Port::base, IP::FUNC_OUT_SEL_CFG_offset,
+                                  IP::FUNC_OUT_SEL_CFG_stride, index);
+        IP::out_sel.write(sel, matrix_signal);
+        if constexpr (bank1) {
+            r().ENABLE1_W1TS = bit;
+        } else {
+            r().ENABLE_W1TS = bit;
+        }
+    }
+
     static void make_input() {
         if constexpr (bank1) {
             r().ENABLE1_W1TC = bit;

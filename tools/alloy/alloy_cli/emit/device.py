@@ -90,6 +90,15 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
         gate_args = _gate_args(chip, registers, name, periph)
         if gate_args:
             lines.append(f"    static constexpr alloy::clock_gate gate{{{gate_args}}};")
+        reset_clear = periph.get("reset_clear")
+        if reset_clear:
+            owner = chip["peripherals"][reset_clear["peripheral"]]
+            reg = register_by_name(registers[owner["ip"]], reset_clear["register"])
+            addr = int(owner["base"], 16) + int(reg["offset"], 16)
+            lines.append(
+                f"    static constexpr alloy::clock_gate reset_clear{{{hex32(addr)}, "
+                f"1u << {reset_clear['bit']}u}};"
+            )
         if "irq" in periph:
             lines.append(
                 f"    static constexpr alloy::irq_line irq{{{irq_numbers[periph['irq']]}}};"

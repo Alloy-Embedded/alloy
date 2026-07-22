@@ -5,12 +5,22 @@
   "chip": "espressif/esp32",
   "clock_profile": "bootloader_defaults",
   "roles": {
-    "led": { "pin": "pa2", "active": "high", "label": "onboard blue LED (GPIO2, most variants)" },
+    "led": {
+      "pin": "pa2",
+      "active": "high",
+      "label": "onboard blue LED (GPIO2, most variants)"
+    },
     "debug_uart": {
       "peripheral": "uart0",
       "mode": "rom",
       "baud": 115200,
       "label": "UART0 via onboard USB-serial bridge (ROM-configured 115200 8N1)"
+    },
+    "led_pwm": {
+      "peripheral": "ledc",
+      "channel": 1,
+      "pin": "pa2",
+      "label": "onboard LED via LEDC HSCH0 (GPIO matrix sig 71)"
     }
   },
   "probe": {
@@ -19,9 +29,27 @@
     "app_offset": "0x10000",
     "pt_offset": "0x8000",
     "partitions": [
-      ["nvs", "data", "nvs", "0x9000", "0x5000"],
-      ["phy_init", "data", "phy", "0xe000", "0x1000"],
-      ["factory", "app", "factory", "0x10000", "0x3F0000"]
+      [
+        "nvs",
+        "data",
+        "nvs",
+        "0x9000",
+        "0x5000"
+      ],
+      [
+        "phy_init",
+        "data",
+        "phy",
+        "0xe000",
+        "0x1000"
+      ],
+      [
+        "factory",
+        "app",
+        "factory",
+        "0x10000",
+        "0x3F0000"
+      ]
     ],
     "note": "Relies on a resident ESP-IDF-class 2nd-stage bootloader at 0x1000 (Arduino/AT/IDF all leave one); verified via flash magic before writing"
   }
