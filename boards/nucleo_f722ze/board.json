@@ -1,0 +1,19 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "nucleo_f722ze",
+  "name": "ST Nucleo-F722ZE (Nucleo-144)",
+  "chip": "st/stm32f722",
+  "clock_profile": "pll_180mhz",
+  "roles": {
+    "led": { "pin": "pb0", "active": "high", "label": "LD1 (green; LD2 blue=PB7, LD3 red=PB14)" },
+    "button": { "pin": "pc13", "active": "high", "label": "B1 USER (Nucleo-144: pressed = high)" },
+    "debug_uart": {
+      "peripheral": "usart3",
+      "tx": "pd8",
+      "rx": "pd9",
+      "baud": 115200,
+      "label": "ST-Link VCP (USART3 — Nucleo-144 wiring)"
+    }
+  },
+  "probe": { "kind": "stlink", "runner": "openocd", "chip_id": "STM32F722ZETx" }
+}

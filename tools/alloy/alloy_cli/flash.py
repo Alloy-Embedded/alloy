@@ -23,6 +23,7 @@ from .emit.common import EmitError
 _OPENOCD_TARGET = {
     "stm32g0": "stm32g0x",
     "stm32f4": "stm32f4x",
+    "stm32f7": "stm32f7x",
     "stm32g4": "stm32g4x",
     "same70": "atsamv",
 }
