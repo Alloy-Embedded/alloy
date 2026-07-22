@@ -1,0 +1,24 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "rp2040_zero",
+  "name": "Waveshare RP2040-Zero",
+  "chip": "raspberrypi/rp2040",
+  "clock_profile": "pll_125mhz",
+  "roles": {
+    "led": { "pin": "pa16", "kind": "ws2812", "label": "onboard WS2812 RGB (GPIO16)" },
+    "debug_uart": {
+      "peripheral": "uart0",
+      "tx": "pa0",
+      "rx": "pa1",
+      "baud": 115200,
+      "label": "UART0 on GP0/GP1 (castellated pads — needs external USB-serial adapter)"
+    }
+  },
+  "probe": {
+    "kind": "bootsel",
+    "runner": "uf2",
+    "family_id": "0xE48BFF56",
+    "volume": "/Volumes/RPI-RP2",
+    "note": "hold BOOT, tap RESET to enter BOOTSEL without replugging"
+  }
+}

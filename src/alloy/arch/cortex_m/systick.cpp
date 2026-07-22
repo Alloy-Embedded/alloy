@@ -2,6 +2,7 @@
 
 #include <chrono>
 
+#include "alloy/arch/irq.hpp"
 #include "alloy/core/mmio.hpp"
 #include "alloy/time.hpp"
 
@@ -42,6 +43,22 @@ void systick_init(std::uint32_t core_hz) {
 extern "C" void SysTick_Handler() {
     alloy::arch::cortex_m::g_ticks_ms = alloy::arch::cortex_m::g_ticks_ms + 1u;
 }
+
+namespace alloy::arch {
+
+irq_state irq_save() {
+    std::uint32_t primask;
+    __asm volatile("mrs %0, PRIMASK\n\tcpsid i" : "=r"(primask)::"memory");
+    return primask;
+}
+
+void irq_restore(irq_state state) {
+    if ((state & 1u) == 0u) {
+        __asm volatile("cpsie i" ::: "memory");
+    }
+}
+
+}  // namespace alloy::arch
 
 namespace alloy {
 

@@ -31,15 +31,26 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False}
     decls: list[str] = []
 
+    extra_includes: list[str] = []
     led = roles.get("led")
     if led:
         _require(led["pin"] in chip.get("pins", {}),
                  f"board {board['id']}: led pin '{led['pin']}' not in chip data")
         caps["led"] = True
-        decls.append(
-            f"inline constexpr alloy::gpio::output<alloy::dev::{led['pin']}_t, "
-            f"{_polarity(led.get('active', 'high'))}> led{{}};"
-        )
+        led_kind = led.get("kind", "gpio")
+        if led_kind == "ws2812":
+            extra_includes.append("alloy/drivers/ws2812.hpp")
+            decls.append(
+                f"inline constexpr alloy::drivers::ws2812<alloy::dev::{led['pin']}_t, "
+                f"clock_profile> led{{}};"
+            )
+        elif led_kind == "gpio":
+            decls.append(
+                f"inline constexpr alloy::gpio::output<alloy::dev::{led['pin']}_t, "
+                f"{_polarity(led.get('active', 'high'))}> led{{}};"
+            )
+        else:
+            raise EmitError(f"board {board['id']}: unknown led kind '{led_kind}'")
 
     button = roles.get("button")
     if button:
@@ -86,6 +97,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
         for name, value in sorted(caps.items())
     )
     decl_body = "\n\n".join(decls)
+    extra_include_block = "".join(f'\n#include "{inc}"' for inc in sorted(extra_includes))
 
     return f"""{BANNER}// Board: {board['id']} ({board.get('name', '')})
 #pragma once
@@ -96,7 +108,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 #include "alloy/gpio.hpp"
 #include "alloy/routes_gen.hpp"
 #include "alloy/time.hpp"
-#include "alloy/uart.hpp"
+#include "alloy/uart.hpp"{extra_include_block}
 
 namespace board {{
 
