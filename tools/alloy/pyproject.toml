@@ -1,0 +1,29 @@
+[project]
+name = "alloy"
+version = "0.1.0"
+description = "Alloy CLI: project scaffolding, code generation and builds for the Alloy framework"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0",
+    "jsonschema>=4.21",
+    "alloy-devices",
+]
+
+[project.scripts]
+alloy = "alloy_cli.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["alloy_cli"]
+
+[tool.uv.sources]
+# Development wiring: the db loader/lints come from the sibling repo so there
+# is exactly ONE resolver for device data (NORTH_STAR: no reimplemented
+# loaders). Published wheels will depend on the alloy-devices release instead.
+alloy-devices = { path = "../../../alloy-devices", editable = true }
+
+[dependency-groups]
+dev = ["pytest>=8.0"]

@@ -1,0 +1,19 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "nucleo_g071rb",
+  "name": "ST Nucleo-G071RB",
+  "chip": "st/stm32g071rb",
+  "clock_profile": "pll_64mhz",
+  "roles": {
+    "led": { "pin": "pa5", "active": "high", "label": "LD4 (green, D13)" },
+    "button": { "pin": "pc13", "active": "low", "label": "B1 USER" },
+    "debug_uart": {
+      "peripheral": "usart2",
+      "tx": "pa2",
+      "rx": "pa3",
+      "baud": 115200,
+      "label": "ST-Link VCP"
+    }
+  },
+  "probe": { "kind": "stlink", "runner": "probe-rs", "chip_id": "STM32G071RBTx" }
+}
