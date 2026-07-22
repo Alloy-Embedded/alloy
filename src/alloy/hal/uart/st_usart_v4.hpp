@@ -2,7 +2,7 @@
 //
 // BEHAVIOR only: every address, offset and field position comes from the
 // generated alloy::ip::st::usart_v4 header and the generated instance
-// descriptor. Blocking byte I/O for the walking skeleton; IRQ/DMA later.
+// descriptor. Blocking byte I/O + RX-interrupt callback.
 
 #pragma once
 
@@ -12,6 +12,7 @@
 #include "alloy/core/types.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/st/usart_v4.hpp"
+#include "alloy/irq.hpp"
 
 namespace alloy::hal {
 
@@ -51,6 +52,38 @@ struct uart_impl<Inst> {
     static void flush() {
         while (IP::tc.read(r()) == 0u) {
         }
+    }
+
+    // --- RX interrupt callback (the driver ISR does ALL register work:
+    // drain RDR, clear ORE — a set ORE wedges RX otherwise — then hand each
+    // byte to the user function; user code never touches registers). ---
+    inline static void (*rx_fn)(void*, std::uint8_t) = nullptr;
+    inline static void* rx_ctx = nullptr;
+
+    static void rx_isr(void*) {
+        while (IP::rxne.read(r()) != 0u) {
+            const auto byte = static_cast<std::uint8_t>(r().RDR);
+            if (rx_fn != nullptr) {
+                rx_fn(rx_ctx, byte);
+            }
+        }
+        if (IP::ore.read(r()) != 0u) {
+            r().ICR = IP::orecf.mask;
+        }
+    }
+
+    static void enable_rx_irq(void (*fn)(void*, std::uint8_t), void* ctx) {
+        rx_fn = fn;
+        rx_ctx = ctx;
+        alloy::irq::attach(Inst::irq, &rx_isr);
+        IP::rxneie.set(r());
+        alloy::irq::enable(Inst::irq);
+    }
+
+    static void disable_rx_irq() {
+        IP::rxneie.clear(r());
+        alloy::irq::detach(Inst::irq);
+        rx_fn = nullptr;
     }
 };
 

@@ -37,19 +37,26 @@ def emit_vector_table(chip: dict[str, Any]) -> str:
     for slot in _SYSTEM_SLOTS:
         entries.append(f"    {slot}," if slot else "    0,")
 
+    # Per-IRQ wrappers: WEAK functions (not aliases) whose body forwards the
+    # line number to the hand-written slot dispatcher. A strong
+    # <NAME>_IRQHandler anywhere in the link still overrides its wrapper —
+    # the zero-latency expert path stays available.
+    wrappers: list[str] = []
     for number in range(max_irq + 1):
         name = by_number.get(number)
         if name is None:
             entries.append(f"    0, /* IRQ{number} reserved */")
             continue
         handler = f"{name}_IRQHandler"
-        weak_decls.append(
-            f"void {handler}(void) __attribute__((weak, alias(\"Default_Handler\")));"
+        wrappers.append(
+            f"__attribute__((weak)) void {handler}(void) {{ alloy_irq_dispatch({number}u); }}"
         )
         entries.append(f"    {handler}, /* IRQ{number} */")
 
     decls = "\n".join(weak_decls)
+    wrapper_block = "\n".join(wrappers)
     table = "\n".join(entries)
+    slot_count = max_irq + 1
     return f"""{_C_BANNER}/* Chip: {chip['vendor']}/{chip['part']} — {len(irqs)} IRQ lines */
 
 typedef void (*vector_t)(void);
@@ -63,7 +70,20 @@ void Default_Handler(void) {{
     }}
 }}
 
+/* RAM slot table consumed by alloy::irq (src/alloy/irq.hpp) and served by
+ * alloy_irq_dispatch (src/alloy/arch/cortex_m/irq_dispatch.cpp). */
+struct alloy_irq_slot {{
+    void (*fn)(void *);
+    void *ctx;
+}};
+struct alloy_irq_slot g_alloy_irq_slots[{slot_count}];
+const unsigned short g_alloy_irq_slot_count = {slot_count};
+
+void alloy_irq_dispatch(unsigned n);
+
 {decls}
+
+{wrapper_block}
 
 __attribute__((used, section(".isr_vector")))
 const vector_t g_vector_table[] = {{

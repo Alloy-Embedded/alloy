@@ -14,6 +14,7 @@
 #include "alloy/core/types.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/microchip/usart_v1.hpp"
+#include "alloy/irq.hpp"
 
 namespace alloy::hal {
 
@@ -58,6 +59,34 @@ struct uart_impl<Inst> {
     static void flush() {
         while (IP::txempty.read(r()) == 0u) {
         }
+    }
+
+    // --- RX interrupt callback. IER/IDR mirror the CSR bit layout (SAM
+    // USART TRM), so the CSR field masks drive the write-only enables. ---
+    inline static void (*rx_fn)(void*, std::uint8_t) = nullptr;
+    inline static void* rx_ctx = nullptr;
+
+    static void rx_isr(void*) {
+        while (IP::rxrdy.read(r()) != 0u) {
+            const auto byte = static_cast<std::uint8_t>(r().RHR);
+            if (rx_fn != nullptr) {
+                rx_fn(rx_ctx, byte);
+            }
+        }
+    }
+
+    static void enable_rx_irq(void (*fn)(void*, std::uint8_t), void* ctx) {
+        rx_fn = fn;
+        rx_ctx = ctx;
+        alloy::irq::attach(Inst::irq, &rx_isr);
+        r().IER = IP::rxrdy.mask;
+        alloy::irq::enable(Inst::irq);
+    }
+
+    static void disable_rx_irq() {
+        r().IDR = IP::rxrdy.mask;
+        alloy::irq::detach(Inst::irq);
+        rx_fn = nullptr;
     }
 };
 

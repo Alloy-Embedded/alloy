@@ -30,7 +30,11 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
-                             "spi": False, "eeprom": False}
+                             "spi": False, "eeprom": False,
+                             # Interrupt layer: needs a generated vector table
+                             # (chips without an interrupts list — ESP32 v1 —
+                             # have no dispatch to attach to).
+                             "irq": bool(chip.get("interrupts"))}
     decls: list[str] = []
 
     extra_includes: list[str] = []

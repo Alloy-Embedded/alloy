@@ -1,0 +1,5 @@
+[project]
+name = "irq_echo"
+
+[board]
+id = "same70_xplained"

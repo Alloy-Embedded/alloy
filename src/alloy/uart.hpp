@@ -52,6 +52,20 @@ public:
     [[nodiscard]] bool read(std::uint8_t& byte) const { return hal::uart_impl<Inst>::read(byte); }
     void flush() const { hal::uart_impl<Inst>::flush(); }
 
+    // Register a function to run in the RX interrupt: the driver's ISR
+    // drains the hardware and calls fn(ctx, byte) per byte received. Only
+    // exists where the backing driver implements interrupts (Cortex-M v1).
+    void on_receive(void (*fn)(void*, std::uint8_t), void* ctx = nullptr) const
+        requires requires { hal::uart_impl<Inst>::enable_rx_irq(fn, ctx); }
+    {
+        hal::uart_impl<Inst>::enable_rx_irq(fn, ctx);
+    }
+    void detach_receive() const
+        requires requires { hal::uart_impl<Inst>::disable_rx_irq(); }
+    {
+        hal::uart_impl<Inst>::disable_rx_irq();
+    }
+
 private:
     template <class, class, class, class>
     friend struct bind;
