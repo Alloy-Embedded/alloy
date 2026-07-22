@@ -42,15 +42,20 @@ int main() {
     uart.write("alloy dma_probe\r\n");
 
     [&uart]<class Dma, class Adc = board::adc>(Dma*) {
-        if constexpr (HasDma<Dma> && board::caps::adc && board::adc_has_vref) {
+        if constexpr (HasDma<Dma> && board::caps::adc &&
+                      (board::adc_has_vref || board::adc_has_temp)) {
+            // Prefer VREFINT (stable reference); fall back to the temp
+            // sensor where no vref channel exists (SAME70 AFEC).
+            constexpr std::uint8_t kBurstChannel =
+                board::adc_has_vref ? board::adc_vref_channel : board::adc_temp_channel;
             auto adc = Adc::open();
             std::uint16_t samples[32] = {};
             if constexpr (requires(alloy::dma::channel<Dma, 1>& c) {
-                              adc.read_burst(c, board::adc_vref_channel,
+                              adc.read_burst(c, kBurstChannel,
                                              std::span<std::uint16_t>{samples});
                           }) {
                 auto chan = alloy::dma::channel<Dma, 1>::claim();
-                const bool ok = adc.read_burst(chan, board::adc_vref_channel,
+                const bool ok = adc.read_burst(chan, kBurstChannel,
                                                std::span<std::uint16_t>{samples});
                 std::uint16_t lo = 0xFFFF, hi = 0;
                 for (auto s : samples) {
@@ -98,6 +103,27 @@ int main() {
             }
         } else {
             uart.write("pwm waveform DMA: sem DMA/PWM nesta board\r\n");
+        }
+    }(static_cast<board::dma_t*>(nullptr));
+
+    [&uart]<class Dma, class Uart = board::debug_uart>(Dma*) {
+        if constexpr (HasDma<Dma> && board::caps::debug_uart) {
+            static constexpr char kMsg[] =
+                "uart tx DMA: esta linha inteira saiu da memoria sem a CPU\r\n";
+            const auto* bytes = reinterpret_cast<const std::uint8_t*>(kMsg);
+            const std::span<const std::uint8_t> payload{bytes, sizeof(kMsg) - 1};
+            if constexpr (requires(alloy::dma::channel<Dma, 3>& c) {
+                              uart.write_dma(c, payload);
+                          }) {
+                auto chan = alloy::dma::channel<Dma, 3>::claim();
+                if (!uart.write_dma(chan, payload)) {
+                    uart.write("uart tx DMA: FALHOU\r\n");
+                }
+            } else {
+                uart.write("uart tx DMA: driver sem hooks DMA\r\n");
+            }
+        } else {
+            uart.write("uart tx DMA: sem DMA nesta board\r\n");
         }
     }(static_cast<board::dma_t*>(nullptr));
 

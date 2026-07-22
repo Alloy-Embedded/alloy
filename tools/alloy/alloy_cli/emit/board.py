@@ -18,11 +18,21 @@ def _require(cond: bool, msg: str) -> None:
         raise EmitError(msg)
 
 
+def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) -> str | None:
+    """First peripheral whose IP is class 'dma' (alphabetical for determinism)."""
+    for name in sorted(chip["peripherals"]):
+        ip = chip["peripherals"][name]["ip"]
+        if registers.get(ip, {}).get("class") == "dma":
+            return name
+    return None
+
+
 def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
 
-def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
+def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
+                      registers: dict[str, dict[str, Any]]) -> str:
     roles = board.get("roles", {})
     profile_name = board["clock_profile"]
     profile = chip["clock"]["profiles"].get(profile_name)
@@ -35,8 +45,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
                              "irq": bool(chip.get("interrupts")),
-                             # DMA: chip declares a dma1 controller instance.
-                             "dma": "dma1" in chip["peripherals"]}
+                             # DMA: chip declares a controller whose IP is
+                             # class "dma" (st dma1, microchip xdmac, ...).
+                             "dma": _dma_controller(chip, registers) is not None}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -276,8 +287,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any]) -> str:
             "inline constexpr std::uint8_t adc_temp_channel = 0u;"
         )
 
-    if "dma1" in chip["peripherals"]:
-        decls.append("using dma_t = alloy::dev::dma1_t;")
+    dma_name = _dma_controller(chip, registers)
+    if dma_name:
+        decls.append(f"using dma_t = alloy::dev::{dma_name}_t;")
     else:
         decls.append(
             "// No DMA controller in this chip's data yet; the tag keeps\n"

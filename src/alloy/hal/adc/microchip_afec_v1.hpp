@@ -52,6 +52,38 @@ struct adc_impl<Inst> {
         r().CHDR = 1u << channel;
         return data;
     }
+
+    // --- DMA burst hooks. The XDMAC request line (PERID) is hardwired
+    // from DRDY (data in LCDR; reading LCDR acks it) — no peripheral-side
+    // DMA-enable exists. begin() configures ONE channel but does not
+    // start; kick() flips MR.FREERUN (RMW — enable() wrote MR wholesale
+    // and ONE must stay set), which retriggers conversions continuously;
+    // end() stops free-run and drains a stale LCDR/DRDY. ---
+    static void dma_burst_begin(std::uint8_t channel) {
+        r().CSELR = channel;
+        r().COCR = 0x200u;
+        r().CHER = 1u << channel;
+        (void)r().LCDR;  // clear stale DRDY so the first request is fresh
+    }
+
+    static void dma_burst_kick() {
+        IP::freerun.set(r());
+        r().CR = IP::start.mask;  // defensive first trigger (harmless)
+    }
+
+    static void dma_burst_end() {
+        IP::freerun.clear(r());
+        // CSELR still selects the burst channel (set in begin): reading CDR
+        // clears the latched EOC so the next blocking read() cannot satisfy
+        // its poll from a stale conversion.
+        (void)r().CDR;
+        r().CHDR = 0xFFFFu;  // contract-ok: disable all channels, write-only clear mask
+        (void)r().LCDR;
+    }
+
+    [[nodiscard]] static std::uintptr_t dr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().LCDR);
+    }
 };
 
 }  // namespace alloy::hal

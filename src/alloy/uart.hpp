@@ -12,6 +12,7 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
 
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
@@ -64,6 +65,25 @@ public:
         requires requires { hal::uart_impl<Inst>::disable_rx_irq(); }
     {
         hal::uart_impl<Inst>::disable_rx_irq();
+    }
+
+    // Blocking TX of a buffer via a claimed DMA channel: returns once the
+    // DMA finished AND the transmitter drained (honest completion). Only
+    // exists where the driver has TX-DMA hooks and the chip data carries
+    // the request ID.
+    template <class Chan>
+    [[nodiscard]] bool write_dma(const Chan& dma, std::span<const std::uint8_t> data) const
+        requires requires {
+            hal::uart_impl<Inst>::dma_tx_begin();
+            Inst::dmareq_tx;
+        }
+    {
+        hal::uart_impl<Inst>::dma_tx_begin();
+        dma.start_m2p_u8(data, hal::uart_impl<Inst>::tdr_addr(), Inst::dmareq_tx);
+        const bool ok = dma.wait();
+        dma.stop();
+        hal::uart_impl<Inst>::dma_tx_end();
+        return ok;
     }
 
 private:

@@ -88,6 +88,20 @@ struct uart_impl<Inst> {
         alloy::irq::detach(Inst::irq);
         rx_fn = nullptr;
     }
+
+    // --- TX via XDMAC: no peripheral-side enable exists on SAME70 (the
+    // PDC was dropped); TXRDY drives the request line selected by PERID.
+    // The honest done-flag is TXEMPTY (shift register drained). ---
+    static void dma_tx_begin() {}
+
+    static void dma_tx_end() {
+        while (IP::txempty.read(r()) == 0u) {
+        }
+    }
+
+    [[nodiscard]] static std::uintptr_t tdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().THR);
+    }
 };
 
 }  // namespace alloy::hal

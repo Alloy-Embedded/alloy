@@ -84,6 +84,26 @@ struct uart_impl<Inst> {
         alloy::irq::detach(Inst::irq);
         rx_fn = nullptr;
     }
+
+    // --- TX via DMA: DMA TCIF only means the last byte reached TDR; the
+    // honest done-flag is ISR.TC (shift register + FIFO drained), so the
+    // stale TC is cleared at begin and polled at end (RM0444 DMA-TX
+    // procedure). 8-bit frames only: APB lane duplication can at worst
+    // touch TDR[8], which the transmitter ignores when M=00. ---
+    static void dma_tx_begin() {
+        r().ICR = IP::tccf.mask;
+        IP::dmat.set(r());
+    }
+
+    static void dma_tx_end() {
+        while (IP::tc.read(r()) == 0u) {
+        }
+        IP::dmat.clear(r());
+    }
+
+    [[nodiscard]] static std::uintptr_t tdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().TDR);
+    }
 };
 
 }  // namespace alloy::hal

@@ -74,7 +74,7 @@ def generate(project: Project) -> list[Path]:
     _write(gen / "alloy" / "device.hpp",
            emit_device_header(chip, db.registers, driver_includes), written)
     _write(gen / "alloy" / "routes_gen.hpp", emit_routes_header(chip), written)
-    _write(gen / "alloy" / "board.hpp", emit_board_header(board, chip), written)
+    _write(gen / "alloy" / "board.hpp", emit_board_header(board, chip, db.registers), written)
     _write(gen / "board.cpp", emit_board_source(board, chip, db.registers, arch_ns), written)
     if chip.get("interrupts") and arch_ns == "cortex_m":
         _write(gen / "vector_table.c", emit_vector_table(chip), written)

@@ -51,6 +51,19 @@ public:
         impl::template start<Ch>();
     }
 
+    // One-shot memory -> peripheral, byte items (UART TX and friends).
+    void start_m2p_u8(std::span<const std::uint8_t> src, std::uintptr_t periph_reg,
+                      std::uint8_t request) const {
+        if (src.empty() || src.size() > 0xFFFF) {
+            __builtin_trap();
+        }
+        impl::template setup<Ch>(impl::dir::mem_to_periph, false, impl::width::b8,
+                                 impl::width::b8, periph_reg,
+                                 reinterpret_cast<std::uintptr_t>(src.data()),
+                                 static_cast<std::uint16_t>(src.size()), request);
+        impl::template start<Ch>();
+    }
+
     // Circular memory -> peripheral, 16-bit items; runs until stop().
     // The source span must OUTLIVE the stream (static/global buffer).
     void start_m2p_circular_u16(std::span<const std::uint16_t> src,
@@ -71,14 +84,17 @@ public:
     [[nodiscard]] bool done() const { return impl::template complete<Ch>(); }
     [[nodiscard]] bool error() const { return impl::template error<Ch>(); }
 
-    // Block until complete; false on transfer error.
+    // Block until complete; false on transfer error. The FINAL error()
+    // check matters: on XDMAC a bus error auto-disables the channel, which
+    // satisfies done() — and an error on the last beat coincides with
+    // completion on any controller.
     [[nodiscard]] bool wait() const {
         while (!done()) {
             if (error()) {
                 return false;
             }
         }
-        return true;
+        return !error();
     }
 
     void stop() const {
