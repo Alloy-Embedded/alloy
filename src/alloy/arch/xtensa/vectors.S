@@ -194,32 +194,32 @@ _alloy_window_underflow12:
 /* Never enabled in v1 (INTENABLE only ever carries level-1 bits). */
     .org    0x180
 _alloy_level2_vector:
-    j       _alloy_level2_vector
+    j       _alloy_panic_2
 
     .org    0x1C0
 _alloy_level3_vector:
-    j       _alloy_level3_vector
+    j       _alloy_panic_3
 
     .org    0x200
 _alloy_level4_vector:
-    j       _alloy_level4_vector
+    j       _alloy_panic_4
 
     .org    0x240
 _alloy_level5_vector:
-    j       _alloy_level5_vector
+    j       _alloy_panic_5
 
     .org    0x280
 _alloy_debug_vector:
-    j       _alloy_debug_vector
+    j       _alloy_panic_G
 
     .org    0x2C0
 _alloy_nmi_vector:
-    j       _alloy_nmi_vector
+    j       _alloy_panic_N
 
 /* --- +0x300: Kernel exception (PS.UM=0) — runtime always runs UM=1 --- */
     .org    0x300
 _alloy_kernel_vector:
-    j       _alloy_kernel_vector
+    j       _alloy_panic_K
 
 /* --- +0x340: User exception vector — the one live entry point ------- */
 /* Level-1 interrupts arrive here (EXCCAUSE=4) as do all other general
@@ -234,7 +234,7 @@ _alloy_user_vector:
 /* --- +0x3C0: Double exception ---------------------------------------- */
     .org    0x3C0
 _alloy_doubleexc_vector:
-    j       _alloy_doubleexc_vector
+    j       _alloy_panic_W
 
 /* ===================================================================== */
 /* Handlers — placed directly after the table, same section (IRAM),      */
@@ -250,9 +250,8 @@ _alloy_user_exc:
      * EXCSAVE1, everything else still the interrupted context. */
     rsr     a0, exccause
     beqi    a0, EXCCAUSE_L1INT, _alloy_l1int
-_alloy_exc_trap:                    /* v1: any real exception = halt with
-                                       EXCCAUSE/EPC1 intact for JTAG */
-    j       _alloy_exc_trap
+_alloy_exc_trap:                    /* talking panic: tag+cause+EPC1 on UART0 */
+    j       _alloy_panic_E
     .size   _alloy_user_exc, . - _alloy_user_exc
 
     .align  4
@@ -394,6 +393,55 @@ _alloy_l1int:
     l32i    a1, a1, XFRAME_A1       /* pre-exception SP last */
     rfe
     .size   _alloy_l1int, . - _alloy_l1int
+
+/* ---- Talking panics: tag + EXCCAUSE('@'+n) + EPC1 hex, then halt. ----
+ * Best-effort post-mortem on the ROM-configured UART0 (this file is
+ * ESP32-specific; the FIFO address is built literal-free). Tags:
+ * E=user exception (EXCCAUSE!=Level1Int), W=double exception, K=kernel,
+ * 2-5=those int levels, G=debug, N=NMI. Diagnosed a real silicon hang
+ * (base-frame window spill) that a silent loop never would have. */
+    .macro  PANIC_EMIT tag
+    movi    a2, 0x3FF
+    slli    a2, a2, 8
+    addi    a2, a2, 0x40            /* 0x3FF40 */
+    slli    a2, a2, 12              /* a2 = 0x3FF40000 = UART0 FIFO */
+    movi    a3, \tag
+    s32i    a3, a2, 0
+    rsr     a3, exccause
+    addi    a3, a3, 0x40            /* '@' + cause */
+    s32i    a3, a2, 0
+    rsr     a4, epc1
+    movi    a5, 8
+1:  extui   a3, a4, 28, 4
+    bgeui   a3, 10, 2f
+    addi    a3, a3, '0'
+    j       3f
+2:  addi    a3, a3, 'a' - 10
+3:  s32i    a3, a2, 0
+    slli    a4, a4, 4
+    addi    a5, a5, -1
+    bnez    a5, 1b
+4:  j       4b
+    .endm
+
+    .align 4
+_alloy_panic_E: PANIC_EMIT 'E'
+    .align 4
+_alloy_panic_W: PANIC_EMIT 'W'
+    .align 4
+_alloy_panic_K: PANIC_EMIT 'K'
+    .align 4
+_alloy_panic_2: PANIC_EMIT '2'
+    .align 4
+_alloy_panic_3: PANIC_EMIT '3'
+    .align 4
+_alloy_panic_4: PANIC_EMIT '4'
+    .align 4
+_alloy_panic_5: PANIC_EMIT '5'
+    .align 4
+_alloy_panic_G: PANIC_EMIT 'G'
+    .align 4
+_alloy_panic_N: PANIC_EMIT 'N'
 
 /* ===================================================================== */
 /* alloy_vectors_install — normal windowed C-callable function, in       */
