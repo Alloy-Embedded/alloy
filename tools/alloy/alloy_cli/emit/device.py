@@ -50,8 +50,16 @@ def _gate_args(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
     return args
 
 
+def curated_peripherals(chip: dict[str, Any]) -> dict[str, Any]:
+    """Peripherals codegen emits: uncurated stubs keep their facts in the
+    data but produce NO descriptors (nothing may depend on them)."""
+    return {n: p for n, p in chip["peripherals"].items() if not p.get("uncurated")}
+
+
 def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
                        driver_includes: list[str]) -> str:
+    chip = dict(chip)
+    chip["peripherals"] = curated_peripherals(chip)
     ips_used = sorted({p["ip"] for p in chip["peripherals"].values()})
     includes = "\n".join(
         f'#include "alloy/ip/{vendor}/{ip}.hpp"'
@@ -174,11 +182,14 @@ namespace alloy::dev {{
 
 
 def emit_routes_header(chip: dict[str, Any]) -> str:
+    curated = curated_peripherals(chip)
     specs: list[str] = []
     for route in sorted(
         chip.get("routes", []),
         key=lambda r: (r["pin"], r["peripheral"], r["signal"]),
     ):
+        if route["peripheral"] not in curated:
+            continue  # route to an uncurated stub: fact kept, nothing emitted
         if route["signal"] not in SIGNALS:
             raise EmitError(f"route {route['pin']}->{route['peripheral']}: unknown signal '{route['signal']}'")
         payload = [f"    static constexpr alloy::routes::kind k = {_KIND_CPP[route['kind']]};"]

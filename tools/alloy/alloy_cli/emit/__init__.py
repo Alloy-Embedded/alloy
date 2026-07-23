@@ -37,8 +37,9 @@ def _write(path: Path, content: str, written: list[Path]) -> None:
     written.append(path)
 
 
-def generate(project: Project) -> list[Path]:
-    db = load_database(project.devices_root)
+def generate(project: Project, db=None) -> list[Path]:
+    if db is None:
+        db = load_database(project.devices_root)
     run_all(db)
     if db.errors:
         details = "\n".join(f"  {e}" for e in db.errors)

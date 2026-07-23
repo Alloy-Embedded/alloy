@@ -157,9 +157,9 @@ def cmd_gen(args: argparse.Namespace) -> int:
 
 def cmd_build(args: argparse.Namespace) -> int:
     project = _project(args)
-    generate(project)
-    board = project.load_board()
     db = load_database(project.devices_root)
+    generate(project, db)
+    board = project.load_board()
     chip = db.chips[board["chip"]]
     elf = build(project, chip)
     print(f"\nbuilt {elf}")
@@ -170,9 +170,9 @@ def cmd_flash(args: argparse.Namespace) -> int:
     from .flash import flash  # noqa: PLC0415
 
     project = _project(args)
-    generate(project)
-    board = project.load_board()
     db = load_database(project.devices_root)
+    generate(project, db)
+    board = project.load_board()
     chip = db.chips[board["chip"]]
     elf = build(project, chip)
     runner = flash(board, chip, elf)

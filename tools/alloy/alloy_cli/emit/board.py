@@ -21,10 +21,18 @@ def _require(cond: bool, msg: str) -> None:
 def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) -> str | None:
     """First peripheral whose IP is class 'dma' (alphabetical for determinism)."""
     for name in sorted(chip["peripherals"]):
-        ip = chip["peripherals"][name]["ip"]
-        if registers.get(ip, {}).get("class") == "dma":
+        ip = chip["peripherals"][name].get("ip")
+        if ip and registers.get(ip, {}).get("class") == "dma":
             return name
     return None
+
+
+def _require_curated(board_id: str, chip: dict[str, Any], periph: str, role: str) -> None:
+    if chip["peripherals"].get(periph, {}).get("uncurated"):
+        raise EmitError(
+            f"board {board_id}: role {role} targets UNCURATED peripheral '{periph}' — "
+            "curate its IP register file first"
+        )
 
 
 def _polarity(active: str) -> str:
@@ -86,6 +94,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require("peripheral" in uart, f"board {board['id']}: debug_uart missing 'peripheral'")
         _require(uart["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: debug_uart peripheral '{uart['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, uart["peripheral"], "debug_uart")
         caps["debug_uart"] = True
         if uart.get("mode") == "rom":
             # Boot-ROM-configured UART (classic ESP32 UART0): no pin routing.
@@ -125,6 +134,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             _require(key in led_pwm, f"board {board['id']}: led_pwm missing '{key}'")
         _require(led_pwm["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: led_pwm peripheral '{led_pwm['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, led_pwm["peripheral"], "led_pwm")
         caps["led_pwm"] = True
         ch = led_pwm["channel"]
         decls.append(
@@ -150,6 +160,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             _require(key in i2c_role, f"board {board['id']}: i2c role missing '{key}'")
         _require(i2c_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: i2c peripheral '{i2c_role['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, i2c_role["peripheral"], "i2c")
         caps["i2c"] = True
         decls.append(
             f"using i2c = alloy::i2c::bind<alloy::dev::{i2c_role['peripheral']}_t,\n"
@@ -178,6 +189,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             _require(key in spi_role, f"board {board['id']}: spi role missing '{key}'")
         _require(spi_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: spi peripheral '{spi_role['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, spi_role["peripheral"], "spi")
         caps["spi"] = True
         decls.append(
             f"using spi = alloy::spi::bind<alloy::dev::{spi_role['peripheral']}_t,\n"
