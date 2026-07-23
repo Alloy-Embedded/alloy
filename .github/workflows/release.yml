@@ -1,0 +1,36 @@
+# Publish alloy-embedded to PyPI via Trusted Publishing (OIDC — no tokens).
+# Trigger: push a tag like v0.1.0. The wheel embeds the framework payload
+# (src/alloy + boards) via hatch force-include, so it builds from the full
+# repo checkout. Wheel-only: the payload layout makes sdists misleading.
+name: release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - name: sanity — version matches tag
+        run: |
+          v=$(grep -m1 '^version' tools/alloy/pyproject.toml | cut -d'"' -f2)
+          [ "v$v" = "${GITHUB_REF_NAME}" ] || { echo "pyproject $v != tag ${GITHUB_REF_NAME}"; exit 1; }
+      - name: build wheel (embeds framework payload)
+        working-directory: tools/alloy
+        run: uv build --wheel -o ../../dist
+      - name: smoke — wheel resolves packaged roots
+        run: |
+          uv venv smoke
+          # alloy-devices from PyPI must exist first (publish it before alloy).
+          uv pip install --python smoke/bin/python dist/*.whl
+          smoke/bin/alloy --version
+          smoke/bin/alloy boards --json | head -3
+      - name: publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist

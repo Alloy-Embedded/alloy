@@ -7,7 +7,17 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "alloy"
+name = "alloy-devices"
+version = "0.1.0"
+source = { editable = "../../../alloy-devices" }
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.0" }]
+
+[[package]]
+name = "alloy-embedded"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -29,24 +39,6 @@ requires-dist = [
     { name = "esptool", specifier = ">=4.7" },
     { name = "jsonschema", specifier = ">=4.21" },
     { name = "pyserial", specifier = ">=3.5" },
-    { name = "pyyaml", specifier = ">=6.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.0" }]
-
-[[package]]
-name = "alloy-devices"
-version = "0.1.0"
-source = { editable = "../../../alloy-devices" }
-dependencies = [
-    { name = "jsonschema" },
-    { name = "pyyaml" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "jsonschema", specifier = ">=4.21" },
     { name = "pyyaml", specifier = ">=6.0" },
 ]
 
