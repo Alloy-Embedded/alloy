@@ -59,14 +59,34 @@ class Project:
         return board
 
 
+def packaged_alloy_root() -> Path | None:
+    """Framework payload embedded in the installed wheel, if any."""
+    payload = Path(__file__).resolve().parent / "payload"
+    if (payload / "boards").is_dir() and (payload / "src" / "alloy").is_dir():
+        return payload
+    return None
+
+
+def _packaged_devices_root() -> Path | None:
+    try:
+        from alloy_devices.loader import data_root
+    except ImportError:
+        return None
+    root = data_root()
+    return root if (root / "chips").is_dir() else None
+
+
 def _find_alloy_root(start: Path) -> Path:
     if env := os.environ.get("ALLOY_ROOT"):
         return Path(env).resolve()
     for candidate in [start, *start.parents]:
         if (candidate / "NORTH_STAR.md").exists() and (candidate / "boards").is_dir():
             return candidate
+    if packaged := packaged_alloy_root():
+        return packaged
     raise ProjectError(
-        "could not find the alloy framework root — run inside the repo or set ALLOY_ROOT"
+        "could not find the alloy framework — run inside the repo, set ALLOY_ROOT, "
+        "or install the alloy package (the wheel embeds the framework)"
     )
 
 
@@ -76,9 +96,12 @@ def _find_devices_root(alloy_root: Path) -> Path:
     sibling = alloy_root.parent / "alloy-devices"
     if (sibling / "chips").is_dir():
         return sibling
+    if packaged := _packaged_devices_root():
+        return packaged
     raise ProjectError(
-        "could not find the alloy-devices database — set ALLOY_DEVICES_ROOT or "
-        f"clone it next to the framework ({sibling})"
+        "could not find the alloy-devices database — set ALLOY_DEVICES_ROOT, "
+        f"clone it next to the framework ({sibling}), or install the "
+        "alloy-devices package"
     )
 
 

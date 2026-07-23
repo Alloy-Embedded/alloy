@@ -13,25 +13,15 @@ from __future__ import annotations
 import shutil
 import struct
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
 
+from .debug import OPENOCD_INTERFACE as _OPENOCD_INTERFACE
+from .debug import OPENOCD_TARGET as _OPENOCD_TARGET
 from .emit.common import EmitError
-
-# OpenOCD target script per chip family (tool-integration map, not silicon).
-_OPENOCD_TARGET = {
-    "stm32g0": "stm32g0x",
-    "stm32f4": "stm32f4x",
-    "stm32f7": "stm32f7x",
-    "stm32g4": "stm32g4x",
-    "same70": "atsamv",
-}
-
-_OPENOCD_INTERFACE = {
-    "stlink": "stlink",
-    "cmsis-dap": "cmsis-dap",
-}
+from .ports import find_serial_port  # noqa: F401  (re-export: monitor/esptool path)
 
 
 def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
@@ -39,25 +29,25 @@ def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
     if probe is None:
         raise EmitError(f"board {board['id']} declares no probe — cannot flash")
 
+    # A board-declared runner wins over host-first probing.
+    declared = probe.get("runner")
+    if declared == "openocd":
+        return _flash_openocd(board, chip, elf, probe)
+    if declared == "probe-rs":
+        return _flash_probe_rs(elf, probe)
+    if declared == "uf2":
+        return _flash_uf2(chip, elf, probe)
+    if declared == "esptool":
+        return _flash_esptool(elf, probe)
+
     if shutil.which("probe-rs") and "chip_id" in probe:
-        subprocess.run(
-            ["probe-rs", "download", "--chip", probe["chip_id"], str(elf)], check=True
-        )
-        subprocess.run(["probe-rs", "reset", "--chip", probe["chip_id"]], check=True)
-        return "probe-rs"
+        return _flash_probe_rs(elf, probe)
 
     if shutil.which("openocd"):
         interface = _OPENOCD_INTERFACE.get(probe.get("kind", ""))
         target = _OPENOCD_TARGET.get(chip["family"])
         if interface and target:
-            subprocess.run(
-                ["openocd",
-                 "-f", f"interface/{interface}.cfg",
-                 "-f", f"target/{target}.cfg",
-                 "-c", f"program {{{elf}}} verify reset exit"],
-                check=True,
-            )
-            return "openocd"
+            return _flash_openocd(board, chip, elf, probe)
 
     if probe.get("kind") == "bootsel":
         return _flash_uf2(chip, elf, probe)
@@ -80,33 +70,34 @@ def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
     )
 
 
-def find_serial_port(probe: dict[str, Any]) -> str:
-    """Locate the board's serial port (flash + monitor).
-
-    usbserial* covers USB-UART bridges (FTDI/CP210x/CH34x); usbmodem*
-    covers CDC probes (ST-Link VCP, EDBG). BOOTSEL boards have no serial.
-    """
-    if port := probe.get("port"):
-        return str(port)
-    kind = probe.get("kind", "")
-    if kind == "bootsel":
-        raise EmitError(
-            "this board flashes over BOOTSEL mass-storage and exposes no "
-            "serial port — wire a USB-serial adapter to use the UART"
-        )
-    pattern = "cu.usbmodem*" if kind in ("stlink", "cmsis-dap") else "cu.usbserial*"
-    candidates = sorted(Path("/dev").glob(pattern))
-    if len(candidates) == 1:
-        return str(candidates[0])
-    if len(candidates) == 2 and candidates[0].name[:-1] == candidates[1].name[:-1]:
-        # Dual-channel FTDI (WROVER-KIT FT2232H): channel A is JTAG,
-        # channel B — the higher suffix — is the UART.
-        return str(candidates[1])
-    names = ", ".join(str(c) for c in candidates) or "(none)"
-    raise EmitError(
-        f"could not auto-pick a serial port (found: {names}) — "
-        "set probe.port in board.json or plug exactly one board"
+def _flash_probe_rs(elf: Path, probe: dict[str, Any]) -> str:
+    if not shutil.which("probe-rs"):
+        raise EmitError("probe-rs declared/needed but not on PATH")
+    subprocess.run(
+        ["probe-rs", "download", "--chip", probe["chip_id"], str(elf)], check=True
     )
+    subprocess.run(["probe-rs", "reset", "--chip", probe["chip_id"]], check=True)
+    return "probe-rs"
+
+
+def _flash_openocd(board: dict[str, Any], chip: dict[str, Any], elf: Path,
+                   probe: dict[str, Any]) -> str:
+    if not shutil.which("openocd"):
+        raise EmitError("openocd declared/needed but not on PATH (alloy setup)")
+    interface = _OPENOCD_INTERFACE.get(probe.get("kind", ""))
+    target = _OPENOCD_TARGET.get(chip["family"])
+    if not (interface and target):
+        raise EmitError(
+            f"no openocd mapping for probe '{probe.get('kind')}' / family '{chip['family']}'"
+        )
+    subprocess.run(
+        ["openocd",
+         "-f", f"interface/{interface}.cfg",
+         "-f", f"target/{target}.cfg",
+         "-c", f"program {{{elf}}} verify reset exit"],
+        check=True,
+    )
+    return "openocd"
 
 
 # ── UF2 (BOOTSEL mass-storage) ──────────────────────────────────────────────
@@ -145,6 +136,35 @@ def _elf_to_uf2(elf: Path, flash_base: int, family_id: int) -> bytes:
     return bytes(out)
 
 
+def _find_uf2_volume(probe: dict[str, Any]) -> Path:
+    """BOOTSEL mount point per OS. probe.volume may be a full path (legacy)
+    or a bare label; default label RPI-RP2."""
+    declared = probe.get("volume", "RPI-RP2")
+    as_path = Path(declared)
+    if as_path.is_absolute():
+        return as_path
+    label = declared
+    import os  # noqa: PLC0415
+
+    if sys.platform == "darwin":
+        return Path("/Volumes") / label
+    if sys.platform.startswith("linux"):
+        user = os.environ.get("USER", "")
+        for base in (Path("/media") / user, Path("/run/media") / user, Path("/media")):
+            if (base / label).exists():
+                return base / label
+        return Path("/media") / user / label
+    if sys.platform == "win32":
+        import string  # noqa: PLC0415
+
+        for letter in string.ascii_uppercase:
+            root = Path(f"{letter}:/")
+            if (root / "INFO_UF2.TXT").exists():
+                return root
+        return Path("E:/")  # placeholder that will be polled for
+    return Path("/Volumes") / label
+
+
 def _flash_uf2(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -> str:
     flash_base = int(
         next(m["base"] for m in chip["memories"] if m["kind"] == "flash"), 16
@@ -154,7 +174,7 @@ def _flash_uf2(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -> str:
     uf2_path = elf.with_suffix(".uf2")
     uf2_path.write_bytes(uf2)
 
-    volume = Path(probe.get("volume", "/Volumes/RPI-RP2"))
+    volume = _find_uf2_volume(probe)
     if not volume.exists():
         print(f"waiting for {volume} — hold BOOTSEL and (re)plug the board's USB…")
         deadline = time.time() + 120

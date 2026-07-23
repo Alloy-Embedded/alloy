@@ -1,81 +1,104 @@
-"""Interactive serial monitor (raw termios, no external deps).
+"""Bidirectional serial monitor — cross-platform (pyserial).
 
-Bidirectional: keystrokes go to the board, board output to the terminal.
-Ctrl-] exits (the idf.py convention, so Ctrl-C can reach the target app).
+A reader thread streams device bytes to stdout; the main thread forwards
+keystrokes to the device. Raw keystroke input is per-OS behavior: termios
+cbreak on POSIX, msvcrt on Windows. Exit with Ctrl-] (the idf.py
+convention, so Ctrl-C can reach the target app).
 """
 
 from __future__ import annotations
 
-import os
-import select
 import sys
-import termios
-import tty
+import threading
 from typing import Any
 
 from .emit.common import EmitError
-from .flash import find_serial_port
-
-_BAUD_CONSTANTS = {
-    9600: termios.B9600,
-    19200: termios.B19200,
-    38400: termios.B38400,
-    57600: termios.B57600,
-    115200: termios.B115200,
-    230400: termios.B230400,
-}
+from .ports import find_serial_port
 
 _EXIT_KEY = b"\x1d"  # Ctrl-]
 
+_BAUD_WHITELIST = {9600, 19200, 38400, 57600, 115200, 230400}
+
+
+def _resolve_baud(board: dict[str, Any]) -> int:
+    baud = int(board.get("roles", {}).get("debug_uart", {}).get("baud", 115200))
+    if baud not in _BAUD_WHITELIST:
+        raise EmitError(f"unsupported baud {baud} (known: {sorted(_BAUD_WHITELIST)})")
+    return baud
+
 
 def monitor(board: dict[str, Any]) -> None:
-    probe = board.get("probe", {})
-    uart_role = board.get("roles", {}).get("debug_uart")
-    if uart_role is None:
+    probe = board.get("probe")
+    if probe is None:
+        raise EmitError(f"board {board['id']} declares no probe — no serial to monitor")
+    if not board.get("roles", {}).get("debug_uart"):
         raise EmitError(f"board {board['id']} declares no debug_uart role")
-    baud = uart_role.get("baud", 115200)
-    baud_const = _BAUD_CONSTANTS.get(baud)
-    if baud_const is None:
-        raise EmitError(f"unsupported monitor baud {baud}")
 
-    port = find_serial_port(probe)
-    fd = os.open(port, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
-    attrs = termios.tcgetattr(fd)
-    attrs[0] = 0
-    attrs[1] = 0
-    attrs[2] = termios.CREAD | termios.CLOCAL | termios.CS8
-    attrs[3] = 0
-    attrs[4] = baud_const
-    attrs[5] = baud_const
-    termios.tcsetattr(fd, termios.TCSANOW, attrs)
+    import serial  # noqa: PLC0415
 
-    print(f"monitor: {port} @ {baud} — Ctrl-] to quit")
-    stdin_fd = sys.stdin.fileno()
-    interactive = sys.stdin.isatty()
-    saved = termios.tcgetattr(stdin_fd) if interactive else None
+    port_name = find_serial_port(probe)
+    baud = _resolve_baud(board)
+    port = serial.Serial(port_name, baud, timeout=0.1)
+    # pyserial asserts DTR/RTS on open; on FT2232H auto-download circuits
+    # (ESP32 boards) an asserted RTS holds the chip in reset — release both.
+    port.dtr = False
+    port.rts = False
+
+    print(f"monitor: {port_name} @ {baud} (Ctrl-] to exit)")
+    stop = threading.Event()
+
+    def reader() -> None:
+        while not stop.is_set():
+            try:
+                data = port.read(4096)
+            except (OSError, serial.SerialException):
+                stop.set()
+                break
+            if data:
+                sys.stdout.buffer.write(data)
+                sys.stdout.buffer.flush()
+
+    t = threading.Thread(target=reader, daemon=True)
+    t.start()
     try:
-        if interactive:
-            tty.setcbreak(stdin_fd)
-        while True:
-            watch = [fd, stdin_fd] if interactive else [fd]
-            readable, _, _ = select.select(watch, [], [], 0.1)
-            if fd in readable:
-                try:
-                    data = os.read(fd, 4096)
-                except BlockingIOError:
-                    data = b""
-                if data:
-                    sys.stdout.buffer.write(data)
-                    sys.stdout.buffer.flush()
-            if interactive and stdin_fd in readable:
-                key = os.read(stdin_fd, 64)
-                if _EXIT_KEY in key:
-                    break
-                os.write(fd, key)
-    except KeyboardInterrupt:
-        pass
+        _forward_keys(port, stop)
     finally:
-        if saved is not None:
-            termios.tcsetattr(stdin_fd, termios.TCSANOW, saved)
-        os.close(fd)
+        stop.set()
+        t.join(timeout=1.0)
+        port.close()
         print("\nmonitor: closed")
+
+
+def _forward_keys(port: Any, stop: threading.Event) -> None:
+    if sys.platform == "win32":
+        import msvcrt  # noqa: PLC0415
+        import time  # noqa: PLC0415
+
+        while not stop.is_set():
+            if msvcrt.kbhit():
+                ch = msvcrt.getch()
+                if ch == _EXIT_KEY:
+                    return
+                port.write(ch)
+            else:
+                time.sleep(0.02)
+        return
+
+    import select  # noqa: PLC0415
+    import termios  # noqa: PLC0415
+    import tty  # noqa: PLC0415
+
+    fd = sys.stdin.fileno()
+    saved = termios.tcgetattr(fd)
+    try:
+        tty.setcbreak(fd)
+        while not stop.is_set():
+            ready, _, _ = select.select([fd], [], [], 0.1)
+            if not ready:
+                continue
+            ch = sys.stdin.buffer.read1(1)
+            if ch == _EXIT_KEY:
+                return
+            port.write(ch)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, saved)

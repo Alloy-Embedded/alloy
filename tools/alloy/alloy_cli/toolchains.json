@@ -1,0 +1,139 @@
+{
+  "comment": "Toolchain manifest for `alloy setup`. PATH-first: an entry is only downloaded when its check binary is missing from PATH and from ~/.alloy/tools. sha256 null = not yet pinned — the installer computes and prints the digest on first verified download so it can be pinned here. Keys per tool: check (binary probed on PATH), families, kind (archive|system), per-os-arch url/sha256/strip_prefix/bin_subdir, remedy (system kind).",
+  "tools": {
+    "arm-gnu-toolchain": {
+      "check": "arm-none-eabi-gcc",
+      "families": ["stm32g0", "stm32f4", "stm32f7", "stm32g4", "same70", "rp2040"],
+      "kind": "archive",
+      "version": "13.2.rel1",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-darwin-arm64-arm-none-eabi.tar.xz",
+          "sha256": null,
+          "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-darwin-arm64-arm-none-eabi",
+          "bin_subdir": "bin"
+        },
+        "darwin-x86_64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-darwin-x86_64-arm-none-eabi.tar.xz",
+          "sha256": null,
+          "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-darwin-x86_64-arm-none-eabi",
+          "bin_subdir": "bin"
+        },
+        "linux-x86_64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz",
+          "sha256": null,
+          "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi",
+          "bin_subdir": "bin"
+        },
+        "linux-aarch64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-aarch64-arm-none-eabi.tar.xz",
+          "sha256": null,
+          "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-aarch64-arm-none-eabi",
+          "bin_subdir": "bin"
+        },
+        "windows-x86_64": {
+          "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-mingw-w64-i686-arm-none-eabi.zip",
+          "sha256": null,
+          "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-mingw-w64-i686-arm-none-eabi",
+          "bin_subdir": "bin"
+        }
+      }
+    },
+    "xtensa-esp-elf": {
+      "check": "xtensa-esp-elf-gcc",
+      "families": ["esp32"],
+      "kind": "archive",
+      "version": "14.2.0_20241119",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-aarch64-apple-darwin.tar.xz",
+          "sha256": null,
+          "strip_prefix": "xtensa-esp-elf",
+          "bin_subdir": "bin"
+        },
+        "darwin-x86_64": {
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-apple-darwin.tar.xz",
+          "sha256": null,
+          "strip_prefix": "xtensa-esp-elf",
+          "bin_subdir": "bin"
+        },
+        "linux-x86_64": {
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-linux-gnu.tar.xz",
+          "sha256": null,
+          "strip_prefix": "xtensa-esp-elf",
+          "bin_subdir": "bin"
+        },
+        "linux-aarch64": {
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-aarch64-linux-gnu.tar.xz",
+          "sha256": null,
+          "strip_prefix": "xtensa-esp-elf",
+          "bin_subdir": "bin"
+        },
+        "windows-x86_64": {
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-w64-mingw32.zip",
+          "sha256": null,
+          "strip_prefix": "xtensa-esp-elf",
+          "bin_subdir": "bin"
+        }
+      }
+    },
+    "openocd": {
+      "check": "openocd",
+      "families": ["stm32g0", "stm32f4", "stm32f7", "stm32g4", "same70", "rp2040"],
+      "kind": "archive",
+      "version": "0.12.0-3",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-darwin-arm64.tar.gz",
+          "sha256": null,
+          "strip_prefix": "xpack-openocd-0.12.0-3",
+          "bin_subdir": "bin"
+        },
+        "darwin-x86_64": {
+          "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-darwin-x64.tar.gz",
+          "sha256": null,
+          "strip_prefix": "xpack-openocd-0.12.0-3",
+          "bin_subdir": "bin"
+        },
+        "linux-x86_64": {
+          "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-linux-x64.tar.gz",
+          "sha256": null,
+          "strip_prefix": "xpack-openocd-0.12.0-3",
+          "bin_subdir": "bin"
+        },
+        "linux-aarch64": {
+          "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-linux-arm64.tar.gz",
+          "sha256": null,
+          "strip_prefix": "xpack-openocd-0.12.0-3",
+          "bin_subdir": "bin"
+        },
+        "windows-x86_64": {
+          "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-win32-x64.zip",
+          "sha256": null,
+          "strip_prefix": "xpack-openocd-0.12.0-3",
+          "bin_subdir": "bin"
+        }
+      }
+    },
+    "cmake": {
+      "check": "cmake",
+      "families": ["*"],
+      "kind": "system",
+      "remedy": {
+        "darwin": "brew install cmake",
+        "linux": "sudo apt install cmake (>= 3.25) or equivalent",
+        "windows": "winget install Kitware.CMake"
+      }
+    },
+    "ninja": {
+      "check": "ninja",
+      "families": ["*"],
+      "kind": "system",
+      "remedy": {
+        "darwin": "brew install ninja",
+        "linux": "sudo apt install ninja-build",
+        "windows": "winget install Ninja-build.Ninja"
+      }
+    }
+  }
+}
