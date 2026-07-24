@@ -22,6 +22,11 @@
       "baud": 115200,
       "label": "ST-Link VCP (USART3 — Nucleo-144 wiring)"
     },
+    "watchdog": {
+      "peripheral": "iwdg",
+      "timeout_ms": 4000,
+      "label": "IWDG (LSI ~32 kHz, runtime-configured, ~32 s max)"
+    },
     "spi": {
       "peripheral": "spi1",
       "sck": "pa5",
