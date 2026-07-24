@@ -1,0 +1,5 @@
+[project]
+name = "nvm"
+
+[board]
+id = "nucleo_g0b1re"

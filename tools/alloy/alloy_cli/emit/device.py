@@ -95,6 +95,15 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             f"    using ip = alloy::ip::{vendor}::{ip};",
             f"    static constexpr std::uintptr_t base = {hex32(int(periph['base'], 16))};",
         ]
+        # A flash controller also needs the flash MEMORY geometry (where the
+        # array lives + how big) to turn an address into an erase page/bank.
+        if registers[periph["ip"]].get("class") == "flash":
+            mem = next((m for m in chip.get("memories", []) if m.get("kind") == "flash"), None)
+            if mem is not None:
+                lines.append(
+                    f"    static constexpr std::uintptr_t mem_base = {hex32(int(str(mem['base']), 16))};")
+                lines.append(
+                    f"    static constexpr std::uint32_t mem_size = {int(mem['size'])}u;")
         gate_args = _gate_args(chip, registers, name, periph)
         if gate_args:
             lines.append(f"    static constexpr alloy::clock_gate gate{{{gate_args}}};")

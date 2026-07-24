@@ -78,6 +78,16 @@ concept Watchdog = requires(const T w) {
     w.feed();
 };
 
+// A flash controller: erase a page, program 64-bit double-words. Reads are
+// memory-mapped so they are not part of the contract. The key/value store
+// (alloy/util/nvm_kv.hpp) is written against exactly this.
+template <class T>
+concept FlashController =
+    requires(const T f, std::uintptr_t addr, const std::uint64_t* data, std::size_t n) {
+        { f.erase_page(addr) } -> std::same_as<bool>;
+        { f.program(addr, data, n) } -> std::same_as<bool>;
+    };
+
 // ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
 //
 // These are the horizontal contracts the optional alloy-net layer binds to.

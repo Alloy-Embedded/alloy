@@ -54,6 +54,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
+                             "nvm": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -139,6 +140,32 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         )
     else:
         decls.append("inline constexpr alloy::wdt::null_watchdog watchdog{};")
+
+    # Persistent key/value store over a reserved flash page (board::nvm). The
+    # region is carved from the TOP of flash (the last `bytes`, defaulting to one
+    # 2 KB page) so a small app never collides with it; the flash HAL turns that
+    # address into the erase page/bank at run time.
+    extra_includes.append("alloy/flash.hpp")
+    extra_includes.append("alloy/util/nvm_kv.hpp")
+    nvm = roles.get("nvm")
+    if nvm:
+        _require("peripheral" in nvm, f"board {board['id']}: nvm missing 'peripheral'")
+        fp = nvm["peripheral"]
+        _require(fp in chip["peripherals"],
+                 f"board {board['id']}: nvm peripheral '{fp}' not in chip data")
+        _require_curated(board["id"], chip, fp, "nvm")
+        flash_mem = next((m for m in chip.get("memories", []) if m.get("kind") == "flash"), None)
+        if flash_mem is None:
+            raise EmitError(f"board {board['id']}: chip declares no flash memory for the nvm region")
+        size = int(nvm.get("bytes", 2048))
+        base = int(str(flash_mem["base"]), 16) + int(flash_mem["size"]) - size
+        caps["nvm"] = True
+        decls.append(
+            f"inline alloy::nvm::store<alloy::flash::controller<alloy::dev::{fp}_t>> "
+            f"nvm{{0x{base:08X}u, {size}u}};"
+        )
+    else:
+        decls.append("inline constexpr alloy::nvm::null_store nvm{};")
 
     uart = roles.get("debug_uart")
     if uart:
