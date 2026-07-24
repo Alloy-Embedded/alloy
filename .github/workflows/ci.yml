@@ -13,6 +13,19 @@ jobs:
       - name: NORTH_STAR guards (no silicon facts in hand-written code, no ifdefs in examples)
         run: ./scripts/check_contract.sh
 
+  # Host unit tests for the portable layers (Tier-1 utilities/services). The
+  # SAME suite that can run on silicon, run natively with ASan+UBSan — the
+  # -fno-exceptions/-fno-rtti build proves the code compiles as firmware does.
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: build + run host unit tests
+        run: uv run --project tools/alloy alloy test
+
   build:
     runs-on: ubuntu-latest
     strategy:

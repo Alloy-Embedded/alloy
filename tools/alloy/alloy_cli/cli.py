@@ -286,6 +286,34 @@ def cmd_debug_info(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_test(args: argparse.Namespace) -> int:
+    import shutil  # noqa: PLC0415
+
+    from .project import _find_alloy_root  # noqa: PLC0415
+
+    alloy_root = _find_alloy_root(Path.cwd())
+    tests_dir = alloy_root / "tests"
+    if not (tests_dir / "CMakeLists.txt").exists():
+        print(f"no tests/ under {alloy_root} — host tests ship with the framework "
+              "source tree, not the installed wheel", file=sys.stderr)
+        return 1
+    if shutil.which("cmake") is None:
+        print("cmake not found on PATH (needed for the host test build)", file=sys.stderr)
+        return 1
+
+    build_dir = alloy_root / ".alloy" / "host-tests"
+    configure = ["cmake", "-S", str(tests_dir), "-B", str(build_dir)]
+    if shutil.which("ninja") is not None:
+        configure += ["-G", "Ninja"]
+    if args.no_sanitize:
+        configure += ["-DALLOY_TEST_SANITIZE=OFF"]
+    subprocess.run(configure, check=True)
+    subprocess.run(["cmake", "--build", str(build_dir)], check=True)
+    return subprocess.run(
+        ["ctest", "--test-dir", str(build_dir), "--output-on-failure"]
+    ).returncode
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="alloy", description=__doc__)
     parser.add_argument("--version", action="version", version=__version__)
@@ -325,6 +353,11 @@ def main() -> None:
     p_dbg.add_argument("--board")
     p_dbg.add_argument("--json", action="store_true")
     p_dbg.set_defaults(func=cmd_debug_info)
+
+    p_test = sub.add_parser("test", help="build + run the host unit tests")
+    p_test.add_argument("--no-sanitize", action="store_true",
+                        help="disable AddressSanitizer/UBSan")
+    p_test.set_defaults(func=cmd_test)
 
     for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash),
                       ("monitor", cmd_monitor), ("run", cmd_run)):
