@@ -41,7 +41,8 @@ add_executable(alloy_unit_tests
     test_units.cpp
     test_nvm.cpp
     test_gpio_bus.cpp
-    test_dsp.cpp)
+    test_dsp.cpp
+    test_secure.cpp)
 
 # The runner's exit code is the number of failing tests (0 = pass).
 add_test(NAME alloy_unit_tests COMMAND alloy_unit_tests)
