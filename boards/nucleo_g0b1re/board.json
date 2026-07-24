@@ -66,6 +66,10 @@
     "can": {
       "peripheral": "fdcan1",
       "label": "FDCAN1 internal loopback (self-test, no transceiver)"
+    },
+    "gpio_bus": {
+      "pins": ["pb3", "pb4", "pb5"],
+      "label": "3-bit demo bus on PB3/PB4/PB5 (morpho CN10)"
     }
   },
   "probe": {

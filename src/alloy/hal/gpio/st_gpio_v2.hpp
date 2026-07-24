@@ -73,6 +73,14 @@ struct pin_impl<Pin> {
     }
 
     [[nodiscard]] static bool read() { return ((r().IDR >> index) & 1u) != 0u; }
+
+    // --- port-level primitives for gpio::bus: touch several pins on THIS pin's
+    // port at once. write_masked is one BSRR store (atomic, glitch-free — the
+    // set and clear happen in the same cycle). ---
+    static void write_masked(std::uint32_t set_bits, std::uint32_t clear_bits) {
+        r().BSRR = set_bits | (clear_bits << 16u);
+    }
+    [[nodiscard]] static std::uint32_t read_port() { return r().IDR; }
 };
 
 }  // namespace alloy::hal

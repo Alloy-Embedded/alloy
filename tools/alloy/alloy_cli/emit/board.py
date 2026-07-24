@@ -55,6 +55,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
                              "nvm": False, "rtc": False, "dac": False, "can": False,
+                             "gpio_bus": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -212,6 +213,22 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"inline constexpr alloy::can::controller<alloy::dev::{can['peripheral']}_t> can{{}};")
     else:
         decls.append("inline constexpr alloy::can::null_controller can{};")
+
+    # Multi-pin GPIO bus (board::gpio_bus): several same-port pins driven/read
+    # together in one atomic store. gpio.hpp is already pulled in by the LED role.
+    gpio_bus = roles.get("gpio_bus")
+    if gpio_bus:
+        pins = gpio_bus.get("pins")
+        _require(isinstance(pins, list) and len(pins) >= 1,
+                 f"board {board['id']}: gpio_bus needs a non-empty 'pins' list")
+        for p in pins:
+            _require(p in chip.get("pins", {}),
+                     f"board {board['id']}: gpio_bus pin '{p}' not in chip data")
+        caps["gpio_bus"] = True
+        pin_types = ", ".join(f"alloy::dev::{p}_t" for p in pins)
+        decls.append(f"inline constexpr alloy::gpio::bus<{pin_types}> gpio_bus{{}};")
+    else:
+        decls.append("inline constexpr alloy::gpio::null_bus gpio_bus{};")
 
     uart = roles.get("debug_uart")
     if uart:
