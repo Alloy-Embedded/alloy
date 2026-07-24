@@ -24,10 +24,16 @@ from .emit.common import EmitError
 from .ports import find_serial_port  # noqa: F401  (re-export: monitor/esptool path)
 
 
-def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path) -> str:
+def flash(board: dict[str, Any], chip: dict[str, Any], elf: Path,
+          ram: bool = False) -> str:
     probe = board.get("probe")
     if probe is None:
         raise EmitError(f"board {board['id']} declares no probe — cannot flash")
+
+    # run-from-RAM: the image is linked into RAM, so we LOAD it there and start,
+    # rather than programming flash. Needs a debugger that can write RAM (openocd).
+    if ram:
+        return _flash_openocd_ram(chip, elf, probe)
 
     # A board-declared runner wins over host-first probing.
     declared = probe.get("runner")
@@ -98,6 +104,38 @@ def _flash_openocd(board: dict[str, Any], chip: dict[str, Any], elf: Path,
         check=True,
     )
     return "openocd"
+
+
+def _flash_openocd_ram(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -> str:
+    """Load a RAM-linked image into RAM and start it, without touching flash.
+    The whole program (vectors, text, data) lives in RAM; we load it, then set
+    SP/PC from the vector table the linker placed at the RAM base and resume.
+    A reset is deliberately NOT issued — it would wipe the RAM we just loaded."""
+    if not shutil.which("openocd"):
+        raise EmitError("run-from-RAM needs openocd on PATH (probe-rs RAM load not wired)")
+    interface = _OPENOCD_INTERFACE.get(probe.get("kind", ""))
+    target = _OPENOCD_TARGET.get(chip["family"])
+    if not (interface and target):
+        raise EmitError(
+            f"no openocd mapping for probe '{probe.get('kind')}' / family '{chip['family']}'"
+        )
+    ram_base = int(next(m["base"] for m in chip["memories"] if m["kind"] == "ram"), 16)
+    script = (
+        f"init; halt; "
+        f"load_image {{{elf}}}; "
+        f"set sp [mrw {ram_base}]; "
+        f"set pc [mrw {ram_base + 4}]; "
+        f"reg sp $sp; reg pc [expr {{$pc & -2}}]; "
+        f"resume; shutdown"
+    )
+    subprocess.run(
+        ["openocd",
+         "-f", f"interface/{interface}.cfg",
+         "-f", f"target/{target}.cfg",
+         "-c", script],
+        check=True,
+    )
+    return "openocd (RAM)"
 
 
 # ── UF2 (BOOTSEL mass-storage) ──────────────────────────────────────────────

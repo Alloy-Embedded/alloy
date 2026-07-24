@@ -37,7 +37,7 @@ def _write(path: Path, content: str, written: list[Path]) -> None:
     written.append(path)
 
 
-def generate(project: Project, db=None) -> list[Path]:
+def generate(project: Project, db=None, layout: str = "flash") -> list[Path]:
     if db is None:
         db = load_database(project.devices_root)
     run_all(db)
@@ -56,7 +56,7 @@ def generate(project: Project, db=None) -> list[Path]:
 
     gen = project.gen_dir
     written: list[Path] = []
-    _emit_chip_sources(gen, chip, db.registers, arch_ns, project.alloy_root, written)
+    _emit_chip_sources(gen, chip, db.registers, arch_ns, project.alloy_root, written, layout)
     _write(gen / "alloy" / "board.hpp",
            emit_board_header(board, chip, db.registers), written)
     _write(gen / "board.cpp",
@@ -74,7 +74,8 @@ def _arch_ns(chip: dict[str, Any]) -> str:
 
 def _emit_chip_sources(gen: Path, chip: dict[str, Any],
                        registers: dict[str, dict[str, Any]], arch_ns: str,
-                       alloy_root: Path, written: list[Path]) -> None:
+                       alloy_root: Path, written: list[Path],
+                       layout: str = "flash") -> None:
     """Chip-level artifacts — everything that depends only on the chip, not the
     board (ip headers, device.hpp, routes, vector table, linker, boot2). Shared
     by generate() and emit_chip_check() so the gen-all CI smoke runs the exact
@@ -103,7 +104,7 @@ def _emit_chip_sources(gen: Path, chip: dict[str, Any],
         _write(gen / "vector_table.c", emit_vector_table(chip), written)
     elif chip.get("interrupts") and arch_ns == "xtensa":
         _write(gen / "irq_data.c", emit_xtensa_irq_data(chip, registers), written)
-    _write(gen / "linker.ld", emit_linker_script(chip, arch_ns), written)
+    _write(gen / "linker.ld", emit_linker_script(chip, arch_ns, layout), written)
     if "boot" in chip:
         from .boot import emit_boot2  # noqa: PLC0415
 

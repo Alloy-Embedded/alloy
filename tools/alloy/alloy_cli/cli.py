@@ -148,9 +148,13 @@ def cmd_boards(args: argparse.Namespace) -> int:
     return 0
 
 
+def _layout(args: argparse.Namespace) -> str:
+    return "ram" if getattr(args, "ram", False) else "flash"
+
+
 def cmd_gen(args: argparse.Namespace) -> int:
     project = _project(args)
-    written = generate(project)
+    written = generate(project, layout=_layout(args))
     print(f"generated {len(written)} file(s) -> {project.gen_dir}")
     return 0
 
@@ -158,7 +162,7 @@ def cmd_gen(args: argparse.Namespace) -> int:
 def cmd_build(args: argparse.Namespace) -> int:
     project = _project(args)
     db = load_database(project.devices_root)
-    generate(project, db)
+    generate(project, db, layout=_layout(args))
     board = project.load_board()
     chip = db.chips[board["chip"]]
     elf = build(project, chip)
@@ -171,11 +175,11 @@ def cmd_flash(args: argparse.Namespace) -> int:
 
     project = _project(args)
     db = load_database(project.devices_root)
-    generate(project, db)
+    generate(project, db, layout=_layout(args))
     board = project.load_board()
     chip = db.chips[board["chip"]]
     elf = build(project, chip)
-    runner = flash(board, chip, elf)
+    runner = flash(board, chip, elf, ram=getattr(args, "ram", False))
     print(f"\nflashed {elf.name} via {runner}")
     return 0
 
@@ -420,6 +424,10 @@ def main() -> None:
         p = sub.add_parser(cmd)
         p.add_argument("--project", default=".")
         p.add_argument("--board", help="override the board declared in alloy.toml")
+        if cmd != "monitor":
+            p.add_argument("--ram", action="store_true",
+                           help="run-from-RAM: link every section into RAM and load it "
+                                "there via the debugger (no flash erase; fast iterate)")
         p.set_defaults(func=func)
 
     args = parser.parse_args()
