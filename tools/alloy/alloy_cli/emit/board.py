@@ -18,6 +18,14 @@ def _require(cond: bool, msg: str) -> None:
         raise EmitError(msg)
 
 
+def _region_bytes_ok(size: int, erase_size: int) -> bool:
+    """A flash-backed region (nvm/fs) must be a positive whole number of erase
+    pages — otherwise it erases across page boundaries into the app/neighbor and
+    gives littlefs a fractional/zero block count. erase_size == 0 means the chip
+    data doesn't declare the page size yet, so the check is skipped."""
+    return erase_size == 0 or (size > 0 and size % erase_size == 0)
+
+
 # Default sizes of the flash regions carved for the nvm/fs roles (bytes). Single
 # source of truth: used both by the carve in emit_board_header and by
 # flash_reserved_bytes (which the linker uses to fence the app off the regions).
@@ -176,11 +184,17 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     flash_top = (flash_base + int(flash_mem["size"])) if flash_mem else 0
     flash_reserved = 0
 
+    erase_size = int(flash_mem.get("erase_size", 0)) if flash_mem else 0
+
     def _carve(role_name: str, size: int) -> int:
         """Reserve `size` bytes below the running cursor and return the base.
-        Fails generation (never the device) if the region runs off the bottom
-        of flash — a board.json `bytes` bigger than what's left."""
+        Fails generation (never the device) if the region is misaligned or runs
+        off the bottom of flash — a bad board.json `bytes`."""
         nonlocal flash_reserved
+        _require(_region_bytes_ok(size, erase_size),
+                 f"board {board['id']}: {role_name} bytes ({size}) must be a positive multiple "
+                 f"of the flash erase page ({erase_size} B) — a misaligned region erases across "
+                 f"page boundaries and yields a fractional block count")
         base = flash_top - flash_reserved - size
         _require(base >= flash_base,
                  f"board {board['id']}: {role_name} region ({size} B) does not fit — it would "

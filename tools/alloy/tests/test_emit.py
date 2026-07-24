@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from alloy_cli.emit.board import _polarity
+from alloy_cli.emit.board import _polarity, _region_bytes_ok
 from alloy_cli.emit.common import (
     EmitError,
     cpp_ip_namespace,
@@ -73,6 +73,18 @@ def test_polarity_maps_high_and_treats_anything_else_as_low() -> None:
     # Documents the current fallback: any non-"high" string (incl. a typo) is
     # active_low. board.json schema validation is what should catch typos.
     assert _polarity("High") == "alloy::gpio::active_low_t"
+
+
+def test_region_bytes_must_be_positive_page_multiple() -> None:
+    # nvm/fs regions carve whole flash pages; a sub-page or non-multiple `bytes`
+    # would erase across the region boundary — must fail generation.
+    assert _region_bytes_ok(2048, 2048)  # exactly one page
+    assert _region_bytes_ok(32768, 2048)  # 16 pages (the fs default)
+    assert not _region_bytes_ok(5000, 2048)  # not a page multiple
+    assert not _region_bytes_ok(1024, 2048)  # smaller than a page
+    assert not _region_bytes_ok(0, 2048)  # zero -> no blocks
+    # erase_size 0 = page size not curated for this chip yet -> unchecked.
+    assert _region_bytes_ok(5000, 0)
 
 
 def test_partition_table_structure(tmp_path: Path) -> None:
