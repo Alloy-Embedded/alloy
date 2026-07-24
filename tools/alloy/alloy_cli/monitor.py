@@ -41,8 +41,12 @@ def monitor(board: dict[str, Any]) -> None:
     port = serial.Serial(port_name, baud, timeout=0.1)
     # pyserial asserts DTR/RTS on open; on FT2232H auto-download circuits
     # (ESP32 boards) an asserted RTS holds the chip in reset — release both.
-    port.dtr = False
-    port.rts = False
+    # But do this ONLY for those USB-UART bridges: on an EDBG/CMSIS-DAP CDC
+    # (SAM boards) driving DTR/RTS low instead HOLDS the target in reset, so
+    # the monitor would see nothing. Leave the lines untouched for debug probes.
+    if probe.get("kind") == "esptool":
+        port.dtr = False
+        port.rts = False
 
     print(f"monitor: {port_name} @ {baud} (Ctrl-] to exit)")
     stop = threading.Event()
