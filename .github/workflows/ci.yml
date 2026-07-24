@@ -20,10 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
       - uses: astral-sh/setup-uv@v5
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
       - name: build + run host unit tests
+        working-directory: alloy
         run: uv run --project tools/alloy alloy test
 
   # NORTH_STAR goal #2: adding a chip that reuses known IP versions costs
@@ -84,6 +91,8 @@ jobs:
           wget -q https://builds.renode.io/renode-latest.linux-portable.tar.gz
           mkdir -p "$HOME/renode" && tar xf renode-latest.linux-portable.tar.gz -C "$HOME/renode" --strip-components=1
           echo "$HOME/renode" >> "$GITHUB_PATH"
+          # renode-test (Robot framework runner) needs these Python deps
+          pip3 install --quiet -r "$HOME/renode/tests/requirements.txt"
       - name: build firmware + emit Renode platform
         id: emit
         working-directory: alloy/examples/uart_echo
