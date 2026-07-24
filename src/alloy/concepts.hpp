@@ -108,6 +108,14 @@ concept Rtc = requires(T& r, datetime dt) {
     { r.now() } -> std::same_as<datetime>;
 };
 
+// A digital-to-analog output channel: enable it, then write a raw code that the
+// hardware converts to a voltage on its output pin.
+template <class T>
+concept DacChannel = requires(T& d, std::uint16_t code) {
+    d.enable();
+    d.write(code);
+};
+
 // ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
 //
 // These are the horizontal contracts the optional alloy-net layer binds to.

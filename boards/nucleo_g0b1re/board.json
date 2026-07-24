@@ -58,6 +58,10 @@
     "rtc": {
       "peripheral": "rtc",
       "label": "RTC on LSI (~32 kHz), backup-domain calendar"
+    },
+    "dac": {
+      "peripheral": "dac",
+      "label": "DAC_OUT1 on PA4 (also ADC_IN4 — internal loopback readback)"
     }
   },
   "probe": {

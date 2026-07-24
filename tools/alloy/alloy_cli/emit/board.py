@@ -54,7 +54,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
-                             "nvm": False, "rtc": False,
+                             "nvm": False, "rtc": False, "dac": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -182,6 +182,21 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"inline constexpr alloy::rtc::rtc<alloy::dev::{rtc['peripheral']}_t> rtc{{}};")
     else:
         decls.append("inline constexpr alloy::rtc::null_rtc rtc{};")
+
+    # DAC output channel (board::dac). The output pin is fixed by silicon and
+    # resets to analog, so the role only names the peripheral.
+    extra_includes.append("alloy/dac.hpp")
+    dac = roles.get("dac")
+    if dac:
+        _require("peripheral" in dac, f"board {board['id']}: dac missing 'peripheral'")
+        _require(dac["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: dac peripheral '{dac['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, dac["peripheral"], "dac")
+        caps["dac"] = True
+        decls.append(
+            f"inline constexpr alloy::dac::channel<alloy::dev::{dac['peripheral']}_t> dac{{}};")
+    else:
+        decls.append("inline constexpr alloy::dac::null_channel dac{};")
 
     uart = roles.get("debug_uart")
     if uart:
