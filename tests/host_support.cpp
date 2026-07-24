@@ -33,4 +33,11 @@ std::uint32_t g_host_ms = 0;
 std::uint32_t uptime_ms() { return g_host_ms; }
 void sleep_for(std::chrono::microseconds) {}
 
+// Test-only clock control: the async sleep/executor read uptime_ms() internally,
+// so a test advances virtual time through this hook to drive timer wakes.
+namespace test {
+void set_uptime_ms(std::uint32_t ms) { g_host_ms = ms; }
+void advance_uptime_ms(std::uint32_t d) { g_host_ms += d; }
+}  // namespace test
+
 }  // namespace alloy

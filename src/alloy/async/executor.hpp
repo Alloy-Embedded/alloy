@@ -86,6 +86,21 @@ public:
         timers_ = &t;
     }
 
+    // Unlink a timer early (a sleep awaiter destroyed before its deadline, e.g.
+    // its task was destroyed mid-sleep). No-op if already fired/unlinked.
+    void cancel_timer(timer_node& t) {
+        if (!t.armed) {
+            return;
+        }
+        for (timer_node** link = &timers_; *link != nullptr; link = &(*link)->next) {
+            if (*link == &t) {
+                *link = t.next;
+                break;
+            }
+        }
+        t.armed = false;
+    }
+
     // Start a task: initial_suspend parked it at the opening brace, so enqueue
     // its handle for the first resume.
     void spawn(const task& t) { schedule(t.handle); }
@@ -145,9 +160,10 @@ private:
         timer_node** link = &timers_;
         while (*link != nullptr) {
             timer_node* t = *link;
-            // Wrap-safe "now has reached deadline": (now - deadline) stays small
-            // once past, huge (>= 2^31) while still pending.
-            if (t->armed && (now - t->deadline_ms) < 0x8000'0000u) {
+            // Wrap-safe "now has reached deadline": the unsigned difference read
+            // as signed is >= 0 once now is at/past the deadline, negative while
+            // still pending (correct across a counter wrap for deadlines < 2^31).
+            if (t->armed && static_cast<std::int32_t>(now - t->deadline_ms) >= 0) {
                 *link = t->next;  // unlink before waking — the task may re-arm it
                 t->armed = false;
                 auto w = t->waiter;

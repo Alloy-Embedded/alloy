@@ -9,10 +9,19 @@
 
 #include "alloy/async/event.hpp"
 #include "alloy/async/executor.hpp"
+#include "alloy/async/delay.hpp"
 #include "alloy/async/task.hpp"
+#include "alloy/async/uart.hpp"
 #include "alloy_test.hpp"
 
 using namespace alloy::async;
+using namespace std::chrono_literals;
+
+// Test-only virtual clock hooks (defined in host_support.cpp).
+namespace alloy::test {
+void set_uptime_ms(std::uint32_t ms);
+void advance_uptime_ms(std::uint32_t d);
+}  // namespace alloy::test
 
 namespace {
 
@@ -151,4 +160,125 @@ ALLOY_TEST(async_two_independent_tasks_interleave) {
     ex.run_once();
     ALLOY_CHECK_EQ(cb, 2);
     ALLOY_CHECK(!sb.in_use);
+}
+
+// ---- sleep(ms) ----
+
+namespace {
+task sleeper_task(task_storage<256>&, int& ticks) {
+    for (int i = 0; i < 3; ++i) {
+        co_await delay(100ms);
+        ++ticks;
+    }
+}
+}  // namespace
+
+ALLOY_TEST(async_sleep_wakes_when_the_clock_passes_the_deadline) {
+    alloy::test::set_uptime_ms(0);
+    executor<8> ex;
+    task_storage<256> st;
+    int ticks = 0;
+
+    task t = sleeper_task(st, ticks);
+    ex.spawn(t);
+    ex.run_once();  // start -> arms a 100ms timer, parks
+    ALLOY_CHECK_EQ(ticks, 0);
+
+    ex.run_once();  // clock still 0 -> not due
+    ALLOY_CHECK_EQ(ticks, 0);
+
+    alloy::test::advance_uptime_ms(100);  // reach the deadline
+    ex.run_once();
+    ALLOY_CHECK_EQ(ticks, 1);  // woke, then armed the next 100ms
+
+    alloy::test::advance_uptime_ms(99);  // one short
+    ex.run_once();
+    ALLOY_CHECK_EQ(ticks, 1);
+
+    alloy::test::advance_uptime_ms(1);  // now due
+    ex.run_once();
+    ALLOY_CHECK_EQ(ticks, 2);
+
+    alloy::test::advance_uptime_ms(100);
+    ex.run_once();
+    ALLOY_CHECK_EQ(ticks, 3);  // third sleep done -> task retired
+    ALLOY_CHECK(!st.in_use);
+}
+
+// ---- async uart.read() ----
+
+namespace {
+// A fake UART matching the on_receive contract; feed() simulates the RX ISR.
+struct mock_uart {
+    void (*fn)(void*, std::uint8_t) = nullptr;
+    void* ctx = nullptr;
+    void on_receive(void (*f)(void*, std::uint8_t), void* c) {
+        fn = f;
+        ctx = c;
+    }
+    void feed(std::uint8_t b) {
+        if (fn) {
+            fn(ctx, b);
+        }
+    }
+};
+
+task echo_collect(task_storage<256>&, uart_reader<mock_uart>& rx, char* out, int n) {
+    for (int i = 0; i < n; ++i) {
+        out[i] = static_cast<char>(co_await rx.read());
+    }
+}
+}  // namespace
+
+ALLOY_TEST(async_uart_read_delivers_bytes_across_suspensions) {
+    executor<8> ex;
+    task_storage<256> st;
+    mock_uart mu;
+    uart_reader<mock_uart> rx{mu};
+    char buf[4] = {};
+
+    task t = echo_collect(st, rx, buf, 3);
+    ex.spawn(t);
+    ex.run_once();  // parks on the first read (ring empty)
+
+    mu.feed('H');  // "interrupt"
+    ex.run_once();
+    mu.feed('i');
+    ex.run_once();
+    mu.feed('!');
+    ex.run_once();
+
+    ALLOY_CHECK_EQ(buf[0], 'H');
+    ALLOY_CHECK_EQ(buf[1], 'i');
+    ALLOY_CHECK_EQ(buf[2], '!');
+    ALLOY_CHECK(!st.in_use);  // collected 3 -> retired
+}
+
+ALLOY_TEST(async_uart_buffers_a_burst_that_arrives_while_busy) {
+    // Bytes that land before the task drains must be buffered by the SPSC ring,
+    // not lost (the "two bytes, one slot" regression). Feed a burst, THEN run.
+    executor<8> ex;
+    task_storage<256> st;
+    mock_uart mu;
+    uart_reader<mock_uart> rx{mu};
+    char buf[6] = {};
+
+    task t = echo_collect(st, rx, buf, 5);
+    ex.spawn(t);
+    ex.run_once();  // parks
+
+    mu.feed('a');
+    mu.feed('b');
+    mu.feed('c');  // three bytes buffered before any resume
+    ex.run_once();  // one wake was scheduled; await_ready drains the ring greedily
+    mu.feed('d');
+    mu.feed('e');
+    ex.run_once();
+
+    ALLOY_CHECK_EQ(buf[0], 'a');
+    ALLOY_CHECK_EQ(buf[1], 'b');
+    ALLOY_CHECK_EQ(buf[2], 'c');
+    ALLOY_CHECK_EQ(buf[3], 'd');
+    ALLOY_CHECK_EQ(buf[4], 'e');
+    ALLOY_CHECK(!st.in_use);
 }

@@ -168,6 +168,10 @@ target_compile_options({project.name}.elf PRIVATE
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
+    # Freestanding: main never returns, so static destructors never run. Register
+    # them normally and __cxa_atexit pulls in __dso_handle (absent here). This
+    # drops both — required for any namespace-scope object with a destructor.
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>
 )
 
 target_link_options({project.name}.elf PRIVATE

@@ -106,9 +106,13 @@ void irq_line_priority(unsigned source, std::uint8_t /*level*/) {
 irq_state irq_save_below(std::uint8_t /*level*/) { return irq_save(); }
 void irq_restore_below(irq_state state) { irq_restore(state); }
 
-// WAITI 0: sleep with interrupts enabled at all levels until one fires. A
-// pending interrupt makes it return immediately (safe against a racing wake).
-void idle() { __asm volatile("waiti 0" ::: "memory"); }
+// ESP32 v1 has NO periodic tick ISR — the timebase is polled from CCOUNT
+// (see systick.cpp). A WAITI here would sleep forever whenever the only pending
+// work is a timer (co_await delay), since nothing would wake it. So idle() is a
+// busy-poll: the async executor spins run_once(), the same way alloy::sleep_for
+// busy-waits on this family. When the family gains a timer interrupt this
+// becomes a real WAITI. (Peripheral IRQs like UART RX still fire regardless.)
+void idle() { __asm volatile("nop" ::: "memory"); }
 
 }  // namespace alloy::arch
 
