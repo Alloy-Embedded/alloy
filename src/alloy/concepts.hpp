@@ -88,6 +88,26 @@ concept FlashController =
         { f.program(addr, data, n) } -> std::same_as<bool>;
     };
 
+// Wall-clock date + time an RTC keeps. Plain binary fields (NOT BCD) — the
+// driver does the BCD conversion at the register edge, so user code never sees
+// nibble-packed values.
+struct datetime {
+    std::uint8_t hour{};
+    std::uint8_t minute{};
+    std::uint8_t second{};
+    std::uint8_t day{1};    // 1-31
+    std::uint8_t month{1};  // 1-12
+    std::uint8_t year{};    // 0-99 (i.e. 20YY)
+};
+
+// A real-time clock/calendar: set the wall clock, read it back. The clock keeps
+// running (in the backup domain) across resets once configured.
+template <class T>
+concept Rtc = requires(T& r, datetime dt) {
+    r.set(dt);
+    { r.now() } -> std::same_as<datetime>;
+};
+
 // ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
 //
 // These are the horizontal contracts the optional alloy-net layer binds to.

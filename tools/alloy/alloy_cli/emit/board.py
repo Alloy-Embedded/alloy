@@ -54,7 +54,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
-                             "nvm": False,
+                             "nvm": False, "rtc": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -166,6 +166,22 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         )
     else:
         decls.append("inline constexpr alloy::nvm::null_store nvm{};")
+
+    # Real-time clock (board::rtc). The backup-domain clock (LSI + RCC.BDCR) is
+    # brought up by the clock program when this role is present (see
+    # emit_board_source); the handle only sets/reads the calendar.
+    extra_includes.append("alloy/rtc.hpp")
+    rtc = roles.get("rtc")
+    if rtc:
+        _require("peripheral" in rtc, f"board {board['id']}: rtc missing 'peripheral'")
+        _require(rtc["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: rtc peripheral '{rtc['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, rtc["peripheral"], "rtc")
+        caps["rtc"] = True
+        decls.append(
+            f"inline constexpr alloy::rtc::rtc<alloy::dev::{rtc['peripheral']}_t> rtc{{}};")
+    else:
+        decls.append("inline constexpr alloy::rtc::null_rtc rtc{};")
 
     uart = roles.get("debug_uart")
     if uart:
@@ -554,6 +570,22 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
         wp = watchdog.get("peripheral")
         program = [op for op in program
                    if not (op.get("peripheral") == wp and op.get("register") == "MR")]
+    if roles.get("rtc") is not None:
+        # The RTC lives in the always-on backup domain, clocked separately from
+        # the core: enable PWR, lift backup-domain write protection, start the
+        # LSI, then select it + enable the RTC in RCC.BDCR. Appended to the clock
+        # program (data-driven, resolved against curated rcc/pwr registers) so
+        # the driver only ever touches RTC registers. Register/field names are
+        # the same across STM32 families, so this one sequence generalizes.
+        program = program + [
+            {"op": "rmw", "peripheral": "rcc", "register": "APBENR1", "fields": {"PWREN": 1}},
+            {"op": "rmw", "peripheral": "pwr", "register": "CR1", "fields": {"DBP": 1}},
+            {"op": "rmw", "peripheral": "rcc", "register": "CSR", "fields": {"LSION": 1}},
+            {"op": "poll", "peripheral": "rcc", "register": "CSR", "field": "LSIRDY",
+             "equals": 1, "timeout_us": 2000},
+            {"op": "rmw", "peripheral": "rcc", "register": "BDCR",
+             "fields": {"RTCSEL": 2, "RTCEN": 1}},
+        ]
     steps = "\n".join(_resolve_step(chip, registers, op) for op in program)
 
     role_init: list[str] = []

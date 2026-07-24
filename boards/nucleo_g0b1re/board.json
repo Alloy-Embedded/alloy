@@ -54,6 +54,10 @@
       "peripheral": "flash",
       "bytes": 2048,
       "label": "last 2 KB flash page (dual-bank: bank2 page 127)"
+    },
+    "rtc": {
+      "peripheral": "rtc",
+      "label": "RTC on LSI (~32 kHz), backup-domain calendar"
     }
   },
   "probe": {
