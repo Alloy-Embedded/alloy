@@ -15,6 +15,7 @@ import json
 import os
 import platform
 import shutil
+import ssl
 import sys
 import tarfile
 import tempfile
@@ -22,6 +23,8 @@ import urllib.request
 import zipfile
 from pathlib import Path
 from typing import Any
+
+import certifi
 
 from .emit.common import EmitError
 
@@ -122,7 +125,11 @@ def install_tool(name: str, json_progress: bool = False) -> Path:
         archive = Path(tmp) / url.rsplit("/", 1)[-1]
         digest = hashlib.sha256()
         req = urllib.request.Request(url, headers={"User-Agent": "alloy-setup"})
-        with urllib.request.urlopen(req) as resp, open(archive, "wb") as out:
+        # Verify TLS against certifi's CA bundle, not the interpreter's default
+        # store — a stock macOS Python has no system trust roots, so a plain
+        # urlopen fails every HTTPS download with CERTIFICATE_VERIFY_FAILED.
+        ctx = ssl.create_default_context(cafile=certifi.where())
+        with urllib.request.urlopen(req, context=ctx) as resp, open(archive, "wb") as out:  # noqa: S310
             total = int(resp.headers.get("Content-Length") or 0)
             got = 0
             last_pct = -1

@@ -3,37 +3,44 @@
   "tools": {
     "arm-gnu-toolchain": {
       "check": "arm-none-eabi-gcc",
-      "families": ["stm32g0", "stm32f4", "stm32f7", "stm32g4", "same70", "rp2040"],
+      "families": [
+        "stm32g0",
+        "stm32f4",
+        "stm32f7",
+        "stm32g4",
+        "same70",
+        "rp2040"
+      ],
       "kind": "archive",
       "version": "13.2.rel1",
       "platforms": {
         "darwin-arm64": {
           "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-darwin-arm64-arm-none-eabi.tar.xz",
-          "sha256": null,
+          "sha256": "39c44f8af42695b7b871df42e346c09fee670ea8dfc11f17083e296ea2b0d279",
           "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-darwin-arm64-arm-none-eabi",
           "bin_subdir": "bin"
         },
         "darwin-x86_64": {
           "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-darwin-x86_64-arm-none-eabi.tar.xz",
-          "sha256": null,
+          "sha256": "075faa4f3e8eb45e59144858202351a28706f54a6ec17eedd88c9fb9412372cc",
           "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-darwin-x86_64-arm-none-eabi",
           "bin_subdir": "bin"
         },
         "linux-x86_64": {
           "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz",
-          "sha256": null,
+          "sha256": "6cd1bbc1d9ae57312bcd169ae283153a9572bd6a8e4eeae2fedfbc33b115fdbb",
           "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi",
           "bin_subdir": "bin"
         },
         "linux-aarch64": {
           "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-aarch64-arm-none-eabi.tar.xz",
-          "sha256": null,
+          "sha256": "8fd8b4a0a8d44ab2e195ccfbeef42223dfb3ede29d80f14dcf2183c34b8d199a",
           "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-aarch64-arm-none-eabi",
           "bin_subdir": "bin"
         },
         "windows-x86_64": {
           "url": "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-mingw-w64-i686-arm-none-eabi.zip",
-          "sha256": null,
+          "sha256": "51d933f00578aa28016c5e3c84f94403274ea7915539f8e56c13e2196437d18f",
           "strip_prefix": "arm-gnu-toolchain-13.2.Rel1-mingw-w64-i686-arm-none-eabi",
           "bin_subdir": "bin"
         }
@@ -41,37 +48,39 @@
     },
     "xtensa-esp-elf": {
       "check": "xtensa-esp-elf-gcc",
-      "families": ["esp32"],
+      "families": [
+        "esp32"
+      ],
       "kind": "archive",
       "version": "14.2.0_20241119",
       "platforms": {
         "darwin-arm64": {
           "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-aarch64-apple-darwin.tar.xz",
-          "sha256": null,
+          "sha256": "b9732bb3cdcd6a50420c25eb9a8d90eb1216a0a0a274c8ffd4c2037167b5081f",
           "strip_prefix": "xtensa-esp-elf",
           "bin_subdir": "bin"
         },
         "darwin-x86_64": {
           "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-apple-darwin.tar.xz",
-          "sha256": null,
+          "sha256": "1ca7a93825d5b84f6547fa73e6174acadb9af5c877f365e50e176936784383ea",
           "strip_prefix": "xtensa-esp-elf",
           "bin_subdir": "bin"
         },
         "linux-x86_64": {
           "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-linux-gnu.tar.xz",
-          "sha256": null,
+          "sha256": "e3e6dcf3d275c3c9ab0e4c8a9d93fd10e7efc035d435460576c9d95b4140c676",
           "strip_prefix": "xtensa-esp-elf",
           "bin_subdir": "bin"
         },
         "linux-aarch64": {
           "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-aarch64-linux-gnu.tar.xz",
-          "sha256": null,
+          "sha256": "ac2b311dc0003386425086bfc813bf2aeb3cdf3b117845802df6ebef5f69955f",
           "strip_prefix": "xtensa-esp-elf",
           "bin_subdir": "bin"
         },
         "windows-x86_64": {
           "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/xtensa-esp-elf-14.2.0_20241119-x86_64-w64-mingw32.zip",
-          "sha256": null,
+          "sha256": "62ae704777d73c30689efff6e81178632a1ca44d1a2d60f4621eb997e040e028",
           "strip_prefix": "xtensa-esp-elf",
           "bin_subdir": "bin"
         }
@@ -79,37 +88,44 @@
     },
     "openocd": {
       "check": "openocd",
-      "families": ["stm32g0", "stm32f4", "stm32f7", "stm32g4", "same70", "rp2040"],
+      "families": [
+        "stm32g0",
+        "stm32f4",
+        "stm32f7",
+        "stm32g4",
+        "same70",
+        "rp2040"
+      ],
       "kind": "archive",
       "version": "0.12.0-3",
       "platforms": {
         "darwin-arm64": {
           "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-darwin-arm64.tar.gz",
-          "sha256": null,
+          "sha256": "0084761ef77a5c3f2e098993f17cb4225819462b90c1378a1b35cea9cd466288",
           "strip_prefix": "xpack-openocd-0.12.0-3",
           "bin_subdir": "bin"
         },
         "darwin-x86_64": {
           "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-darwin-x64.tar.gz",
-          "sha256": null,
+          "sha256": "47931a1adde58ae6a7d99e4b0db5b9a62c568ce8e5232e958325d733f09e9995",
           "strip_prefix": "xpack-openocd-0.12.0-3",
           "bin_subdir": "bin"
         },
         "linux-x86_64": {
           "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-linux-x64.tar.gz",
-          "sha256": null,
+          "sha256": "98c07aa34c6e02ac6ef0794494bc3bd9e2409d587723c5191ee4f0a4d179e39b",
           "strip_prefix": "xpack-openocd-0.12.0-3",
           "bin_subdir": "bin"
         },
         "linux-aarch64": {
           "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-linux-arm64.tar.gz",
-          "sha256": null,
+          "sha256": "892b2ecc624521e5947e4857d7dfd4af03e19ef37da73ae91215a1001864ed75",
           "strip_prefix": "xpack-openocd-0.12.0-3",
           "bin_subdir": "bin"
         },
         "windows-x86_64": {
           "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-3/xpack-openocd-0.12.0-3-win32-x64.zip",
-          "sha256": null,
+          "sha256": "94b51be5e5b38ac1c5814972eee9b062f0805bcd3ecc3bad5190fd659f6a3ab3",
           "strip_prefix": "xpack-openocd-0.12.0-3",
           "bin_subdir": "bin"
         }
@@ -117,7 +133,9 @@
     },
     "cmake": {
       "check": "cmake",
-      "families": ["*"],
+      "families": [
+        "*"
+      ],
       "kind": "system",
       "remedy": {
         "darwin": "brew install cmake",
@@ -127,7 +145,9 @@
     },
     "ninja": {
       "check": "ninja",
-      "families": ["*"],
+      "families": [
+        "*"
+      ],
       "kind": "system",
       "remedy": {
         "darwin": "brew install ninja",
