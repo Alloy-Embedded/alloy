@@ -286,6 +286,54 @@ def cmd_debug_info(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_emulate(args: argparse.Namespace) -> int:
+    import shutil  # noqa: PLC0415
+
+    from .emit.renode import (  # noqa: PLC0415
+        debug_uart_name,
+        emit_renode_platform,
+        emit_renode_script,
+        renode_supported,
+    )
+
+    project = _project(args)
+    db = load_database(project.devices_root)
+    generate(project, db)
+    board = project.load_board()
+    chip = db.chips[board["chip"]]
+    if not renode_supported(chip, board):
+        print(f"error: board '{board['id']}' has no Renode emulation mapping "
+              "(family/arch or debug UART not modeled by Renode)", file=sys.stderr)
+        return 1
+
+    elf = build(project, chip)
+    out = elf.parent
+    repl = out / f"{board['id']}.repl"
+    resc = out / f"{board['id']}.resc"
+    repl.write_text(emit_renode_platform(chip, board))
+    resc.write_text(emit_renode_script(chip, board, str(repl), str(elf)))
+    uart = debug_uart_name(chip, board)
+    # `uart:` is machine-readable so CI can pass sysbus.<name> to the Robot test
+    # without re-deriving a fact already in board.json.
+    print(f"platform: {repl}\nscript:   {resc}\nuart:     sysbus.{uart}")
+    if getattr(args, "emit_only", False):
+        return 0
+
+    renode = shutil.which("renode")
+    if renode is None:
+        print("error: `renode` not found on PATH — install Renode to run the "
+              "emulation, or pass --emit-only to just write the .repl/.resc",
+              file=sys.stderr)
+        return 1
+    return subprocess.call(
+        [renode, "--console", "--disable-xwt",
+         "-e", f"include @{resc.name}",
+         "-e", f"showAnalyzer {uart}",
+         "-e", "start"],
+        cwd=out,
+    )
+
+
 def cmd_test(args: argparse.Namespace) -> int:
     import shutil  # noqa: PLC0415
 
@@ -353,6 +401,14 @@ def main() -> None:
     p_dbg.add_argument("--board")
     p_dbg.add_argument("--json", action="store_true")
     p_dbg.set_defaults(func=cmd_debug_info)
+
+    p_emu = sub.add_parser(
+        "emulate", help="run the built firmware headless in Renode (data-generated platform)")
+    p_emu.add_argument("--project", default=".")
+    p_emu.add_argument("--board", help="override the board declared in alloy.toml")
+    p_emu.add_argument("--emit-only", action="store_true",
+                       help="write the .repl/.resc but do not launch Renode")
+    p_emu.set_defaults(func=cmd_emulate)
 
     p_test = sub.add_parser("test", help="build + run the host unit tests")
     p_test.add_argument("--no-sanitize", action="store_true",

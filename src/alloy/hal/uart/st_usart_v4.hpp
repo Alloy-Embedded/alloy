@@ -10,6 +10,7 @@
 #include <cstdint>
 
 #include "alloy/core/types.hpp"
+#include "alloy/core/units.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/st/usart_v4.hpp"
 #include "alloy/irq.hpp"
@@ -25,11 +26,21 @@ struct uart_impl<Inst> {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
     }
 
+    // BRR (OVER8=0, PRESC=0): round kernel/baud. Single source of truth —
+    // enable() programs it and achieved_baud() inverts it, so the compile-time
+    // tolerance check can never disagree with the hardware.
+    static constexpr std::uint32_t baud_div(std::uint32_t kernel_hz, std::uint32_t baud) {
+        return (kernel_hz + baud / 2u) / baud;
+    }
+    static constexpr alloy::frequency achieved_baud(std::uint32_t kernel_hz, std::uint32_t baud) {
+        const std::uint32_t brr = baud_div(kernel_hz, baud);
+        return alloy::frequency{brr != 0u ? kernel_hz / brr : 0u};
+    }
+
     static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
         alloy::gate_on(Inst::gate);
         IP::ue.clear(r());
-        // OVER8=0, PRESC=0: BRR = kernel/baud, rounded to nearest.
-        r().BRR = (kernel_hz + baud / 2u) / baud;
+        r().BRR = baud_div(kernel_hz, baud);
         IP::te.set(r());
         IP::re.set(r());
         IP::ue.set(r());
@@ -82,7 +93,7 @@ struct uart_impl<Inst> {
 
     static void disable_rx_irq() {
         IP::rxneie.clear(r());
-        alloy::irq::detach(Inst::irq);
+        alloy::irq::detach(Inst::irq, &rx_isr);
         rx_fn = nullptr;
     }
 

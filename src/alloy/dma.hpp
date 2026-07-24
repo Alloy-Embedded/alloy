@@ -68,8 +68,14 @@ public:
 
     // Circular memory -> peripheral, 16-bit items; runs until stop().
     // The source span must OUTLIVE the stream (static/global buffer).
+    // Gated on the controller's supports_circular capability: on a backend
+    // without a circular mode (SAME70 XDMAC) this method does not exist, so a
+    // port that streams to it fails at COMPILE time (NORTH_STAR goal #4) instead
+    // of hard-faulting on the first transfer.
     void start_m2p_circular_u16(std::span<const std::uint16_t> src,
-                                std::uintptr_t periph_reg, std::uint8_t request) const {
+                                std::uintptr_t periph_reg, std::uint8_t request) const
+        requires impl::supports_circular
+    {
         if (src.empty() || src.size() > 0xFFFF) {
             __builtin_trap();
         }

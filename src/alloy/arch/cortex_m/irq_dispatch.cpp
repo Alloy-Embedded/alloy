@@ -6,10 +6,7 @@
 #include "alloy/irq.hpp"
 
 extern "C" void alloy_irq_dispatch(unsigned n) {
-    const alloy::irq::slot s = alloy::irq::g_alloy_irq_slots[n];
-    if (s.fn != nullptr) {
-        s.fn(s.ctx);
-    }
+    alloy::irq::dispatch(n);  // walks the line's handler chain (shared vectors)
 }
 
 #include "alloy/arch/cortex_m/nvic.hpp"

@@ -48,8 +48,10 @@
  *     line number first, re-polling INTERRUPT after each call.
  *   - Called with PS = WOE|UM|INTLEVEL=1 (EXCM clear): windowed calls and
  *     window exceptions work; level-1 sources stay masked (no nesting).
- *   - The handler and its callees must NOT use float/double (FPU coproc
- *     state is not saved) and must clear the source at the peripheral.
+ *   - The handler and its callees must NOT use float/double: CP0 is enabled
+ *     at startup so APP code may use the FPU, but this frame does not save the
+ *     FP registers, so an ISR using float would corrupt the interrupted app's
+ *     FP state. The handler must also clear the source at the peripheral.
  *   - Level-triggered peripheral sources (UART, ...) are acknowledged at
  *     the peripheral (INT_CLR register); the INTERRUPT special register
  *     bit follows the line and drops by itself. Software/edge/timer

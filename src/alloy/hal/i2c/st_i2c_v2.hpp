@@ -44,21 +44,39 @@ struct i2c_impl<Inst> {
         IP::pe.set(r());
     }
 
-    // Wait for a flag or NACK; true when the flag arrived, false on NACK.
+    // Poll budget: an iteration cap that bounds a wedged bus (SDA held low by a
+    // stuck slave, missing pull-ups, arbitration loss) instead of spinning
+    // forever. Sized like the ESP32 driver's spin — far above any legal
+    // transfer's flag latency, so it only ever fires on a genuine fault.
+    static constexpr std::uint32_t kPollBudget = 4'000'000u;
+
+    // Wait for a flag; true when it arrives, false on NACK, bus error
+    // (BERR/ARLO) or timeout. Honors the facade contract "false = NACK / bus
+    // error" (i2c.hpp) instead of hanging on a jammed bus.
     template <class Flag>
     static bool wait_flag(Flag flag) {
         using icr = typename IP::icr;
-        while (true) {
+        for (std::uint32_t spin = 0; spin < kPollBudget; ++spin) {
             if (IP::nackf.read(r()) != 0u) {
-                while (IP::stopf.read(r()) == 0u) {
+                // Address/data NACK: wait (bounded) for the AUTOEND STOP, then
+                // clear both flags so the peripheral is idle for the next call.
+                for (std::uint32_t s = 0; s < kPollBudget; ++s) {
+                    if (IP::stopf.read(r()) != 0u) {
+                        break;
+                    }
                 }
                 r().ICR = icr::nackcf | icr::stopcf;
+                return false;
+            }
+            if ((IP::berr.read(r()) | IP::arlo.read(r())) != 0u) {
+                r().ICR = icr::berrcf | icr::arlocf;  // clear so the bus recovers
                 return false;
             }
             if (flag.read(r()) != 0u) {
                 return true;
             }
         }
+        return false;  // bus wedged: budget exhausted with no flag, NACK or error
     }
 
     static std::uint32_t cr2_base(std::uint8_t addr, std::size_t n) {

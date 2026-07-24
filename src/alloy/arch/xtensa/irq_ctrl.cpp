@@ -100,12 +100,8 @@ void irq_line_disable(unsigned source) {
 // livelock that loop — the driver ISRs own that contract.
 extern "C" void alloy_irq_dispatch(unsigned cpu_int) {
     const unsigned mapped = g_cpu2src[cpu_int];
-    if (mapped != 0u) {
-        const alloy::irq::slot s = alloy::irq::g_alloy_irq_slots[mapped - 1u];
-        if (s.fn != nullptr) {
-            s.fn(s.ctx);
-            return;
-        }
+    if (mapped != 0u && alloy::irq::dispatch(mapped - 1u)) {
+        return;  // walked the source's handler chain (shared vectors)
     }
     // Unattached line fired: mask it so the dispatch loop cannot livelock.
     intenable_write(intenable_read() & ~(1u << cpu_int));

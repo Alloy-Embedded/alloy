@@ -35,6 +35,11 @@ struct dma_impl<Inst> {
     enum class dir : std::uint8_t { periph_to_mem, mem_to_periph };
     enum class width : std::uint8_t { b8 = 0, b16 = 1, b32 = 2 };
 
+    // Capability: XDMAC has NO circular bit (rings need linked-list descriptors,
+    // not in v1), so dma::channel refuses start_m2p_circular_u16 at COMPILE time
+    // on this controller instead of trapping at runtime.
+    static constexpr bool supports_circular = false;
+
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
     }

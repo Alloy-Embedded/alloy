@@ -42,18 +42,31 @@ struct i2c_impl<Inst> {
         r().CR = cr::svdis | cr::msen;
     }
 
-    // Wait until TXCOMP; false when the transfer ended with NACK.
-    static bool wait_txcomp() {
-        while (true) {
+    // Poll budget: an iteration cap that bounds a wedged bus (SDA held low by a
+    // stuck slave, missing pull-ups, arbitration loss) instead of spinning
+    // forever. Sized like the ESP32 driver's spin — far above any legal
+    // transfer's flag latency, so it only ever fires on a genuine fault.
+    static constexpr std::uint32_t kPollBudget = 4'000'000u;
+
+    // Bounded wait for `ready_mask` while watching NACK and arbitration loss.
+    // true when ready; false on NACK / ARBLST / timeout — honors the facade
+    // contract "false = NACK / bus error" (i2c.hpp) instead of hanging on a
+    // jammed bus. (An SR read also clears NACK on this IP, so sample it once.)
+    static bool wait_ready(std::uint32_t ready_mask) {
+        for (std::uint32_t spin = 0; spin < kPollBudget; ++spin) {
             const std::uint32_t sr = r().SR;
-            if (sr & IP::nack.mask) {
+            if (sr & (IP::nack.mask | IP::arblst.mask)) {
                 return false;
             }
-            if (sr & IP::txcomp.mask) {
+            if (sr & ready_mask) {
                 return true;
             }
         }
+        return false;  // bus wedged: budget exhausted with no ready flag or error
     }
+
+    // Wait until TXCOMP; false on NACK, arbitration loss, or timeout.
+    static bool wait_txcomp() { return wait_ready(IP::txcomp.mask); }
 
     [[nodiscard]] static bool write(std::uint8_t addr, std::span<const std::uint8_t> data) {
         r().MMR = static_cast<std::uint32_t>(addr) << IP::dadr.pos;  // MREAD=0
@@ -62,14 +75,8 @@ struct i2c_impl<Inst> {
             return wait_txcomp();
         }
         for (std::size_t i = 0; i < data.size(); ++i) {
-            while (true) {
-                const std::uint32_t sr = r().SR;
-                if (sr & IP::nack.mask) {
-                    return false;
-                }
-                if (sr & IP::txrdy.mask) {
-                    break;
-                }
+            if (!wait_ready(IP::txrdy.mask)) {
+                return false;
             }
             r().THR = data[i];
             if (i + 1 == data.size()) {
@@ -91,14 +98,8 @@ struct i2c_impl<Inst> {
             r().CR = IP::start.mask;
         }
         for (std::size_t i = 0; i < data.size(); ++i) {
-            while (true) {
-                const std::uint32_t sr = r().SR;
-                if (sr & IP::nack.mask) {
-                    return false;
-                }
-                if (sr & IP::rxrdy.mask) {
-                    break;
-                }
+            if (!wait_ready(IP::rxrdy.mask)) {
+                return false;
             }
             if (i + 2 == data.size()) {
                 r().CR = IP::stop.mask;  // STOP before reading penultimate byte
@@ -130,14 +131,8 @@ struct i2c_impl<Inst> {
             r().CR = IP::start.mask;
         }
         for (std::size_t i = 0; i < rd.size(); ++i) {
-            while (true) {
-                const std::uint32_t sr = r().SR;
-                if (sr & IP::nack.mask) {
-                    return false;
-                }
-                if (sr & IP::rxrdy.mask) {
-                    break;
-                }
+            if (!wait_ready(IP::rxrdy.mask)) {
+                return false;
             }
             if (i + 2 == rd.size()) {
                 r().CR = IP::stop.mask;

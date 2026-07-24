@@ -70,13 +70,11 @@ void Default_Handler(void) {{
     }}
 }}
 
-/* RAM slot table consumed by alloy::irq (src/alloy/irq.hpp) and served by
- * alloy_irq_dispatch (src/alloy/arch/cortex_m/irq_dispatch.cpp). */
-struct alloy_irq_slot {{
-    void (*fn)(void *);
-    void *ctx;
-}};
-struct alloy_irq_slot g_alloy_irq_slots[{slot_count}];
+/* Per-line interrupt-handler chain heads, consumed by alloy::irq
+ * (src/alloy/irq.hpp) and walked by alloy_irq_dispatch
+ * (src/alloy/arch/cortex_m/irq_dispatch.cpp). One head pointer per line (opaque
+ * to codegen — alloy::irq owns the chain nodes), zero-initialized. */
+void *g_alloy_irq_heads[{slot_count}];
 const unsigned short g_alloy_irq_slot_count = {slot_count};
 
 void alloy_irq_dispatch(unsigned n);
@@ -104,6 +102,8 @@ def emit_xtensa_irq_data(chip: dict[str, Any], registers: dict[str, dict[str, An
 
     intmap = None
     for name, periph in chip["peripherals"].items():
+        if periph.get("uncurated"):
+            continue  # stub carries facts but no `ip`/register model to search
         ip_doc = registers[periph["ip"]]
         for reg in ip_doc["registers"]:
             if reg["name"] == "PRO_INTR_MAP":
@@ -118,13 +118,10 @@ def emit_xtensa_irq_data(chip: dict[str, Any], registers: dict[str, dict[str, An
 
     return f"""{_C_BANNER}/* Chip: {chip['vendor']}/{chip['part']} — {len(irqs)} interrupt-matrix sources */
 
-/* RAM slot table consumed by alloy::irq; served by alloy_irq_dispatch
- * (src/alloy/arch/xtensa/irq_ctrl.cpp) via the cpu-int -> source map. */
-struct alloy_irq_slot {{
-    void (*fn)(void *);
-    void *ctx;
-}};
-struct alloy_irq_slot g_alloy_irq_slots[{slot_count}];
+/* Per-line interrupt-handler chain heads, consumed by alloy::irq and walked by
+ * alloy_irq_dispatch (src/alloy/arch/xtensa/irq_ctrl.cpp) via the cpu-int ->
+ * source map. One head pointer per source (opaque here), zero-initialized. */
+void *g_alloy_irq_heads[{slot_count}];
 const unsigned short g_alloy_irq_slot_count = {slot_count};
 
 /* DPORT PRO_INTR_MAP array (one register per source), resolved from data. */

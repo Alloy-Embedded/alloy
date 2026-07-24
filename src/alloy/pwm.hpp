@@ -90,11 +90,18 @@ struct bind {
     }
 
     static handle<Inst, Channel> open(config c = {}) {
+        if (detail_opened) {
+            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
+        }
+        detail_opened = true;
         using pin_route = routes::route<Pin, Inst, Sig>;
         hal::pin_impl<Pin>::make_af(routes::mux_value<pin_route>());
         hal::pwm_impl<Inst>::enable(kernel_hz(), c.freq_hz, Channel);
         return handle<Inst, Channel>{};
     }
+
+private:
+    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::pwm

@@ -35,6 +35,10 @@ struct dma_impl<Inst> {
     enum class dir : std::uint8_t { periph_to_mem, mem_to_periph };
     enum class width : std::uint8_t { b8 = 0, b16 = 1, b32 = 2 };
 
+    // Capability: this IP has a CIRC bit, so circular streams are supported.
+    // dma::channel gates start_m2p_circular_u16 on this at compile time.
+    static constexpr bool supports_circular = true;
+
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
     }

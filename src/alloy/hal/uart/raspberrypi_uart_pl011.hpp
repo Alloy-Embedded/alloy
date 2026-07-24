@@ -11,6 +11,7 @@
 #include <cstdint>
 
 #include "alloy/core/types.hpp"
+#include "alloy/core/units.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/raspberrypi/uart_pl011.hpp"
 #include "alloy/irq.hpp"
@@ -26,8 +27,15 @@ struct uart_impl<Inst> {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
-        alloy::gate_on(Inst::gate);  // reset_release: waits RESET_DONE
+    // Baud divisors (pico-sdk formula): div = 8*kernel/baud, IBRD = div>>7,
+    // FBRD = ((div & 0x7F) + 1) / 2, clamped. Single source of truth — enable()
+    // programs these and achieved_baud() inverts them, so the compile-time
+    // tolerance check can never disagree with the hardware.
+    struct baud_regs {
+        std::uint32_t ibrd;
+        std::uint32_t fbrd;
+    };
+    static constexpr baud_regs baud_div(std::uint32_t kernel_hz, std::uint32_t baud) {
         const std::uint32_t div = (8u * kernel_hz) / baud;
         std::uint32_t ibrd = div >> 7;
         std::uint32_t fbrd = ((div & 0x7Fu) + 1u) / 2u;
@@ -38,8 +46,21 @@ struct uart_impl<Inst> {
             ibrd = 65535u;
             fbrd = 0u;
         }
-        r().UARTIBRD = ibrd;
-        r().UARTFBRD = fbrd;
+        return {ibrd, fbrd};
+    }
+    static constexpr alloy::frequency achieved_baud(std::uint32_t kernel_hz, std::uint32_t baud) {
+        const baud_regs d = baud_div(kernel_hz, baud);
+        const std::uint32_t denom = 64u * d.ibrd + d.fbrd;  // BAUDDIV in 1/64ths
+        return alloy::frequency{denom != 0u
+                                    ? static_cast<std::uint32_t>(4ull * kernel_hz / denom)
+                                    : 0u};
+    }
+
+    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+        alloy::gate_on(Inst::gate);  // reset_release: waits RESET_DONE
+        const baud_regs d = baud_div(kernel_hz, baud);
+        r().UARTIBRD = d.ibrd;
+        r().UARTFBRD = d.fbrd;
         // 8N1 + FIFOs. LCR_H write also latches the baud divisors.
         IP::wlen.write(r(), 0b11u);
         IP::fen.set(r());
@@ -96,7 +117,7 @@ struct uart_impl<Inst> {
 
     static void disable_rx_irq() {
         r().UARTIMSC = r().UARTIMSC & ~(IP::rxim.mask | IP::rtim.mask);
-        alloy::irq::detach(Inst::irq);
+        alloy::irq::detach(Inst::irq, &rx_isr);
         rx_fn = nullptr;
     }
 };

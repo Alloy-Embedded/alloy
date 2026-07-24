@@ -36,7 +36,9 @@ add_executable(alloy_unit_tests
     host_support.cpp
     test_util.cpp
     test_control.cpp
-    test_services.cpp)
+    test_services.cpp
+    test_irq.cpp
+    test_units.cpp)
 
 # The runner's exit code is the number of failing tests (0 = pass).
 add_test(NAME alloy_unit_tests COMMAND alloy_unit_tests)

@@ -70,9 +70,16 @@ struct bind {
     }
 
     static handle<Inst> open(config = {}) {
+        if (detail_opened) {
+            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
+        }
+        detail_opened = true;
         hal::adc_impl<Inst>::enable(kernel_hz());
         return handle<Inst>{};
     }
+
+private:
+    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::adc

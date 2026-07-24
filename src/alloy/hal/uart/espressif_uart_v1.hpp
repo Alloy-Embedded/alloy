@@ -92,7 +92,7 @@ struct uart_impl<Inst> {
     static void disable_rx_irq() {
         IP::rxfifo_full_int_ena.clear(r());
         IP::rxfifo_tout_int_ena.clear(r());
-        alloy::irq::detach(Inst::irq);
+        alloy::irq::detach(Inst::irq, &rx_isr);
         rx_fn = nullptr;
     }
 };

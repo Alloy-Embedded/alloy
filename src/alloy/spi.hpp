@@ -86,12 +86,19 @@ struct bind {
     }
 
     static handle<Inst> open(config c = {}) {
+        if (detail_opened) {
+            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
+        }
+        detail_opened = true;
         route_pin<typename Sck::pin, signal::sck>();
         route_pin<typename Miso::pin, signal::miso>();
         route_pin<typename Mosi::pin, signal::mosi>();
         hal::spi_impl<Inst>::enable(kernel_hz(), c.clock_hz, c.mode);
         return handle<Inst>{};
     }
+
+private:
+    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::spi

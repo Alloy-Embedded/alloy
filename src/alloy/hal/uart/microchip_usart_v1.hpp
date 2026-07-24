@@ -12,6 +12,7 @@
 #include <cstdint>
 
 #include "alloy/core/types.hpp"
+#include "alloy/core/units.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/microchip/usart_v1.hpp"
 #include "alloy/irq.hpp"
@@ -25,6 +26,17 @@ struct uart_impl<Inst> {
 
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
+    }
+
+    // Baud divisor (CD): fixed 16x oversampling, round to nearest. Single
+    // source of truth — enable() programs it and achieved_baud() inverts it,
+    // so the compile-time tolerance check can never disagree with the hardware.
+    static constexpr std::uint32_t baud_div(std::uint32_t kernel_hz, std::uint32_t baud) {
+        return (kernel_hz + 8u * baud) / (16u * baud);
+    }
+    static constexpr alloy::frequency achieved_baud(std::uint32_t kernel_hz, std::uint32_t baud) {
+        const std::uint32_t cd = baud_div(kernel_hz, baud);
+        return alloy::frequency{cd != 0u ? kernel_hz / (16u * cd) : 0u};
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
@@ -42,8 +54,7 @@ struct uart_impl<Inst> {
         // the whole word from named flags writes exactly those bits, clearing
         // the stale ones — and reads like the register table.
         r().MR = mr::mode_normal | mr::usclks_mck | mr::chrl_eight | mr::par_none;
-        // Fixed 16x oversampling: CD = round(kernel / (16 * baud)).
-        IP::cd.write(r(), (kernel_hz + 8u * baud) / (16u * baud));
+        IP::cd.write(r(), baud_div(kernel_hz, baud));
         r().CR = cr::rxen | cr::txen;
     }
 
@@ -90,7 +101,7 @@ struct uart_impl<Inst> {
 
     static void disable_rx_irq() {
         r().IDR = IP::rxrdy.mask;
-        alloy::irq::detach(Inst::irq);
+        alloy::irq::detach(Inst::irq, &rx_isr);
         rx_fn = nullptr;
     }
 

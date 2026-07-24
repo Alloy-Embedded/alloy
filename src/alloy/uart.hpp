@@ -16,6 +16,7 @@
 
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
+#include "alloy/core/units.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 
@@ -153,6 +154,26 @@ struct bind {
         hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
         hal::uart_impl<Inst>::enable(kernel_hz(), c.baud);
         return handle<Inst>{};
+    }
+
+    // Compile-time-checked open: the requested baud is REJECTED AT COMPILE TIME
+    // if the driver's own divisor cannot reach it within TolPermille (parts per
+    // thousand of the target; default 20 = 2%) on this board's kernel clock.
+    // The achieved rate is computed by the SAME formula the driver programs, so
+    // the check can never disagree with the hardware, and the failing
+    // rate_check<requested, achieved, tol> names the numbers. Only offered where
+    // the backing driver computes baud — ROM/bootloader-baud UARTs don't.
+    //
+    //   auto u = Dbg::open_checked<115'200_baud>();        // 2% default
+    //   auto u = Dbg::open_checked<3'000'000_baud, 5>();   // tighten to 0.5%
+    template <alloy::frequency Baud, std::uint32_t TolPermille = 20>
+    static handle<Inst> open_checked()
+        requires requires { hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz()); }
+    {
+        constexpr alloy::frequency achieved =
+            hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz());
+        (void)alloy::rate_check<Baud.hz(), achieved.hz(), TolPermille>{};
+        return open(config{.baud = Baud.hz()});
     }
 
 private:

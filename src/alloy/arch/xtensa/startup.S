@@ -26,6 +26,17 @@ call_start_cpu0:
     wsr     a0, WINDOWSTART
     rsync
 
+    /* Enable coprocessor 0 (the FPU) so portable app code that uses `float`
+     * runs on ESP32 as it does on the soft-float Cortex-M targets, instead of
+     * taking a Coprocessor0Disabled exception (EXCCAUSE=32) into the panic
+     * loop. CPENABLE resets to 0 and the boot ROM never sets it. Safe for the
+     * single-app superloop: there is no per-task FP context to manage, and the
+     * ISR contract already forbids float in handlers (arch/xtensa/vectors.S),
+     * so app FP state is untouched across an interrupt. */
+    movi    a0, 1              /* bit 0 = CP0 (the LX6 FPU) */
+    wsr     a0, CPENABLE
+    rsync
+
     /* Stack pointer from the generated linker script, minus the reset
      * pseudo-frame's 16-byte base save area. */
     movi    a1, _stack_top

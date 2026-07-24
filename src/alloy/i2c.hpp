@@ -94,6 +94,10 @@ struct bind {
     }
 
     static handle<Inst> open(config c = {}) {
+        if (detail_opened) {
+            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
+        }
+        detail_opened = true;
         using scl_route = routes::route<scl_pin, Inst, signal::scl>;
         using sda_route = routes::route<sda_pin, Inst, signal::sda>;
         route_pin<scl_route, scl_pin>();
@@ -101,6 +105,9 @@ struct bind {
         hal::i2c_impl<Inst>::enable(kernel_hz(), c.speed_hz);
         return handle<Inst>{};
     }
+
+private:
+    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::i2c

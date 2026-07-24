@@ -26,6 +26,79 @@ jobs:
       - name: build + run host unit tests
         run: uv run --project tools/alloy alloy test
 
+  # NORTH_STAR goal #2: adding a chip that reuses known IP versions costs
+  # "zero new C++ — only data". That promise is only real if the emitter can
+  # consume EVERY shipped chip. The board×example matrix compiles only the
+  # handful of chips boards reference, so this runs the chip-level codegen over
+  # every chip in the database — an emitter bug on any of the ~400 builder-
+  # generated chips (e.g. dereferencing an uncurated stub) fails CI here instead
+  # of shipping unconsumable data. Generate-only (no cross-compile) — fast.
+  gen-all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - name: generate every chip in the database
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/gen_all_chips.py
+
+  # Upgrades guard #9 from "compiles" to "executes" for the boards Renode models:
+  # boots uart_echo on the data-generated platform (alloy emulate) and asserts
+  # its startup banner actually prints on the emulated UART. The platform (.repl)
+  # is generated from chip data, so it can't drift from the real target.
+  #
+  # continue-on-error while the emulation harness is being brought up: it reports
+  # a real signal without blocking merges. Flip it to blocking once it is
+  # confirmed green in CI (this was authored without a local Renode to validate
+  # the run end-to-end). Extend the matrix as emit/renode.py's RENODE_CPU /
+  # RENODE_UART maps grow to cover more families.
+  emulate:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [nucleo_f722ze]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: install renode (latest portable)
+        run: |
+          wget -q https://builds.renode.io/renode-latest.linux-portable.tar.gz
+          mkdir -p "$HOME/renode" && tar xf renode-latest.linux-portable.tar.gz -C "$HOME/renode" --strip-components=1
+          echo "$HOME/renode" >> "$GITHUB_PATH"
+      - name: build firmware + emit Renode platform
+        id: emit
+        working-directory: alloy/examples/uart_echo
+        run: |
+          out=$(uv run --project ../../tools/alloy alloy emulate --board ${{ matrix.board }} --emit-only)
+          echo "$out"
+          echo "resc=$(echo "$out" | awk '/^script:/{print $2}')" >> "$GITHUB_OUTPUT"
+          echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
+      - name: boot firmware under Renode and assert the banner
+        run: |
+          renode-test \
+            --variable RESC:${{ steps.emit.outputs.resc }} \
+            --variable UART:${{ steps.emit.outputs.uart }} \
+            alloy/tests/emulation/firmware_boots.robot
+
   build:
     runs-on: ubuntu-latest
     strategy:
