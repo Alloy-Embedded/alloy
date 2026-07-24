@@ -33,6 +33,48 @@ jobs:
         working-directory: alloy
         run: uv run --project tools/alloy alloy test
 
+  # Unit tests for the host-side Python: the CLI codegen/flash helpers (a
+  # wrong-but-valid emitted mask/byte the compile matrix can't catch) and the
+  # alloy-devices validator (which must report, not crash, on bad data).
+  cli-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - name: run CLI + validator unit tests
+        working-directory: alloy
+        run: |
+          uv run --project tools/alloy python -m pytest tools/alloy/tests ../alloy-devices/tests -q
+
+  # NORTH_STAR guard #7 acceptance test: a wrong pin route must FAIL to compile
+  # with a diagnostic that names the pin — the compile-time-error UX can't
+  # silently regress into acceptance or an unreadable template dump.
+  compile-errors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: a wrong pin route must fail to compile, naming the pin
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_compile_errors.py
+
   # NORTH_STAR goal #2: adding a chip that reuses known IP versions costs
   # "zero new C++ — only data". That promise is only real if the emitter can
   # consume EVERY shipped chip. The board×example matrix compiles only the
@@ -71,7 +113,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_f722ze]
+        board: [nucleo_f722ze, nucleo_g071rb, rp2040_zero]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -119,7 +161,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
+        board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
         example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can]
     steps:
       - uses: actions/checkout@v4
