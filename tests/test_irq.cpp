@@ -11,9 +11,13 @@
 
 // Stand in for the generated g_alloy_irq_heads[]/count (vector_table.c on
 // silicon). Declared extern "C" node*[] in irq.hpp; defined here for the host.
-// Non-braced extern "C" so the const keeps external linkage (a const inside a
-// braced extern "C" {} would fall back to internal linkage and not match).
-extern "C" alloy::irq::node* g_alloy_irq_heads[8]{};
+// The array goes in a braced extern "C" {} — a non-braced `extern "C" T x[]{}`
+// trips GCC's -Werror ("initialized and declared extern"). The count stays
+// non-braced so it keeps external linkage (a const inside braced extern "C" {}
+// would fall back to internal linkage and not match the C definition).
+extern "C" {
+alloy::irq::node* g_alloy_irq_heads[8]{};
+}
 extern "C" const std::uint16_t g_alloy_irq_slot_count = 8;
 
 namespace {
