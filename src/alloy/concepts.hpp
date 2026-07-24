@@ -116,6 +116,22 @@ concept DacChannel = requires(T& d, std::uint16_t code) {
     d.write(code);
 };
 
+// A classic-CAN frame: 11-bit standard identifier + up to 8 data bytes.
+struct can_frame {
+    std::uint32_t id{};        // standard 11-bit identifier
+    std::uint8_t len{};        // data length, 0..8
+    std::uint8_t data[8]{};
+};
+
+// A CAN controller: bring the bus up, transmit a frame, poll for a received
+// one. receive() returns false when nothing is waiting (non-blocking).
+template <class T>
+concept CanBus = requires(T& c, const can_frame& tx, can_frame& rx) {
+    c.enable();
+    { c.send(tx) } -> std::same_as<bool>;
+    { c.receive(rx) } -> std::same_as<bool>;
+};
+
 // ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
 //
 // These are the horizontal contracts the optional alloy-net layer binds to.

@@ -62,6 +62,10 @@
     "dac": {
       "peripheral": "dac",
       "label": "DAC_OUT1 on PA4 (also ADC_IN4 — internal loopback readback)"
+    },
+    "can": {
+      "peripheral": "fdcan1",
+      "label": "FDCAN1 internal loopback (self-test, no transceiver)"
     }
   },
   "probe": {

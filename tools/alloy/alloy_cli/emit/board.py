@@ -54,7 +54,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
-                             "nvm": False, "rtc": False, "dac": False,
+                             "nvm": False, "rtc": False, "dac": False, "can": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -197,6 +197,21 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"inline constexpr alloy::dac::channel<alloy::dev::{dac['peripheral']}_t> dac{{}};")
     else:
         decls.append("inline constexpr alloy::dac::null_channel dac{};")
+
+    # CAN controller (board::can). Defaults to internal loopback for self-test;
+    # the driver reaches its message RAM through the peripheral's companion.
+    extra_includes.append("alloy/can.hpp")
+    can = roles.get("can")
+    if can:
+        _require("peripheral" in can, f"board {board['id']}: can missing 'peripheral'")
+        _require(can["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: can peripheral '{can['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, can["peripheral"], "can")
+        caps["can"] = True
+        decls.append(
+            f"inline constexpr alloy::can::controller<alloy::dev::{can['peripheral']}_t> can{{}};")
+    else:
+        decls.append("inline constexpr alloy::can::null_controller can{};")
 
     uart = roles.get("debug_uart")
     if uart:
@@ -432,12 +447,18 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require("reset_pin" in eth, f"board {board['id']}: ethernet role missing 'reset_pin'")
         _require(eth["reset_pin"] in chip.get("pins", {}),
                  f"board {board['id']}: ethernet reset_pin '{eth['reset_pin']}' not in chip data")
-        rmii = eth.get("rmii_pins", [])
+        # RMII pins + AF are a chip fact (the MAC's fixed pin bank), not board
+        # config — read them from chip data so no silicon AF lives in board.json.
+        rmii_spec = chip["peripherals"][eth["peripheral"]].get("rmii")
+        _require(rmii_spec is not None,
+                 f"board {board['id']}: chip peripheral '{eth['peripheral']}' has no "
+                 "'rmii' pin bank in chip data")
+        rmii = rmii_spec["pins"]
         for pn in rmii:
             _require(pn in chip.get("pins", {}),
-                     f"board {board['id']}: ethernet rmii pin '{pn}' not in chip data")
+                     f"chip {chip['part']}: gmac rmii pin '{pn}' not in chip 'pins'")
         pin_cfg = "".join(
-            f"    alloy::hal::pin_impl<alloy::dev::{pn}_t>::make_af({eth.get('rmii_af', 0)});\n"
+            f"    alloy::hal::pin_impl<alloy::dev::{pn}_t>::make_af({rmii_spec['af']});\n"
             for pn in rmii
         )
         extra_includes.append(f"alloy/hal/net/microchip_{_ip_stem(chip, eth['peripheral'])}.hpp")
