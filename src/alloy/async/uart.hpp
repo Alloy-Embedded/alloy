@@ -19,8 +19,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "alloy/arch/irq.hpp"
-#include "alloy/async/executor.hpp"
+#include "alloy/async/waiter.hpp"
 #include "alloy/util/ring_buffer.hpp"
 
 namespace alloy::async {
@@ -31,19 +30,14 @@ template <class Uart, std::size_t RxCap = 64>
 class uart_reader {
     Uart& uart_;
     ring_buffer<std::uint8_t, RxCap> rx_{};
-    std::coroutine_handle<> waiter_{};
+    waiter_slot slot_;  // the reusable race-free park/wake mechanism
 
-    // RX interrupt context: buffer the byte, then wake the reader if parked.
-    // waiter_ is only mutated here and inside await_suspend's mask, so the ISR
-    // (which the masked thread section cannot overlap) sees it consistently.
+    // RX interrupt context: buffer the byte, then wake the parked reader (if any)
+    // through the shared waiter_slot — no re-derived wakeup protocol here.
     static void on_byte(void* ctx, std::uint8_t b) {
         auto* self = static_cast<uart_reader*>(ctx);
         (void)self->rx_.push(b);  // full ring drops the byte, like a HW overrun
-        if (self->waiter_) {
-            auto w = self->waiter_;
-            self->waiter_ = {};
-            executor_core::the().schedule(w);
-        }
+        self->slot_.wake();
     }
 
 public:
@@ -56,21 +50,10 @@ public:
 
         bool await_ready() const noexcept { return !r.rx_.empty(); }
 
-        // Level-triggered analog of event's park: recheck the ring under the mask
-        // so a byte arriving in the await_ready→here window is not lost.
+        // Park on the ring's non-empty readiness; waiter_slot rechecks it under
+        // the mask, so a byte arriving in the await_ready→here window is not lost.
         bool await_suspend(std::coroutine_handle<> h) noexcept {
-            const arch::irq_state s = arch::irq_save();
-            if (!r.rx_.empty()) {
-                arch::irq_restore(s);
-                return false;  // byte raced in — resume immediately
-            }
-            if (r.waiter_) {
-                arch::irq_restore(s);
-                __builtin_trap();  // a second reader on one uart — not allowed
-            }
-            r.waiter_ = h;
-            arch::irq_restore(s);
-            return true;
+            return r.slot_.park(h, [&] { return !r.rx_.empty(); });
         }
 
         std::uint8_t await_resume() const noexcept {

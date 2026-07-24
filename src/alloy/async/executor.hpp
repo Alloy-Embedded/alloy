@@ -67,11 +67,17 @@ public:
     // (honest hard fail) rather than dropping the wake — size MaxReady correctly
     // (each live task is enqueued at most once, so >= task count cannot overflow).
     void schedule(std::coroutine_handle<> h) {
+        auto tp = std::coroutine_handle<task::promise_type>::from_address(h.address());
         const arch::irq_state s = arch::irq_save();
+        if (tp.promise().queued) {
+            arch::irq_restore(s);
+            return;  // already queued — idempotent (double-spawn / double-wake safe)
+        }
         if (count_ >= cap_) {
             arch::irq_restore(s);
             __builtin_trap();  // ready-queue overflow — raise MaxReady
         }
+        tp.promise().queued = true;
         ready_[tail_] = h;
         tail_ = (tail_ + 1) % cap_;
         ++count_;
@@ -117,6 +123,10 @@ public:
                 h = ready_[head_];
                 head_ = (head_ + 1) % cap_;
                 --count_;
+                // Clear queued so a wake that arrives after resume can re-enqueue.
+                std::coroutine_handle<task::promise_type>::from_address(h.address())
+                    .promise()
+                    .queued = false;
             }
             arch::irq_restore(s);
             if (!h) {

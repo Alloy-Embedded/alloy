@@ -382,6 +382,12 @@ def cmd_lib(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_frame_audit(args: argparse.Namespace) -> int:
+    from .frame_audit import cmd_frame_audit as _audit  # noqa: PLC0415
+
+    return _audit(Path(args.project), args.board, args.elf, args.objdump)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="alloy", description=__doc__)
     parser.add_argument("--version", action="version", version=__version__)
@@ -434,6 +440,14 @@ def main() -> None:
     p_test.add_argument("--no-sanitize", action="store_true",
                         help="disable AddressSanitizer/UBSan")
     p_test.set_defaults(func=cmd_test)
+
+    p_fa = sub.add_parser("frame-audit",
+                          help="report async coroutine frame sizes vs task_storage<N>")
+    p_fa.add_argument("--project", default=".")
+    p_fa.add_argument("--board", help="override the board declared in alloy.toml")
+    p_fa.add_argument("--elf", help="audit this ELF directly (skip project lookup)")
+    p_fa.add_argument("--objdump", help="objdump binary to use (default: auto on PATH)")
+    p_fa.set_defaults(func=cmd_frame_audit)
 
     p_lib = sub.add_parser("lib", help="discover and vendor ecosystem libraries")
     lib_sub = p_lib.add_subparsers(dest="lib_command", required=True)

@@ -56,9 +56,19 @@ struct task {
         // here without threading it through every call site.
         bool* storage_in_use = nullptr;
 
+        // True while this task's handle sits on the executor ready-queue. The
+        // executor sets it on enqueue and clears it on dequeue so a handle can
+        // never be enqueued twice (double-spawn / double-wake would resume a
+        // running or already-queued coroutine — UB).
+        bool queued = false;
+
         template <std::size_t N, class... Rest>
         explicit promise_type(task_storage<N>& store, Rest&...) noexcept
             : storage_in_use(&store.in_use) {}
+        // Default ctor exists only so a storage-less task gets PAST promise
+        // construction and hits the error-attributed operator new below, whose
+        // message names the real fix. A valid task always selects the ctor above.
+        promise_type() = default;
 
         // Frame allocates from the task_storage passed as the coroutine's FIRST
         // argument. Extra coroutine parameters bind to Rest&&... (lvalues).
@@ -88,10 +98,17 @@ struct task {
         // executor's retire() job, paired with handle.destroy().
         void operator delete(void*) noexcept {}
 
-        // DELETED: a task without a storage argument must not compile. This is
-        // the proof there is no heap path — global ::operator new is also
-        // suppressed because the promise declares its own operator new.
-        static void* operator new(std::size_t) = delete;
+        // A task written without a `task_storage<N>&` first parameter selects
+        // this overload (the templated one above needs the storage arg). It is
+        // declared, never defined, and carries an error attribute so the call
+        // site fails to COMPILE with a readable message instead of the cryptic
+        // "use of deleted operator new". Declaring it also suppresses global
+        // ::operator new for the coroutine, so there is still no heap path.
+        [[noreturn]] __attribute__((__error__(
+            "alloy::async::task: this coroutine has no `alloy::async::task_storage<N>&` "
+            "first parameter. Every task needs one — its frame lives there (there is no "
+            "heap). Add e.g. `task_storage<256>&` as the coroutine's first argument.")))
+        static void* operator new(std::size_t);
 
         task get_return_object() noexcept {
             return task{std::coroutine_handle<promise_type>::from_promise(*this)};

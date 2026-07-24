@@ -5,6 +5,9 @@
 // window) and retire-releases-storage. Compiled -fno-exceptions/-fno-rtti +
 // sanitizers, the same code that cross-compiles to the MCU.
 
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include <cstdint>
 
 #include "alloy/async/event.hpp"
@@ -127,6 +130,51 @@ ALLOY_TEST(async_storage_is_reusable_after_retire) {
     ex.run_once();
     ALLOY_CHECK_EQ(count, 2);
     ALLOY_CHECK(!st.in_use);
+}
+
+ALLOY_TEST(async_double_spawn_is_idempotent) {
+    // spawn() twice on one task (or any double-enqueue) must NOT queue it twice —
+    // resuming a coroutine that is already queued/running is UB. The executor's
+    // per-task queued flag makes schedule() idempotent.
+    executor<8> ex;
+    task_storage<256> st;
+    event ev;
+    int count = 0;
+
+    task t = counter_task(st, ev, count, 1);
+    ex.spawn(t);
+    ex.spawn(t);  // double-spawn
+    ALLOY_CHECK_EQ(ex.ready_count(), static_cast<std::size_t>(1));  // enqueued once
+
+    ex.run_once();  // parks on co_await ev
+    ALLOY_CHECK_EQ(count, 0);
+    ev.set();
+    ex.run_once();
+    ALLOY_CHECK_EQ(count, 1);  // ran exactly once, not twice
+}
+
+namespace {
+task park_on(task_storage<256>&, event& ev) { co_await ev; }
+}  // namespace
+
+ALLOY_TEST(async_second_waiter_on_one_event_traps) {
+    // Single-owner: two tasks parking on ONE event is a design error and must
+    // trap loudly (not silently starve one). Verified as a death test — the
+    // child must NOT exit cleanly.
+    const pid_t pid = fork();
+    if (pid == 0) {
+        executor<8> ex;
+        task_storage<256> sa;
+        task_storage<256> sb;
+        event ev;
+        ex.spawn(park_on(sa, ev));
+        ex.spawn(park_on(sb, ev));
+        ex.run_once();  // A parks on ev; B's park() finds ev owned -> traps
+        _exit(0);        // reached only if the guard FAILED to fire
+    }
+    int status = 0;
+    (void)waitpid(pid, &status, 0);
+    ALLOY_CHECK(!(WIFEXITED(status) && WEXITSTATUS(status) == 0));
 }
 
 ALLOY_TEST(async_two_independent_tasks_interleave) {
