@@ -92,6 +92,20 @@ SECTIONS
         _edata = .;
     }} > RAM AT> FLASH
 
+    /* Hot code (ALLOY_FASTCODE) executed from RAM: no flash wait states. Loaded
+       from flash and copied to RAM by the startup, exactly like .data. Empty (no
+       cost) unless a function opts in. */
+    _sifastcode = LOADADDR(.fastcode);
+
+    .fastcode :
+    {{
+        . = ALIGN(4);
+        _sfastcode = .;
+        *(.fastcode*)
+        . = ALIGN(4);
+        _efastcode = .;
+    }} > RAM AT> FLASH
+
     .bss :
     {{
         . = ALIGN(4);
@@ -197,6 +211,14 @@ SECTIONS
         *(.data .data.*)
         . = ALIGN(4);
     }} > DRAM
+
+    /* ALLOY_FASTCODE runs from IRAM (the ESP32's fast instruction RAM), loaded
+       by the resident bootloader by VMA like .data. Empty unless opted into. */
+    .fastcode : ALIGN(4)
+    {{
+        *(.fastcode .fastcode.*)
+        . = ALIGN(4);
+    }} > IRAM
 
     .bss (NOLOAD) : ALIGN(4)
     {{

@@ -13,6 +13,9 @@ extern std::uint32_t _sdata;   // .data start (ram)
 extern std::uint32_t _edata;   // .data end (ram)
 extern std::uint32_t _sbss;    // .bss start
 extern std::uint32_t _ebss;    // .bss end
+extern std::uint32_t _sifastcode;  // .fastcode load address (flash)
+extern std::uint32_t _sfastcode;   // .fastcode start (ram)
+extern std::uint32_t _efastcode;   // .fastcode end (ram)
 
 // Static-constructor arrays (walked directly — no newlib crti/_init needed).
 using init_fn = void (*)();
@@ -35,6 +38,12 @@ int main();
     // Copy initialized data from flash to RAM.
     std::uint32_t* src = &_sidata;
     for (std::uint32_t* dst = &_sdata; dst < &_edata; ++dst, ++src) {
+        *dst = *src;
+    }
+    // Copy ALLOY_FASTCODE from flash to fast RAM (same scheme as .data). Empty
+    // and free unless a function opted in.
+    src = &_sifastcode;
+    for (std::uint32_t* dst = &_sfastcode; dst < &_efastcode; ++dst, ++src) {
         *dst = *src;
     }
     // Zero the BSS.
