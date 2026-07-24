@@ -99,14 +99,16 @@ jobs:
         run: |
           out=$(uv run --project ../../tools/alloy alloy emulate --board ${{ matrix.board }} --emit-only)
           echo "$out"
-          echo "resc=$(echo "$out" | awk '/^script:/{print $2}')" >> "$GITHUB_OUTPUT"
           echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
       - name: boot firmware under Renode and assert the banner
+        # Run from the output dir so the .resc's bare @repl/@elf names resolve
+        # (Renode's @-path tokenizer can't handle spaces, so no absolute paths).
+        working-directory: alloy/examples/uart_echo/.alloy/build-tree/${{ matrix.board }}/out
         run: |
           renode-test \
-            --variable RESC:${{ steps.emit.outputs.resc }} \
+            --variable RESC:${{ matrix.board }}.resc \
             --variable UART:${{ steps.emit.outputs.uart }} \
-            alloy/tests/emulation/firmware_boots.robot
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/firmware_boots.robot"
 
   build:
     runs-on: ubuntu-latest

@@ -128,18 +128,22 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
 
 
-def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
-                       repl_path: str, elf_path: str) -> str:
+def emit_renode_script(chip: dict[str, Any], board: dict[str, Any], elf_name: str) -> str:
     """The .resc: build the machine and load the ELF, but do NOT start — the
     caller (alloy emulate, or the CI Robot test) attaches a UART observer and
-    then starts, so no early output is missed. Paths are absolute so Renode's
-    `@` resolution is independent of the invoking directory."""
+    then starts, so no early output is missed.
+
+    The .repl and ELF are referenced by BARE filename (they sit next to this
+    .resc). Renode's monitor cannot tokenize an `@`-path containing spaces, so
+    an absolute path under a repo dir like ".../01 - Codes/..." would break;
+    bare names never contain spaces. The caller must run Renode with this
+    directory as the working directory (alloy emulate and the CI job both do)."""
     name = _resolve(chip, board)[1]
     return f"""{_RESC_BANNER}# Headless machine for {board['id']}: platform is generated from chip data.
 using sysbus
 mach create "{board['id']}"
-machine LoadPlatformDescription @{repl_path}
-sysbus LoadELF @{elf_path}
+machine LoadPlatformDescription @{board['id']}.repl
+sysbus LoadELF @{elf_name}
 # No `start` here: `alloy emulate` adds `showAnalyzer {name}; start`; the CI
 # Robot test attaches a terminal tester to `{name}` first, then starts.
 """
