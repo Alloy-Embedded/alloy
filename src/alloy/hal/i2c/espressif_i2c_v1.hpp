@@ -56,7 +56,11 @@ struct i2c_impl<Inst> {
     }
 
     static void configure(std::uint32_t kernel_hz, std::uint32_t speed_hz) {
-        r().CTR = IP::sda_force_out.mask | IP::scl_force_out.mask | IP::ms_mode.mask;
+        using ctr = typename IP::ctr;
+        // Master mode, SDA/SCL driven from the block. WHOLE-value command
+        // write composed from named single-bit flags — clears TRANS_START and
+        // CLK_EN as before, reads like the register table.
+        r().CTR = ctr::sda_force_out | ctr::scl_force_out | ctr::ms_mode;
         const std::uint32_t half = kernel_hz / speed_hz / 2u;
         r().SCL_LOW_PERIOD = half;
         r().SCL_HIGH_PERIOD = half - half / 10u;  // slight low-bias like esp-idf
@@ -88,16 +92,17 @@ struct i2c_impl<Inst> {
 
     // Run the staged program; true on TRANS_COMPLETE, false on NACK/error.
     static bool run() {
+        using int_raw = typename IP::int_raw;
         r().INT_CLR = 0xFFFFFFFFu;
         IP::trans_start.set(r());
         // Bounded spin: worst legal transfer at 100 kHz is well under this.
         for (std::uint32_t spin = 0; spin < 4'000'000u; ++spin) {
             const std::uint32_t raw = r().INT_RAW;
-            if (raw & (IP::ack_err.mask | IP::arb_lost.mask | IP::time_out_int.mask)) {
+            if (raw & (int_raw::ack_err | int_raw::arb_lost | int_raw::time_out_int)) {
                 recover();  // NACK aborts the program mid-FSM, no STOP issued
                 return false;
             }
-            if (raw & IP::trans_complete.mask) {
+            if (raw & int_raw::trans_complete) {
                 r().INT_CLR = 0xFFFFFFFFu;
                 return true;
             }

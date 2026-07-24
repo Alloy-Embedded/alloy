@@ -31,11 +31,13 @@ struct spi_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t clock_hz, std::uint8_t mode) {
+        using cr = typename IP::cr;
+        using mr = typename IP::mr;
         alloy::gate_on(Inst::gate);
         // Unlock MR/CSR in case a bootloader left write protection on.
         r().WPMR = 0x535049u << IP::wpkey.pos;  // contract-ok: WPKEY ASCII 'SPI', IP-semantic constant
-        r().CR = IP::swrst.mask | IP::spidis.mask;
-        r().MR = IP::mstr.mask | IP::ps.mask | IP::modfdis.mask;
+        r().CR = cr::swrst | cr::spidis;
+        r().MR = mr::mstr | mr::ps | mr::modfdis;
         // SPCK = kernel / SCBR, linear, clamped 1..255. Floor is kernel/255 —
         // slower requests run at the floor, faster than asked.
         if (clock_hz == 0u) {
@@ -56,11 +58,12 @@ struct spi_impl<Inst> {
     }
 
     [[nodiscard]] static std::uint8_t xfer(std::uint8_t byte) {
-        while (!(r().SR & IP::tdre.mask)) {
+        using sr = typename IP::sr;
+        while (!(r().SR & sr::tdre)) {
         }
         // One composed write; PCS one-cold NPCS0 (0xE) — 0xF kills SCK.
         r().TDR = byte | (0xEu << IP::td_pcs.pos);  // contract-ok: one-cold PCS encoding, IP-semantic constant
-        while (!(r().SR & IP::rdrf.mask)) {
+        while (!(r().SR & sr::rdrf)) {
         }
         return static_cast<std::uint8_t>(r().RDR);
     }

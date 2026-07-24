@@ -27,6 +27,7 @@ struct i2c_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t speed_hz) {
+        using cr = typename IP::cr;
         alloy::gate_on(Inst::gate);
         r().CR = IP::swrst.mask;
         // Half-period divider: cycles = kernel/(2*speed) - 3, folded by CKDIV.
@@ -38,7 +39,7 @@ struct i2c_impl<Inst> {
         }
         r().CWGR = (ckdiv << IP::ckdiv.pos) | (cycles << IP::chdiv.pos) |
                    (cycles << IP::cldiv.pos) | (3u << IP::hold.pos);
-        r().CR = IP::svdis.mask | IP::msen.mask;
+        r().CR = cr::svdis | cr::msen;
     }
 
     // Wait until TXCOMP; false when the transfer ended with NACK.
@@ -79,12 +80,13 @@ struct i2c_impl<Inst> {
     }
 
     [[nodiscard]] static bool read(std::uint8_t addr, std::span<std::uint8_t> data) {
+        using cr = typename IP::cr;
         if (data.empty()) {
             return write(addr, {});
         }
         r().MMR = (static_cast<std::uint32_t>(addr) << IP::dadr.pos) | IP::mread.mask;
         if (data.size() == 1) {
-            r().CR = IP::start.mask | IP::stop.mask;
+            r().CR = cr::start | cr::stop;
         } else {
             r().CR = IP::start.mask;
         }
@@ -109,6 +111,7 @@ struct i2c_impl<Inst> {
     [[nodiscard]] static bool write_read(std::uint8_t addr,
                                          std::span<const std::uint8_t> wr,
                                          std::span<std::uint8_t> rd) {
+        using cr = typename IP::cr;
         // TWIHS internal-address feature covers the common 1-3 byte case.
         if (wr.empty() || wr.size() > 3 || rd.empty()) {
             return false;
@@ -122,7 +125,7 @@ struct i2c_impl<Inst> {
                   (static_cast<std::uint32_t>(wr.size()) << IP::iadrsz.pos);
         r().IADR = iadr;
         if (rd.size() == 1) {
-            r().CR = IP::start.mask | IP::stop.mask;
+            r().CR = cr::start | cr::stop;
         } else {
             r().CR = IP::start.mask;
         }

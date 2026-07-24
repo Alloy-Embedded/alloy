@@ -49,13 +49,15 @@ struct uart_impl<Inst> {
     }
 
     static void write(std::uint8_t byte) {
-        while (IP::txff.read(r()) != 0u) {
+        using uartfr = typename IP::uartfr;
+        while ((r().UARTFR & uartfr::txff) != 0u) {
         }
         r().UARTDR = byte;
     }
 
     [[nodiscard]] static bool read(std::uint8_t& byte) {
-        if (IP::rxfe.read(r()) != 0u) {
+        using uartfr = typename IP::uartfr;
+        if ((r().UARTFR & uartfr::rxfe) != 0u) {
             return false;
         }
         byte = static_cast<std::uint8_t>(r().UARTDR);
@@ -63,7 +65,8 @@ struct uart_impl<Inst> {
     }
 
     static void flush() {
-        while (IP::busy.read(r()) != 0u) {
+        using uartfr = typename IP::uartfr;
+        while ((r().UARTFR & uartfr::busy) != 0u) {
         }
     }
 
@@ -73,7 +76,8 @@ struct uart_impl<Inst> {
     inline static void* rx_ctx = nullptr;
 
     static void rx_isr(void*) {
-        while (IP::rxfe.read(r()) == 0u) {
+        using uartfr = typename IP::uartfr;
+        while ((r().UARTFR & uartfr::rxfe) == 0u) {
             const auto byte = static_cast<std::uint8_t>(r().UARTDR);
             if (rx_fn != nullptr) {
                 rx_fn(rx_ctx, byte);

@@ -57,14 +57,15 @@ struct uart_impl<Inst> {
     inline static void* rx_ctx = nullptr;
 
     static void rx_isr(void*) {
+        using int_clr = typename IP::int_clr;
         while (IP::rxfifo_cnt.read(r()) != 0u) {
             const auto byte = static_cast<std::uint8_t>(r().FIFO);
             if (rx_fn != nullptr) {
                 rx_fn(rx_ctx, byte);
             }
         }
-        r().INT_CLR = IP::rxfifo_full_int_clr.mask | IP::rxfifo_tout_int_clr.mask |
-                      IP::rxfifo_ovf_int_clr.mask;
+        r().INT_CLR = int_clr::rxfifo_full_int_clr | int_clr::rxfifo_tout_int_clr |
+                      int_clr::rxfifo_ovf_int_clr;
     }
 
     static void enable_rx_irq(void (*fn)(void*, std::uint8_t), void* ctx) {

@@ -47,11 +47,12 @@ struct i2c_impl<Inst> {
     // Wait for a flag or NACK; true when the flag arrived, false on NACK.
     template <class Flag>
     static bool wait_flag(Flag flag) {
+        using icr = typename IP::icr;
         while (true) {
             if (IP::nackf.read(r()) != 0u) {
                 while (IP::stopf.read(r()) == 0u) {
                 }
-                r().ICR = IP::nackcf.mask | IP::stopcf.mask;
+                r().ICR = icr::nackcf | icr::stopcf;
                 return false;
             }
             if (flag.read(r()) != 0u) {

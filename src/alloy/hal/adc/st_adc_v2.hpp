@@ -31,12 +31,14 @@ struct adc_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz) {
+        using cr = typename IP::cr;
+        using isr = typename IP::isr;
         alloy::gate_on(Inst::gate);
         IP::ckmode.write(r(), 1u);  // PCLK/2 synchronous
         IP::advregen.set(r());
         spin(kernel_hz / 50'000u);  // >= 20 us regulator start-up
         IP::adcal.set(r());
-        while (IP::adcal.read(r()) != 0u) {
+        while ((r().CR & cr::adcal) != 0u) {
         }
         IP::vrefen.set(r());
         IP::tsen.set(r());
@@ -44,17 +46,18 @@ struct adc_impl<Inst> {
         IP::smp1.write(r(), 7u);    // 160.5 cycles — required for vref/temp
         r().ISR = IP::adrdy.mask;   // w1c
         IP::aden.set(r());
-        while (IP::adrdy.read(r()) == 0u) {
+        while ((r().ISR & isr::adrdy) == 0u) {
         }
     }
 
     [[nodiscard]] static std::uint16_t read(std::uint8_t channel) {
+        using isr = typename IP::isr;
         r().CHSELR = 1u << channel;
-        while (IP::ccrdy.read(r()) == 0u) {
+        while ((r().ISR & isr::ccrdy) == 0u) {
         }
-        r().ISR = IP::eoc.mask | IP::ccrdy.mask;  // clear stale flags
+        r().ISR = isr::eoc | isr::ccrdy;  // clear stale flags
         IP::adstart.set(r());
-        while (IP::eoc.read(r()) == 0u) {
+        while ((r().ISR & isr::eoc) == 0u) {
         }
         return static_cast<std::uint16_t>(r().DR);
     }
@@ -63,14 +66,15 @@ struct adc_impl<Inst> {
     // ADSTART=0). begin() configures but does NOT start — the caller arms
     // the DMA channel first, then kick() starts conversions. ---
     static void dma_burst_begin(std::uint8_t channel) {
+        using isr = typename IP::isr;
         r().CHSELR = 1u << channel;
-        while (IP::ccrdy.read(r()) == 0u) {
+        while ((r().ISR & isr::ccrdy) == 0u) {
         }
         // Flag hygiene (w1c): stale CCRDY breaks the NEXT channel-select
         // handshake; stale EOC/EOS/OVR from a previous burst BLOCK the
         // ADC's DMA requests entirely (RM0444 overrun management) and
         // dma.wait() would spin forever.
-        r().ISR = IP::ccrdy.mask | IP::eoc.mask | IP::eos.mask | IP::ovr.mask;
+        r().ISR = isr::ccrdy | isr::eoc | isr::eos | isr::ovr;
         IP::dmaen.set(r());
         IP::cont.set(r());
         IP::ovrmod.set(r());  // overwrite on overrun keeps the stream honest
@@ -79,8 +83,9 @@ struct adc_impl<Inst> {
     static void dma_burst_kick() { IP::adstart.set(r()); }
 
     static void dma_burst_end() {
+        using cr = typename IP::cr;
         IP::adstp.set(r());
-        while (IP::adstart.read(r()) != 0u) {
+        while ((r().CR & cr::adstart) != 0u) {
         }
         IP::cont.clear(r());
         IP::dmaen.clear(r());

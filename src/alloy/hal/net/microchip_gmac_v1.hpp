@@ -69,11 +69,13 @@ public:
     // ---- bring-up ----
     // Enable clocks + MDIO so the PHY can be probed. RMII, MDC = MCK/64.
     void begin_mdio() {
+        using ncfgr = typename IP::ncfgr;
+        using ur = typename IP::ur;
         alloy::gate_on(Inst::gate);
         r().NCR = 0;
-        r().NCFGR = (0b100u << IP::clk.pos);  // MDC divider /64 (<=2.5 MHz)
-        r().UR = IP::rmii.mask;               // RMII pinout
-        IP::mpe.set(r());                     // management port for MDIO
+        r().NCFGR = flags{ncfgr::clk_mck_64};  // MDC divider /64 (<=2.5 MHz)
+        r().UR = flags{ur::rmii};              // RMII pinout
+        IP::mpe.set(r());                      // management port for MDIO
     }
 
     // Configure the DMA rings + MAC address and go live. Call after the PHY
@@ -106,6 +108,7 @@ public:
 
     // ---- NetDevice ----
     [[nodiscard]] std::uint32_t receive(std::span<std::uint8_t> out) {
+        using rsr = typename IP::rsr;
         desc& d = rx_desc_[rx_next_];
         if ((d.word0 & 0x1u) == 0u) {  // MAC still owns: nothing received
             return 0;
@@ -118,7 +121,7 @@ public:
         }
         d.word0 &= ~0x1u;  // hand the descriptor back to the MAC
         rx_next_ = (rx_next_ + 1) % RxN;
-        r().RSR = IP::rec.mask;  // clear the receive-status flag
+        r().RSR = flags{rsr::rec};  // clear the receive-status flag
         return n;
     }
 

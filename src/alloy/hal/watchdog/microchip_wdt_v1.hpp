@@ -47,7 +47,11 @@ struct wdt_impl<Inst> {
 
     // Restart the countdown (the periodic kick).
     static void feed() {
-        r().CR = (0xA5u << IP::key.pos) | IP::wdrstt.mask;
+        using cr = typename IP::cr;
+        // CR is write-only: the password (KEY=0xA5) must accompany WDRSTT or
+        // the write is silently aborted. Whole-value command write from named
+        // flags — reads like the register table.
+        r().CR = cr::key_passwd | cr::wdrstt;
     }
 };
 

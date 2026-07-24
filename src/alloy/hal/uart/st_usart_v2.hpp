@@ -45,13 +45,15 @@ struct uart_impl<Inst> {
     }
 
     static void write(std::uint8_t byte) {
-        while (IP::txe.read(r()) == 0u) {
+        using sr = typename IP::sr;
+        while ((r().SR & sr::txe) == 0u) {
         }
         r().DR = byte;
     }
 
     [[nodiscard]] static bool read(std::uint8_t& byte) {
-        if (IP::rxne.read(r()) == 0u) {
+        using sr = typename IP::sr;
+        if ((r().SR & sr::rxne) == 0u) {
             return false;
         }
         byte = static_cast<std::uint8_t>(r().DR);  // reading DR clears RXNE
@@ -59,7 +61,8 @@ struct uart_impl<Inst> {
     }
 
     static void flush() {
-        while (IP::tc.read(r()) == 0u) {
+        using sr = typename IP::sr;
+        while ((r().SR & sr::tc) == 0u) {
         }
     }
 
@@ -72,7 +75,7 @@ struct uart_impl<Inst> {
 
     static void rx_isr(void*) {
         const std::uint32_t sr = r().SR;  // sampled once (read is step 1 of ORE clear)
-        if (sr & (IP::rxne.mask | IP::ore.mask)) {
+        if (sr & (IP::sr::rxne | IP::sr::ore)) {
             const auto byte = static_cast<std::uint8_t>(r().DR);  // step 2: clears RXNE+ORE
             if (rx_fn != nullptr) {
                 rx_fn(rx_ctx, byte);

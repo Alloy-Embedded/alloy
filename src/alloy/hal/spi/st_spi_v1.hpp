@@ -32,6 +32,7 @@ struct spi_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t clock_hz, std::uint8_t mode) {
+        using cr1 = typename IP::cr1;
         alloy::gate_on(Inst::gate);
         // SCK = kernel / 2^(BR+1); smallest divisor whose SCK <= the request.
         std::uint32_t br = 0;
@@ -39,19 +40,21 @@ struct spi_impl<Inst> {
             ++br;
         }
         // DFF=0 (8-bit), software NSS held high, master, then SPE — all in
-        // one write since config requires SPE=0.
-        r().CR1 = IP::mstr.mask | IP::ssm.mask | IP::ssi.mask |
-                  (br << IP::br.pos) |
-                  ((mode & 0x2u) ? IP::cpol.mask : 0u) |
-                  ((mode & 0x1u) ? IP::cpha.mask : 0u) |
-                  IP::spe.mask;
+        // one write since config requires SPE=0. The named CR1 flags read like
+        // the register table; BR stays a field_t shift because it is a
+        // computed divisor, not a named constant.
+        r().CR1 = (cr1::mstr | cr1::ssm | cr1::ssi | cr1::spe |
+                   ((mode & 0x2u) ? cr1::cpol : cr1{}) |
+                   ((mode & 0x1u) ? cr1::cpha : cr1{})) |
+                  (br << IP::br.pos);
     }
 
     [[nodiscard]] static std::uint8_t xfer(std::uint8_t byte) {
-        while (!(r().SR & IP::txe.mask)) {
+        using sr = typename IP::sr;
+        while (!(r().SR & sr::txe)) {
         }
         r().DR = byte;  // one halfword write = one 8-bit frame (DFF=0)
-        while (!(r().SR & IP::rxne.mask)) {
+        while (!(r().SR & sr::rxne)) {
         }
         return static_cast<std::uint8_t>(r().DR);
     }

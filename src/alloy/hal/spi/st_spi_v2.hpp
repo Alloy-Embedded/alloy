@@ -35,6 +35,7 @@ struct spi_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t clock_hz, std::uint8_t mode) {
+        using cr2 = typename IP::cr2;
         alloy::gate_on(Inst::gate);
         // SCK = kernel / 2^(BR+1); smallest divisor whose SCK <= the request.
         // Floor is kernel/256 (BR=7) — a slower request than that still runs
@@ -44,7 +45,7 @@ struct spi_impl<Inst> {
             ++br;
         }
         r().CR1 = 0;  // config with SPE=0 (CR2.DS change under SPE is forbidden)
-        r().CR2 = (0x7u << IP::ds.pos) | IP::frxth.mask;  // contract-ok: 0x7 = 8-bit frame size (DS+1), IP-semantic constant
+        r().CR2 = cr2::ds_eight | cr2::frxth;  // contract-ok: 0x7 = 8-bit frame size (DS+1), IP-semantic constant
         r().CR1 = IP::mstr.mask | IP::ssm.mask | IP::ssi.mask |
                   (br << IP::br.pos) |
                   ((mode & 0x2u) ? IP::cpol.mask : 0u) |
@@ -53,10 +54,11 @@ struct spi_impl<Inst> {
     }
 
     [[nodiscard]] static std::uint8_t xfer(std::uint8_t byte) {
-        while (!(r().SR & IP::txe.mask)) {
+        using sr = typename IP::sr;
+        while (!(r().SR & sr::txe)) {
         }
         dr8() = byte;
-        while (!(r().SR & IP::rxne.mask)) {
+        while (!(r().SR & sr::rxne)) {
         }
         return dr8();
     }
