@@ -35,10 +35,18 @@ def _entries(alloy_root: Path) -> list[tuple[str, dict[str, Any]]]:
     return sorted(_registry(alloy_root).items())
 
 
-def cmd_lib_list(alloy_root: Path, *, category: str | None = None) -> int:
+def cmd_lib_list(alloy_root: Path, *, category: str | None = None, json_out: bool = False) -> int:
     rows = _entries(alloy_root)
     if category:
         rows = [(n, s) for n, s in rows if s.get("category") == category]
+    if json_out:
+        import json  # noqa: PLC0415
+
+        print(json.dumps({
+            "schema": "alloy.libs.v1",
+            "libraries": [{"name": n, **s} for n, s in rows],
+        }, indent=2))
+        return 0
     if not rows:
         print("no libraries in the registry" + (f" for category '{category}'" if category else ""))
         return 0

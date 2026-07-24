@@ -374,7 +374,8 @@ def cmd_lib(args: argparse.Namespace) -> int:
         return libs.cmd_lib_add(Path(args.project), args.name)
     alloy_root = _find_alloy_root(Path.cwd())
     if args.lib_command == "list":
-        return libs.cmd_lib_list(alloy_root, category=args.category)
+        return libs.cmd_lib_list(alloy_root, category=args.category,
+                                 json_out=getattr(args, "json", False))
     if args.lib_command == "search":
         return libs.cmd_lib_search(alloy_root, args.term)
     if args.lib_command == "info":
@@ -453,6 +454,7 @@ def main() -> None:
     lib_sub = p_lib.add_subparsers(dest="lib_command", required=True)
     p_lib_list = lib_sub.add_parser("list", help="list registry libraries")
     p_lib_list.add_argument("--category", help="filter by category (sensor/display/…)")
+    p_lib_list.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
     p_lib_list.set_defaults(func=cmd_lib)
     p_lib_search = lib_sub.add_parser("search", help="search the registry")
     p_lib_search.add_argument("term")
