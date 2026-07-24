@@ -99,15 +99,30 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "{cpu_flags}")
 
 
 def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
-                runtime_sources: list[Path]) -> str:
+                runtime_sources: list[Path], vendor_sources: list[Path]) -> str:
     gen = project.gen_dir
     gen_sources = [gen / "board.cpp"]
     for optional in ("vector_table.c", "boot2.c", "irq_data.c"):
         if (gen / optional).exists():
             gen_sources.append(gen / optional)
     src_list = "\n    ".join(
-        f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources]
+        f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources, *vendor_sources]
     )
+    # Vendored C packages (littlefs, ...) are framework-owned, not header-only:
+    # silence their warnings and, on firmware, strip malloc/asserts/logging —
+    # the alloy facade hands littlefs all its buffers statically, so no heap is
+    # touched. Scoped to the vendored TUs only.
+    vendor_props = ""
+    if vendor_sources:
+        vendor_list = "\n    ".join(f'"{p}"' for p in vendor_sources)
+        vendor_props = f"""
+
+set_source_files_properties(
+    {vendor_list}
+    PROPERTIES
+    COMPILE_OPTIONS "-w"
+    COMPILE_DEFINITIONS "LFS_NO_MALLOC;LFS_NO_ASSERT;LFS_NO_DEBUG;LFS_NO_WARN;LFS_NO_ERROR"
+)"""
     # newlib nano/nosys specs are an ARM-newlib convention; the xtensa
     # toolchain links its own newlib without them.
     specs = "" if _arch_ns(chip) == "xtensa" else """
@@ -160,7 +175,7 @@ target_link_options({project.name}.elf PRIVATE
     -nostartfiles
     -Wl,--gc-sections
     -Wl,-Map={project.name}.map{specs}
-){post_build}
+){post_build}{vendor_props}
 """
 
 
@@ -173,10 +188,21 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
     arch_dir = project.alloy_root / "src" / "alloy" / "arch" / _arch_ns(chip)
     runtime_sources = sorted(arch_dir.glob("*.cpp")) + sorted(arch_dir.glob("*.S"))
 
+    # Vendored C packages are framework-owned and compiled ONLY when the board
+    # pulls the package in — the generated board.hpp is the signal (its caps
+    # block emits `bool fs = true;` for an fs role). This keeps every other
+    # example's build lean (no needless littlefs TUs) — the real "build seam".
+    vendor_sources: list[Path] = []
+    board_hpp = project.gen_dir / "alloy" / "board.hpp"
+    if board_hpp.exists() and "bool fs = true;" in board_hpp.read_text():
+        fs_vendor = project.alloy_root / "src" / "alloy" / "fs" / "vendor"
+        vendor_sources += sorted(fs_vendor.glob("*.c"))
+
     tree = project.build_dir
     tree.mkdir(parents=True, exist_ok=True)
     (tree / "toolchain.cmake").write_text(_toolchain_cmake(chip, _cpu_flags(chip)))
-    (tree / "CMakeLists.txt").write_text(_cmakelists(project, chip, sources, runtime_sources))
+    (tree / "CMakeLists.txt").write_text(
+        _cmakelists(project, chip, sources, runtime_sources, vendor_sources))
 
     env = None
     if _arch_ns(chip) == "xtensa":

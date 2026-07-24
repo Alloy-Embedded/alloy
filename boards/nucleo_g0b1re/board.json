@@ -55,6 +55,11 @@
       "bytes": 2048,
       "label": "last 2 KB flash page (dual-bank: bank2 page 127)"
     },
+    "fs": {
+      "peripheral": "flash",
+      "bytes": 32768,
+      "label": "32 KB littlefs region (16 pages) carved just below the nvm page"
+    },
     "rtc": {
       "peripheral": "rtc",
       "label": "RTC on LSI (~32 kHz), backup-domain calendar"

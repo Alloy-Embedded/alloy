@@ -54,8 +54,8 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
                              "spi": False, "eeprom": False, "watchdog": False,
-                             "nvm": False, "rtc": False, "dac": False, "can": False,
-                             "gpio_bus": False,
+                             "nvm": False, "fs": False, "rtc": False, "dac": False,
+                             "can": False, "gpio_bus": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -142,12 +142,33 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     else:
         decls.append("inline constexpr alloy::wdt::null_watchdog watchdog{};")
 
-    # Persistent key/value store over a reserved flash page (board::nvm). The
-    # region is carved from the TOP of flash (the last `bytes`, defaulting to one
-    # 2 KB page) so a small app never collides with it; the flash HAL turns that
-    # address into the erase page/bank at run time.
+    # Flash-backed persistent regions (board::nvm, board::fs) are carved from the
+    # TOP of flash so a small app never collides with them. A board may declare
+    # both: they STACK — nvm takes the topmost page, the filesystem the region
+    # just below it — tracked by a running reserve cursor so they never overlap.
+    # The flash HAL turns each absolute base into the erase page/bank at run time.
     extra_includes.append("alloy/flash.hpp")
     extra_includes.append("alloy/util/nvm_kv.hpp")
+    extra_includes.append("alloy/fs/littlefs.hpp")
+    flash_mem = next((m for m in chip.get("memories", []) if m.get("kind") == "flash"), None)
+    flash_base = int(str(flash_mem["base"]), 16) if flash_mem else 0
+    flash_top = (flash_base + int(flash_mem["size"])) if flash_mem else 0
+    flash_reserved = 0
+
+    def _carve(role_name: str, size: int) -> int:
+        """Reserve `size` bytes below the running cursor and return the base.
+        Fails generation (never the device) if the region runs off the bottom
+        of flash — a board.json `bytes` bigger than what's left."""
+        nonlocal flash_reserved
+        base = flash_top - flash_reserved - size
+        _require(base >= flash_base,
+                 f"board {board['id']}: {role_name} region ({size} B) does not fit — it would "
+                 f"start at 0x{base & 0xFFFFFFFF:08X}, below flash base 0x{flash_base:08X} "
+                 f"(only {flash_top - flash_base - flash_reserved} B left after other reserved regions)")
+        flash_reserved += size
+        return base
+
+    # Persistent key/value store over one reserved flash page (board::nvm).
     nvm = roles.get("nvm")
     if nvm:
         _require("peripheral" in nvm, f"board {board['id']}: nvm missing 'peripheral'")
@@ -155,11 +176,10 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(fp in chip["peripherals"],
                  f"board {board['id']}: nvm peripheral '{fp}' not in chip data")
         _require_curated(board["id"], chip, fp, "nvm")
-        flash_mem = next((m for m in chip.get("memories", []) if m.get("kind") == "flash"), None)
         if flash_mem is None:
             raise EmitError(f"board {board['id']}: chip declares no flash memory for the nvm region")
         size = int(nvm.get("bytes", 2048))
-        base = int(str(flash_mem["base"]), 16) + int(flash_mem["size"]) - size
+        base = _carve("nvm", size)
         caps["nvm"] = True
         decls.append(
             f"inline alloy::nvm::store<alloy::flash::controller<alloy::dev::{fp}_t>> "
@@ -167,6 +187,28 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         )
     else:
         decls.append("inline constexpr alloy::nvm::null_store nvm{};")
+
+    # Filesystem (board::fs): a littlefs instance over a reserved flash region,
+    # carved BELOW the nvm page. It needs several erase blocks, so `bytes`
+    # defaults much larger than nvm's single page (32 KB).
+    fs_role = roles.get("fs")
+    if fs_role:
+        _require("peripheral" in fs_role, f"board {board['id']}: fs missing 'peripheral'")
+        fp = fs_role["peripheral"]
+        _require(fp in chip["peripherals"],
+                 f"board {board['id']}: fs peripheral '{fp}' not in chip data")
+        _require_curated(board["id"], chip, fp, "fs")
+        if flash_mem is None:
+            raise EmitError(f"board {board['id']}: chip declares no flash memory for the fs region")
+        size = int(fs_role.get("bytes", 32768))
+        base = _carve("fs", size)
+        caps["fs"] = True
+        decls.append(
+            f"inline alloy::fs::flash_filesystem<alloy::flash::controller<alloy::dev::{fp}_t>> "
+            f"fs{{{{0x{base:08X}u, {size}u}}}};"
+        )
+    else:
+        decls.append("inline alloy::fs::null_filesystem fs{};")
 
     # Real-time clock (board::rtc). The backup-domain clock (LSI + RCC.BDCR) is
     # brought up by the clock program when this role is present (see

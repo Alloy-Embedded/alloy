@@ -5,13 +5,21 @@
 # test-doubles). Compiled with the firmware's -fno-exceptions/-fno-rtti so the
 # exact same code that runs here also cross-compiles onto silicon.
 cmake_minimum_required(VERSION 3.25)
-project(alloy_tests CXX)
+# C is enabled for the vendored littlefs sources (fs facade tests); everything
+# authored here is C++23.
+project(alloy_tests C CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_EXTENSIONS OFF)
 
-add_compile_options(-fno-exceptions -fno-rtti -Wall -Wextra -Werror -g -O1)
+# -fno-exceptions/-fno-rtti are C++-only — gate them so the vendored C compiles.
+add_compile_options(
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+    -Wall -Wextra -Werror -g -O1)
 
 # Sanitizers catch real bugs on the host build, but ASan's at-exit pass hangs
 # on macOS/arm64 — default them ON on Linux (where CI runs) and OFF on Apple.
@@ -31,6 +39,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
 enable_testing()
 
+# Vendored littlefs (C) — compiled into the suite so the fs facade is exercised
+# for real. Silence its warnings (the suite is -Werror); asserts + sanitizers
+# stay ON to catch filesystem bugs.
+set(ALLOY_LFS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/fs/vendor/lfs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/fs/vendor/lfs_util.c)
+set_source_files_properties(${ALLOY_LFS} PROPERTIES COMPILE_OPTIONS "-w")
+
 add_executable(alloy_unit_tests
     main.cpp
     host_support.cpp
@@ -42,7 +58,9 @@ add_executable(alloy_unit_tests
     test_nvm.cpp
     test_gpio_bus.cpp
     test_dsp.cpp
-    test_secure.cpp)
+    test_secure.cpp
+    test_fs.cpp
+    ${ALLOY_LFS})
 
 # The runner's exit code is the number of failing tests (0 = pass).
 add_test(NAME alloy_unit_tests COMMAND alloy_unit_tests)

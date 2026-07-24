@@ -88,6 +88,26 @@ concept FlashController =
         { f.program(addr, data, n) } -> std::same_as<bool>;
     };
 
+// A block device for a log-structured filesystem (alloy/fs, littlefs): fixed
+// erase blocks, programmed in prog_size units, read in read_size units, both
+// addressed by (block, offset). A false return is an I/O error; sync flushes to
+// media. Geometry is reported at RUN TIME because the reserved region size
+// varies per board. alloy/fs/littlefs.hpp adapts both internal MCU flash and
+// external SPI-NOR onto this contract.
+template <class T>
+concept BlockDevice =
+    requires(const T d, std::uint32_t block, std::uint32_t off,
+             void* rbuf, const void* wbuf, std::size_t n) {
+        { d.bd_read(block, off, rbuf, n) } -> std::same_as<bool>;
+        { d.bd_prog(block, off, wbuf, n) } -> std::same_as<bool>;
+        { d.bd_erase(block) } -> std::same_as<bool>;
+        { d.bd_sync() } -> std::same_as<bool>;
+        { d.block_size() } -> std::convertible_to<std::uint32_t>;
+        { d.block_count() } -> std::convertible_to<std::uint32_t>;
+        { d.read_size() } -> std::convertible_to<std::uint32_t>;
+        { d.prog_size() } -> std::convertible_to<std::uint32_t>;
+    };
+
 // Wall-clock date + time an RTC keeps. Plain binary fields (NOT BCD) — the
 // driver does the BCD conversion at the register edge, so user code never sees
 // nibble-packed values.
