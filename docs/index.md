@@ -1,0 +1,107 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
+<div class="hero" markdown>
+
+# One `main.cpp`. Any microcontroller.
+
+A from-scratch **C++23** framework for microcontrollers: write your app once, recompile it
+for a different board by changing **one line** — no `#ifdef`, no RTOS required, no IDE required.
+Mistakes are caught at **compile time**, in errors a beginner can read.
+
+[Get started :material-rocket-launch:](getting-started.md){ .md-button .md-button--primary }
+[Browse the guide :material-book-open-variant:](guide/portable-code.md){ .md-button }
+[View on GitHub :fontawesome-brands-github:](https://github.com/Alloy-Embedded/alloy){ .md-button }
+
+</div>
+
+```cpp title="src/main.cpp — identical bytes on every supported board"
+#include <alloy/board.hpp>
+using namespace alloy::literals;
+
+int main() {
+    board::init();
+    while (true) {
+        board::led.toggle();
+        alloy::sleep_for(500ms);
+    }
+}
+```
+
+```console
+$ pipx install alloy
+$ alloy new hello --board esp32_devkit && cd hello
+$ alloy run                              # build + flash + serial monitor
+$ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
+```
+
+## Why alloy
+
+<div class="grid cards" markdown>
+
+-   :material-swap-horizontal:{ .lg .middle } __Truly portable__
+
+    ---
+
+    The same `main.cpp` recompiles for another board by changing one config line.
+    Portability comes from board *roles* and `if constexpr (board::caps::x)` — **zero
+    preprocessor conditionals**, enforced by CI.
+
+    [:octicons-arrow-right-24: Portable code](guide/portable-code.md)
+
+-   :material-shield-check:{ .lg .middle } __Safe at compile time__
+
+    ---
+
+    A wrong pin route is a **compile error that names the pin**, not a runtime surprise.
+    Peripherals are selected by type, with no vtables and no heap — the zero-cost claim is
+    real.
+
+    [:octicons-arrow-right-24: Architecture](reference/architecture.md)
+
+-   :material-rocket-launch:{ .lg .middle } __Trivially easy__
+
+    ---
+
+    `pipx install alloy && alloy new && alloy run` → a blinking LED in minutes.
+    No IDE, no vendor code generator, no CMake to hand-write.
+
+    [:octicons-arrow-right-24: Get started](getting-started.md)
+
+-   :material-database-cog:{ .lg .middle } __Data-driven__
+
+    ---
+
+    **Facts are generated, behavior is hand-written.** Adding a chip that reuses known
+    peripheral IP costs *data only* — no new C++, no new emitter branches.
+
+    [:octicons-arrow-right-24: Adding a board](guide/adding-a-board.md)
+
+</div>
+
+## Hardware-validated families
+
+The same 14-line `main.cpp` runs on all of these — validated on real silicon, enforced by CI.
+
+| Family | Core | Board(s) | Validated on silicon |
+| --- | --- | --- | --- |
+| ST STM32G0 | Cortex-M0+ | Nucleo-G071RB, G0B1RE | <span class="status-pill ok">silicon</span> PLL, GPIO, UART echo |
+| Microchip SAME70 | Cortex-M7 | SAM E70 Xplained | <span class="status-pill ok">silicon</span> PLLA, PIO, USART echo |
+| ST STM32F7 | Cortex-M7 | Nucleo-F722ZE | <span class="status-pill ok">silicon</span> clocks, UART |
+| Raspberry Pi RP2040 | 2× Cortex-M0+ | RP2040-Zero, Pico | <span class="status-pill ok">silicon</span> boot2+CRC, WS2812 |
+| Espressif ESP32 | Xtensa LX6 | WROVER-KIT, DevKit | <span class="status-pill ok">silicon</span> boot chain, UART |
+
+!!! tip "Your board isn't listed?"
+    alloy is designed so a new board is **data, not code**. See
+    [Adding a board](guide/adding-a-board.md) — if it reuses a peripheral IP alloy already
+    models, it costs zero new C++.
+
+## What you get
+
+- **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM.
+- **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `test` — [see all commands](guide/cli.md).
+- **Host-testable app logic**: the scheduler and drivers run on your laptop against fakes, so you unit-test without hardware.
+- **CI that executes, not just compiles**: firmware is booted under [Renode](https://renode.io) and asserted on real UART output.

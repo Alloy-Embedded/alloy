@@ -1,0 +1,4 @@
+# Documentation site (MkDocs + Material) — used by .github/workflows/docs.yml.
+# `mike` provides the versioned deploy + the version selector on GitHub Pages.
+mkdocs-material>=9.5
+mike>=2.1
