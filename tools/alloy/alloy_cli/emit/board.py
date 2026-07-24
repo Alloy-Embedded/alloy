@@ -27,6 +27,11 @@ def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) 
     return None
 
 
+def _ip_stem(chip, periph_name):
+    """The IP file stem for a peripheral (microchip/gmac_v1 -> gmac_v1)."""
+    return chip["peripherals"][periph_name]["ip"].split("/")[-1]
+
+
 def _require_curated(board_id: str, chip: dict[str, Any], periph: str, role: str) -> None:
     if chip["peripherals"].get(periph, {}).get("uncurated"):
         raise EmitError(
@@ -327,26 +332,60 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         phy = eth.get("phy", {})
         _require("kind" in phy, f"board {board['id']}: ethernet.phy missing 'kind'")
         caps["ethernet"] = True
+        _require("reset_pin" in eth, f"board {board['id']}: ethernet role missing 'reset_pin'")
+        _require(eth["reset_pin"] in chip.get("pins", {}),
+                 f"board {board['id']}: ethernet reset_pin '{eth['reset_pin']}' not in chip data")
+        rmii = eth.get("rmii_pins", [])
+        for pn in rmii:
+            _require(pn in chip.get("pins", {}),
+                     f"board {board['id']}: ethernet rmii pin '{pn}' not in chip data")
+        pin_cfg = "".join(
+            f"    alloy::hal::pin_impl<alloy::dev::{pn}_t>::make_af({eth.get('rmii_af', 0)});\n"
+            for pn in rmii
+        )
+        extra_includes.append(f"alloy/hal/net/microchip_{_ip_stem(chip, eth['peripheral'])}.hpp")
+        extra_includes.append(f"alloy/drivers/net/{phy['kind']}.hpp")
         decls.append(
             f"// Ethernet: GMAC + {phy['kind']} PHY (addr {phy.get('addr', 0)}, "
-            f"{phy.get('mode', 'rmii')}). The NetDevice binding arrives in M1;\n"
-            f"// M0 records the facts and the capability.\n"
-            f"using eth_mac = alloy::dev::{eth['peripheral']}_t;\n"
-            f"inline constexpr std::uint8_t eth_phy_addr = {phy.get('addr', 0)}u;"
+            f"{phy.get('mode', 'rmii')}).\n"
+            f"using eth_mac_t = alloy::hal::gmac<alloy::dev::{eth['peripheral']}_t>;\n"
+            f"inline eth_mac_t eth{{}};\n"
+            f"using eth_reset_t = alloy::gpio::output<alloy::dev::{eth['reset_pin']}_t, "
+            f"alloy::gpio::active_low_t>;\n"
+            f"inline constexpr eth_reset_t eth_reset{{}};\n"
+            f"inline constexpr std::uint8_t eth_phy_addr = {phy.get('addr', 0)}u;\n"
+            f"inline alloy::drivers::{phy['kind']}<eth_mac_t, eth_reset_t> eth_phy{{\n"
+            f"    eth, eth_reset, eth_phy_addr}};\n"
+            f"// Route the RMII pads to the GMAC (peripheral function) — call\n"
+            f"// once before eth.begin_mdio().\n"
+            f"inline void eth_configure_pins() {{\n{pin_cfg}}}"
         )
     else:
+        # No Ethernet: no-op stubs (same doctrine as the led_pwm/i2c/spi
+        # stubs) so `if constexpr (caps::ethernet)`-guarded portable code
+        # compiles everywhere. caps::ethernet=false is the honest signal;
+        # the stub methods are never reached at runtime.
         decls.append(
-            "// No Ethernet. Scalar facts get honest-zero stubs (like eeprom_addr)\n"
-            "// so non-dependent references in discarded if-constexpr branches\n"
-            "// still name-resolve; only the heavy TYPE is poisoned — using\n"
-            "// board::eth unguarded is a readable compile error, never a no-op.\n"
             "inline constexpr std::uint8_t eth_phy_addr = 0u;\n"
-            "template <class T = void>\n"
-            "struct eth_absent {\n"
-            "    static_assert(sizeof(T) == 0,\n"
-            "        \"this board has no Ethernet — guard with board::caps::ethernet\");\n"
+            "struct eth_mac_stub {\n"
+            "    void begin_mdio() {}\n"
+            "    void start(const std::uint8_t*, bool, bool) {}\n"
+            "    std::uint16_t read(std::uint8_t, std::uint8_t) const { return 0; }\n"
+            "    void write(std::uint8_t, std::uint8_t, std::uint16_t) const {}\n"
+            "    std::uint32_t receive(std::span<std::uint8_t>) { return 0; }\n"
+            "    bool transmit(std::span<const std::uint8_t>) { return false; }\n"
+            "    bool link_up() const { return false; }\n"
+            "    std::uint32_t mtu() const { return 0; }\n"
             "};\n"
-            "using eth = eth_absent<>;"
+            "inline eth_mac_stub eth{};\n"
+            "struct eth_phy_stub {\n"
+            "    bool init() const { return false; }\n"
+            "    bool link_up() const { return false; }\n"
+            "    bool speed_100() const { return false; }\n"
+            "    bool full_duplex() const { return false; }\n"
+            "};\n"
+            "inline constexpr eth_phy_stub eth_phy{};\n"
+            "inline void eth_configure_pins() {}"
         )
     decls.append(
         "// Umbrella capability: any owned-MAC or vendor-blob link.\n"
@@ -364,6 +403,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
 #pragma once
 
 #include <cstdint>
+#include <span>
 
 #include "alloy/adc.hpp"
 #include "alloy/device.hpp"

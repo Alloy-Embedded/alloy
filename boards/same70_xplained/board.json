@@ -58,7 +58,21 @@
         "addr": 0,
         "mode": "rmii"
       },
-      "label": "onboard 10/100 Ethernet: GMAC + KSZ8081RNACA PHY (RMII, addr 0, reset PC10, RJ45 J500)"
+      "label": "onboard 10/100 Ethernet: GMAC + KSZ8081RNACA PHY (RMII, addr 0, reset PC10, RJ45 J500)",
+      "reset_pin": "pc10",
+      "rmii_pins": [
+        "pd0",
+        "pd1",
+        "pd2",
+        "pd3",
+        "pd4",
+        "pd5",
+        "pd6",
+        "pd7",
+        "pd8",
+        "pd9"
+      ],
+      "rmii_af": 0
     }
   },
   "probe": {
