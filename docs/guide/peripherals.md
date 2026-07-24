@@ -93,6 +93,30 @@ adc.read_burst(chan, board::adc_vref_channel, std::span<std::uint16_t>{samples})
 pwm.stream_duty(chan, std::span<const std::uint16_t>{wave});
 ```
 
+## Interrupts
+
+Attach a handler to an IRQ line, give it a priority, and dispatch runs it. Several peripherals that
+share one vector each attach their own handler and all fire — the portable code never touches an
+`#ifdef` or a vector table:
+
+```cpp
+alloy::irq::attach(board::uart2_irq, &on_rx, &ctx);
+alloy::irq::enable(board::uart2_irq);
+alloy::irq::set_priority(board::uart2_irq, 1);   // 0 = most urgent; higher = less
+```
+
+For data shared between an ISR and the main loop, `critical_section` masks only interrupts at a
+given priority **or less urgent** — a high-priority control loop keeps running. On Cortex-M3/M4/M7
+this uses `BASEPRI`; on Cortex-M0/M0+ and Xtensa (no priority mask) it safely degrades to a full
+mask:
+
+```cpp
+{
+    alloy::irq::critical_section cs{4};   // block priority 4 and below
+    shared = update();                    // a priority-0 control ISR still fires here
+}                                         // mask lifted on scope exit (RAII)
+```
+
 ## Watchdog, RTC, NVM
 
 ```cpp

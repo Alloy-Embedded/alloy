@@ -92,6 +92,20 @@ void irq_line_disable(unsigned source) {
     irq_restore(saved);
 }
 
+// v1 routes every source to a level-1 CPU line, so hardware priority is fixed.
+// Keep the seam so portable code compiles; a future level-2/3 pool makes it real.
+void irq_line_priority(unsigned source, std::uint8_t /*level*/) {
+    if (source >= alloy::irq::g_alloy_irq_slot_count) {
+        __builtin_trap();
+    }
+    // no-op: all alloy-managed lines share level 1
+}
+
+// No BASEPRI equivalent on LX6 level-1 — degrade to a full mask, same as the
+// ARMv6-M fallback. Correct, just blocks the urgent lines too.
+irq_state irq_save_below(std::uint8_t /*level*/) { return irq_save(); }
+void irq_restore_below(irq_state state) { irq_restore(state); }
+
 }  // namespace alloy::arch
 
 // Called by the vectors.S dispatch loop, once per pending+enabled level-1

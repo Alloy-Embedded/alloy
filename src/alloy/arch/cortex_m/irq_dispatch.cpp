@@ -21,4 +21,8 @@ void irq_line_enable(unsigned n) {
 
 void irq_line_disable(unsigned n) { cortex_m::nvic::disable(n); }
 
+void irq_line_priority(unsigned n, std::uint8_t level) {
+    cortex_m::nvic::set_priority(n, cortex_m::nvic::prio_value(level));
+}
+
 }  // namespace alloy::arch

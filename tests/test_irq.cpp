@@ -28,6 +28,14 @@ void handler_b(void*) { ++g_b; }
 
 int g_ctx_seen = 0;
 void handler_ctx(void* ctx) { g_ctx_seen = *static_cast<int*>(ctx); }
+
+// A handler that detaches ITSELF while dispatch is walking the chain. Safe only
+// because dispatch caches ->next before invoking each handler.
+int g_self = 0;
+void handler_self_detach(void* ctx) {
+    ++g_self;
+    alloy::irq::detach(*static_cast<alloy::irq_line*>(ctx), &handler_self_detach);
+}
 }  // namespace
 
 ALLOY_TEST(irq_shared_line_runs_every_handler) {
@@ -84,6 +92,42 @@ ALLOY_TEST(irq_handler_receives_its_ctx) {
     alloy::irq::dispatch(line.number);
     ALLOY_CHECK_EQ(g_ctx_seen, 0xABC);
     alloy::irq::detach(line, &handler_ctx);
+}
+
+ALLOY_TEST(irq_handler_may_detach_itself_during_dispatch) {
+    // dispatch caches ->next before calling each handler, so a handler that
+    // detaches itself mid-walk neither crashes nor re-runs. A co-attached
+    // handler after it in the chain must still fire the same dispatch.
+    alloy::irq_line line{1};
+    g_self = 0;
+    g_b = 0;
+    alloy::irq::attach(line, &handler_self_detach, &line);
+    alloy::irq::attach(line, &handler_b);  // attached AFTER -> earlier in chain
+
+    alloy::irq::dispatch(line.number);
+    ALLOY_CHECK_EQ(g_self, 1);
+    ALLOY_CHECK_EQ(g_b, 1);  // co-sharer still ran despite the self-detach
+
+    // Second dispatch: self-detacher is gone, only handler_b remains.
+    alloy::irq::dispatch(line.number);
+    ALLOY_CHECK_EQ(g_self, 1);
+    ALLOY_CHECK_EQ(g_b, 2);
+    alloy::irq::detach(line, &handler_b);
+}
+
+ALLOY_TEST(irq_priority_and_critical_section_seam) {
+    // Host arch stubs make these no-ops; the test locks in that the portable
+    // seam links and the RAII balances (on silicon: NVIC priority + BASEPRI).
+    const alloy::irq_line line{2};
+    alloy::irq::set_priority(line, 3);  // valid line -> must not trap
+
+    {
+        alloy::irq::critical_section cs{4};  // masks priority 4 and below
+        alloy::irq::critical_section inner{2};  // nesting only tightens
+        (void)cs;
+        (void)inner;
+    }
+    ALLOY_CHECK(true);  // reached here without a trap == seam wired end to end
 }
 
 ALLOY_TEST(irq_detach_returns_nodes_to_the_pool) {

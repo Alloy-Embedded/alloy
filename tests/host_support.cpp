@@ -16,6 +16,9 @@ irq_state irq_save() { return 0; }
 void irq_restore(irq_state) {}
 void irq_line_enable(unsigned) {}
 void irq_line_disable(unsigned) {}
+void irq_line_priority(unsigned, std::uint8_t) {}
+irq_state irq_save_below(std::uint8_t) { return 0; }
+void irq_restore_below(irq_state) {}
 
 }  // namespace alloy::arch
 

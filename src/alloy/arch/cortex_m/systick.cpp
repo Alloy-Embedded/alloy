@@ -2,6 +2,7 @@
 
 #include <chrono>
 
+#include "alloy/arch/cortex_m/nvic.hpp"
 #include "alloy/arch/irq.hpp"
 #include "alloy/core/mmio.hpp"
 #include "alloy/time.hpp"
@@ -56,6 +57,32 @@ void irq_restore(irq_state state) {
     if ((state & 1u) == 0u) {
         __asm volatile("cpsie i" ::: "memory");
     }
+}
+
+irq_state irq_save_below(std::uint8_t level) {
+#if defined(__ARM_ARCH_6M__)
+    // ARMv6-M has no BASEPRI — a priority-scoped mask is impossible, so coarsen
+    // to a full mask. Correct, just less selective (blocks the urgent lines too).
+    (void)level;
+    return irq_save();
+#else
+    const std::uint32_t old = cortex_m::nvic::basepri_get();
+    const std::uint32_t want = cortex_m::nvic::prio_value(level);
+    // Only ever tighten the mask: a nested section must never weaken an outer
+    // one. BASEPRI==0 means "not masking", so any non-zero want tightens it.
+    if (old == 0u || want < old) {
+        cortex_m::nvic::basepri_set(want);
+    }
+    return old;
+#endif
+}
+
+void irq_restore_below(irq_state state) {
+#if defined(__ARM_ARCH_6M__)
+    irq_restore(state);
+#else
+    cortex_m::nvic::basepri_set(state);
+#endif
 }
 
 }  // namespace alloy::arch

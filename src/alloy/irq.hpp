@@ -94,6 +94,16 @@ inline void enable(alloy::irq_line line) { arch::irq_line_enable(line.number); }
 
 inline void disable(alloy::irq_line line) { arch::irq_line_disable(line.number); }
 
+// Set a line's interrupt priority (call after enable(), which sets a mid-scale
+// default). level 0 == most urgent; higher == less urgent. Effective resolution
+// depends on the part's implemented priority bits.
+inline void set_priority(alloy::irq_line line, std::uint8_t level) {
+    if (line.number >= g_alloy_irq_slot_count) {
+        __builtin_trap();
+    }
+    arch::irq_line_priority(line.number, level);
+}
+
 // Unlink `fn` from `line`'s chain. The NVIC/matrix line is disabled only when
 // the chain empties — a co-sharing peripheral may still need the vector armed.
 inline void detach(alloy::irq_line line, handler fn) {
@@ -132,5 +142,26 @@ inline bool dispatch(unsigned line) {
     }
     return ran;
 }
+
+// RAII critical section that masks only interrupts at `level` OR LESS urgency,
+// leaving MORE-urgent lines (e.g. a control-loop ISR) live — the real-time
+// alternative to a full irq_save. On ARMv7-M this raises BASEPRI; on ARMv6-M and
+// Xtensa (no priority mask) it degrades to a full mask. Nesting only tightens.
+//
+//   {
+//       alloy::irq::critical_section cs{4};   // block priority 4 and below
+//       shared = update();                    // a priority-0 control ISR still fires
+//   }
+class critical_section {
+    arch::irq_state saved_;
+
+public:
+    explicit critical_section(std::uint8_t level) : saved_(arch::irq_save_below(level)) {}
+    ~critical_section() { arch::irq_restore_below(saved_); }
+    critical_section(const critical_section&) = delete;
+    critical_section& operator=(const critical_section&) = delete;
+    critical_section(critical_section&&) = delete;
+    critical_section& operator=(critical_section&&) = delete;
+};
 
 }  // namespace alloy::irq

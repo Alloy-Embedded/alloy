@@ -38,4 +38,25 @@ inline void set_priority(unsigned n, std::uint8_t prio) {
     word = (word & ~(0xFFu << shift)) | (static_cast<std::uint32_t>(prio) << shift);
 }
 
+// Map a portable urgency level (0 = most urgent) to the 8-bit priority field,
+// placed in the top 3 bits so 8 distinct levels survive on any part that
+// implements >= 3 priority bits (fewer bits coarsen the low end but keep order).
+inline constexpr std::uint8_t prio_value(std::uint8_t level) {
+    return static_cast<std::uint8_t>((level & 0x7u) << 5u);
+}
+
+#if !defined(__ARM_ARCH_6M__)
+// BASEPRI exists on ARMv7-M and up (M3/M4/M7), not on ARMv6-M (M0/M0+). It masks
+// every interrupt whose priority value is numerically >= BASEPRI (0 = masking
+// off), so a critical section can leave more-urgent interrupts live.
+inline std::uint32_t basepri_get() {
+    std::uint32_t v;
+    __asm volatile("mrs %0, BASEPRI" : "=r"(v));
+    return v;
+}
+inline void basepri_set(std::uint32_t v) {
+    __asm volatile("msr BASEPRI, %0" ::"r"(v) : "memory");
+}
+#endif
+
 }  // namespace alloy::arch::cortex_m::nvic

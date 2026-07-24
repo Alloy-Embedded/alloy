@@ -23,4 +23,16 @@ void irq_restore(irq_state state);
 void irq_line_enable(unsigned n);
 void irq_line_disable(unsigned n);
 
+// Set a line's interrupt priority. level 0 == most urgent; higher == less
+// urgent. Effective resolution depends on the part's implemented priority bits
+// (2 on Cortex-M0+, 3-4 on M3/M4/M7). No-op on Xtensa v1 (level-1 sources only).
+void irq_line_priority(unsigned n, std::uint8_t level);
+
+// Priority-masking critical section: mask interrupts at `level` OR LESS urgency,
+// leaving MORE-urgent interrupts (e.g. a high-priority control loop) live. Uses
+// BASEPRI on ARMv7-M; on ARMv6-M and Xtensa (no priority mask) it degrades to a
+// full mask (same as irq_save). Restore with irq_restore_below().
+[[nodiscard]] irq_state irq_save_below(std::uint8_t level);
+void irq_restore_below(irq_state state);
+
 }  // namespace alloy::arch
