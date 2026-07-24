@@ -43,6 +43,25 @@ class Project:
     def board_json(self) -> Path:
         return self.alloy_root / "boards" / self.board_id / "board.json"
 
+    def lib_includes(self) -> list[Path]:
+        """Include dirs of libraries vendored under ./libs and listed in [libs].
+
+        `alloy lib add` copies a library into ./libs/<name> and records it in
+        alloy.toml; the build adds each one's include/ dir so `#include <name.hpp>`
+        resolves. Missing/renamed entries are skipped (a stale toml never breaks
+        the build).
+        """
+        toml_path = self.root / "alloy.toml"
+        if not toml_path.exists():
+            return []
+        data = tomllib.loads(toml_path.read_text())
+        out: list[Path] = []
+        for name in data.get("libs", {}):
+            inc = self.root / "libs" / name / "include"
+            if inc.is_dir():
+                out.append(inc)
+        return out
+
     def load_board(self) -> dict[str, Any]:
         if not self.board_json.exists():
             boards_dir = self.alloy_root / "boards"

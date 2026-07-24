@@ -1,0 +1,15 @@
+# alloy library registry — the curated index `alloy lib` reads.
+#
+# Seed entries are in-tree (source = "path:libs/<name>"). An external driver in
+# its own git repo uses source = "git:https://…@<ref>" with the SAME manifest
+# shape — that is the whole point: the ecosystem grows with no change to the
+# framework. Each entry mirrors the library's alloy.lib.toml so `list`/`search`
+# need not fetch anything.
+schema = "alloy.registry.v1"
+
+[sht31]
+version = "0.1.0"
+category = "sensor"
+summary = "Sensirion SHT3x temperature + humidity sensor (I2C)"
+concepts = ["I2cBus", "DelayNs"]
+source = "path:libs/sht31"

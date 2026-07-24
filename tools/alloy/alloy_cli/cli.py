@@ -366,6 +366,22 @@ def cmd_test(args: argparse.Namespace) -> int:
     ).returncode
 
 
+def cmd_lib(args: argparse.Namespace) -> int:
+    from . import libs  # noqa: PLC0415
+    from .project import _find_alloy_root  # noqa: PLC0415
+
+    if args.lib_command == "add":
+        return libs.cmd_lib_add(Path(args.project), args.name)
+    alloy_root = _find_alloy_root(Path.cwd())
+    if args.lib_command == "list":
+        return libs.cmd_lib_list(alloy_root, category=args.category)
+    if args.lib_command == "search":
+        return libs.cmd_lib_search(alloy_root, args.term)
+    if args.lib_command == "info":
+        return libs.cmd_lib_info(alloy_root, args.name)
+    return 1
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="alloy", description=__doc__)
     parser.add_argument("--version", action="version", version=__version__)
@@ -418,6 +434,22 @@ def main() -> None:
     p_test.add_argument("--no-sanitize", action="store_true",
                         help="disable AddressSanitizer/UBSan")
     p_test.set_defaults(func=cmd_test)
+
+    p_lib = sub.add_parser("lib", help="discover and vendor ecosystem libraries")
+    lib_sub = p_lib.add_subparsers(dest="lib_command", required=True)
+    p_lib_list = lib_sub.add_parser("list", help="list registry libraries")
+    p_lib_list.add_argument("--category", help="filter by category (sensor/display/…)")
+    p_lib_list.set_defaults(func=cmd_lib)
+    p_lib_search = lib_sub.add_parser("search", help="search the registry")
+    p_lib_search.add_argument("term")
+    p_lib_search.set_defaults(func=cmd_lib)
+    p_lib_info = lib_sub.add_parser("info", help="show a library's manifest")
+    p_lib_info.add_argument("name")
+    p_lib_info.set_defaults(func=cmd_lib)
+    p_lib_add = lib_sub.add_parser("add", help="vendor a library into ./libs and wire the build")
+    p_lib_add.add_argument("name")
+    p_lib_add.add_argument("--project", default=".")
+    p_lib_add.set_defaults(func=cmd_lib)
 
     for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash),
                       ("monitor", cmd_monitor), ("run", cmd_run)):

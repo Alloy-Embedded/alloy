@@ -108,6 +108,11 @@ def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
     src_list = "\n    ".join(
         f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources, *vendor_sources]
     )
+    # Include dirs of any ecosystem libraries the project vendored (alloy lib add).
+    _lib_incs = project.lib_includes()
+    lib_includes = (
+        "\n    " + "\n    ".join(f'"{p}"' for p in _lib_incs) if _lib_incs else ""
+    )
     # Vendored C packages (littlefs, ...) are framework-owned, not header-only:
     # silence their warnings and, on firmware, strip malloc/asserts/logging —
     # the alloy facade hands littlefs all its buffers statically, so no heap is
@@ -158,7 +163,7 @@ add_executable({project.name}.elf
 
 target_include_directories({project.name}.elf PRIVATE
     "{project.alloy_root / 'src'}"
-    "{gen}"
+    "{gen}"{lib_includes}
 )
 
 target_compile_options({project.name}.elf PRIVATE

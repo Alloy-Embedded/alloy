@@ -34,8 +34,21 @@ if(ALLOY_TEST_SANITIZE)
     add_link_options(-fsanitize=address,undefined)
 endif()
 
-# alloy headers resolve as <alloy/...>.
+# alloy headers resolve as <alloy/...>; the shared test harness (alloy_test.hpp)
+# resolves for both in-tree tests and libs/*/tests via the tests dir itself.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+
+# Ecosystem libraries (libs/): every reference driver's test runs here against
+# the testkit mock bus, so a driver that regresses can't ship. testkit/ resolves
+# via ../libs; each driver's own header via its include/ dir. Glob so a newly
+# added driver joins the suite with no edit here.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libs)
+file(GLOB _alloy_lib_includes ${CMAKE_CURRENT_SOURCE_DIR}/../libs/*/include)
+foreach(_inc ${_alloy_lib_includes})
+    include_directories(${_inc})
+endforeach()
+file(GLOB ALLOY_LIB_TESTS ${CMAKE_CURRENT_SOURCE_DIR}/../libs/*/tests/test_*.cpp)
 
 enable_testing()
 
@@ -61,6 +74,7 @@ add_executable(alloy_unit_tests
     test_dsp.cpp
     test_secure.cpp
     test_fs.cpp
+    ${ALLOY_LIB_TESTS}
     ${ALLOY_LFS})
 
 # The runner's exit code is the number of failing tests (0 = pass).
