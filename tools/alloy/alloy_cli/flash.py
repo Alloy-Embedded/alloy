@@ -121,6 +121,9 @@ def _flash_openocd_ram(chip: dict[str, Any], elf: Path, probe: dict[str, Any]) -
         )
     ram_base = int(next(m["base"] for m in chip["memories"] if m["kind"] == "ram"), 16)
     script = (
+        # `mrw` is a proc from mem_helper.tcl; the STM32 target cfgs source it but
+        # e.g. atsamv.cfg (same70) does not, so pull it in explicitly.
+        f"source [find mem_helper.tcl]; "
         f"init; halt; "
         f"load_image {{{elf}}}; "
         f"set sp [mrw {ram_base}]; "
