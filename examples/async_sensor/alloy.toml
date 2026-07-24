@@ -1,0 +1,8 @@
+[project]
+name = "async_sensor"
+
+[board]
+id = "nucleo_g071rb"
+
+[libs]
+sht31 = "0.1.0"

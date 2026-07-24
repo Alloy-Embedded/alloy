@@ -61,6 +61,17 @@ ALLOY_TEST(bme280_init_and_measure_decode_datasheet_frame) {
     ALLOY_CHECK_EQ(bus.last_addr, 0x76);
     // Last transaction was the burst read from the data register 0xF7.
     ALLOY_CHECK_EQ(bus.last_write[0], 0xF7);
+    // The forced-mode trigger really reached ctrl_meas (0xF4) with mode=forced,
+    // osrs_t/p=x1 -> byte 0x25. Found via the write history (an earlier write in
+    // the sequence, not the most recent), which last_write alone can't show.
+    bool ctrl_meas_seen = false;
+    for (std::size_t i = 0; i < bus.write_count && i < mock_i2c::kMaxWrites; ++i) {
+        if (bus.writes[i].len == 2 && bus.writes[i].data[0] == 0xF4) {
+            ALLOY_CHECK_EQ(bus.writes[i].data[1], 0x25);  // forced mode, x1/x1
+            ctrl_meas_seen = true;
+        }
+    }
+    ALLOY_CHECK(ctrl_meas_seen);
     // Waited the worst-case forced conversion time.
     ALLOY_CHECK(delay.total_ns >= 9'300'000u);
     // Datasheet-derived values: ~25.08 C, ~100.7 kPa, ~59.6 %RH.

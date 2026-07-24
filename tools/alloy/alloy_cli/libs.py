@@ -11,7 +11,9 @@ libraries use git: sources with the identical manifest shape.
 from __future__ import annotations
 
 import shutil
+import subprocess
 import sys
+import tempfile
 import tomllib
 from pathlib import Path
 from typing import Any
@@ -78,8 +80,14 @@ def cmd_lib_info(alloy_root: Path, name: str) -> int:
     return 0
 
 
-def _resolve_source(alloy_root: Path, name: str, source: str) -> Path:
-    """Return a local directory holding the library named `name`."""
+def _resolve_source(alloy_root: Path, name: str, source: str,
+                    workdir: Path | None = None) -> Path:
+    """Return a local directory holding library `name`.
+
+    path:<rel>            in-tree seed, relative to the framework root.
+    git:<url>@<ref>[#sub] clone <url> at <ref> (shallow) into `workdir`; the
+                          library is at repo root, or the optional #<sub> subdir.
+    """
     kind, _, ref = source.partition(":")
     if kind == "path":
         src = (alloy_root / ref).resolve()
@@ -87,9 +95,24 @@ def _resolve_source(alloy_root: Path, name: str, source: str) -> Path:
             raise ProjectError(f"library source {src} has no alloy.lib.toml")
         return src
     if kind == "git":
-        raise ProjectError(
-            f"git sources are not fetched yet (v1 seed): clone {ref} into ./libs/{name} manually"
-        )
+        if workdir is None:
+            raise ProjectError("internal: git source needs a workdir to clone into")
+        if not shutil.which("git"):
+            raise ProjectError("git not found on PATH — needed to fetch a git: library")
+        url, _, at = ref.partition("@")
+        gitref, _, sub = at.partition("#")
+        if not url or not gitref:
+            raise ProjectError(f"malformed git source '{source}' — expected git:<url>@<ref>[#subdir]")
+        clone = workdir / "clone"
+        cmd = ["git", "clone", "--depth", "1", "--branch", gitref, url, str(clone)]
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode != 0:
+            raise ProjectError(f"git clone failed for {name}: {res.stderr.strip() or res.stdout.strip()}")
+        src = clone / sub if sub else clone
+        if not (src / "alloy.lib.toml").exists():
+            where = f"subdir '{sub}'" if sub else "the repo root"
+            raise ProjectError(f"{source}: no alloy.lib.toml in {where}")
+        return src
     raise ProjectError(f"unknown source kind '{kind}' for library '{name}'")
 
 
@@ -123,14 +146,15 @@ def cmd_lib_add(project_dir: Path, name: str) -> int:
         print(f"error: no library '{name}' in the registry (try `alloy lib list`)", file=sys.stderr)
         return 1
     spec = reg[name]
-    src = _resolve_source(alloy_root, name, spec.get("source", ""))
-
     dest = root / "libs" / name
-    if dest.exists():
-        print(f"{name} already vendored at {dest} — updating")
-        shutil.rmtree(dest)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(src, dest)
+    with tempfile.TemporaryDirectory() as tmp:
+        src = _resolve_source(alloy_root, name, spec.get("source", ""), workdir=Path(tmp))
+        if dest.exists():
+            print(f"{name} already vendored at {dest} — updating")
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        # ignore the clone's .git and any tests-only cruft; keep the library tree.
+        shutil.copytree(src, dest, ignore=shutil.ignore_patterns(".git"))
 
     _record_in_toml(toml_path, name, str(spec.get("version", "0.0.0")))
     print(f"added {name} {spec.get('version', '')} -> {dest}")

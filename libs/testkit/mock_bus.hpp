@@ -18,6 +18,14 @@ namespace alloy::testkit {
 
 inline constexpr std::size_t kBufCap = 256;
 
+// One captured write() transaction, for asserting an intermediate write in a
+// multi-write sequence (not just the most recent one).
+struct write_record {
+    std::uint8_t addr = 0;
+    std::uint8_t data[kBufCap]{};
+    std::size_t len = 0;
+};
+
 // A scriptable I2C controller. Concept methods are const (I2cBus checks const
 // T&), so the recording/replay state is mutable.
 struct mock_i2c {
@@ -31,6 +39,11 @@ struct mock_i2c {
     mutable std::size_t last_write_len = 0;
     mutable std::uint8_t last_addr = 0;
     mutable std::size_t write_count = 0;
+
+    // Full history of writes (oldest first, capped) so a test can assert an
+    // earlier write — e.g. the config byte a driver sends before its data read.
+    static constexpr std::size_t kMaxWrites = 16;
+    mutable write_record writes[kMaxWrites]{};
 
     bool fail = false;  // set true to simulate a NACK / bus error
 
@@ -52,9 +65,17 @@ struct mock_i2c {
         }
         last_addr = addr;
         last_write_len = 0;
+        write_record* rec = write_count < kMaxWrites ? &writes[write_count] : nullptr;
+        if (rec != nullptr) {
+            rec->addr = addr;
+            rec->len = 0;
+        }
         for (std::uint8_t b : wr) {
             if (last_write_len < kBufCap) {
                 last_write[last_write_len++] = b;
+            }
+            if (rec != nullptr && rec->len < kBufCap) {
+                rec->data[rec->len++] = b;
             }
         }
         ++write_count;

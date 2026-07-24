@@ -1,0 +1,15 @@
+[lib]
+name = "sht31"
+version = "0.1.0"
+description = "Sensirion SHT3x temperature + humidity sensor (I2C)"
+category = "sensor"
+license = "MIT"
+homepage = "https://sensirion.com/products/catalog/SHT31-DIS-B"
+
+[requires]
+concepts = ["I2cBus", "DelayNs"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

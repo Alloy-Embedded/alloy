@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import tomllib
 from pathlib import Path
 
@@ -80,3 +81,44 @@ def test_add_vendors_and_records(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 def test_resolve_source_rejects_unknown_kind() -> None:
     with pytest.raises(ProjectError):
         libs._resolve_source(ALLOY_ROOT, "x", "ftp:whatever")
+
+
+def _make_git_lib(root: Path) -> str:
+    import subprocess
+
+    lib = root / "extlib"
+    (lib / "include").mkdir(parents=True)
+    (lib / "alloy.lib.toml").write_text(
+        '[lib]\nname="extlib"\nversion="9.9.9"\ndescription="ext"\ncategory="sensor"\n'
+        '[requires]\nconcepts=["I2cBus"]\n'
+    )
+    (lib / "include" / "extlib.hpp").write_text("#pragma once\n")
+    env = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t",
+           "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t"}
+    for args in (["init", "-q", "-b", "main"], ["add", "-A"], ["commit", "-qm", "x"]):
+        subprocess.run(["git", *args], cwd=lib, check=True, env={**__import__("os").environ, **env})
+    return str(lib)
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="git not available")
+def test_resolve_source_fetches_a_git_lib(tmp_path: Path) -> None:
+    repo = _make_git_lib(tmp_path)
+    work = tmp_path / "work"
+    work.mkdir()
+    src = libs._resolve_source(ALLOY_ROOT, "extlib", f"git:file://{repo}@main", workdir=work)
+    assert (src / "alloy.lib.toml").exists()
+    assert (src / "include" / "extlib.hpp").exists()
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="git not available")
+def test_resolve_source_rejects_bad_git_ref(tmp_path: Path) -> None:
+    repo = _make_git_lib(tmp_path)
+    work = tmp_path / "work"
+    work.mkdir()
+    with pytest.raises(ProjectError):
+        libs._resolve_source(ALLOY_ROOT, "extlib", f"git:file://{repo}@nonexistent", workdir=work)
+
+
+def test_resolve_source_rejects_malformed_git() -> None:
+    with pytest.raises(ProjectError):
+        libs._resolve_source(ALLOY_ROOT, "x", "git:no-at-sign-here", workdir=Path("/tmp"))
