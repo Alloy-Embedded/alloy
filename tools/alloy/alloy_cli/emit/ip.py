@@ -98,9 +98,44 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                     f"alloy::field<&regs::{reg['name']}, {f['bit']}u, {width}>;"
                 )
 
+    # Typed register-flags enums: one scoped enum per register, single-bit
+    # fields as their bit and multi-bit fields' named `values` as shifted
+    # constants. Drivers write `r().CR = cr::rxen | cr::txen;` (see mmio flags).
+    enum_blocks: list[str] = []
+    flag_specializations: list[str] = []
+    for reg in regs:
+        if reg.get("array"):
+            continue
+        enum_members: list[str] = []
+        for f in reg.get("fields", []):
+            fname = f["name"].lower()
+            bit = f["bit"]
+            if f.get("width", 1) == 1:
+                enum_members.append(f"        {fname} = 1u << {bit}u,")
+            for vname, val in (f.get("values") or {}).items():
+                enum_members.append(f"        {fname}_{vname.lower()} = {val}u << {bit}u,")
+        if not enum_members:
+            continue
+        ename = reg["name"].lower()
+        if ename in seen:
+            raise EmitError(
+                f"{vendor}/{ip}: register flags enum '{ename}' collides with field "
+                f"accessor '{ename}' — rename the field in the data")
+        enum_blocks.append(
+            f"    enum class {ename} : std::uint32_t {{\n"
+            + "\n".join(enum_members)
+            + "\n    };")
+        flag_specializations.append(
+            f"template <>\ninline constexpr bool "
+            f"reg_flags_enabled<ip::{vendor}::{ip}::{ename}> = true;")
+
     body = "\n".join(members)
     assert_block = "\n".join(asserts)
     accessor_block = "\n\n".join(array_consts + accessors)
+    enum_block = ("\n\n" + "\n\n".join(enum_blocks)) if enum_blocks else ""
+    flags_block = (
+        "\nnamespace alloy {\n" + "\n".join(flag_specializations) + "\n}  // namespace alloy\n"
+        if flag_specializations else "")
     return f"""{BANNER}// IP: {vendor}/{ip} (alloy.registers.v1)
 #pragma once
 
@@ -118,8 +153,8 @@ struct {ip} {{
 
 {assert_block}
 
-{accessor_block}
+{accessor_block}{enum_block}
 }};
 
 }}  // namespace alloy::ip::{vendor}
-"""
+{flags_block}"""

@@ -28,22 +28,23 @@ struct uart_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+        using cr = typename IP::cr;
+        using mr = typename IP::mr;
         alloy::gate_on(Inst::gate);
-        // CR is write-only: whole-value command writes composed from field masks.
-        r().CR = IP::rstrx.mask | IP::rsttx.mask | IP::rxdis.mask |
-                 IP::txdis.mask | IP::rststa.mask;
+        // CR is write-only: whole-value command writes.
+        r().CR = cr::rstrx | cr::rsttx | cr::rxdis | cr::txdis | cr::rststa;
         // MR: normal mode, MCK, 8-bit, no parity. WHOLE-value write, not a
         // field-by-field RMW: on the SAM E70/S70/V71 USART, US_MR does NOT
         // reset to zero the way the datasheet claims — its top two bits
         // (MODSYNC and ONEBIT) come up set (verified on silicon at reset). An
         // RMW field-init would preserve ONEBIT, which redefines the async
         // start-frame delimiter and mangles every byte on the wire. Composing
-        // the whole word from the field positions clears those stale bits.
-        r().MR = (0u << IP::mode.pos) | (0u << IP::usclks.pos) |
-                 (3u << IP::chrl.pos) | (4u << IP::par.pos);
+        // the whole word from named flags writes exactly those bits, clearing
+        // the stale ones — and reads like the register table.
+        r().MR = mr::mode_normal | mr::usclks_mck | mr::chrl_eight | mr::par_none;
         // Fixed 16x oversampling: CD = round(kernel / (16 * baud)).
         IP::cd.write(r(), (kernel_hz + 8u * baud) / (16u * baud));
-        r().CR = IP::rxen.mask | IP::txen.mask;
+        r().CR = cr::rxen | cr::txen;
     }
 
     static void write(std::uint8_t byte) {
