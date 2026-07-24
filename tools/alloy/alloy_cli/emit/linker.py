@@ -44,6 +44,10 @@ ENTRY(Reset_Handler)
 
 _estack = ORIGIN(RAM) + LENGTH(RAM);
 
+/* Minimum stack reserved below _estack (overridable via --defsym). The link
+   fails loudly if the static footprint leaves less than this — see ._heap_stack. */
+_Min_Stack_Size = DEFINED(_Min_Stack_Size) ? _Min_Stack_Size : 0x800;
+
 SECTIONS
 {{
 {boot_section}    .isr_vector :
@@ -96,6 +100,22 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         _ebss = .;
+    }} > RAM
+
+    /* Heapless, but reserve the minimum stack in RAM and expose the heap-base
+       symbols newlib's _sbrk expects. Placed `> RAM`, so a static footprint that
+       overflows RAM fails the LINK with a readable "region RAM overflowed"
+       instead of silently corrupting .bss/stack at runtime (NORTH_STAR goal #4).
+       `end`/__heap_start also give a stray malloc/printf a bounded heap and a
+       clear error rather than "undefined reference to `end'". */
+    ._heap_stack (NOLOAD) :
+    {{
+        . = ALIGN(8);
+        _end = .;
+        PROVIDE(end = .);
+        PROVIDE(__heap_start = .);
+        . = . + _Min_Stack_Size;
+        . = ALIGN(8);
     }} > RAM
 
     /DISCARD/ :

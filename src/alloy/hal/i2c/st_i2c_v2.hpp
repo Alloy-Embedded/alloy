@@ -79,12 +79,20 @@ struct i2c_impl<Inst> {
         return false;  // bus wedged: budget exhausted with no flag, NACK or error
     }
 
+    // NBYTES is an 8-bit CR2 field: a length > 255 would overflow it and set the
+    // RELOAD/AUTOEND bits above it, silently corrupting the transfer. v1 rejects
+    // it (RELOAD/TCR chunking is a v2 feature) rather than mis-programming CR2.
+    static constexpr std::size_t kMaxNbytes = 255;
+
     static std::uint32_t cr2_base(std::uint8_t addr, std::size_t n) {
         return (static_cast<std::uint32_t>(addr) << 1) |
                (static_cast<std::uint32_t>(n) << IP::nbytes.pos);
     }
 
     [[nodiscard]] static bool write(std::uint8_t addr, std::span<const std::uint8_t> data) {
+        if (data.size() > kMaxNbytes) {
+            return false;  // > NBYTES (8-bit); would corrupt CR2 — see kMaxNbytes
+        }
         r().CR2 = cr2_base(addr, data.size()) | IP::autoend.mask | IP::start.mask;
         for (auto byte : data) {
             if (!wait_flag(IP::txis)) {
@@ -100,6 +108,9 @@ struct i2c_impl<Inst> {
     }
 
     [[nodiscard]] static bool read(std::uint8_t addr, std::span<std::uint8_t> data) {
+        if (data.size() > kMaxNbytes) {
+            return false;  // > NBYTES (8-bit); would corrupt CR2 — see kMaxNbytes
+        }
         r().CR2 = cr2_base(addr, data.size()) | IP::rd_wrn.mask |
                   IP::autoend.mask | IP::start.mask;
         for (auto& byte : data) {
@@ -118,6 +129,9 @@ struct i2c_impl<Inst> {
     [[nodiscard]] static bool write_read(std::uint8_t addr,
                                          std::span<const std::uint8_t> wr,
                                          std::span<std::uint8_t> rd) {
+        if (wr.size() > kMaxNbytes || rd.size() > kMaxNbytes) {
+            return false;  // > NBYTES (8-bit) on either phase — see kMaxNbytes
+        }
         // Write phase without AUTOEND, then repeated-start read.
         r().CR2 = cr2_base(addr, wr.size()) | IP::start.mask;
         for (auto byte : wr) {
