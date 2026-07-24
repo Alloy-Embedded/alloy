@@ -99,14 +99,16 @@ jobs:
         run: |
           out=$(uv run --project ../../tools/alloy alloy emulate --board ${{ matrix.board }} --emit-only)
           echo "$out"
+          echo "resc=$(echo "$out" | awk '/^script:/{print $2}')" >> "$GITHUB_OUTPUT"
           echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
       - name: boot firmware under Renode and assert the banner
-        # Run from the output dir so the .resc's bare @repl/@elf names resolve
-        # (Renode's @-path tokenizer can't handle spaces, so no absolute paths).
-        working-directory: alloy/examples/uart_echo/.alloy/build-tree/${{ matrix.board }}/out
+        # RESC is absolute so the Robot's `include @RESC` resolves (renode-test
+        # looks relative to the .robot file, not cwd). The .repl/.elf inside the
+        # .resc stay bare and Renode resolves them next to the .resc — no
+        # absolute inner paths, which would break on a repo dir containing spaces.
         run: |
           renode-test \
-            --variable RESC:${{ matrix.board }}.resc \
+            --variable RESC:'${{ steps.emit.outputs.resc }}' \
             --variable UART:${{ steps.emit.outputs.uart }} \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/firmware_boots.robot"
 
@@ -116,7 +118,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
-        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog]
+        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm]
     steps:
       - uses: actions/checkout@v4
         with:
