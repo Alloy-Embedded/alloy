@@ -1,0 +1,74 @@
+/* alloy docs — a few polish touches on top of Material for MkDocs. */
+
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-accent-fg-color: #ffb300;
+}
+
+/* Hero band on the landing page (wrapped in <div class="hero"> in index.md). */
+.hero {
+  margin: 0 0 2.5rem;
+  padding: 2.6rem 1.6rem 2.2rem;
+  border-radius: 1rem;
+  text-align: center;
+  color: #fff;
+  background:
+    radial-gradient(1200px 400px at 50% -10%, rgba(255, 179, 0, 0.35), transparent 60%),
+    linear-gradient(135deg, #303f9f 0%, #3f51b5 45%, #5c6bc0 100%);
+  box-shadow: 0 12px 40px rgba(48, 63, 159, 0.28);
+}
+.hero h1 {
+  margin: 0 0 0.4rem;
+  font-weight: 800;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.hero p {
+  margin: 0.2rem auto 1.2rem;
+  max-width: 42rem;
+  font-size: 1.05rem;
+  opacity: 0.95;
+}
+.hero .md-button {
+  margin: 0.25rem 0.35rem 0;
+}
+.hero .md-button--primary {
+  background: #ffb300;
+  border-color: #ffb300;
+  color: #1a1a1a;
+}
+.hero .md-button--primary:hover {
+  background: #ffc233;
+  border-color: #ffc233;
+  color: #000;
+}
+
+/* Tighten the feature-card grid a touch. */
+.md-typeset .grid.cards > ul > li {
+  border-radius: 0.7rem;
+  transition: border-color 160ms, box-shadow 160ms, transform 160ms;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.10);
+  transform: translateY(-2px);
+}
+
+/* "Validated on silicon" badges in tables read as pills. */
+.md-typeset .status-pill {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.status-pill.ok { background: rgba(76, 175, 80, 0.16); color: #2e7d32; }
+.status-pill.beta { background: rgba(255, 179, 0, 0.18); color: #b26a00; }
+[data-md-color-scheme="slate"] .status-pill.ok { color: #81c784; }
+[data-md-color-scheme="slate"] .status-pill.beta { color: #ffcc66; }
+
+/* Give code blocks a hair more breathing room. */
+.md-typeset pre > code { padding: 0.9em 1em; }
