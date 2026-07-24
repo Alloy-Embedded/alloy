@@ -50,7 +50,10 @@ public:
 
     [[nodiscard]] constexpr bool has_value() const { return has_; }
     [[nodiscard]] constexpr explicit operator bool() const { return has_; }
-    [[nodiscard]] constexpr E error() const { return error_; }
+    [[nodiscard]] constexpr E error() const {
+        if (has_) { __builtin_trap(); }  // error() on a success is a misuse (house guard)
+        return error_;
+    }
 
     // Unchecked access (std::expected style) — undefined if !has_value().
     [[nodiscard]] constexpr const T& operator*() const { return value_; }
@@ -102,7 +105,10 @@ public:
 
     [[nodiscard]] constexpr bool has_value() const { return has_; }
     [[nodiscard]] constexpr explicit operator bool() const { return has_; }
-    [[nodiscard]] constexpr E error() const { return error_; }
+    [[nodiscard]] constexpr E error() const {
+        if (has_) { __builtin_trap(); }  // error() on a success is a misuse (house guard)
+        return error_;
+    }
 };
 
 // Reads well at return sites: `return alloy::ok();` / `return alloy::error::nack;`.

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import platform
 import shutil
 import sys
@@ -138,6 +139,12 @@ def install_tool(name: str, json_progress: bool = False) -> Path:
         pinned = plat_spec.get("sha256")
         _emit({"event": "sha256", "tool": name, "digest": hexdigest,
                "pinned": pinned is not None}, json_progress)
+        if pinned is None and os.environ.get("ALLOY_ALLOW_UNPINNED") != "1":
+            raise EmitError(
+                f"{name}: sha256 not pinned (computed {hexdigest}). Refusing to install an "
+                f"unverified toolchain — pin this digest in toolchains.json, or set "
+                f"ALLOY_ALLOW_UNPINNED=1 to override for a one-off."
+            )
         if pinned is not None and pinned != hexdigest:
             raise EmitError(
                 f"{name}: sha256 mismatch (expected {pinned}, got {hexdigest}) — refusing"
