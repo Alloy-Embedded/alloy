@@ -10,11 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/error-handling/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/async/">
       
       
-        <link rel="prev" href="../architecture/">
+        <link rel="prev" href="../peripherals/">
       
+      
+        <link rel="next" href="../adding-a-board/">
       
       
         
@@ -25,7 +27,7 @@
     
     
       
-        <title>Error handling - alloy</title>
+        <title>Async tasks (coroutines) - alloy</title>
       
     
     
@@ -78,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#error-handling" class="md-skip">
+        <a href="#async-tasks-coroutines" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Error handling
+              Async tasks (coroutines)
             
           </span>
         </div>
@@ -283,11 +285,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../guide/peripherals/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../peripherals/" class="md-tabs__link">
           
   
   
@@ -305,13 +309,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../reference/architecture/" class="md-tabs__link">
           
   
   
@@ -494,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/portable-code/" class="md-nav__link">
+      <a href="../portable-code/" class="md-nav__link">
         
   
   
@@ -522,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/boards/" class="md-nav__link">
+      <a href="../boards/" class="md-nav__link">
         
   
   
@@ -550,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -582,6 +584,8 @@
       
   
   
+    
+  
   
   
     
@@ -590,185 +594,6 @@
         
       
         
-      
-        
-      
-        
-      
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Guide
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Guide
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guide/peripherals/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Peripherals
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guide/async/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Async tasks (coroutines)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guide/adding-a-board/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Adding a board
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guide/cli/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The alloy CLI
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
       
         
       
@@ -790,17 +615,17 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Concepts
+    Guide
   
 
     
@@ -811,12 +636,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Concepts
+    Guide
   
 
           </label>
@@ -829,14 +654,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
+      <a href="../peripherals/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture
+    Peripherals
   
 
     
@@ -873,7 +698,7 @@
   <span class="md-ellipsis">
     
   
-    Error handling
+    Async tasks (coroutines)
   
 
     
@@ -891,7 +716,7 @@
   <span class="md-ellipsis">
     
   
-    Error handling
+    Async tasks (coroutines)
   
 
     
@@ -919,10 +744,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-recoverable-io-errors-bool-and-later-result" class="md-nav__link">
+  <a href="#no-heap-by-construction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Recoverable I/O errors → bool (and, later, Result)
+        No heap — by construction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="No heap — by construction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#if-a-frame-doesnt-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If a frame doesn't fit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awaiting-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Awaiting drivers
       
     </span>
   </a>
@@ -930,32 +783,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-programmer-mistakes-compile-error-where-possible" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Programmer mistakes → compile error, where possible
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-contract-violations-a-debug-trap" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Contract violations → a debug trap
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#choosing-between-them" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Choosing between them
+        How it works
       
     </span>
   </a>
@@ -966,6 +797,183 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adding-a-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding a board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The alloy CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/error-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Error handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1007,10 +1015,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-recoverable-io-errors-bool-and-later-result" class="md-nav__link">
+  <a href="#no-heap-by-construction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Recoverable I/O errors → bool (and, later, Result)
+        No heap — by construction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="No heap — by construction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#if-a-frame-doesnt-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        If a frame doesn't fit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#awaiting-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Awaiting drivers
       
     </span>
   </a>
@@ -1018,32 +1054,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-programmer-mistakes-compile-error-where-possible" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Programmer mistakes → compile error, where possible
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-contract-violations-a-debug-trap" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Contract violations → a debug trap
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#choosing-between-them" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Choosing between them
+        How it works
       
     </span>
   </a>
@@ -1070,66 +1084,109 @@
   
 
 
-<h1 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h1>
-<p>alloy has no exceptions in firmware. Failures are reported in one of three deliberate ways,
-depending on <em>who</em> made the mistake.</p>
-<h2 id="1-recoverable-io-errors-bool-and-later-result">1. Recoverable I/O errors → <code>bool</code> (and, later, <code>Result</code>)<a class="headerlink" href="#1-recoverable-io-errors-bool-and-later-result" title="Permanent link">&para;</a></h2>
-<p>A transfer that can legitimately fail at runtime — an I²C NACK, a stuck bus, a flash program
-error — returns <code>false</code>. The caller decides what to do:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">i2c</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mh">0x68</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="c1">// NACK or bus error — retry, log, or give up</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
+<h1 id="async-tasks-coroutines">Async tasks (coroutines)<a class="headerlink" href="#async-tasks-coroutines" title="Permanent link">&para;</a></h1>
+<p>alloy ships an optional <strong>cooperative coroutine runtime</strong> so you can write concurrent firmware as
+straight-line <code>co_await</code> code instead of hand-rolled state machines — the ergonomics of
+<a href="https://embassy.dev">embassy</a>, in C++, with <strong>no heap, no RTOS, and no exceptions</strong>.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/delay.hpp&gt;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/executor.hpp&gt;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/task.hpp&gt;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">async</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">executor</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sched</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">task_storage</span><span class="o">&lt;</span><span class="mi">256</span><span class="o">&gt;</span><span class="w"> </span><span class="n">blink_frame</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">task</span><span class="w"> </span><span class="nf">blink</span><span class="p">(</span><span class="n">task_storage</span><span class="o">&lt;</span><span class="mi">256</span><span class="o">&gt;&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="k">co_await</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">200</span><span class="n">ms</span><span class="p">);</span><span class="w">        </span><span class="c1">// suspends; the core idles or runs other tasks</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="n">sched</span><span class="p">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">blink</span><span class="p">(</span><span class="n">blink_frame</span><span class="p">));</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="n">sched</span><span class="p">.</span><span class="n">run</span><span class="p">();</span><span class="w">                      </span><span class="c1">// cooperative superloop; never returns</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Drivers bound their polls, so a missing pull-up or a jammed bus returns <code>false</code> instead of
-hanging forever.</p>
-<p>For calls that want to carry a <em>reason</em>, alloy ships a <code>-fno-exceptions</code>-safe
-<code>Result&lt;T, E&gt;</code> — a cousin of <code>std::expected</code> (with <code>has_value</code> / <code>value_or</code> / <code>and_then</code> /
-<code>transform</code>) whose misused <code>value()</code> traps rather than throws:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">alloy</span><span class="o">::</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">config</span><span class="p">,</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">error</span><span class="o">&gt;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">read_config</span><span class="p">();</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">use</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="p">);</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">error</span><span class="p">());</span><span class="w">          </span><span class="c1">// error() on a success value traps — that&#39;s a bug</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+<p>Two tasks with different periods just work — each is its own timeline, and the executor juggles
+them on one stack with no preemption. That is the thing a single <code>sleep_for()</code> loop can't express.</p>
+<h2 id="no-heap-by-construction">No heap — by construction<a class="headerlink" href="#no-heap-by-construction" title="Permanent link">&para;</a></h2>
+<p>A C++ coroutine normally heap-allocates its frame. alloy forbids that structurally:</p>
+<ul>
+<li>Each task's frame lives in a <strong><code>task_storage&lt;N&gt;</code></strong> you declare (inline storage, embassy-style).</li>
+<li>The task's <code>operator new</code> <strong>only</strong> accepts that storage; the plain <code>operator new</code> is <strong>deleted</strong>,
+  so a task written without a <code>task_storage&amp;</code> first parameter <strong>does not compile</strong>. There is no heap
+  path even in principle — a full <code>-nostdlib</code> link on Cortex-M0+, M7, and Xtensa pulls in zero
+  <code>malloc</code>/<code>operator new</code>.</li>
+</ul>
+<p>Frames are tiny (~40–70 bytes for a typical task). The default <code>task_storage&lt;256&gt;</code> has generous
+headroom, so beginners never pick a number.</p>
+<h3 id="if-a-frame-doesnt-fit">If a frame doesn't fit<a class="headerlink" href="#if-a-frame-doesnt-fit" title="Permanent link">&para;</a></h3>
+<p>If your task's frame is bigger than its <code>task_storage&lt;N&gt;</code>, you get a <strong>compile error</strong> naming the
+task (at <code>-Os</code>/<code>-O2</code>), not a silent runtime fault:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>error: … alloy::async: coroutine frame does not fit its task_storage&lt;N&gt; — increase N
 </span></code></pre></div>
-<h2 id="2-programmer-mistakes-compile-error-where-possible">2. Programmer mistakes → compile error, where possible<a class="headerlink" href="#2-programmer-mistakes-compile-error-where-possible" title="Permanent link">&para;</a></h2>
-<p>The best error is the one you can't ship. Wrong pin routes, using a role a board lacks, calling
-a capability a controller doesn't have — all of these are <strong><code>static_assert</code> failures at compile
-time</strong>, with messages a beginner can read:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
+<p>Bump <code>N</code> and rebuild. (At <code>-O0</code>/<code>-Og</code> the check falls back to a runtime trap, since the frame size
+isn't a constant there.)</p>
+<h2 id="awaiting-drivers">Awaiting drivers<a class="headerlink" href="#awaiting-drivers" title="Permanent link">&para;</a></h2>
+<p>Drivers expose awaitables that suspend until the hardware is ready. The RX interrupt wakes the task
+in <strong>thread context</strong> (never inside the ISR), so your task body is ordinary code:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/uart.hpp&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">uart_reader</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">uart</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rx</span><span class="p">{</span><span class="n">uart</span><span class="p">};</span><span class="w">             </span><span class="c1">// uart = board::debug_uart::open({...})</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">task</span><span class="w"> </span><span class="nf">echo</span><span class="p">(</span><span class="n">task_storage</span><span class="o">&lt;</span><span class="mi">256</span><span class="o">&gt;&amp;</span><span class="p">,</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span><span class="o">&amp;</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">uart</span><span class="p">)</span><span class="o">&amp;</span><span class="w"> </span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">co_await</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">read</span><span class="p">();</span><span class="w">        </span><span class="c1">// suspends until a byte arrives</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="n">u</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
 </span></code></pre></div>
-<h2 id="3-contract-violations-a-debug-trap">3. Contract violations → a debug trap<a class="headerlink" href="#3-contract-violations-a-debug-trap" title="Permanent link">&para;</a></h2>
-<p>Some misuse can only be caught at runtime — opening the same peripheral twice, claiming an
-already-claimed DMA channel. These hit <code>__builtin_trap()</code> (an honest debug assert), so the
-program stops at the fault instead of silently corrupting state:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">spi</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">spi</span><span class="o">::</span><span class="n">open</span><span class="p">();</span><span class="w">   </span><span class="c1">// double-open → trap, not a silent re-clock</span>
-</span></code></pre></div>
-<h2 id="choosing-between-them">Choosing between them<a class="headerlink" href="#choosing-between-them" title="Permanent link">&para;</a></h2>
+<p><code>uart_reader</code> buffers received bytes in a lock-free SPSC ring, so a burst that lands while your task
+is busy is queued, not dropped. One task reads one UART at a time.</p>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Situation</th>
-<th>Mechanism</th>
+<th>Piece</th>
+<th>Role</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>The hardware or the wire can fail</td>
-<td><code>bool</code> / <code>Result</code> return</td>
+<td><code>task</code></td>
+<td>the coroutine return type; frame in <code>task_storage&lt;N&gt;</code></td>
 </tr>
 <tr>
-<td>The <em>code</em> is wrong (route, missing role, capability)</td>
-<td><code>static_assert</code> — compile error</td>
+<td><code>executor&lt;MaxReady&gt;</code></td>
+<td>ready-queue + timer list; <code>run_once()</code> resumes ready tasks, <code>run()</code> idles between wakes</td>
 </tr>
 <tr>
-<td>A resource contract is violated at runtime</td>
-<td><code>__builtin_trap()</code> debug assert</td>
+<td><code>event</code></td>
+<td>reusable race-free wake primitive — <code>set()</code> from an ISR wakes a parked task</td>
+</tr>
+<tr>
+<td><code>delay(ms)</code></td>
+<td>suspend on the executor's timer list over <code>uptime_ms()</code></td>
+</tr>
+<tr>
+<td><code>uart_reader</code></td>
+<td><code>co_await read()</code> over a driver's RX interrupt</td>
 </tr>
 </tbody>
 </table>
-<p>The guiding idea: <strong>push every failure as early as the language allows</strong> — compile time first,
-a bounded runtime error next, and never a silent hang.</p>
+<p>Wakes are ISR-safe and lossless: the ready-queue <strong>traps on overflow</strong> rather than silently dropping
+a wake, so size <code>MaxReady</code> at least as large as your task count. On Cortex-M the core sleeps in <code>WFI</code>
+between events; on ESP32 v1 (no tick interrupt yet) the executor busy-polls, exactly as
+<code>alloy::sleep_for</code> does there.</p>
+<div class="admonition note">
+<p class="admonition-title">Portability</p>
+<p>The same <code>main.cpp</code> builds for every board with zero <code>#ifdef</code>. The one arch-specific piece —
+idling and interrupt masking — lives behind the <code>alloy::arch</code> seam, not in your code.</p>
+</div>
 
 
 
@@ -1167,7 +1224,7 @@ a bounded runtime error next, and never a silent hang.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../architecture/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Architecture">
+          <a href="../peripherals/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Peripherals">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1177,11 +1234,27 @@ a bounded runtime error next, and never a silent hang.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Architecture
+                Peripherals
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../adding-a-board/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding a board">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Adding a board
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     
