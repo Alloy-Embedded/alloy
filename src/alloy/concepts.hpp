@@ -70,6 +70,14 @@ concept PwmChannel = requires(T& p, std::uint16_t duty) {
     p.off();
 };
 
+// Watchdog timer: feed() restarts the countdown; failing to feed in time
+// resets the MCU. The timeout is set at configuration (board data / start()),
+// so the runtime contract every driver shares is just the periodic kick.
+template <class T>
+concept Watchdog = requires(const T w) {
+    w.feed();
+};
+
 // ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
 //
 // These are the horizontal contracts the optional alloy-net layer binds to.

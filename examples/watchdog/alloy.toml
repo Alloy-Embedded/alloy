@@ -1,0 +1,5 @@
+[project]
+name = "watchdog"
+
+[board]
+id = "same70_xplained"

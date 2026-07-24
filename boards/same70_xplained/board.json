@@ -23,6 +23,11 @@
       "baud": 115200,
       "label": "EDBG VCP"
     },
+    "watchdog": {
+      "peripheral": "wdt",
+      "timeout_ms": 4000,
+      "label": "SAM E70 WDT (SLCK/128, ~16 s max); role skips the bring-up disable"
+    },
     "i2c": {
       "peripheral": "twihs0",
       "scl": "pa4",

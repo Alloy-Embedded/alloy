@@ -53,7 +53,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
-                             "spi": False, "eeprom": False,
+                             "spi": False, "eeprom": False, "watchdog": False,
                              # Interrupt layer: needs a generated vector table
                              # (chips without an interrupts list — ESP32 v1 —
                              # have no dispatch to attach to).
@@ -117,6 +117,28 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         decls.append(
             "[[nodiscard]] inline alloy::gpio::null_input user_button() { return {}; }"
         )
+
+    # Watchdog: a real handle when wired, a no-op stub otherwise, so
+    # `board::watchdog.feed()` compiles on every board (guard #6). On the SAM
+    # E70 the WDT is write-once and enabled at reset; the presence of this role
+    # makes emit_board_source SKIP the bring-up disable (below) so start() can
+    # program it.
+    extra_includes.append("alloy/wdt.hpp")
+    watchdog = roles.get("watchdog")
+    if watchdog:
+        _require("peripheral" in watchdog,
+                 f"board {board['id']}: watchdog missing 'peripheral'")
+        _require(watchdog["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: watchdog peripheral "
+                 f"'{watchdog['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, watchdog["peripheral"], "watchdog")
+        caps["watchdog"] = True
+        decls.append(
+            f"inline constexpr alloy::wdt::watchdog<alloy::dev::{watchdog['peripheral']}_t> "
+            f"watchdog{{}};"
+        )
+    else:
+        decls.append("inline constexpr alloy::wdt::null_watchdog watchdog{};")
 
     uart = roles.get("debug_uart")
     if uart:
@@ -496,7 +518,16 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
     profile = chip["clock"]["profiles"][board["clock_profile"]]
     boot_hz = chip["clock"]["sources"][chip["clock"]["boot_source"]]["hz"]
 
-    steps = "\n".join(_resolve_step(chip, registers, op) for op in profile["program"])
+    program = profile["program"]
+    watchdog = roles.get("watchdog")
+    if watchdog is not None:
+        # The board uses its watchdog: leave the counter running for
+        # board::watchdog.start() to program, so DROP the bring-up MR write that
+        # would disable it (the SAM E70 WDT_MR is write-once — one shot only).
+        wp = watchdog.get("peripheral")
+        program = [op for op in program
+                   if not (op.get("peripheral") == wp and op.get("register") == "MR")]
+    steps = "\n".join(_resolve_step(chip, registers, op) for op in program)
 
     role_init: list[str] = []
     if "led" in roles:
