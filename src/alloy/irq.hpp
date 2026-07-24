@@ -149,8 +149,8 @@ inline bool dispatch(unsigned line) {
 // Xtensa (no priority mask) it degrades to a full mask. Nesting only tightens.
 //
 //   {
-//       alloy::irq::critical_section cs{4};   // block priority 4 and below
-//       shared = update();                    // a priority-0 control ISR still fires
+//       alloy::irq::critical_section cs{4};   // mask level 4 and any less-urgent line
+//       shared = update();                    // a level-0 control ISR still fires here
 //   }
 class critical_section {
     arch::irq_state saved_;
