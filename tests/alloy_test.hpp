@@ -86,7 +86,8 @@ void put_uint(Sink& s, std::uint32_t v) {
 }  // namespace detail
 
 // Run every registered test, streaming a report to `sink`. Returns the number
-// of FAILING tests (0 = all passed) — meant to be the process exit code.
+// of FAILING tests (0 = all passed). Callers that turn this into a process exit
+// code must clamp it (an 8-bit exit status truncates a count of 256/512 to 0).
 template <class Sink>
     requires alloy::ByteSink<Sink>
 int run_all(Sink& sink) {
