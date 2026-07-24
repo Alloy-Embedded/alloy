@@ -16,6 +16,7 @@ on-silicon validation.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from .common import EmitError
@@ -128,22 +129,29 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
 
 
-def emit_renode_script(chip: dict[str, Any], board: dict[str, Any], elf_name: str) -> str:
+def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
+                       repl_path: str, elf_path: str) -> str:
     """The .resc: build the machine and load the ELF, but do NOT start — the
     caller (alloy emulate, or the CI Robot test) attaches a UART observer and
     then starts, so no early output is missed.
 
-    The .repl and ELF are referenced by BARE filename (they sit next to this
-    .resc). Renode's monitor cannot tokenize an `@`-path containing spaces, so
-    an absolute path under a repo dir like ".../01 - Codes/..." would break;
-    bare names never contain spaces. The caller must run Renode with this
-    directory as the working directory (alloy emulate and the CI job both do)."""
+    Renode's monitor cannot tokenize an `@`-path containing spaces, but nested
+    `@`-paths inside an included .resc are only resolved relative to the runner's
+    working directory (renode-test doesn't resolve them relative to the .resc).
+    So: use ABSOLUTE paths when they are space-free — unambiguous for any cwd,
+    which is what the CI Robot runner needs — and fall back to BARE filenames
+    only when the path contains spaces, in which case the caller must run Renode
+    with the .resc's own directory as the working directory (alloy emulate does).
+    A repo dir like ".../01 - Codes/..." is the case that forces the bare form."""
     name = _resolve(chip, board)[1]
+    space_free = " " not in repl_path and " " not in elf_path
+    repl_ref = repl_path if space_free else Path(repl_path).name
+    elf_ref = elf_path if space_free else Path(elf_path).name
     return f"""{_RESC_BANNER}# Headless machine for {board['id']}: platform is generated from chip data.
 using sysbus
 mach create "{board['id']}"
-machine LoadPlatformDescription @{board['id']}.repl
-sysbus LoadELF @{elf_name}
+machine LoadPlatformDescription @{repl_ref}
+sysbus LoadELF @{elf_ref}
 # No `start` here: `alloy emulate` adds `showAnalyzer {name}; start`; the CI
 # Robot test attaches a terminal tester to `{name}` first, then starts.
 """

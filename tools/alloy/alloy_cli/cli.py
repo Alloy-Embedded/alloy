@@ -311,7 +311,7 @@ def cmd_emulate(args: argparse.Namespace) -> int:
     repl = out / f"{board['id']}.repl"
     resc = out / f"{board['id']}.resc"
     repl.write_text(emit_renode_platform(chip, board))
-    resc.write_text(emit_renode_script(chip, board, elf.name))
+    resc.write_text(emit_renode_script(chip, board, str(repl), str(elf)))
     uart = debug_uart_name(chip, board)
     # `uart:` is machine-readable so CI can pass sysbus.<name> to the Robot test
     # without re-deriving a fact already in board.json.

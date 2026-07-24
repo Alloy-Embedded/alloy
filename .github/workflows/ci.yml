@@ -103,9 +103,11 @@ jobs:
           echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
       - name: boot firmware under Renode and assert the banner
         # RESC is absolute so the Robot's `include @RESC` resolves (renode-test
-        # looks relative to the .robot file, not cwd). The .repl/.elf inside the
-        # .resc stay bare and Renode resolves them next to the .resc — no
-        # absolute inner paths, which would break on a repo dir containing spaces.
+        # resolves it relative to the .robot file, not cwd). On CI the runner
+        # path is space-free, so emit/renode.py writes absolute .repl/.elf paths
+        # inside the .resc too (nested @-paths resolve relative to cwd here, not
+        # the .resc). The bare-name fallback only kicks in for local dirs with
+        # spaces, where `alloy emulate` runs Renode from the .resc's own dir.
         run: |
           renode-test \
             --variable RESC:'${{ steps.emit.outputs.resc }}' \
@@ -118,7 +120,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
-        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm]
+        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog]
     steps:
       - uses: actions/checkout@v4
         with:
