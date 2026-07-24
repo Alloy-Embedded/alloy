@@ -70,11 +70,14 @@ public:
     // Enable clocks + MDIO so the PHY can be probed. RMII, MDC = MCK/64.
     void begin_mdio() {
         using ncfgr = typename IP::ncfgr;
-        using ur = typename IP::ur;
         alloy::gate_on(Inst::gate);
         r().NCR = 0;
         r().NCFGR = flags{ncfgr::clk_mck_64};  // MDC divider /64 (<=2.5 MHz)
-        r().UR = flags{ur::rmii};              // RMII pinout
+        // Select RMII. UR.RMII polarity is INVERTED vs the field name on the
+        // SAME70: 0 = RMII, 1 = MII. Writing 1 puts the MAC in MII mode on this
+        // RMII-wired board — MDIO/refclk still work but the RMII data path is
+        // dead both ways (silent: no RX, TX never leaves the MAC).
+        r().UR = 0;
         IP::mpe.set(r());                      // management port for MDIO
     }
 
@@ -99,9 +102,30 @@ public:
         r().SA1T = static_cast<std::uint32_t>(mac[4]) | (mac[5] << 8);  // arms filter
         r().RBQB = reinterpret_cast<std::uint32_t>(&rx_desc_[0]);
         r().TBQB = reinterpret_cast<std::uint32_t>(&tx_desc_[0]);
-        r().DCFGR = (24u << IP::drbs.pos) | (0b11u << IP::rxbms.pos);  // 1536B RX bufs
+        // Park priority queues 1..5 on dummy descriptors (TX marked USED so the
+        // DMA finds no work; RX a 1-entry WRAP ring into a throwaway buffer), so
+        // the GMAC never fetches from a null base pointer and faults. Base regs:
+        // TBQBAPQ = 0x0440..0x0450, RBQBAPQ = 0x0480..0x0490 (uncurated).
+        dummy_tx_.word0 = reinterpret_cast<std::uint32_t>(&dummy_buf_[0]);
+        dummy_tx_.word1 = kTxUsed | kTxWrap;
+        dummy_rx_.word0 = (reinterpret_cast<std::uint32_t>(&dummy_buf_[0]) & ~0x3u) | 0x2u;
+        dummy_rx_.word1 = 0;
+        for (std::uint32_t q = 0; q < 5; ++q) {
+            auto reg = [&](std::uint32_t off) -> volatile std::uint32_t& {
+                return *reinterpret_cast<volatile std::uint32_t*>(Inst::base + off);
+            };
+            reg(0x440u + q * 4u) = reinterpret_cast<std::uint32_t>(&dummy_tx_);
+            reg(0x480u + q * 4u) = reinterpret_cast<std::uint32_t>(&dummy_rx_);
+        }
+        // 1536 B RX bufs (DRBS=24*64) + INCR4 AHB bursts. FBLDO must be a valid
+        // burst length: 0 (0b00000) is RESERVED and stalls the RX/TX DMA — the
+        // receiver then never fills a descriptor even with the link up.
+        r().DCFGR = (24u << IP::drbs.pos) | (0b11u << IP::rxbms.pos) |
+                    (0b00100u << IP::fbldo.pos);
         IP::spd.write(r(), speed_100 ? 1u : 0u);
         IP::fd.write(r(), full_duplex ? 1u : 0u);
+        // The rings + buffers must be in SRAM before the DMA masters go live.
+        __asm__ volatile("dsb 0xF" ::: "memory");
         IP::rxen.set(r());
         IP::txen.set(r());
     }
@@ -113,7 +137,11 @@ public:
         if ((d.word0 & 0x1u) == 0u) {  // MAC still owns: nothing received
             return 0;
         }
-        const std::uint32_t len = d.word1 & 0x1FFFu;
+        // The reported length includes the 4-byte Ethernet FCS; strip it so
+        // callers get just the frame (echoing the FCS back as data corrupts the
+        // reply length + upper-layer checksums).
+        const std::uint32_t raw = d.word1 & 0x1FFFu;
+        const std::uint32_t len = raw > 4u ? raw - 4u : 0u;
         const std::uint32_t n = len < out.size() ? len : static_cast<std::uint32_t>(out.size());
         const auto* buf = reinterpret_cast<const std::uint8_t*>(d.word0 & ~0x3u);
         for (std::uint32_t i = 0; i < n; ++i) {
@@ -141,6 +169,9 @@ public:
         // Clear USED, set LAST + length + wrap: hands the slot to the MAC.
         d.word1 = kTxLast | wrap | static_cast<std::uint32_t>(frame.size());
         tx_next_ = (tx_next_ + 1) % TxN;
+        // Drain the M7 store buffer so the frame + descriptor are in SRAM before
+        // the DMA master reads them (else the read can fault / see stale data).
+        __asm__ volatile("dsb 0xF" ::: "memory");
         IP::starttx.set(r());  // kick the TX DMA
         return true;
     }
@@ -158,8 +189,19 @@ private:
 
     inline static desc rx_desc_[RxN]{};
     inline static desc tx_desc_[TxN]{};
-    inline static std::uint8_t rx_buf_[RxN][kBuf]{};
-    inline static std::uint8_t tx_buf_[TxN][kBuf]{};
+    // 32-byte aligned: the DMA reads/writes frame data in fixed AHB bursts
+    // (FBLDO=INCR4), and an unaligned burst that straddles a 1 KB AHB boundary
+    // faults (TSR.TFC/HRESP). Alignment also keeps the RX descriptor's low-2-bit
+    // OWNERSHIP/WRAP flags out of the buffer address. kBuf is a multiple of 32,
+    // so every per-frame slice stays aligned too.
+    alignas(32) inline static std::uint8_t rx_buf_[RxN][kBuf]{};
+    alignas(32) inline static std::uint8_t tx_buf_[TxN][kBuf]{};
+    // The GMAC has 5 priority queues beyond queue 0. We use only queue 0, but
+    // their base pointers reset to 0 and the DMA faults (HRESP) fetching a
+    // descriptor from the null pointer — park them all on these dummies.
+    inline static desc dummy_tx_{};
+    inline static desc dummy_rx_{};
+    alignas(32) inline static std::uint8_t dummy_buf_[kBuf]{};
     unsigned rx_next_ = 0;
     unsigned tx_next_ = 0;
     bool link_ = false;

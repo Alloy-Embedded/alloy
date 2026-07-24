@@ -28,7 +28,7 @@ public:
 
     // Clause-22 register numbers used here.
     enum reg : std::uint8_t { BMCR = 0x00, BMSR = 0x01, ID1 = 0x02, ID2 = 0x03,
-                              ANAR = 0x04, PHYCON2 = 0x1F };
+                              ANAR = 0x04, PHYCON1 = 0x1E };
 
     constexpr ksz8081(const Bus& bus, const ResetPin& reset, std::uint8_t addr)
         : bus_(bus), reset_(reset), addr_(addr) {}
@@ -63,14 +63,16 @@ public:
         return (bus_.read(addr_, BMSR) & 0x0004u) != 0u;
     }
 
-    // Negotiated result via the KSZ8081 PHYCON2 (reg 0x1F) operation-mode
-    // field [2:0]: 001=10-HD 010=100-HD 101=10-FD 110=100-FD.
+    // Negotiated result via the KSZ8081 PHY Control 1 (reg 0x1E) operation-mode
+    // field [2:0]: 001=10-HD 010=100-HD 101=10-FD 110=100-FD. (PHY Control 2 at
+    // 0x1F is a different register — reading the mode there yields 10-half and
+    // mis-configures the MAC's RMII speed/duplex, stalling RX and TX.)
     [[nodiscard]] bool speed_100() const {
-        const std::uint16_t mode = bus_.read(addr_, PHYCON2) & 0x0007u;
+        const std::uint16_t mode = bus_.read(addr_, PHYCON1) & 0x0007u;
         return mode == 0b010 || mode == 0b110;
     }
     [[nodiscard]] bool full_duplex() const {
-        const std::uint16_t mode = bus_.read(addr_, PHYCON2) & 0x0007u;
+        const std::uint16_t mode = bus_.read(addr_, PHYCON1) & 0x0007u;
         return mode == 0b101 || mode == 0b110;
     }
 
