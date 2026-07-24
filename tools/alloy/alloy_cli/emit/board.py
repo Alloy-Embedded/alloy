@@ -18,6 +18,27 @@ def _require(cond: bool, msg: str) -> None:
         raise EmitError(msg)
 
 
+# Default sizes of the flash regions carved for the nvm/fs roles (bytes). Single
+# source of truth: used both by the carve in emit_board_header and by
+# flash_reserved_bytes (which the linker uses to fence the app off the regions).
+_NVM_DEFAULT_BYTES = 2048
+_FS_DEFAULT_BYTES = 32768
+
+
+def flash_reserved_bytes(board: dict[str, Any]) -> int:
+    """Total flash a board's roles reserve at the top (nvm + fs). The linker
+    subtracts this from FLASH LENGTH so an app that would grow into a reserved
+    region fails the LINK instead of overlapping it and being erased at runtime
+    (the flash twin of the RAM overflow guard — NORTH_STAR goal #4)."""
+    roles = board.get("roles", {})
+    total = 0
+    if "nvm" in roles:
+        total += int(roles["nvm"].get("bytes", _NVM_DEFAULT_BYTES))
+    if "fs" in roles:
+        total += int(roles["fs"].get("bytes", _FS_DEFAULT_BYTES))
+    return total
+
+
 def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) -> str | None:
     """First peripheral whose IP is class 'dma' (alphabetical for determinism)."""
     for name in sorted(chip["peripherals"]):
@@ -178,7 +199,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require_curated(board["id"], chip, fp, "nvm")
         if flash_mem is None:
             raise EmitError(f"board {board['id']}: chip declares no flash memory for the nvm region")
-        size = int(nvm.get("bytes", 2048))
+        size = int(nvm.get("bytes", _NVM_DEFAULT_BYTES))
         base = _carve("nvm", size)
         caps["nvm"] = True
         decls.append(
@@ -200,7 +221,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require_curated(board["id"], chip, fp, "fs")
         if flash_mem is None:
             raise EmitError(f"board {board['id']}: chip declares no flash memory for the fs region")
-        size = int(fs_role.get("bytes", 32768))
+        size = int(fs_role.get("bytes", _FS_DEFAULT_BYTES))
         base = _carve("fs", size)
         caps["fs"] = True
         decls.append(
