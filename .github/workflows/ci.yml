@@ -109,7 +109,6 @@ jobs:
   # RENODE_UART maps grow to cover more families.
   emulate:
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
