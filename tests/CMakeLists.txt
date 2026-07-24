@@ -54,6 +54,7 @@ add_executable(alloy_unit_tests
     test_control.cpp
     test_services.cpp
     test_irq.cpp
+    test_async.cpp
     test_units.cpp
     test_nvm.cpp
     test_gpio_bus.cpp

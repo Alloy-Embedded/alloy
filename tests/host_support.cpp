@@ -19,6 +19,7 @@ void irq_line_disable(unsigned) {}
 void irq_line_priority(unsigned, std::uint8_t) {}
 irq_state irq_save_below(std::uint8_t) { return 0; }
 void irq_restore_below(irq_state) {}
+void idle() {}  // host has nothing to sleep on
 
 }  // namespace alloy::arch
 

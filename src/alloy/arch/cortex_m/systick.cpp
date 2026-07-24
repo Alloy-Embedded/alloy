@@ -85,6 +85,8 @@ void irq_restore_below(irq_state state) {
 #endif
 }
 
+void idle() { __asm volatile("wfi" ::: "memory"); }
+
 }  // namespace alloy::arch
 
 namespace alloy {

@@ -106,6 +106,10 @@ void irq_line_priority(unsigned source, std::uint8_t /*level*/) {
 irq_state irq_save_below(std::uint8_t /*level*/) { return irq_save(); }
 void irq_restore_below(irq_state state) { irq_restore(state); }
 
+// WAITI 0: sleep with interrupts enabled at all levels until one fires. A
+// pending interrupt makes it return immediately (safe against a racing wake).
+void idle() { __asm volatile("waiti 0" ::: "memory"); }
+
 }  // namespace alloy::arch
 
 // Called by the vectors.S dispatch loop, once per pending+enabled level-1
