@@ -55,7 +55,14 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                              "irq": bool(chip.get("interrupts")),
                              # DMA: chip declares a controller whose IP is
                              # class "dma" (st dma1, microchip xdmac, ...).
-                             "dma": _dma_controller(chip, registers) is not None}
+                             "dma": _dma_controller(chip, registers) is not None,
+                             # Heavy connectivity roles: unlike the small
+                             # peripherals these do NOT get a no-op stub — an
+                             # absent one emits a POISONED type (static_assert
+                             # on use) so portable if-constexpr(caps::net) code
+                             # compiles everywhere but unconditional use of a
+                             # missing subsystem is a readable compile error.
+                             "ethernet": False, "wifi": False}
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -308,6 +315,43 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "// caps-guarded generic lambdas compiling (never instantiated).\n"
             "struct dma_t {};"
         )
+
+    # --- ethernet role (M0: records facts + sets caps; the NetDevice bind
+    # is M1). Poisoned board::eth when absent keeps zero-ifdef code honest. ---
+    eth = roles.get("ethernet")
+    if eth:
+        _require("peripheral" in eth, f"board {board['id']}: ethernet role missing 'peripheral'")
+        _require(eth["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: ethernet peripheral '{eth['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, eth["peripheral"], "ethernet")
+        phy = eth.get("phy", {})
+        _require("kind" in phy, f"board {board['id']}: ethernet.phy missing 'kind'")
+        caps["ethernet"] = True
+        decls.append(
+            f"// Ethernet: GMAC + {phy['kind']} PHY (addr {phy.get('addr', 0)}, "
+            f"{phy.get('mode', 'rmii')}). The NetDevice binding arrives in M1;\n"
+            f"// M0 records the facts and the capability.\n"
+            f"using eth_mac = alloy::dev::{eth['peripheral']}_t;\n"
+            f"inline constexpr std::uint8_t eth_phy_addr = {phy.get('addr', 0)}u;"
+        )
+    else:
+        decls.append(
+            "// No Ethernet. Scalar facts get honest-zero stubs (like eeprom_addr)\n"
+            "// so non-dependent references in discarded if-constexpr branches\n"
+            "// still name-resolve; only the heavy TYPE is poisoned — using\n"
+            "// board::eth unguarded is a readable compile error, never a no-op.\n"
+            "inline constexpr std::uint8_t eth_phy_addr = 0u;\n"
+            "template <class T = void>\n"
+            "struct eth_absent {\n"
+            "    static_assert(sizeof(T) == 0,\n"
+            "        \"this board has no Ethernet — guard with board::caps::ethernet\");\n"
+            "};\n"
+            "using eth = eth_absent<>;"
+        )
+    decls.append(
+        "// Umbrella capability: any owned-MAC or vendor-blob link.\n"
+        "namespace caps { inline constexpr bool net = ethernet || wifi; }"
+    )
 
     caps_body = "\n".join(
         f"inline constexpr bool {name} = {'true' if value else 'false'};"

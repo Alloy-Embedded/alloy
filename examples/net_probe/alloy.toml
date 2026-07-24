@@ -1,0 +1,5 @@
+[project]
+name = "net_probe"
+
+[board]
+id = "same70_xplained"

@@ -50,6 +50,15 @@
       "bytes": 256,
       "wp": "pc11",
       "label": "AT24MAC402 U600: EEPROM 256B @0x57, bloco identidade @0x5F (EUI-48 em 0x9A, serial em 0x80), WP em PC11 (baixo = gravavel); 0x37 e o alias de write-protect do mesmo chip"
+    },
+    "ethernet": {
+      "peripheral": "gmac",
+      "phy": {
+        "kind": "ksz8081",
+        "addr": 0,
+        "mode": "rmii"
+      },
+      "label": "onboard 10/100 Ethernet: GMAC + KSZ8081RNACA PHY (RMII, addr 0, reset PC10, RJ45 J500)"
     }
   },
   "probe": {

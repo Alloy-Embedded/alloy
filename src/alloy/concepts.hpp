@@ -70,4 +70,41 @@ concept PwmChannel = requires(T& p, std::uint16_t duty) {
     p.off();
 };
 
+// ── Connectivity (M0 seam; drivers land in M1) ──────────────────────────
+//
+// These are the horizontal contracts the optional alloy-net layer binds to.
+// An L2 MAC we own (GMAC/ETH) satisfies NetDevice; a vendor blob (ESP32
+// WiFi) satisfies the SAME NetDevice upward, so the net stack above is
+// link-agnostic. Kept poll-driven and zero-alloc at this seam — buffers are
+// the caller's; no heap crosses this boundary.
+
+// Clause-22 SMI/MDIO station management — how a MAC reaches its PHY.
+template <class T>
+concept Mdio = requires(T& m, std::uint8_t phy, std::uint8_t reg, std::uint16_t val) {
+    { m.read(phy, reg) } -> std::same_as<std::uint16_t>;
+    m.write(phy, reg, val);
+};
+
+// L2 network device: a link-layer MAC presented to the stack. RX/TX move
+// whole Ethernet frames through caller-owned spans; poll_link reports
+// up/down + negotiated speed/duplex. Modeled on embassy-net-driver.
+template <class T>
+concept NetDevice = requires(T& d, std::span<std::uint8_t> rx,
+                             std::span<const std::uint8_t> tx) {
+    { d.receive(rx) } -> std::same_as<std::uint32_t>;  // bytes received, 0 = none
+    { d.transmit(tx) } -> std::same_as<bool>;          // false = no TX buffer free
+    { d.link_up() } -> std::same_as<bool>;
+    { d.mtu() } -> std::same_as<std::uint32_t>;
+};
+
+// Byte-stream socket the alloy-net front end exposes to user code (M1+).
+template <class T>
+concept Socket = requires(T& s, std::span<std::uint8_t> rx,
+                          std::span<const std::uint8_t> tx) {
+    { s.send(tx) } -> std::same_as<std::uint32_t>;
+    { s.recv(rx) } -> std::same_as<std::uint32_t>;
+    { s.connected() } -> std::same_as<bool>;
+    s.close();
+};
+
 }  // namespace alloy
