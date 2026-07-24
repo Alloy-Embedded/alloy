@@ -44,6 +44,11 @@
       "miso": "pb4",
       "mosi": "pb5",
       "label": "SPI1 on PB3/PB4/PB5 (morpho CN10) — keeps LD4/PA5 free"
+    },
+    "watchdog": {
+      "peripheral": "iwdg",
+      "timeout_ms": 4000,
+      "label": "IWDG (LSI ~32 kHz, runtime-configured, ~32 s max)"
     }
   },
   "probe": {
