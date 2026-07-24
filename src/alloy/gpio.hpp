@@ -60,4 +60,14 @@ public:
     [[nodiscard]] bool is_active() const { return impl::read() != inverted; }
 };
 
+// No-op stand-in for an OPTIONAL input role (a button) on boards that don't
+// wire one — mirrors null_output so a generated board::user_button() accessor
+// compiles everywhere and reads as "never pressed".
+struct null_input {
+    static void init() {}
+    static void init_pullup() {}
+    [[nodiscard]] bool is_high() const { return false; }
+    [[nodiscard]] bool is_active() const { return false; }
+};
+
 }  // namespace alloy::gpio

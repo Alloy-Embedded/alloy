@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit]
-        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo]
+        example: [blink, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services]
     steps:
       - uses: actions/checkout@v4
         with:

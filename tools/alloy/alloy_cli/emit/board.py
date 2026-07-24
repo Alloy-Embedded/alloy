@@ -83,13 +83,25 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                 f"inline constexpr alloy::drivers::ws2812<alloy::dev::{led['pin']}_t, "
                 f"clock_profile> led{{}};"
             )
+            # An RGB pixel is not a simple on/off status LED — the uniform
+            # accessor stays a no-op so status_led() compiles the same everywhere.
+            decls.append(
+                "[[nodiscard]] inline alloy::gpio::null_output status_led() { return {}; }"
+            )
         elif led_kind == "gpio":
             decls.append(
                 f"inline constexpr alloy::gpio::output<alloy::dev::{led['pin']}_t, "
                 f"{_polarity(led.get('active', 'high'))}> led{{}};"
             )
+            decls.append("[[nodiscard]] inline auto status_led() { return led; }")
         else:
             raise EmitError(f"board {board['id']}: unknown led kind '{led_kind}'")
+    else:
+        # No board LED — the named accessor still exists so portable code
+        # (`board::status_led().on()`) compiles on every board (guard #6).
+        decls.append(
+            "[[nodiscard]] inline alloy::gpio::null_output status_led() { return {}; }"
+        )
 
     button = roles.get("button")
     if button:
@@ -99,6 +111,11 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         decls.append(
             f"inline constexpr alloy::gpio::input<alloy::dev::{button['pin']}_t, "
             f"{_polarity(button.get('active', 'high'))}> button{{}};"
+        )
+        decls.append("[[nodiscard]] inline auto user_button() { return button; }")
+    else:
+        decls.append(
+            "[[nodiscard]] inline alloy::gpio::null_input user_button() { return {}; }"
         )
 
     uart = roles.get("debug_uart")

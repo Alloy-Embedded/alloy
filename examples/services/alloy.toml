@@ -1,0 +1,5 @@
+[project]
+name = "services"
+
+[board]
+id = "nucleo_g071rb"
