@@ -112,6 +112,7 @@ nav:
       - guide/examples.md
   - Guide:
       - guide/peripherals.md
+      - guide/async.md
       - guide/adding-a-board.md
       - guide/cli.md
   - Concepts:
