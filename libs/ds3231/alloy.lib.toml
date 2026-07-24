@@ -1,0 +1,15 @@
+[lib]
+name = "ds3231"
+version = "0.1.0"
+description = "Maxim DS3231 high-accuracy real-time clock (I2C)"
+category = "rtc"
+license = "MIT"
+homepage = "https://www.analog.com/en/products/ds3231.html"
+
+[requires]
+concepts = ["I2cBus"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

@@ -1,0 +1,15 @@
+[lib]
+name = "mpu6050"
+version = "0.1.0"
+description = "InvenSense MPU-6050 6-axis accel+gyro IMU (I2C)"
+category = "sensor"
+license = "MIT"
+homepage = "https://invensense.tdk.com/products/motion-tracking/6-axis/mpu-6050/"
+
+[requires]
+concepts = ["I2cBus"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

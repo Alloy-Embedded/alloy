@@ -3,9 +3,37 @@
 # Seed entries are in-tree (source = "path:libs/<name>"). An external driver in
 # its own git repo uses source = "git:https://…@<ref>" with the SAME manifest
 # shape — that is the whole point: the ecosystem grows with no change to the
-# framework. Each entry mirrors the library's alloy.lib.toml so `list`/`search`
-# need not fetch anything.
+# framework. This file is regenerated from each library's alloy.lib.toml, so the
+# index can never drift from the manifests.
 schema = "alloy.registry.v1"
+
+[bh1750]
+version = "0.1.0"
+category = "sensor"
+summary = "ROHM BH1750FVI ambient-light sensor (I2C)"
+concepts = ["I2cBus", "DelayNs"]
+source = "path:libs/bh1750"
+
+[bme280]
+version = "0.1.0"
+category = "sensor"
+summary = "Bosch BME280 temperature + pressure + humidity sensor (I2C)"
+concepts = ["I2cBus", "DelayNs"]
+source = "path:libs/bme280"
+
+[ds3231]
+version = "0.1.0"
+category = "rtc"
+summary = "Maxim DS3231 high-accuracy real-time clock (I2C)"
+concepts = ["I2cBus"]
+source = "path:libs/ds3231"
+
+[mpu6050]
+version = "0.1.0"
+category = "sensor"
+summary = "InvenSense MPU-6050 6-axis accel+gyro IMU (I2C)"
+concepts = ["I2cBus"]
+source = "path:libs/mpu6050"
 
 [sht31]
 version = "0.1.0"
@@ -13,3 +41,10 @@ category = "sensor"
 summary = "Sensirion SHT3x temperature + humidity sensor (I2C)"
 concepts = ["I2cBus", "DelayNs"]
 source = "path:libs/sht31"
+
+[ssd1306]
+version = "0.1.0"
+category = "display"
+summary = "Solomon Systech SSD1306 128x64 monochrome OLED display (I2C)"
+concepts = ["I2cBus"]
+source = "path:libs/ssd1306"

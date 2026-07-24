@@ -1,0 +1,15 @@
+[lib]
+name = "ssd1306"
+version = "0.1.0"
+description = "Solomon Systech SSD1306 128x64 monochrome OLED display (I2C)"
+category = "display"
+license = "MIT"
+homepage = "https://www.solomon-systech.com/product/ssd1306/"
+
+[requires]
+concepts = ["I2cBus"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

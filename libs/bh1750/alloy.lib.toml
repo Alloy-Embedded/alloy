@@ -1,0 +1,15 @@
+[lib]
+name = "bh1750"
+version = "0.1.0"
+description = "ROHM BH1750FVI ambient-light sensor (I2C)"
+category = "sensor"
+license = "MIT"
+homepage = "https://www.rohm.com/products/sensors-mems/ambient-light-sensor-ics/bh1750fvi-product"
+
+[requires]
+concepts = ["I2cBus", "DelayNs"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

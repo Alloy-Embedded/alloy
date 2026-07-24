@@ -1,0 +1,15 @@
+[lib]
+name = "bme280"
+version = "0.1.0"
+description = "Bosch BME280 temperature + pressure + humidity sensor (I2C)"
+category = "sensor"
+license = "MIT"
+homepage = "https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/"
+
+[requires]
+concepts = ["I2cBus", "DelayNs"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"
