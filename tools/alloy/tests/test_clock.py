@@ -45,12 +45,37 @@ def test_unknown_family_is_rejected() -> None:
         solve("stm32z9", 48_000_000)
 
 
-@pytest.mark.parametrize("family,mhz", [("stm32g4", 150), ("stm32f4", 84), ("stm32f7", 180)])
+@pytest.mark.parametrize("family,mhz", [("stm32g4", 150), ("stm32f4", 84), ("stm32f7", 180),
+                                        ("same70", 300)])
 def test_other_families_solve_but_are_flagged_unvalidated(family: str, mhz: int) -> None:
     r = solve(family, mhz * 1_000_000)
     assert r["sysclk_hz"] == mhz * 1_000_000
     assert r["silicon_validated"] is False  # no in-repo silicon reference
     assert "program" in r["profile"] and r["profile"]["sysclk_hz"] == mhz * 1_000_000
+
+
+def _reg(result: dict, register: str) -> dict:
+    step = next(s for s in result["profile"]["program"] if s.get("register") == register)
+    return step.get("fields", step.get("value"))
+
+
+def test_rp2040_125mhz_reproduces_the_validated_recipe() -> None:
+    r = solve("rp2040", 125_000_000)
+    assert r["sysclk_hz"] == 125_000_000 and r["silicon_validated"] is True
+    assert _reg(r, "FBDIV_INT") == {"FBDIV": 125}
+    assert _reg(r, "PRIM") == {"POSTDIV1": 6, "POSTDIV2": 2}
+
+
+def test_same70_150mhz_reproduces_the_validated_recipe() -> None:
+    r = solve("same70", 150_000_000)
+    assert r["sysclk_hz"] == 150_000_000 and r["silicon_validated"] is True
+    assert _reg(r, "CKGR_PLLAR") == "0x20183F01"  # MULA=24 (x25), DIVA=1
+    assert _reg(r, "FMR") == {"FWS": 6}
+
+
+def test_esp32_clock_is_not_solvable() -> None:
+    with pytest.raises(EmitError, match="fixed"):
+        solve("esp32", 160_000_000)
 
 
 def test_every_model_has_a_flash_table_that_covers_its_max() -> None:
