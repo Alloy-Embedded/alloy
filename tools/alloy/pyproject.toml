@@ -46,6 +46,9 @@ packages = ["alloy_cli"]
 [tool.hatch.build.targets.wheel.force-include]
 "../../src/alloy" = "alloy_cli/payload/src/alloy"
 "../../boards" = "alloy_cli/payload/boards"
+# The ecosystem library registry + reference drivers + testkit, so an installed
+# CLI can `alloy lib list` / `alloy lib add` (the drivers vendor from here).
+"../../libs" = "alloy_cli/payload/libs"
 
 [tool.uv.sources]
 # Development wiring: the db loader/lints come from the sibling repo so there
