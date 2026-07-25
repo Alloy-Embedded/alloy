@@ -41,7 +41,12 @@ class Project:
 
     @property
     def board_json(self) -> Path:
-        return self.alloy_root / "boards" / self.board_id / "board.json"
+        # A project may carry its OWN board (a custom/clean board scaffolded from
+        # a chosen MCU): ./boards/<id>/board.json wins over a framework board of
+        # the same id, so users can build for any chip without touching the
+        # framework. Falls back to the curated framework board.
+        local = self.root / "boards" / self.board_id / "board.json"
+        return local if local.exists() else self.alloy_root / "boards" / self.board_id / "board.json"
 
     def lib_includes(self) -> list[Path]:
         """Include dirs of libraries vendored under ./libs and listed in [libs].

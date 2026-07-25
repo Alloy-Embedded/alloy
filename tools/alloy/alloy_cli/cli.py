@@ -79,6 +79,55 @@ def _project(args: argparse.Namespace) -> Project:
     )
 
 
+_MAIN_CPP_CLEAN = """\
+// Clean project for a chosen MCU. board::init() brings up the clock; there are
+// no roles yet — add them (led, debug_uart, i2c, spi…) in boards/{board}/board.json
+// with the pins for YOUR hardware, then use them here (e.g. board::led.toggle()).
+// Any example under the framework's examples/ shows the shape.
+#include <alloy/board.hpp>
+
+int main() {{
+    board::init();
+    for (;;) {{
+        // your code here
+    }}
+}}
+"""
+
+
+def _new_from_chip(args: argparse.Namespace, target: Path, alloy_root: Path) -> int:
+    from .chips import chip_clock, clean_board_json  # noqa: PLC0415
+    from .project import _find_devices_root, packaged_alloy_root  # noqa: PLC0415
+
+    devices_root = _find_devices_root(alloy_root)
+    profiles, default_profile = chip_clock(devices_root, args.chip)
+    clock = args.clock or default_profile
+    if clock not in profiles:
+        print(f"error: clock '{clock}' not a profile of {args.chip} — "
+              f"available: {', '.join(profiles)}", file=sys.stderr)
+        return 1
+
+    board_id = target.name
+    (target / "src").mkdir(parents=True)
+    (target / "boards" / board_id).mkdir(parents=True)
+    (target / "boards" / board_id / "board.json").write_text(
+        clean_board_json(board_id, args.chip, clock))
+
+    if alloy_root == packaged_alloy_root():
+        toml_text = _ALLOY_TOML.split("[alloy]")[0].format(name=target.name, board=board_id)
+    else:
+        toml_text = _ALLOY_TOML.format(name=target.name, board=board_id, root=alloy_root)
+    (target / "alloy.toml").write_text(toml_text)
+    (target / "src" / "main.cpp").write_text(_MAIN_CPP_CLEAN.format(board=board_id))
+    (target / ".gitignore").write_text(_GITIGNORE)
+
+    print(f"created {target}/ — clean board for {args.chip} (clock: {clock})")
+    print(f"  edit boards/{board_id}/board.json to add pins/roles for your hardware")
+    print(f"  clock profiles for {args.chip}: {', '.join(profiles)}")
+    print(f"next:  cd {target} && alloy build")
+    return 0
+
+
 def cmd_new(args: argparse.Namespace) -> int:
     from .project import _find_alloy_root  # noqa: PLC0415
 
@@ -87,6 +136,10 @@ def cmd_new(args: argparse.Namespace) -> int:
         print(f"error: {target} already exists", file=sys.stderr)
         return 1
     alloy_root = _find_alloy_root(Path.cwd())
+
+    if getattr(args, "chip", None):
+        return _new_from_chip(args, target, alloy_root)
+
     boards_dir = alloy_root / "boards"
     if not (boards_dir / args.board / "board.json").exists():
         known = sorted(p.name for p in boards_dir.iterdir() if (p / "board.json").exists())
@@ -145,6 +198,27 @@ def cmd_boards(args: argparse.Namespace) -> int:
         return 0
     for b in rows:
         print(f"{b['id']:24} {b.get('name', ''):32} chip={b['chip']}")
+    return 0
+
+
+def cmd_chips(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .chips import list_chips  # noqa: PLC0415
+    from .project import _find_alloy_root, _find_devices_root  # noqa: PLC0415
+
+    alloy_root = _find_alloy_root(Path.cwd())
+    rows = list_chips(_find_devices_root(alloy_root))
+    if args.vendor:
+        rows = [r for r in rows if r["vendor"] == args.vendor]
+    if getattr(args, "json", False):
+        print(json.dumps({"schema": "alloy.chips.v1", "chips": rows}, indent=2))
+        return 0
+    if not rows:
+        print("no chips" + (f" for vendor '{args.vendor}'" if args.vendor else ""))
+        return 0
+    for r in rows:
+        print(f"{r['id']:28} {r.get('family', ''):14} {r.get('core') or ''}")
     return 0
 
 
@@ -396,13 +470,22 @@ def main() -> None:
 
     p_new = sub.add_parser("new", help="scaffold a new project")
     p_new.add_argument("name")
-    p_new.add_argument("--board", required=True)
+    p_new_src = p_new.add_mutually_exclusive_group(required=True)
+    p_new_src.add_argument("--board", help="a curated board id (see `alloy boards`)")
+    p_new_src.add_argument("--chip", help="any MCU id (see `alloy chips`) — makes a clean, "
+                                          "editable board you fill in yourself")
+    p_new.add_argument("--clock", help="clock profile for --chip (default: the chip's safe profile)")
     p_new.set_defaults(func=cmd_new)
 
     p_boards = sub.add_parser("boards", help="list known boards")
     p_boards.add_argument("--project", default=".")
     p_boards.add_argument("--json", action="store_true")
     p_boards.set_defaults(func=cmd_boards)
+
+    p_chips = sub.add_parser("chips", help="list MCUs you can scaffold a clean board for")
+    p_chips.add_argument("--vendor", help="filter by vendor (st, espressif, …)")
+    p_chips.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
+    p_chips.set_defaults(func=cmd_chips)
 
     p_clean = sub.add_parser("clean", help="remove per-board build trees")
     p_clean.add_argument("--project", default=".")
