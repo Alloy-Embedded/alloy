@@ -99,17 +99,21 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "{cpu_flags}")
 
 
 def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
-                runtime_sources: list[Path], vendor_sources: list[Path]) -> str:
+                runtime_sources: list[Path], vendor_sources: list[Path],
+                lwip: dict[str, list[Path]] | None = None) -> str:
     gen = project.gen_dir
+    lwip = lwip or {"c": [], "glue": [], "inc": []}
     gen_sources = [gen / "board.cpp"]
     for optional in ("vector_table.c", "boot2.c", "irq_data.c"):
         if (gen / optional).exists():
             gen_sources.append(gen / optional)
     src_list = "\n    ".join(
-        f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources, *vendor_sources]
+        f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources, *vendor_sources,
+                           *lwip["c"], *lwip["glue"]]
     )
-    # Include dirs of any ecosystem libraries the project vendored (alloy lib add).
-    _lib_incs = project.lib_includes()
+    # Include dirs of any ecosystem libraries the project vendored (alloy lib add),
+    # plus the lwIP package's port + vendored headers when a net example pulls it in.
+    _lib_incs = [*project.lib_includes(), *lwip["inc"]]
     lib_includes = (
         "\n    " + "\n    ".join(f'"{p}"' for p in _lib_incs) if _lib_incs else ""
     )
@@ -127,6 +131,17 @@ set_source_files_properties(
     PROPERTIES
     COMPILE_OPTIONS "-w"
     COMPILE_DEFINITIONS "LFS_NO_MALLOC;LFS_NO_ASSERT;LFS_NO_DEBUG;LFS_NO_WARN;LFS_NO_ERROR"
+)"""
+    # Vendored lwIP: silence its warnings (its own config drives it via lwipopts.h).
+    lwip_props = ""
+    if lwip["c"]:
+        lwip_list = "\n    ".join(f'"{p}"' for p in lwip["c"])
+        lwip_props = f"""
+
+set_source_files_properties(
+    {lwip_list}
+    PROPERTIES
+    COMPILE_OPTIONS "-w"
 )"""
     # newlib nano/nosys specs are an ARM-newlib convention; the xtensa
     # toolchain links its own newlib without them.
@@ -184,7 +199,7 @@ target_link_options({project.name}.elf PRIVATE
     -nostartfiles
     -Wl,--gc-sections
     -Wl,-Map={project.name}.map{specs}
-){post_build}{vendor_props}
+){post_build}{vendor_props}{lwip_props}
 """
 
 
@@ -203,15 +218,30 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
     # example's build lean (no needless littlefs TUs) — the real "build seam".
     vendor_sources: list[Path] = []
     board_hpp = project.gen_dir / "alloy" / "board.hpp"
-    if board_hpp.exists() and "bool fs = true;" in board_hpp.read_text():
+    board_text = board_hpp.read_text() if board_hpp.exists() else ""
+    if "bool fs = true;" in board_text:
         fs_vendor = project.alloy_root / "src" / "alloy" / "fs" / "vendor"
         vendor_sources += sorted(fs_vendor.glob("*.c"))
+
+    # lwIP (net stack) is a heavier opt-in package: compiled only when an example
+    # actually pulls in the facade (`#include <alloy/net/lwip...>`) AND the board
+    # has an ethernet MAC. Its port headers (lwipopts.h / arch/cc.h) + the
+    # vendored lwIP headers go on the include path for the whole target.
+    lwip: dict[str, list[Path]] = {"c": [], "glue": [], "inc": []}
+    src_text = "\n".join(p.read_text(errors="ignore") for p in sources)
+    if "alloy/net/lwip" in src_text and "bool ethernet = true;" in board_text:
+        net = project.alloy_root / "src" / "alloy" / "net"
+        vlwip = net / "vendor" / "lwip" / "src"
+        lwip["c"] = (sorted(vlwip.glob("core/*.c")) + sorted(vlwip.glob("core/ipv4/*.c"))
+                     + [vlwip / "netif" / "ethernet.c"])
+        lwip["glue"] = [net / "lwip" / "port.cpp"]
+        lwip["inc"] = [net / "lwip", vlwip / "include"]
 
     tree = project.build_dir
     tree.mkdir(parents=True, exist_ok=True)
     (tree / "toolchain.cmake").write_text(_toolchain_cmake(chip, _cpu_flags(chip)))
     (tree / "CMakeLists.txt").write_text(
-        _cmakelists(project, chip, sources, runtime_sources, vendor_sources))
+        _cmakelists(project, chip, sources, runtime_sources, vendor_sources, lwip))
 
     env = None
     if _arch_ns(chip) == "xtensa":

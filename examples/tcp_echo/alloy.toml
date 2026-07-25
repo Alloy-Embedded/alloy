@@ -1,0 +1,5 @@
+[project]
+name = "tcp_echo"
+
+[board]
+id = "same70_xplained"
