@@ -222,6 +222,24 @@ def cmd_chips(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_clock(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .chips import chip_info  # noqa: PLC0415
+    from .clock_solver import solve  # noqa: PLC0415
+    from .project import _find_alloy_root, _find_devices_root  # noqa: PLC0415
+
+    alloy_root = _find_alloy_root(Path.cwd())
+    info = chip_info(_find_devices_root(alloy_root), args.chip)
+    family = info.get("family")
+    if not family:
+        print(f"error: no family for chip '{args.chip}'", file=sys.stderr)
+        return 1
+    result = solve(family, round(args.mhz * 1_000_000))
+    print(json.dumps(result, indent=2))
+    return 0
+
+
 def cmd_chip_info(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -503,6 +521,12 @@ def main() -> None:
                                 help="clock profiles + pins + peripherals for one chip (JSON)")
     p_chipinfo.add_argument("chip", help="an MCU id (see `alloy chips`)")
     p_chipinfo.set_defaults(func=cmd_chip_info)
+
+    p_clock = sub.add_parser("clock",
+                             help="solve a PLL clock for a target frequency (JSON)")
+    p_clock.add_argument("--chip", required=True, help="an MCU id (see `alloy chips`)")
+    p_clock.add_argument("--mhz", type=float, required=True, help="target system clock in MHz")
+    p_clock.set_defaults(func=cmd_clock)
 
     p_clean = sub.add_parser("clean", help="remove per-board build trees")
     p_clean.add_argument("--project", default=".")

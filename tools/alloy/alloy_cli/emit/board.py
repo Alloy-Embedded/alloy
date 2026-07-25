@@ -76,9 +76,17 @@ def _polarity(active: str) -> str:
 def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                       registers: dict[str, dict[str, Any]]) -> str:
     roles = board.get("roles", {})
-    profile_name = board["clock_profile"]
-    profile = chip["clock"]["profiles"].get(profile_name)
-    _require(profile is not None, f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
+    # A board may carry an INLINE clock profile (a custom PLL from `alloy clock`
+    # / the visual editor) instead of naming one of the chip's curated profiles.
+    if isinstance(board.get("clock"), dict):
+        profile = board["clock"]
+        _require("program" in profile and "sysclk_hz" in profile,
+                 f"board {board['id']}: inline clock needs 'program' and 'sysclk_hz'")
+    else:
+        profile_name = board["clock_profile"]
+        profile = chip["clock"]["profiles"].get(profile_name)
+        _require(profile is not None,
+                 f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
 
     caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
                              "led_pwm": False, "adc": False, "i2c": False,
@@ -688,7 +696,10 @@ def _resolve_step(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
 def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
                       registers: dict[str, dict[str, Any]], arch_ns: str) -> str:
     roles = board.get("roles", {})
-    profile = chip["clock"]["profiles"][board["clock_profile"]]
+    # Inline custom clock (from `alloy clock` / the visual editor) or a named
+    # profile from the chip data — same shape either way.
+    profile = board["clock"] if isinstance(board.get("clock"), dict) \
+        else chip["clock"]["profiles"][board["clock_profile"]]
     boot_hz = chip["clock"]["sources"][chip["clock"]["boot_source"]]["hz"]
 
     program = profile["program"]
