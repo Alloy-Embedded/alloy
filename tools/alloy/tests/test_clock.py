@@ -45,8 +45,7 @@ def test_unknown_family_is_rejected() -> None:
         solve("stm32z9", 48_000_000)
 
 
-@pytest.mark.parametrize("family,mhz", [("stm32g4", 150), ("stm32f4", 84), ("stm32f7", 180),
-                                        ("same70", 300)])
+@pytest.mark.parametrize("family,mhz", [("stm32g4", 150), ("stm32f4", 84), ("stm32f7", 180)])
 def test_other_families_solve_but_are_flagged_unvalidated(family: str, mhz: int) -> None:
     r = solve(family, mhz * 1_000_000)
     assert r["sysclk_hz"] == mhz * 1_000_000
@@ -78,6 +77,8 @@ def test_esp32_clock_is_not_solvable() -> None:
         solve("esp32", 160_000_000)
 
 
-def test_every_model_has_a_flash_table_that_covers_its_max() -> None:
+def test_every_model_with_flash_ws_covers_its_max() -> None:
     for family, m in MODELS.items():
+        if not m.flash_ws:
+            continue  # RP2040 runs from external XIP — no core flash wait states
         assert m.flash_ws[-1][0] >= m.sysclk_max_hz, f"{family}: WS table below max"

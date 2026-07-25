@@ -202,11 +202,13 @@ MODELS: dict[str, ClockModel] = {
         program=_rp2040_program, validated_max_hz=125_000_000,
     ),
     # SAME70 — XTAL 12 MHz, PLLA ×(MULA+1) /DIVA, MCK prescaler. PLLA out
-    # 160–500 MHz, sysclk ≤ 300. Flash FWS from the datasheet table.
+    # 160–500 MHz. Capped at 150 MHz: that is the validated recipe AND the flash
+    # (EEFC) limit — running the core above it needs code in ITCM/cache, which
+    # this data-driven clock init does not set up.
     "same70": ClockModel(
         family="same70", source_hz=12_000_000, source_name="XTAL 12 MHz",
         m_range=(1, 1), n_range=(2, 63), divisors=_same70_divs(),
-        vco_out_hz=(160_000_000, 500_000_000), sysclk_max_hz=300_000_000,
+        vco_out_hz=(160_000_000, 500_000_000), sysclk_max_hz=150_000_000,
         flash_ws=((23_000_000, 0), (46_000_000, 1), (69_000_000, 2), (92_000_000, 3),
                   (115_000_000, 4), (138_000_000, 5), (150_000_000, 6)),
         program=_same70_program, validated_max_hz=150_000_000,
