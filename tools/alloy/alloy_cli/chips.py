@@ -61,6 +61,58 @@ def chip_clock(devices_root: Path, chip_id: str) -> tuple[list[str], str]:
     return profiles, profiles[0]
 
 
+def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
+    """Everything a visual board configurator needs for one chip: clock profiles
+    (name/description/frequency), the GPIO pins, and — derived from the pin-route
+    table — the peripheral instances with their signal pins (UART tx/rx, I2C
+    scl/sda, SPI sck/mosi/miso). Pure data; no board.json is written."""
+    import yaml  # noqa: PLC0415
+
+    vendor, _, name = chip_id.partition("/")
+    f = _chips_dir(devices_root) / vendor / f"{name}.yaml"
+    if not f.exists():
+        raise EmitError(f"unknown chip '{chip_id}' — try `alloy chips`")
+    data = yaml.safe_load(f.read_text())
+
+    clk = data.get("clock") or {}
+    profiles = [
+        {"name": n, "description": p.get("description", ""), "sysclk_hz": p.get("sysclk_hz")}
+        for n, p in clk.get("profiles", {}).items()
+    ]
+
+    # Group the pin-route table by peripheral: {usart2: {tx: pa2, rx: pa3}, …}.
+    by_periph: dict[str, dict[str, str]] = {}
+    for r in data.get("routes") or []:
+        if "peripheral" in r and "signal" in r and "pin" in r:
+            by_periph.setdefault(r["peripheral"], {})[r["signal"]] = r["pin"]
+
+    def instances(prefixes: tuple[str, ...], signals: list[str]) -> list[dict[str, Any]]:
+        out = []
+        for periph in sorted(by_periph):
+            if periph.startswith(prefixes):
+                sigs = by_periph[periph]
+                entry: dict[str, Any] = {"peripheral": periph}
+                for s in signals:
+                    if s in sigs:
+                        entry[s] = sigs[s]
+                out.append(entry)
+        return out
+
+    return {
+        "schema": "alloy.chip_info.v1",
+        "chip": chip_id,
+        "family": data.get("family"),
+        "clock_profiles": profiles,
+        "boot_profile": profiles[0]["name"] if profiles else None,
+        "gpio_pins": sorted((data.get("pins") or {}).keys()),
+        "peripherals": {
+            "debug_uart": instances(("usart", "uart", "lpuart"), ["tx", "rx"]),
+            "i2c": instances(("i2c",), ["scl", "sda"]),
+            "spi": instances(("spi",), ["sck", "mosi", "miso"]),
+        },
+    }
+
+
 def clean_board_json(board_id: str, chip_id: str, clock_profile: str) -> str:
     """A minimal, valid board: the chip, a safe clock, and no roles yet."""
     return json.dumps(

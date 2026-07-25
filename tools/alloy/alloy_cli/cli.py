@@ -222,6 +222,18 @@ def cmd_chips(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_chip_info(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .chips import chip_info  # noqa: PLC0415
+    from .project import _find_alloy_root, _find_devices_root  # noqa: PLC0415
+
+    alloy_root = _find_alloy_root(Path.cwd())
+    info = chip_info(_find_devices_root(alloy_root), args.chip)
+    print(json.dumps(info, indent=2))
+    return 0
+
+
 def _layout(args: argparse.Namespace) -> str:
     return "ram" if getattr(args, "ram", False) else "flash"
 
@@ -486,6 +498,11 @@ def main() -> None:
     p_chips.add_argument("--vendor", help="filter by vendor (st, espressif, …)")
     p_chips.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
     p_chips.set_defaults(func=cmd_chips)
+
+    p_chipinfo = sub.add_parser("chip-info",
+                                help="clock profiles + pins + peripherals for one chip (JSON)")
+    p_chipinfo.add_argument("chip", help="an MCU id (see `alloy chips`)")
+    p_chipinfo.set_defaults(func=cmd_chip_info)
 
     p_clean = sub.add_parser("clean", help="remove per-board build trees")
     p_clean.add_argument("--project", default=".")
