@@ -60,6 +60,22 @@ set(ALLOY_LFS
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/fs/vendor/lfs_util.c)
 set_source_files_properties(${ALLOY_LFS} PROPERTIES COMPILE_OPTIONS "-w")
 
+# The host net tests exercise the Socket facade over lwIP's loopback (127.0.0.1);
+# ALLOY_LWIP_HOST turns that on in lwipopts.h (firmware stays single-netif).
+add_compile_definitions(ALLOY_LWIP_HOST)
+
+# Vendored lwIP (C) — the M2 net stack facade is exercised over a virtual wire.
+# Port headers (lwipopts.h / arch/cc.h) are ours; the vendored lwIP headers are
+# SYSTEM (no -Werror on vendored code) and its .c get -w.
+set(_lwip_root ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/net)
+include_directories(${_lwip_root}/lwip)
+include_directories(SYSTEM ${_lwip_root}/vendor/lwip/src/include)
+file(GLOB ALLOY_LWIP
+    ${_lwip_root}/vendor/lwip/src/core/*.c
+    ${_lwip_root}/vendor/lwip/src/core/ipv4/*.c)
+list(APPEND ALLOY_LWIP ${_lwip_root}/vendor/lwip/src/netif/ethernet.c)
+set_source_files_properties(${ALLOY_LWIP} PROPERTIES COMPILE_OPTIONS "-w")
+
 add_executable(alloy_unit_tests
     main.cpp
     host_support.cpp
@@ -74,8 +90,10 @@ add_executable(alloy_unit_tests
     test_dsp.cpp
     test_secure.cpp
     test_fs.cpp
+    test_net.cpp
     ${ALLOY_LIB_TESTS}
-    ${ALLOY_LFS})
+    ${ALLOY_LFS}
+    ${ALLOY_LWIP})
 
 # The runner's exit code is the number of failing tests (0 = pass).
 add_test(NAME alloy_unit_tests COMMAND alloy_unit_tests)

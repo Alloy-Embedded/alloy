@@ -26,18 +26,22 @@
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 
-/* No stdio on firmware: drop lwIP's debug/trace lines. A fatal lwIP assert
- * means a stack invariant broke — stop rather than corrupt further. */
+/* No stdio on firmware: drop lwIP's debug/trace lines. A fatal lwIP assert means
+ * a stack invariant broke — abort() halts on firmware (nosys) and fails loudly
+ * under the host tests (SIGABRT), rather than corrupting further. */
 #define LWIP_PLATFORM_DIAG(x)
-#define LWIP_PLATFORM_ASSERT(x) \
-    do {                        \
-        for (;;) {              \
-        }                       \
-    } while (0)
+#define LWIP_PLATFORM_ASSERT(x) abort()
 
 /* TCP initial-sequence-number randomness. alloy has no CSPRNG yet; a weak
- * source is acceptable for v1 (an echo/HTTP demo, not a security boundary). */
+ * source is acceptable for v1 (an echo/HTTP demo, not a security boundary).
+ * C linkage so the C++ port definition and the C lwIP callers agree. */
+#ifdef __cplusplus
+extern "C" {
+#endif
 uint32_t alloy_lwip_rand(void);
+#ifdef __cplusplus
+}
+#endif
 #define LWIP_RAND() (alloy_lwip_rand())
 
 #endif /* ALLOY_LWIP_ARCH_CC_H */

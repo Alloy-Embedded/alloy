@@ -1,36 +1,19 @@
 // M2: a real TCP/IP stack. Where net_echo (M1) hand-answered ARP+ICMP to prove
 // the GMAC, this runs vendored lwIP on top of the SAME NetDevice and serves a
-// TCP echo on port 7 — `nc 192.168.15.231 7` and what you type comes back. Proof
-// of lwIP + the netif<->NetDevice seam end to end. Static IP for v1 (DHCP next).
+// TCP echo on port 7 — `nc 192.168.15.231 7` and what you type comes back. User
+// code sees only alloy::net (stack + Socket facade), never lwIP directly. Static
+// IP for v1 (DHCP next). The netif<->NetDevice glue + the Socket facade are
+// host-tested (tests/test_net.cpp); this proves them on silicon.
 #include <alloy/board.hpp>
 #include <alloy/net/lwip.hpp>
+#include <alloy/net/socket.hpp>
 
-#include "lwip/tcp.h"
+#include <cstdint>
 
 using namespace alloy::literals;
 
 namespace {
 constexpr std::uint8_t kMac[6] = {0x02, 0xAE, 0x70, 0x00, 0x00, 0x01};
-
-// Raw lwIP TCP callbacks: echo whatever arrives back to the sender.
-err_t echo_recv(void* /*arg*/, struct tcp_pcb* pcb, struct pbuf* p, err_t /*err*/) {
-    if (p == nullptr) {  // remote closed
-        tcp_close(pcb);
-        return ERR_OK;
-    }
-    for (struct pbuf* q = p; q != nullptr; q = q->next) {
-        tcp_write(pcb, q->payload, q->len, TCP_WRITE_FLAG_COPY);
-    }
-    tcp_output(pcb);
-    tcp_recved(pcb, p->tot_len);
-    pbuf_free(p);
-    return ERR_OK;
-}
-
-err_t echo_accept(void* /*arg*/, struct tcp_pcb* pcb, err_t /*err*/) {
-    tcp_recv(pcb, echo_recv);
-    return ERR_OK;
-}
 }  // namespace
 
 int main() {
@@ -54,13 +37,27 @@ int main() {
         net.up({192, 168, 15, 231}, {255, 255, 255, 0}, {192, 168, 15, 1}, kMac);
         uart.write("ready: nc 192.168.15.231 7\r\n");
 
-        struct tcp_pcb* srv = tcp_new();
-        tcp_bind(srv, IP_ADDR_ANY, 7);
-        srv = tcp_listen(srv);
-        tcp_accept(srv, echo_accept);
-
+        // Echo one connection at a time through the Socket facade.
+        static alloy::net::tcp_listener<> srv;
+        static alloy::net::tcp_socket conn;
+        srv.listen(7);
+        bool have = false;
+        std::uint8_t buf[256];
         while (true) {
-            net.poll();
+            net.poll();  // drive lwIP (RX in, timers)
+            if (!have) {
+                have = srv.accept(conn);
+            }
+            if (have) {
+                const std::uint32_t n = conn.recv(buf);
+                if (n != 0) {
+                    (void)conn.send({buf, n});
+                }
+                if (conn.eof()) {  // peer closed + drained -> ready for the next
+                    conn.close();
+                    have = false;
+                }
+            }
         }
     } else {
         uart.write("tcp_echo: this board has no Ethernet\r\n");

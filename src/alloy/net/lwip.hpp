@@ -25,11 +25,30 @@ struct ipv4 {
     std::uint8_t o[4];
 };
 
+namespace detail {
+// lwIP's core is global state: init it exactly once even if several stacks
+// (e.g. two netifs cabled together in a host test) come up.
+inline bool& lwip_inited() {
+    static bool v = false;
+    return v;
+}
+}  // namespace detail
+
+// Initialize lwIP's core exactly once (idempotent). stack::up() calls this; a
+// test using lwIP directly (e.g. the loopback socket test) can call it too.
+inline void ensure_init() {
+    if (!detail::lwip_inited()) {
+        lwip_init();
+        detail::lwip_inited() = true;
+    }
+}
+
 template <alloy::NetDevice Dev>
 class stack {
     Dev& dev_;
     struct netif netif_ {};
     std::uint8_t mac_[6]{};
+    bool up_ = false;
     // One TX staging buffer: lwIP pbuf chains are gathered here before the
     // single-shot NetDevice.transmit(). Sized for a full frame.
     alignas(4) std::uint8_t txbuf_[1536]{};
@@ -60,6 +79,13 @@ class stack {
 public:
     explicit stack(Dev& dev) : dev_(dev) {}
 
+    // Remove our netif from lwIP's global list when destroyed — matters for host
+    // tests that spin stacks up and down; on firmware the stack is a forever
+    // static and this never runs.
+    ~stack() {
+        if (up_) netif_remove(&netif_);
+    }
+
     stack(const stack&) = delete;
     stack& operator=(const stack&) = delete;
 
@@ -67,7 +93,7 @@ public:
     // link is up (board::eth_phy negotiated) and lwIP has a valid time source.
     void up(ipv4 addr, ipv4 mask, ipv4 gw, const std::uint8_t mac[6]) {
         for (int i = 0; i < 6; ++i) mac_[i] = mac[i];
-        lwip_init();
+        ensure_init();
         ip4_addr_t a, m, g;
         IP4_ADDR(&a, addr.o[0], addr.o[1], addr.o[2], addr.o[3]);
         IP4_ADDR(&m, mask.o[0], mask.o[1], mask.o[2], mask.o[3]);
@@ -76,6 +102,7 @@ public:
         netif_set_default(&netif_);
         netif_set_up(&netif_);
         netif_set_link_up(&netif_);
+        up_ = true;
     }
 
     // Drive the stack: feed one received frame (if any) and run timeouts.

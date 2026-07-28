@@ -49,7 +49,20 @@
 #define LWIP_NETIF_STATUS_CALLBACK 0
 #define LWIP_NETIF_LINK_CALLBACK   0
 #define LWIP_NETIF_HOSTNAME        0
-#define LWIP_SINGLE_NETIF          1  /* one interface (the GMAC) */
+
+/* Loopback (127.0.0.1) is enabled ONLY for the host tests (ALLOY_LWIP_HOST), so
+ * the Socket facade gets a real TCP handshake with no hardware; firmware stays
+ * lean with a single netif (the GMAC). NO_SYS drains loopback via
+ * netif_poll_all() from the poll loop. */
+#ifdef ALLOY_LWIP_HOST
+#define LWIP_HAVE_LOOPIF                    1
+#define LWIP_NETIF_LOOPBACK                 1
+#define LWIP_NETIF_LOOPBACK_MULTITHREADING  0
+#define LWIP_LOOPBACK_MAX_PBUFS             8
+#define LWIP_SINGLE_NETIF                   0  /* eth + loopif */
+#else
+#define LWIP_SINGLE_NETIF                   1  /* just the GMAC */
+#endif
 
 /* ── Checksums: computed in software (no MAC offload wired yet) ─────────── */
 #define CHECKSUM_GEN_IP            1
