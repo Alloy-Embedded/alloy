@@ -162,6 +162,15 @@ jobs:
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
+          # The async runtime on a SECOND vendor: two concurrent coroutines on a
+          # Microchip Cortex-M7, proving the heap-less executor + timer wheel are
+          # genuinely portable, not ST-specific. Compiles + loads locally;
+          # experimental until CI confirms the beats/tick land on SAM_USART.
+          - board: same70_xplained
+            example: async_heartbeat
+            robot: async_runs.robot
+            banner: alloy async_heartbeat ready
+            experimental: true
           # I/O behaviour (echo roundtrip), not just boot — newest assertion path,
           # experimental one more cycle before it blocks.
           - board: nucleo_g071rb
