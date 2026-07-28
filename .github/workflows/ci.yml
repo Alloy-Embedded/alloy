@@ -166,16 +166,15 @@ jobs:
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
             experimental: true
-          # Driver conformance: the platform now carries the real STM32 I2C
-          # controller; the robot attaches a DummyI2CSlave at 0x44 and asserts the
-          # scanner discovers it — proving the I2C driver talks to a device on the
-          # bus with no hardware. Experimental until CI confirms the slave ACKs the
-          # probe (unverifiable locally — the x86_64 Renode tlib can't run here).
-          - board: nucleo_g071rb
-            example: i2c_scan
-            robot: i2c_scan.robot
-            banner: alloy i2c_scan
-            experimental: true
+          # Driver conformance (i2c_scan + tests/emulation/i2c_scan.robot) is
+          # DEFERRED. The emitter DOES add the real STM32 I2C controller to the
+          # platform (kept — validated to load, inert for the legs above), but the
+          # first CI run showed i2c_scan prints "scan: " then stalls: the driver
+          # scans 0x08..0x77 and every empty address costs the full poll budget
+          # against Renode's STM32F7_I2C model (NACKF fidelity), so it can't reach
+          # 0x44 inside the tester window. Needs a probe-only vehicle and/or a model
+          # that NACKs promptly — a focused effort with a fast local Renode, not a
+          # CI-only iteration. See [[alloy-audit-2026-07]].
     steps:
       - uses: actions/checkout@v4
         with:
