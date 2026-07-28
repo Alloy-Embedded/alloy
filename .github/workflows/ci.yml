@@ -97,22 +97,47 @@ jobs:
         working-directory: alloy
         run: uv run --project tools/alloy python scripts/gen_all_chips.py
 
-  # Upgrades guard #9 from "compiles" to "executes" for the boards Renode models:
-  # boots uart_echo on the data-generated platform (alloy emulate) and asserts
-  # its startup banner actually prints on the emulated UART. The platform (.repl)
-  # is generated from chip data, so it can't drift from the real target.
+  # Upgrades guard #9 from "compiles" to "executes" for the boards Renode models.
+  # Each matrix leg boots one example on the data-generated platform (alloy
+  # emulate) and runs a Robot test that asserts real behaviour on the emulated
+  # UART. The platform (.repl) is generated from chip data, so it can't drift
+  # from the real target.
   #
-  # continue-on-error while the emulation harness is being brought up: it reports
-  # a real signal without blocking merges. Flip it to blocking once it is
-  # confirmed green in CI (this was authored without a local Renode to validate
-  # the run end-to-end). Extend the matrix as emit/renode.py's RENODE_CPU /
+  #  - uart_echo (firmware_boots.robot): the firmware boots and prints its banner.
+  #  - async_heartbeat (async_runs.robot): the coroutine executor SCHEDULES
+  #    REPEATEDLY — after the banner it must emit three successive "beat N" lines,
+  #    each gated behind a `co_await delay(250ms)`. This is what proves the async
+  #    runtime actually runs on the ISA, not just that it compiled.
+  #
+  # async legs are continue-on-error until confirmed green in CI (authored
+  # without a local Renode to validate end-to-end — the host here is Apple
+  # Silicon and the pinned Renode tlib is x86_64); uart_echo stays blocking so
+  # the proven path can't regress. Flip the async legs to blocking (drop the
+  # expression) once green. Extend the matrix as emit/renode.py's RENODE_CPU /
   # RENODE_UART maps grow to cover more families.
   emulate:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.example == 'async_heartbeat' }}
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_f722ze, nucleo_g071rb]
+        include:
+          - board: nucleo_f722ze
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+          - board: nucleo_g071rb
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+          - board: nucleo_f722ze
+            example: async_heartbeat
+            robot: async_runs.robot
+            banner: alloy async_heartbeat ready
+          - board: nucleo_g071rb
+            example: async_heartbeat
+            robot: async_runs.robot
+            banner: alloy async_heartbeat ready
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,15 +159,15 @@ jobs:
           echo "$HOME/renode" >> "$GITHUB_PATH"
           # renode-test (Robot framework runner) needs these Python deps
           pip3 install --quiet -r "$HOME/renode/tests/requirements.txt"
-      - name: build firmware + emit Renode platform
+      - name: build ${{ matrix.example }} + emit Renode platform
         id: emit
-        working-directory: alloy/examples/uart_echo
+        working-directory: alloy/examples/${{ matrix.example }}
         run: |
           out=$(uv run --project ../../tools/alloy alloy emulate --board ${{ matrix.board }} --emit-only)
           echo "$out"
           echo "resc=$(echo "$out" | awk '/^script:/{print $2}')" >> "$GITHUB_OUTPUT"
           echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
-      - name: boot firmware under Renode and assert the banner
+      - name: boot ${{ matrix.example }} under Renode and assert behaviour
         # RESC is absolute so the Robot's `include @RESC` resolves (renode-test
         # resolves it relative to the .robot file, not cwd). On CI the runner
         # path is space-free, so emit/renode.py writes absolute .repl/.elf paths
@@ -153,7 +178,8 @@ jobs:
           renode-test \
             --variable RESC:'${{ steps.emit.outputs.resc }}' \
             --variable UART:${{ steps.emit.outputs.uart }} \
-            "$GITHUB_WORKSPACE/alloy/tests/emulation/firmware_boots.robot"
+            --variable BANNER:'${{ matrix.banner }}' \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/${{ matrix.robot }}"
 
   build:
     runs-on: ubuntu-latest
@@ -161,7 +187,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:

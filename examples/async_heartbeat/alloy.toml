@@ -1,0 +1,5 @@
+[project]
+name = "async_heartbeat"
+
+[board]
+id = "nucleo_g071rb"
