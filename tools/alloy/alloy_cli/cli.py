@@ -458,7 +458,19 @@ def cmd_test(args: argparse.Namespace) -> int:
         return 1
 
     build_dir = alloy_root / ".alloy" / "host-tests"
-    configure = ["cmake", "-S", str(tests_dir), "-B", str(build_dir)]
+
+    # lwipopts.h is generated from data, same as firmware (facts, not a hand-tuned
+    # header). The host profile turns lwIP's loopback (127.0.0.1) on so the Socket
+    # facade gets a real TCP handshake with no hardware. Emit it before configuring
+    # and hand the dir to the test CMake, which puts it on the include path.
+    from .emit.lwipopts import NetProfile, render_lwipopts  # noqa: PLC0415
+
+    lwipopts_dir = build_dir / "gen"
+    lwipopts_dir.mkdir(parents=True, exist_ok=True)
+    (lwipopts_dir / "lwipopts.h").write_text(render_lwipopts(NetProfile(host=True)))
+
+    configure = ["cmake", "-S", str(tests_dir), "-B", str(build_dir),
+                 f"-DALLOY_LWIPOPTS_DIR={lwipopts_dir}"]
     if shutil.which("ninja") is not None:
         configure += ["-G", "Ninja"]
     if args.no_sanitize:

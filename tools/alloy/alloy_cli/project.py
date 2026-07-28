@@ -67,6 +67,19 @@ class Project:
                 out.append(inc)
         return out
 
+    def net_options(self) -> dict[str, Any]:
+        """The optional ``[net]`` table from alloy.toml (lwIP feature/pool policy).
+
+        Drives the generated ``lwipopts.h`` — features (dhcp/dns/udp), static pool
+        sizes, MTU, checksum offload. Empty when absent, in which case the
+        generator falls back to defaults that match the v1 hand-written config, so
+        a project that never mentions [net] is byte-for-byte unchanged.
+        """
+        toml_path = self.root / "alloy.toml"
+        if not toml_path.exists():
+            return {}
+        return tomllib.loads(toml_path.read_text()).get("net", {})
+
     def load_board(self) -> dict[str, Any]:
         if not self.board_json.exists():
             boards_dir = self.alloy_root / "boards"

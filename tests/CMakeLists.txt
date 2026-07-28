@@ -60,14 +60,22 @@ set(ALLOY_LFS
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/fs/vendor/lfs_util.c)
 set_source_files_properties(${ALLOY_LFS} PROPERTIES COMPILE_OPTIONS "-w")
 
-# The host net tests exercise the Socket facade over lwIP's loopback (127.0.0.1);
-# ALLOY_LWIP_HOST turns that on in lwipopts.h (firmware stays single-netif).
-add_compile_definitions(ALLOY_LWIP_HOST)
+# The host net tests exercise the Socket facade over lwIP's loopback (127.0.0.1).
+# lwipopts.h is GENERATED from data (host profile: loopback on) by `alloy test`
+# before it configures this build, and handed in via ALLOY_LWIPOPTS_DIR — the same
+# generator the firmware uses, so host and target can't drift. Run the host tests
+# through `alloy test`, not a bare cmake, so that header exists.
+if(NOT DEFINED ALLOY_LWIPOPTS_DIR)
+    message(FATAL_ERROR
+        "ALLOY_LWIPOPTS_DIR not set — run the host tests via `alloy test`, which "
+        "generates lwipopts.h from data before configuring this build.")
+endif()
 
-# Vendored lwIP (C) — the M2 net stack facade is exercised over a virtual wire.
-# Port headers (lwipopts.h / arch/cc.h) are ours; the vendored lwIP headers are
-# SYSTEM (no -Werror on vendored code) and its .c get -w.
+# Vendored lwIP (C) — the M2 net stack facade is exercised over the loopback.
+# The generated lwipopts.h leads; arch/cc.h is ours; the vendored lwIP headers
+# are SYSTEM (no -Werror on vendored code) and its .c get -w.
 set(_lwip_root ${CMAKE_CURRENT_SOURCE_DIR}/../src/alloy/net)
+include_directories(${ALLOY_LWIPOPTS_DIR})
 include_directories(${_lwip_root}/lwip)
 include_directories(SYSTEM ${_lwip_root}/vendor/lwip/src/include)
 file(GLOB ALLOY_LWIP

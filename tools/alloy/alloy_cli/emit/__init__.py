@@ -62,6 +62,17 @@ def generate(project: Project, db=None, layout: str = "flash") -> list[Path]:
            emit_board_header(board, chip, db.registers), written)
     _write(gen / "board.cpp",
            emit_board_source(board, chip, db.registers, arch_ns), written)
+    # lwIP's config header is a generated fact sheet (features/pools/checksums
+    # derived from the board's MAC + the project's [net] table), not a hand-tuned
+    # C file — emitted only for boards that declare an ethernet role, which is the
+    # same gate the build seam uses to compile lwIP at all. `#include "lwipopts.h"`
+    # resolves against gen/ (already on the include path).
+    if board.get("roles", {}).get("ethernet"):
+        from .lwipopts import net_profile, render_lwipopts  # noqa: PLC0415
+
+        _write(gen / "lwipopts.h",
+               render_lwipopts(net_profile(board, chip, project.net_options())),
+               written)
     return written
 
 
