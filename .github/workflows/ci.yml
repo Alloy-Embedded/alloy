@@ -103,25 +103,29 @@ jobs:
   # UART. The platform (.repl) is generated from chip data, so it can't drift
   # from the real target.
   #
-  #  - uart_echo (firmware_boots.robot): the firmware boots and prints its banner.
-  #  - async_heartbeat (async_runs.robot): the coroutine executor SCHEDULES
+  #  - firmware_boots.robot (uart_echo): boots and prints its banner.
+  #  - uart_echo_roundtrip.robot (uart_echo): injects a line and asserts the
+  #    firmware echoes it back — proves the RX+echo+TX I/O path, not just boot.
+  #  - async_runs.robot (async_heartbeat): the coroutine executor SCHEDULES
   #    REPEATEDLY — after the banner it must emit three successive "beat N" lines,
-  #    each gated behind a `co_await delay(250ms)`. This is what proves the async
-  #    runtime actually runs on the ISA, not just that it compiled.
+  #    each gated behind a `co_await delay(250ms)`. Proves the async runtime
+  #    actually runs on the ISA, not just that it compiled.
   #
-  # async legs are continue-on-error until confirmed green in CI (authored
-  # without a local Renode to validate end-to-end — the host here is Apple
-  # Silicon and the pinned Renode tlib is x86_64); uart_echo stays blocking so
-  # the proven path can't regress. Flip the async legs to blocking (drop the
-  # expression) once green. Extend the matrix as emit/renode.py's RENODE_CPU /
-  # RENODE_UART maps grow to cover more families.
+  # `experimental: true` legs are continue-on-error: a real signal that doesn't
+  # block merges while a new board/behaviour is being confirmed green (the local
+  # host is Apple Silicon and the pinned Renode tlib is x86_64, so these were
+  # authored without an end-to-end local run). Legs WITHOUT the flag are blocking
+  # — the proven path can't regress. Drop `experimental` from a leg once it has a
+  # few green runs. Extend the matrix as emit/renode.py's RENODE_CPU / RENODE_UART
+  # maps grow to cover more families.
   emulate:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.example == 'async_heartbeat' }}
+    continue-on-error: ${{ matrix.experimental == true }}
     strategy:
       fail-fast: false
       matrix:
         include:
+          # Proven-green, blocking — the reference boot oracle.
           - board: nucleo_f722ze
             example: uart_echo
             robot: firmware_boots.robot
@@ -130,14 +134,42 @@ jobs:
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
+          # Async runtime — green once; experimental until the timeout=30 hardening
+          # has a few green runs, then flip to blocking.
           - board: nucleo_f722ze
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
+            experimental: true
           - board: nucleo_g071rb
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
+            experimental: true
+          # Broader boot coverage: emit-verified locally, boot unproven → experimental.
+          # nucleo_g0b1re shares the STM32 USART model; the RP2040 boards exercise
+          # the PL011 UART model for the first time (uart resolves to sysbus.uart0).
+          - board: nucleo_g0b1re
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+            experimental: true
+          - board: rp2040_zero
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+            experimental: true
+          - board: raspberry_pi_pico
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+            experimental: true
+          # I/O behaviour (echo roundtrip), not just boot — new assertion path.
+          - board: nucleo_g071rb
+            example: uart_echo
+            robot: uart_echo_roundtrip.robot
+            banner: alloy uart_echo ready
+            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:

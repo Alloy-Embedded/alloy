@@ -20,7 +20,11 @@ Coroutine Executor Schedules Repeatedly
     Execute Command           include @${RESC}
     Create Terminal Tester    ${UART}
     Start Emulation
-    Wait For Line On Uart     ${BANNER}
-    Wait For Line On Uart     beat 1
-    Wait For Line On Uart     beat 2
-    Wait For Line On Uart     beat 3
+    # timeout=30 (virtual seconds) gives generous headroom over the ~0.75 s of
+    # firmware time to the third beat, so a slow emulated systick can't flake the
+    # run while a genuinely stuck coroutine still fails fast. Prerequisite for
+    # ever making these legs blocking.
+    Wait For Line On Uart     ${BANNER}    timeout=30
+    Wait For Line On Uart     beat 1    timeout=30
+    Wait For Line On Uart     beat 2    timeout=30
+    Wait For Line On Uart     beat 3    timeout=30
