@@ -189,4 +189,29 @@ concept Socket = requires(T& s, std::span<std::uint8_t> rx,
     s.close();
 };
 
+// An IPv4 endpoint: address + port. `addr` is a packed v4 in HOST byte order
+// (a.b.c.d -> (a<<24)|(b<<16)|(c<<8)|d); `port` is host order. A plain POD with
+// defaults on every field (like datetime/can_frame), paired with DatagramSocket
+// the way can_frame is paired with CanBus. Byte order is this exact shift form —
+// do NOT ntohl/htonl the packed word.
+struct ip_endpoint {
+    std::uint32_t addr{};  // packed IPv4, host byte order
+    std::uint16_t port{};  // host byte order
+};
+
+// Connectionless, message-oriented socket (UDP) the alloy-net front end exposes
+// to user code (M2+). Unlike the byte-stream Socket, every datagram carries its
+// own peer: recv_from yields the SENDER's endpoint, send_to targets one. There
+// is no connection to be "connected" — bound() reports whether the local port is
+// claimed. Byte counts are whole-datagram, 0 = none (non-blocking, like Socket).
+template <class T>
+concept DatagramSocket = requires(T& s, std::span<std::uint8_t> rx,
+                                  std::span<const std::uint8_t> tx,
+                                  const ip_endpoint& to, ip_endpoint& from) {
+    { s.send_to(tx, to) }     -> std::same_as<std::uint32_t>;
+    { s.recv_from(rx, from) } -> std::same_as<std::uint32_t>;
+    { s.bound() }             -> std::same_as<bool>;
+    s.close();
+};
+
 }  // namespace alloy

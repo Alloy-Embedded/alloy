@@ -11,9 +11,11 @@
 #include <cstring>
 #include <span>
 
+#include "alloy/concepts.hpp"
 #include "alloy/net/lwip.hpp"
 
 #include "lwip/tcp.h"
+#include "lwip/udp.h"
 
 namespace alloy::net {
 
@@ -181,5 +183,187 @@ public:
         return true;
     }
 };
+
+// UDP socket facade over lwIP's raw UDP API — the connectionless, message-framed
+// sibling of tcp_socket. bind() claims a local port; send_to() targets any peer
+// per datagram; recv_from() yields ONE whole datagram plus its sender. Datagrams
+// ride lwIP's pbuf pool (zero-alloc at this seam) and are kept DISCRETE in a small
+// fixed ring so message boundaries + per-packet source survive — never pbuf_cat'd
+// like the TCP byte stream, which is THE divergence between the two facades.
+// Satisfies alloy::DatagramSocket. Non-movable: lwIP keeps a back-pointer
+// (udp_recv's arg) to it, so it must live at a stable address (a forever-static on
+// firmware). Single-context like tcp_socket: bind/send_to/recv_from/close and the
+// callback all run in the thread that drives stack::poll() — never from an ISR.
+// Drive with stack::poll() in a loop.
+template <std::uint32_t RxDepth = 4>
+class udp_socket {
+    // One received-but-undrained datagram: its pbuf (chain) + who sent it.
+    struct slot {
+        struct pbuf* p = nullptr;
+        alloy::ip_endpoint from{};
+    };
+
+    struct udp_pcb* pcb_ = nullptr;
+    slot rx_[RxDepth]{};        // ring of pending datagrams (static, no malloc)
+    std::uint32_t head_ = 0;    // oldest undrained slot
+    std::uint32_t count_ = 0;   // datagrams waiting (0..RxDepth)
+
+    static udp_socket* self(void* arg) { return static_cast<udp_socket*>(arg); }
+
+    // lwIP source ip_addr_t + host-order port -> our packed host-order endpoint.
+    // Octet-wise via ip4_addr1..4 so it is endianness-safe; ip_2_ip4 is a no-op in
+    // this v4-only build and keeps it correct if IPv6 is ever enabled.
+    static alloy::ip_endpoint endpoint_of(const ip_addr_t* addr, std::uint16_t port) {
+        const ip4_addr_t* v4 = ip_2_ip4(addr);
+        const std::uint32_t packed =
+            (static_cast<std::uint32_t>(ip4_addr1(v4)) << 24) |
+            (static_cast<std::uint32_t>(ip4_addr2(v4)) << 16) |
+            (static_cast<std::uint32_t>(ip4_addr3(v4)) << 8) |
+            static_cast<std::uint32_t>(ip4_addr4(v4));
+        return {packed, port};
+    }
+
+    // The udp_recv callback: lwIP hands us ONE datagram and we OWN p. Unlike the
+    // TCP recv cb this returns void, and p is NEVER a null FIN sentinel. Copy the
+    // sender out BEFORE keeping p (addr may alias into p), then transfer ownership
+    // of p into the ring (freed later in recv_from/close). Ring full -> tail-drop
+    // (UDP is lossy; no backpressure). We still own p on the drop path, so free it.
+    static void cb_recv(void* arg, struct udp_pcb* /*pcb*/, struct pbuf* p,
+                        const ip_addr_t* addr, u16_t port) {
+        udp_socket* s = self(arg);
+        if (p == nullptr) return;              // never for UDP; cheap + safe
+        if (s->count_ >= RxDepth) {            // ring full: drop; we still own p
+            pbuf_free(p);
+            return;
+        }
+        const std::uint32_t i = (s->head_ + s->count_) % RxDepth;
+        s->rx_[i].from = endpoint_of(addr, port);  // COPY sender before we keep p
+        s->rx_[i].p = p;                            // ownership transfers into ring
+        ++s->count_;
+    }
+
+    // Free every buffered datagram (close/dtor). Leaves the socket rebindable.
+    void drain_rx() {
+        while (count_ != 0) {
+            pbuf_free(rx_[head_].p);
+            rx_[head_].p = nullptr;
+            head_ = (head_ + 1) % RxDepth;
+            --count_;
+        }
+        head_ = 0;
+    }
+
+    // The pbuf-alloc idiom that replaces tcp_write(COPY). The caller keeps the
+    // pbuf, so we ALWAYS free it (udp_sendto never consumes p). All-or-nothing:
+    // full size on ERR_OK, else 0.
+    std::uint32_t emit(std::span<const std::uint8_t> data,
+                       const ip4_addr_t& dst, std::uint16_t port) {
+        if (pcb_ == nullptr || data.empty() || data.size() > 0xFFFF) return 0;
+        const std::uint16_t len = static_cast<std::uint16_t>(data.size());
+        struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+        if (p == nullptr) return 0;            // out of PBUF_RAM
+        if (pbuf_take(p, data.data(), len) != ERR_OK) {
+            pbuf_free(p);
+            return 0;
+        }
+        const err_t e = udp_sendto(pcb_, p, &dst, port);
+        pbuf_free(p);                          // always — success OR failure
+        return e == ERR_OK ? len : 0;
+    }
+
+public:
+    udp_socket() = default;
+    ~udp_socket() { close(); }                 // close() drains ring + frees pcb
+    udp_socket(const udp_socket&) = delete;
+    udp_socket& operator=(const udp_socket&) = delete;
+
+    // Claim a local port (0 = ephemeral) and start receiving. One call arms both
+    // the callback and the back-pointer (udp_recv sets both; no separate arg call).
+    // false on pcb-alloc failure (MEMP_NUM_UDP_PCB exhausted) or bind failure
+    // (ERR_USE: port already in use).
+    [[nodiscard]] bool bind(std::uint16_t port) {
+        if (pcb_ != nullptr) return false;     // already bound
+        pcb_ = udp_new();                      // IPv4 pcb; NULL on OOM
+        if (pcb_ == nullptr) return false;
+        if (udp_bind(pcb_, IP_ADDR_ANY, port) != ERR_OK) {
+            udp_remove(pcb_);                  // undo the half-built pcb
+            pcb_ = nullptr;
+            return false;
+        }
+        udp_recv(pcb_, cb_recv, this);         // arg = this (the back-pointer)
+        return true;
+    }
+
+    // Send one datagram to an explicit peer (connectionless; dest is per-call).
+    // Concept form (ip_endpoint) + an ergonomic ipv4/port overload mirroring the
+    // octet style of stack::up()/tcp connect({...}, port). Returns bytes sent
+    // (== data.size()) on success, 0 otherwise.
+    [[nodiscard]] std::uint32_t send_to(std::span<const std::uint8_t> data,
+                                        const alloy::ip_endpoint& to) {
+        ip4_addr_t dst;
+        IP4_ADDR(&dst, (to.addr >> 24) & 0xFF, (to.addr >> 16) & 0xFF,
+                 (to.addr >> 8) & 0xFF, to.addr & 0xFF);
+        return emit(data, dst, to.port);
+    }
+    [[nodiscard]] std::uint32_t send_to(std::span<const std::uint8_t> data,
+                                        ipv4 ip, std::uint16_t port) {
+        ip4_addr_t dst;
+        IP4_ADDR(&dst, ip.o[0], ip.o[1], ip.o[2], ip.o[3]);
+        return emit(data, dst, port);
+    }
+
+    // Copy ONE whole datagram (if any) into out; report its sender. Returns bytes
+    // copied (0 if none queued). The datagram is fully consumed even when out is
+    // too small — the excess is discarded (BSD datagram-truncation semantics), so
+    // size out to the max expected payload (e.g. 1472 over a 1500 MTU).
+    [[nodiscard]] std::uint32_t recv_from(std::span<std::uint8_t> out,
+                                          alloy::ip_endpoint& from) {
+        if (count_ == 0 || out.empty()) return 0;
+        slot& sl = rx_[head_];
+        const std::uint16_t take = out.size() < sl.p->tot_len
+            ? static_cast<std::uint16_t>(out.size())
+            : sl.p->tot_len;
+        pbuf_copy_partial(sl.p, out.data(), take, 0);  // walks the chain, offset 0
+        from = sl.from;                                // sender captured in cb_recv
+        pbuf_free(sl.p);                               // whole datagram consumed
+        sl.p = nullptr;
+        head_ = (head_ + 1) % RxDepth;
+        --count_;
+        return take;
+    }
+    [[nodiscard]] std::uint32_t recv_from(std::span<std::uint8_t> out,
+                                          ipv4& fip, std::uint16_t& fport) {
+        alloy::ip_endpoint from{};
+        const std::uint32_t n = recv_from(out, from);
+        if (n != 0) {
+            fip = ipv4{static_cast<std::uint8_t>((from.addr >> 24) & 0xFF),
+                       static_cast<std::uint8_t>((from.addr >> 16) & 0xFF),
+                       static_cast<std::uint8_t>((from.addr >> 8) & 0xFF),
+                       static_cast<std::uint8_t>(from.addr & 0xFF)};
+            fport = from.port;
+        }
+        return n;
+    }
+
+    [[nodiscard]] bool bound() const { return pcb_ != nullptr; }
+    // Distinguishes a queued zero-length datagram from "nothing waiting" (recv_from
+    // returns 0 for both).
+    [[nodiscard]] bool pending() const { return count_ != 0; }
+
+    // Idempotent. Unhook the callback FIRST so no late dispatch touches a freed
+    // object; udp_remove unbinds AND frees the pcb (no udp_close/udp_abort exist).
+    // THEN drain buffered pbufs (independent pool allocations, not owned by the
+    // pcb) — this ordering matters; do not reorder into a use-after-free.
+    void close() {
+        if (pcb_ != nullptr) {
+            udp_recv(pcb_, nullptr, nullptr);
+            udp_remove(pcb_);
+            pcb_ = nullptr;
+        }
+        drain_rx();
+    }
+};
+
+static_assert(alloy::DatagramSocket<udp_socket<>>);
 
 }  // namespace alloy::net

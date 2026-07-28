@@ -147,3 +147,177 @@ ALLOY_TEST(net_socket_tcp_echo_loopback) {
     ALLOY_CHECK_EQ(got_n, mlen);
     ALLOY_CHECK(std::memcmp(got, msg, mlen) == 0);
 }
+
+// The UDP facade satisfies the datagram contract (compile-time, like NetDevice).
+static_assert(alloy::DatagramSocket<alloy::net::udp_socket<>>);
+
+// UDP echo over lwIP's loopback (127.0.0.1), driven through udp_socket — bind,
+// send_to, recv_from (with the sender), echo back. No stack<Dev>/netif needed:
+// ensure_init() brings up the loopif and pump()'s netif_poll_all() drains it.
+// Exercises BOTH the ipv4 send overload and the ip_endpoint recv form.
+ALLOY_TEST(net_socket_udp_echo_loopback) {
+    alloy::net::ensure_init();
+
+    alloy::net::udp_socket<> srv;
+    ALLOY_CHECK(srv.bind(7));
+    alloy::net::udp_socket<> client;
+    ALLOY_CHECK(client.bind(0));  // ephemeral local port
+
+    const char msg[] = "hello alloy udp";
+    const std::uint32_t mlen = sizeof(msg) - 1;
+    // ipv4 ergonomic overload: 127.0.0.1:7
+    ALLOY_CHECK_EQ(client.send_to({reinterpret_cast<const std::uint8_t*>(msg), mlen},
+                                  alloy::net::ipv4{127, 0, 0, 1}, 7), mlen);
+
+    alloy::ip_endpoint from{};
+    std::uint8_t rx[64];
+    std::uint32_t rn = 0;
+    for (int i = 0; i < 3000 && rn == 0; ++i) {
+        pump();
+        rn = srv.recv_from(rx, from);           // server drains one datagram...
+        if (rn != 0) (void)srv.send_to({rx, rn}, from);  // ...and echoes to its source
+    }
+    ALLOY_CHECK_EQ(rn, mlen);
+    ALLOY_CHECK_EQ(from.addr, (std::uint32_t{127} << 24) | 1u);  // 127.0.0.1 packed
+    ALLOY_CHECK(from.port != 0);                // client's ephemeral port recorded
+
+    alloy::ip_endpoint echo_from{};
+    std::uint8_t got[64];
+    std::uint32_t gn = 0;
+    for (int i = 0; i < 3000 && gn == 0; ++i) {
+        pump();
+        gn = client.recv_from(got, echo_from);
+    }
+    ALLOY_CHECK_EQ(gn, mlen);
+    ALLOY_CHECK(std::memcmp(got, msg, mlen) == 0);
+    ALLOY_CHECK_EQ(echo_from.port, static_cast<std::uint16_t>(7));  // echo came from srv:7
+}
+
+// UDP is message-oriented: three datagrams sent back-to-back must come back as
+// three DISCRETE datagrams, each with its own length — never coalesced the way
+// the TCP byte stream would merge them. Also proves the ring buffers depth > 1.
+ALLOY_TEST(net_socket_udp_preserves_datagram_boundaries) {
+    alloy::net::ensure_init();
+
+    alloy::net::udp_socket<> srv;
+    ALLOY_CHECK(srv.bind(7001));  // distinct port from the echo test
+    alloy::net::udp_socket<> client;
+    ALLOY_CHECK(client.bind(0));
+
+    const char* msgs[3] = {"one", "twotwo", "three-3"};
+    for (int k = 0; k < 3; ++k) {
+        const auto len = static_cast<std::uint32_t>(std::strlen(msgs[k]));
+        ALLOY_CHECK_EQ(client.send_to({reinterpret_cast<const std::uint8_t*>(msgs[k]), len},
+                                      alloy::net::ipv4{127, 0, 0, 1}, 7001), len);
+    }
+    for (int i = 0; i < 300; ++i) pump();  // deliver all three
+
+    // Three recv_from calls return the three datagrams individually, in order.
+    for (int k = 0; k < 3; ++k) {
+        alloy::ip_endpoint f{};
+        std::uint8_t b[64];
+        const std::uint32_t n = srv.recv_from(b, f);
+        const auto len = static_cast<std::uint32_t>(std::strlen(msgs[k]));
+        ALLOY_CHECK_EQ(n, len);
+        ALLOY_CHECK(std::memcmp(b, msgs[k], len) == 0);
+    }
+    // Ring is drained.
+    alloy::ip_endpoint f{};
+    std::uint8_t b[64];
+    ALLOY_CHECK_EQ(srv.recv_from(b, f), 0u);
+    ALLOY_CHECK(!srv.pending());
+}
+
+// An oversized datagram is truncated to the caller's buffer (BSD semantics) AND
+// still fully consumed — the ownership-critical branch (pbuf_free + ring advance
+// on take != tot_len) that guards against a leaked/stuck datagram.
+ALLOY_TEST(net_socket_udp_truncates_oversized_datagram) {
+    alloy::net::ensure_init();
+
+    alloy::net::udp_socket<> srv;
+    ALLOY_CHECK(srv.bind(7002));
+    alloy::net::udp_socket<> client;
+    ALLOY_CHECK(client.bind(0));
+
+    const char msg[] = "0123456789";  // 10 bytes
+    const std::uint32_t mlen = sizeof(msg) - 1;
+    ALLOY_CHECK_EQ(client.send_to({reinterpret_cast<const std::uint8_t*>(msg), mlen},
+                                  alloy::net::ipv4{127, 0, 0, 1}, 7002), mlen);
+
+    alloy::ip_endpoint from{};
+    std::uint8_t out4[4];  // deliberately smaller than the 10-byte datagram
+    std::uint32_t n = 0;
+    for (int i = 0; i < 3000 && n == 0; ++i) {
+        pump();
+        n = srv.recv_from(out4, from);
+    }
+    ALLOY_CHECK_EQ(n, 4u);                          // clamped to out.size(), not tot_len
+    ALLOY_CHECK(std::memcmp(out4, msg, 4) == 0);    // first 4 bytes delivered
+    ALLOY_CHECK(!srv.pending());                    // whole datagram consumed despite truncation
+    std::uint8_t b[64];
+    ALLOY_CHECK_EQ(srv.recv_from(b, from), 0u);     // ring not stuck: nothing left
+}
+
+// When the RX ring is full, the newest datagram is tail-dropped IN the callback
+// (pbuf freed there) — the other ownership-critical branch. A depth-2 socket fed
+// three datagrams keeps the first two and drops the third.
+ALLOY_TEST(net_socket_udp_ring_full_drops_newest) {
+    alloy::net::ensure_init();
+
+    alloy::net::udp_socket<2> srv;  // ring depth 2
+    ALLOY_CHECK(srv.bind(7003));
+    alloy::net::udp_socket<> client;
+    ALLOY_CHECK(client.bind(0));
+
+    const char* msgs[3] = {"aa", "bbb", "cccc"};
+    for (int k = 0; k < 3; ++k) {
+        const auto len = static_cast<std::uint32_t>(std::strlen(msgs[k]));
+        ALLOY_CHECK_EQ(client.send_to({reinterpret_cast<const std::uint8_t*>(msgs[k]), len},
+                                      alloy::net::ipv4{127, 0, 0, 1}, 7003), len);
+    }
+    for (int i = 0; i < 300; ++i) pump();  // deliver all three at the ring
+
+    // Only the first two survive; the third was dropped when count_ hit RxDepth.
+    for (int k = 0; k < 2; ++k) {
+        alloy::ip_endpoint f{};
+        std::uint8_t b[64];
+        const std::uint32_t n = srv.recv_from(b, f);
+        const auto len = static_cast<std::uint32_t>(std::strlen(msgs[k]));
+        ALLOY_CHECK_EQ(n, len);
+        ALLOY_CHECK(std::memcmp(b, msgs[k], len) == 0);
+    }
+    alloy::ip_endpoint f{};
+    std::uint8_t b[64];
+    ALLOY_CHECK_EQ(srv.recv_from(b, f), 0u);  // third was dropped, not queued
+    ALLOY_CHECK(!srv.pending());
+}
+
+// close() leaves the socket rebindable: bind -> close -> bind the same port, and
+// the rebound socket still receives. Proves close() clears pcb_ and the ring.
+ALLOY_TEST(net_socket_udp_rebinds_after_close) {
+    alloy::net::ensure_init();
+
+    alloy::net::udp_socket<> s;
+    ALLOY_CHECK(s.bind(7004));
+    ALLOY_CHECK(s.bound());
+    s.close();
+    ALLOY_CHECK(!s.bound());
+    ALLOY_CHECK(s.bind(7004));  // rebind the same port
+
+    alloy::net::udp_socket<> client;
+    ALLOY_CHECK(client.bind(0));
+    const char msg[] = "reb";
+    const std::uint32_t mlen = sizeof(msg) - 1;
+    ALLOY_CHECK_EQ(client.send_to({reinterpret_cast<const std::uint8_t*>(msg), mlen},
+                                  alloy::net::ipv4{127, 0, 0, 1}, 7004), mlen);
+
+    alloy::ip_endpoint f{};
+    std::uint8_t b[16];
+    std::uint32_t n = 0;
+    for (int i = 0; i < 3000 && n == 0; ++i) {
+        pump();
+        n = s.recv_from(b, f);
+    }
+    ALLOY_CHECK_EQ(n, mlen);
+    ALLOY_CHECK(std::memcmp(b, msg, mlen) == 0);
+}
