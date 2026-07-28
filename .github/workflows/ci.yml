@@ -147,19 +147,13 @@ jobs:
             banner: alloy async_heartbeat ready
             experimental: true
           # Broader boot coverage: emit-verified locally, boot unproven → experimental.
-          # nucleo_g0b1re shares the STM32 USART model; the RP2040 boards exercise
-          # the PL011 UART model for the first time (uart resolves to sysbus.uart0).
+          # nucleo_g0b1re shares the proven STM32 USART model and boots green.
+          # The RP2040 boards (rp2040_zero / raspberry_pi_pico) are DEFERRED: they
+          # emit a valid .repl but the minimal CPU+UART platform is not enough for
+          # them to boot — the firmware needs XOSC/PLL/clocks/resets (and the boot2
+          # stage) modelled before the PL011 UART produces output. Re-add once
+          # emit/renode.py grows an RP2040 platform (own effort, not a map tweak).
           - board: nucleo_g0b1re
-            example: uart_echo
-            robot: firmware_boots.robot
-            banner: alloy uart_echo ready
-            experimental: true
-          - board: rp2040_zero
-            example: uart_echo
-            robot: firmware_boots.robot
-            banner: alloy uart_echo ready
-            experimental: true
-          - board: raspberry_pi_pico
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
