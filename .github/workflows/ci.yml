@@ -160,6 +160,15 @@ jobs:
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
             experimental: true
+          # New VENDOR in the oracle: Microchip SAME70 (Cortex-M7). The platform
+          # (SAM_USART, clockFrequency) is verified to LOAD locally; whether the
+          # model's register layout matches alloy's microchip/usart_v1 driver well
+          # enough to print the banner is the CI-only unknown → experimental.
+          - board: same70_xplained
+            example: uart_echo
+            robot: firmware_boots.robot
+            banner: alloy uart_echo ready
+            experimental: true
           # I/O behaviour (echo roundtrip), not just boot — new assertion path.
           - board: nucleo_g071rb
             example: uart_echo

@@ -42,6 +42,16 @@ RENODE_UART = {
     "st/usart_v3": "UART.STM32F7_USART",
     "st/usart_v4": "UART.STM32F7_USART",
     "raspberrypi/uart_pl011": "UART.PL011",
+    "microchip/usart_v1": "UART.SAM_USART",  # SAME70/SAMV71 USART (Cortex-M7)
+}
+
+# The .repl property that feeds a UART model its input clock. Most Renode UART
+# models name it `frequency`; SAM_USART's constructor parameter is `clockFrequency`
+# and Renode rejects the platform (E25: no suitable constructor) if the name is
+# wrong. The VALUE is immaterial to the headless terminal tester — it reads a
+# logical byte stream, not a real baud rate — but the NAME must match the model.
+_UART_CLOCK_PROP = {
+    "UART.SAM_USART": "clockFrequency",
 }
 
 # Renode I2C CONTROLLER model per IP version — same idea as RENODE_UART, and the
@@ -140,6 +150,7 @@ def emit_renode_platform(chip: dict[str, Any], board: dict[str, Any]) -> str:
     flash = _mem(chip, "flash")
     ram = _mem(chip, "ram")
     base = int(periph["base"], 16)
+    uart_clock = _UART_CLOCK_PROP.get(model, "frequency")
     platform = f"""{_REPL_BANNER}// {chip['vendor']}/{chip['part']} — minimal platform for headless CI emulation.
 
 cpu: CPU.CortexM @ sysbus
@@ -158,7 +169,7 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
     size: {int(ram['size']):#x}
 
 {name}: {model} @ sysbus {base:#010x}
-    frequency: 8000000
+    {uart_clock}: 8000000
     IRQ -> nvic@{irqn}
 """
     i2c = _resolve_i2c(chip, board)
