@@ -148,45 +148,37 @@ jobs:
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
-          # Broader boot coverage: emit-verified locally, boot unproven → experimental.
-          # nucleo_g0b1re shares the proven STM32 USART model and boots green.
-          # The RP2040 boards (rp2040_zero / raspberry_pi_pico) are DEFERRED: they
-          # emit a valid .repl but the minimal CPU+UART platform is not enough for
-          # them to boot — the firmware needs XOSC/PLL/clocks/resets (and the boot2
-          # stage) modelled before the PL011 UART produces output. Re-add once
-          # emit/renode.py grows an RP2040 platform (own effort, not a map tweak).
+          # Broader board coverage — BLOCKING (deterministic boot, green on
+          # several runs). nucleo_g0b1re (STM32G0) shares the proven STM32 USART
+          # model; same70_xplained is a whole new VENDOR, Microchip Cortex-M7 on
+          # UART.SAM_USART. The RP2040 boards stay DEFERRED — this Renode build
+          # ships no RP2040 peripheral models at all (not a platform-emit gap; it
+          # needs a newer Renode). See [[alloy-audit-2026-07]].
           - board: nucleo_g0b1re
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
-            experimental: true
-          # New VENDOR in the oracle: Microchip SAME70 (Cortex-M7). The platform
-          # (SAM_USART, clockFrequency) is verified to LOAD locally; whether the
-          # model's register layout matches alloy's microchip/usart_v1 driver well
-          # enough to print the banner is the CI-only unknown → experimental.
           - board: same70_xplained
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
-            experimental: true
-          # I/O behaviour (echo roundtrip), not just boot — new assertion path.
+          # I/O behaviour (echo roundtrip), not just boot — newest assertion path,
+          # experimental one more cycle before it blocks.
           - board: nucleo_g071rb
             example: uart_echo
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
             experimental: true
-          # Driver conformance: the emitter adds the real STM32 I2C controller and
-          # the robot attaches a DummyI2CSlave at 0x08 (the FIRST scanned address),
-          # so a working driver/controller/slave handshake prints "0x08" on the
-          # first probe — sidestepping the earlier full-scan stall where ~60 empty
-          # addresses each burned the driver's poll budget before reaching the
-          # device. Experimental: whether the slave ACKs alloy's probe against the
-          # STM32F7_I2C model is the CI-only unknown (no local execution here).
-          - board: nucleo_g071rb
-            example: i2c_scan
-            robot: i2c_scan.robot
-            banner: alloy i2c_scan
-            experimental: true
+          # I2C driver conformance (i2c_scan + tests/emulation/i2c_scan.robot) is
+          # DEFERRED. emit/renode.py DOES add the real STM32 I2C controller (kept —
+          # validated to load, inert for the legs above). But CI showed even a
+          # probe of a PRESENT slave (DummyI2CSlave at 0x08, the first address
+          # scanned) never completes: the driver spins its full poll budget because
+          # Renode's STM32F7_I2C model doesn't raise the ISR flag st_i2c_v2 waits
+          # on (TXIS/TC/STOPF). That is a driver↔model protocol mismatch only
+          # debuggable by EXECUTING and watching the register traffic — needs a
+          # local runnable Renode (this host can't execute the x86_64 tlib), not a
+          # blind CI-only loop. See [[alloy-audit-2026-07]].
     steps:
       - uses: actions/checkout@v4
         with:
