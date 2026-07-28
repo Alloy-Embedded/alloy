@@ -13,6 +13,7 @@
 #include <cstring>
 #include <span>
 
+#include "alloy/net/http.hpp"
 #include "alloy/net/lwip.hpp"
 #include "alloy/net/socket.hpp"
 #include "alloy_test.hpp"
@@ -436,3 +437,181 @@ ALLOY_TEST(net_dhcp_client_leases) {
     ALLOY_CHECK(ip.o[0] == 10 && ip.o[1] == 0 && ip.o[2] == 0 && ip.o[3] == 50);
 }
 #endif  // LWIP_DHCP
+
+// An HTTP GET over lwIP loopback returns the handler's page. Runs the request
+// TWICE, reusing BOTH the server's connection socket and the client — which also
+// pins tcp_socket's reuse reset (a stale peer_closed_/rx_ from the first exchange
+// would make the second connection look instantly closed).
+ALLOY_TEST(net_http_serves_a_page) {
+    alloy::net::ensure_init();
+
+    static const char kPage[] = "<html><body>hello from alloy</body></html>";
+    auto handler = [](const alloy::net::http_request& rq) -> alloy::net::http_response {
+        if (rq.method == "GET" && rq.path == "/") {
+            return {200, "OK", "text/html", kPage};
+        }
+        return {404, "Not Found", "text/plain", "nope\n"};
+    };
+
+    alloy::net::http_server<> srv;
+    ALLOY_CHECK(srv.listen(80));
+
+    alloy::net::tcp_socket client;  // reused across both rounds
+    for (int round = 0; round < 2; ++round) {
+        ALLOY_CHECK(client.connect({127, 0, 0, 1}, 80));
+        for (int i = 0; i < 3000 && !client.connected(); ++i) {
+            pump();
+            srv.poll(handler);
+        }
+        ALLOY_CHECK(client.connected());
+
+        const char req[] = "GET / HTTP/1.1\r\nHost: alloy\r\n\r\n";
+        const std::uint32_t rl = sizeof(req) - 1;
+        ALLOY_CHECK_EQ(client.send({reinterpret_cast<const std::uint8_t*>(req), rl}), rl);
+
+        std::uint8_t resp[512];
+        std::uint32_t rn = 0;
+        for (int i = 0; i < 3000 && !client.eof(); ++i) {
+            pump();
+            srv.poll(handler);
+            if (rn < sizeof(resp)) rn += client.recv({resp + rn, sizeof(resp) - rn});
+        }
+        ALLOY_CHECK(client.eof());  // server sent Connection: close and closed
+        client.close();
+
+        const std::string_view r{reinterpret_cast<const char*>(resp), rn};
+        ALLOY_CHECK(r.substr(0, 15) == "HTTP/1.1 200 OK");
+        ALLOY_CHECK(r.find("Content-Type: text/html") != std::string_view::npos);
+        ALLOY_CHECK(r.find("Content-Length: 42") != std::string_view::npos);
+        ALLOY_CHECK(r.find(kPage) != std::string_view::npos);  // the body arrived
+    }
+}
+
+// Connect a FRESH client to 127.0.0.1:port, send `req`, and drive server+client
+// until the whole response is received (server closed). Returns the response bytes
+// as a view into `out`.
+template <class Srv, class Handler>
+static std::string_view http_roundtrip(Srv& srv, Handler&& h, std::uint16_t port,
+                                       std::string_view req, std::uint8_t* out, std::uint32_t cap) {
+    alloy::net::tcp_socket c;
+    if (!c.connect({127, 0, 0, 1}, port)) return {};
+    for (int i = 0; i < 5000 && !c.connected(); ++i) { pump(); srv.poll(h); }
+    (void)c.send({reinterpret_cast<const std::uint8_t*>(req.data()),
+                  static_cast<std::uint32_t>(req.size())});
+    std::uint32_t rn = 0;
+    for (int i = 0; i < 5000 && !c.eof(); ++i) {
+        pump();
+        srv.poll(h);
+        if (rn < cap) rn += c.recv({out + rn, cap - rn});
+    }
+    c.close();
+    return {reinterpret_cast<const char*>(out), rn};
+}
+
+// A response larger than the TCP send window (TCP_SND_BUF ~5.8 KB) can't go out in
+// one send() — the server must resume across polls at the right offset. Serve 12 KB
+// and check the client gets every byte, in order.
+ALLOY_TEST(net_http_streams_a_large_body) {
+    alloy::net::ensure_init();
+    static char kBig[12000];
+    for (std::uint32_t i = 0; i < sizeof(kBig); ++i) kBig[i] = static_cast<char>('A' + i % 26);
+    auto handler = [](const alloy::net::http_request&) -> alloy::net::http_response {
+        return {200, "OK", "application/octet-stream", {kBig, sizeof(kBig)}};
+    };
+    alloy::net::http_server<> srv;
+    ALLOY_CHECK(srv.listen(8090));
+
+    static std::uint8_t resp[13000];
+    const std::string_view r =
+        http_roundtrip(srv, handler, 8090, "GET / HTTP/1.1\r\n\r\n", resp, sizeof(resp));
+    ALLOY_CHECK(r.substr(0, 15) == "HTTP/1.1 200 OK");
+    ALLOY_CHECK(r.find("Content-Length: 12000") != std::string_view::npos);
+    const std::size_t he = r.find("\r\n\r\n");
+    ALLOY_CHECK(he != std::string_view::npos);
+    const std::string_view got = r.substr(he + 4);
+    ALLOY_CHECK_EQ(static_cast<std::uint32_t>(got.size()), 12000u);   // all body bytes
+    ALLOY_CHECK(std::memcmp(got.data(), kBig, sizeof(kBig)) == 0);    // in order, intact
+}
+
+// The handler's 404 and the server's own 431 (headers larger than the buffer).
+ALLOY_TEST(net_http_404_and_431) {
+    alloy::net::ensure_init();
+    static const char kPage[] = "<html>ok</html>";
+    auto handler = [](const alloy::net::http_request& rq) -> alloy::net::http_response {
+        if (rq.method == "GET" && rq.path == "/") return {200, "OK", "text/html", kPage};
+        return {404, "Not Found", "text/plain", "nope\n"};
+    };
+    static std::uint8_t resp[256];
+
+    alloy::net::http_server<> srv;
+    ALLOY_CHECK(srv.listen(8091));
+    const std::string_view r404 =
+        http_roundtrip(srv, handler, 8091, "GET /missing HTTP/1.1\r\n\r\n", resp, sizeof(resp));
+    ALLOY_CHECK(r404.substr(0, 12) == "HTTP/1.1 404");
+
+    // A 64-byte request buffer with a header line that never terminates -> 431.
+    alloy::net::http_server<64> tiny;
+    ALLOY_CHECK(tiny.listen(8092));
+    const std::string_view r431 = http_roundtrip(
+        tiny, handler, 8092,
+        "GET / HTTP/1.1\r\nX-Pad: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\n",
+        resp, sizeof(resp));
+    ALLOY_CHECK(r431.substr(0, 12) == "HTTP/1.1 431");
+}
+
+// Reuse across connections must clear stale receive bytes: round 1 sends a body
+// that overflows the small request buffer, leaving undrained bytes in the server's
+// socket when it closes; round 2 must still parse a clean GET (200), which fails if
+// adopt() didn't free the stale rx_ (it would prepend to round 2's request).
+ALLOY_TEST(net_http_reuse_clears_stale_rx) {
+    alloy::net::ensure_init();
+    static const char kPage[] = "<html>ok</html>";
+    auto handler = [](const alloy::net::http_request& rq) -> alloy::net::http_response {
+        if (rq.method == "GET" && rq.path == "/") return {200, "OK", "text/html", kPage};
+        return {404, "Not Found", "text/plain", "nope\n"};
+    };
+    alloy::net::http_server<64> srv;  // small buffer so the trailing body overflows
+    ALLOY_CHECK(srv.listen(8093));
+    static std::uint8_t resp[256];
+
+    const std::string_view r1 = http_roundtrip(
+        srv, handler, 8093,
+        "GET / HTTP/1.1\r\n\r\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        resp, sizeof(resp));
+    ALLOY_CHECK(r1.substr(0, 15) == "HTTP/1.1 200 OK");
+
+    const std::string_view r2 =
+        http_roundtrip(srv, handler, 8093, "GET / HTTP/1.1\r\n\r\n", resp, sizeof(resp));
+    ALLOY_CHECK(r2.substr(0, 15) == "HTTP/1.1 200 OK");  // fresh parse, not garbage
+}
+
+// A client that connects but never completes the request must not wedge the
+// single-connection server: after the request timeout it is dropped and a fresh
+// client is served. Without the timeout the server would be stuck in `receiving`
+// forever (a permanent DoS).
+ALLOY_TEST(net_http_drops_a_stalled_client) {
+    alloy::net::ensure_init();
+    static const char kPage[] = "<html>ok</html>";
+    auto handler = [](const alloy::net::http_request&) -> alloy::net::http_response {
+        return {200, "OK", "text/html", kPage};
+    };
+    alloy::net::http_server<> srv;
+    ALLOY_CHECK(srv.listen(8094));
+
+    // A stalled client: connects, then sends nothing.
+    alloy::net::tcp_socket slow;
+    ALLOY_CHECK(slow.connect({127, 0, 0, 1}, 8094));
+    for (int i = 0; i < 5000 && !slow.connected(); ++i) { pump(); srv.poll(handler); }
+    ALLOY_CHECK(slow.connected());
+
+    // Jump past the request deadline; the next poll drops the stalled connection.
+    g_now_ms += alloy::net::http_server<>::request_timeout_ms + 1000;
+    srv.poll(handler);
+
+    // The server recovered: a fresh client is served normally.
+    static std::uint8_t resp[256];
+    const std::string_view r =
+        http_roundtrip(srv, handler, 8094, "GET / HTTP/1.1\r\n\r\n", resp, sizeof(resp));
+    ALLOY_CHECK(r.substr(0, 15) == "HTTP/1.1 200 OK");
+    slow.close();
+}

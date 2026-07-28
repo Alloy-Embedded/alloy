@@ -1,0 +1,5 @@
+[project]
+name = "http_server"
+
+[board]
+id = "same70_xplained"

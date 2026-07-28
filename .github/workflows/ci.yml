@@ -281,7 +281,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        example: [tcp_echo, udp_echo, dhcp_echo]
+        example: [tcp_echo, udp_echo, dhcp_echo, http_server]
     steps:
       - uses: actions/checkout@v4
         with:

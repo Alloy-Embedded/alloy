@@ -61,6 +61,19 @@ class tcp_socket {
         tcp_err(pcb_, cb_err);
     }
 
+    // Drop any leftover receive state so a REUSED socket (adopt/connect after a
+    // prior close()) starts the new connection clean — otherwise a stale
+    // peer_closed_ makes the next connection look instantly EOF, and a stale rx_
+    // chain leaks + mixes another peer's bytes in.
+    void reset_rx() {
+        if (rx_ != nullptr) {
+            pbuf_free(rx_);
+            rx_ = nullptr;
+        }
+        rx_off_ = 0;
+        peer_closed_ = false;
+    }
+
 public:
     tcp_socket() = default;
     ~tcp_socket() {
@@ -72,6 +85,7 @@ public:
 
     // Adopt a pcb handed over by a listener (already established).
     void adopt(struct tcp_pcb* pcb) {
+        reset_rx();  // clean slate if this socket served a prior connection
         pcb_ = pcb;
         established_ = true;
         arm();
@@ -79,6 +93,7 @@ public:
 
     // Start connecting to a peer. Async: poll the stack until connected().
     [[nodiscard]] bool connect(ipv4 ip, std::uint16_t port) {
+        reset_rx();  // clean slate if this socket was reused
         pcb_ = tcp_new();
         if (pcb_ == nullptr) return false;
         arm();
@@ -118,6 +133,10 @@ public:
     [[nodiscard]] bool connected() const { return pcb_ != nullptr && established_ && !peer_closed_; }
     // True when the peer closed AND we've drained everything it sent.
     [[nodiscard]] bool eof() const { return peer_closed_ && rx_ == nullptr; }
+    // True while the pcb is valid — false only after a peer RST/abort (cb_err)
+    // freed it. Unlike connected(), a peer that half-closed (sent FIN) is still
+    // alive(): we can finish sending our response before closing.
+    [[nodiscard]] bool alive() const { return pcb_ != nullptr; }
 
     void close() {
         if (pcb_ != nullptr) {
