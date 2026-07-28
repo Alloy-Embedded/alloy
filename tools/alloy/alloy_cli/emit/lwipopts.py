@@ -42,6 +42,7 @@ class NetProfile:
     udp: bool = True
     tcp: bool = True
     dhcp: bool = False              # static IP for v1; opt in per project.
+    dhcp_acd: bool = True           # RFC5227 ARP conflict detection before binding.
     dns: bool = False
     igmp: bool = False
     autoip: bool = False
@@ -86,6 +87,7 @@ def net_profile(board: dict[str, Any], chip: dict[str, Any],
         udp=bool(net_opts.get("udp", True)),
         tcp=bool(net_opts.get("tcp", True)),
         dhcp=bool(net_opts.get("dhcp", False)),
+        dhcp_acd=bool(net_opts.get("dhcp_acd", True)),
         dns=bool(net_opts.get("dns", False)),
         igmp=bool(net_opts.get("igmp", False)),
         autoip=bool(net_opts.get("autoip", False)),
@@ -164,6 +166,7 @@ def render_lwipopts(p: NetProfile) -> str:
 #define LWIP_UDP                   {_b(p.udp)}
 #define LWIP_TCP                   {_b(p.tcp)}
 #define LWIP_DHCP                  {_b(p.dhcp)}
+#define LWIP_DHCP_DOES_ACD_CHECK   {_b(p.dhcp and p.dhcp_acd)}
 #define LWIP_DNS                   {_b(p.dns)}
 #define LWIP_IGMP                  {_b(p.igmp)}
 #define LWIP_AUTOIP                {_b(p.autoip)}

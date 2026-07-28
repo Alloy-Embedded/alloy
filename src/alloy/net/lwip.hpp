@@ -12,6 +12,7 @@
 
 #include "alloy/concepts.hpp"
 
+#include "lwip/dhcp.h"  // #if LWIP_DHCP-guarded: expands to nothing on a static-IP build
 #include "lwip/etharp.h"
 #include "lwip/init.h"
 #include "lwip/netif.h"
@@ -49,6 +50,7 @@ class stack {
     struct netif netif_ {};
     std::uint8_t mac_[6]{};
     bool up_ = false;
+    bool dhcp_ = false;  // brought up via up_dhcp() — selects the teardown path
     // One TX staging buffer: lwIP pbuf chains are gathered here before the
     // single-shot NetDevice.transmit(). Sized for a full frame.
     alignas(4) std::uint8_t txbuf_[1536]{};
@@ -83,7 +85,19 @@ public:
     // tests that spin stacks up and down; on firmware the stack is a forever
     // static and this never runs.
     ~stack() {
-        if (up_) netif_remove(&netif_);
+        if (up_) {
+#if LWIP_DHCP
+            if (dhcp_) {
+                // Non-blocking teardown (nothing on the wire): stop the FSM, detach
+                // the recv handler, drop the shared DHCP-pcb refcount, then free the
+                // mem_malloc'd struct dhcp — else a host test leaks it. Order matters:
+                // cleanup reads the netif's DHCP slot, so it runs before netif_remove.
+                dhcp_stop(&netif_);
+                dhcp_cleanup(&netif_);
+            }
+#endif
+            netif_remove(&netif_);
+        }
     }
 
     stack(const stack&) = delete;
@@ -103,6 +117,39 @@ public:
         netif_set_up(&netif_);
         netif_set_link_up(&netif_);
         up_ = true;
+    }
+
+#if LWIP_DHCP
+    // Bring the stack + interface up via DHCP instead of a static address. The
+    // netif starts at 0.0.0.0; poll() then drives DISCOVER/OFFER/REQUEST/ACK and
+    // the lease timers off sys_check_timeouts(). Call once after the link is up
+    // and lwIP has a valid, advancing sys_now(); read the result with has_lease()
+    // + ip_address(). dhcp_start allocates its own shared UDP pcb (port 68) and a
+    // per-netif struct dhcp, freed in ~stack().
+    void up_dhcp(const std::uint8_t mac[6]) {
+        for (int i = 0; i < 6; ++i) mac_[i] = mac[i];
+        ensure_init();
+        // 0.0.0.0/0.0.0.0/0.0.0.0 — dhcp_start forces this internally too.
+        netif_add(&netif_, IP4_ADDR_ANY4, IP4_ADDR_ANY4, IP4_ADDR_ANY4,
+                  this, init_cb, ethernet_input);
+        netif_set_default(&netif_);
+        netif_set_up(&netif_);       // NETIF_FLAG_UP — dhcp_start asserts it
+        netif_set_link_up(&netif_);  // link up, or dhcp_start defers the DISCOVER
+        (void)dhcp_start(&netif_);   // sends DISCOVER synchronously (link is up)
+        up_ = true;
+        dhcp_ = true;
+    }
+
+    // True only while a DHCP lease is actually held (BOUND/RENEWING/REBINDING) —
+    // distinguishes a real lease from a leftover/AutoIP/static address.
+    [[nodiscard]] bool has_lease() const { return dhcp_supplied_address(&netif_) != 0; }
+#endif
+
+    // Current IPv4 as four octets (0.0.0.0 before a lease). Works for the static
+    // path too; ip4_addr1..4 are already dotted-order, so no byte swap.
+    [[nodiscard]] ipv4 ip_address() const {
+        const ip4_addr_t* a = netif_ip4_addr(&netif_);
+        return ipv4{{ip4_addr1(a), ip4_addr2(a), ip4_addr3(a), ip4_addr4(a)}};
     }
 
     // Drive the stack: feed one received frame (if any) and run timeouts.

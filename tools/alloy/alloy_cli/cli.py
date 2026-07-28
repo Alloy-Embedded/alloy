@@ -467,7 +467,12 @@ def cmd_test(args: argparse.Namespace) -> int:
 
     lwipopts_dir = build_dir / "gen"
     lwipopts_dir.mkdir(parents=True, exist_ok=True)
-    (lwipopts_dir / "lwipopts.h").write_text(render_lwipopts(NetProfile(host=True)))
+    # dhcp=True so the DHCP client host test (net_dhcp_client_leases) links; loopback
+    # + DHCP coexist and the other net tests are unaffected. ACD stays ON (the
+    # firmware default) so the test drives the exact ACK -> CHECKING -> acd -> bind
+    # path silicon runs, not a divergent immediate-bind shortcut.
+    (lwipopts_dir / "lwipopts.h").write_text(
+        render_lwipopts(NetProfile(host=True, dhcp=True)))
 
     configure = ["cmake", "-S", str(tests_dir), "-B", str(build_dir),
                  f"-DALLOY_LWIPOPTS_DIR={lwipopts_dir}"]

@@ -65,6 +65,15 @@ def test_feature_toggles_flip_the_right_defines() -> None:
     assert d["LWIP_UDP"] == "0"
 
 
+def test_dhcp_acd_follows_dhcp_and_its_own_knob() -> None:
+    # ACD is only meaningful with DHCP, and defaults on (matches lwIP).
+    assert _defines(render_lwipopts(NetProfile()))["LWIP_DHCP_DOES_ACD_CHECK"] == "0"
+    assert _defines(render_lwipopts(NetProfile(dhcp=True)))["LWIP_DHCP_DOES_ACD_CHECK"] == "1"
+    # A project (or the host test profile) can turn ACD off.
+    d = _defines(render_lwipopts(NetProfile(dhcp=True, dhcp_acd=False)))
+    assert d["LWIP_DHCP_DOES_ACD_CHECK"] == "0"
+
+
 def test_checksum_offload_turns_off_software_checksums() -> None:
     d = _defines(render_lwipopts(NetProfile(checksum_offload=True)))
     for name in ("CHECKSUM_GEN_IP", "CHECKSUM_GEN_TCP", "CHECKSUM_GEN_UDP",

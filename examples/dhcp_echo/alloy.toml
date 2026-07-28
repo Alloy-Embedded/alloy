@@ -1,0 +1,11 @@
+[project]
+name = "dhcp_echo"
+
+[board]
+id = "same70_xplained"
+
+# Turn on the DHCP client in the generated lwipopts.h (facts from data). ACD (ARP
+# conflict detection before binding) stays on by default — set dhcp_acd = false to
+# lease faster at the cost of skipping the RFC5227 check.
+[net]
+dhcp = true
