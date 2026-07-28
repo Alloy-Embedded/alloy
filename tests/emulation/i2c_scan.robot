@@ -15,13 +15,16 @@ Resource          ${RENODEKEYWORDS}
 I2C Scanner Finds A Device On The Bus
     Execute Command           include @${RESC}
     # Attach the test fixture — a slave the firmware should discover — to the
-    # generated controller. DummyI2CSlave ACKs its own address, so probe(0x44)
-    # returns true. This is a TEST fixture, deliberately NOT emitted into the
-    # platform (which carries only real silicon).
-    Execute Command           machine LoadPlatformDescriptionFromString "sht31: Mocks.DummyI2CSlave @ i2c1 0x44"
+    # generated controller, at 0x08: the FIRST address the scanner probes. A
+    # DummyI2CSlave ACKs its own address, so if the driver/controller/slave
+    # handshake works, "0x08" appears on the very first probe — before the ~60
+    # empty addresses that would each burn the driver's poll budget. This is a
+    # TEST fixture, deliberately NOT emitted into the platform (only real silicon).
+    Execute Command           machine LoadPlatformDescriptionFromString "probe_target: Mocks.DummyI2CSlave @ i2c1 0x08"
     Create Terminal Tester    ${UART}
     Start Emulation
     Wait For Line On Uart     alloy i2c_scan    timeout=30
-    # The scan prints "scan: 0x44 " when the probe ACKs. Match the address as a
-    # regex so the surrounding "scan: "/trailing space don't matter.
-    Wait For Line On Uart     0x44    treatAsRegex=True    timeout=30
+    # The scan prints "scan: 0x08 " as soon as the first probe ACKs. Match the
+    # address in the still-unfinished line (the newline only comes after the full
+    # 0x08..0x77 sweep) so the assertion fires on the ACK, not the sweep's end.
+    Wait For Line On Uart     0x08    treatAsRegex=True    includeUnfinishedLine=True    timeout=15
