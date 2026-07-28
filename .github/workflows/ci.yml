@@ -134,18 +134,20 @@ jobs:
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
-          # Async runtime — green once; experimental until the timeout=30 hardening
-          # has a few green runs, then flip to blocking.
+          # Async runtime — BLOCKING. Green on every run (banner + beat 1/2/3 +
+          # tick), and timeout=30 gives ~37x headroom over the ~0.8 s of firmware
+          # time needed, so "the coroutine executor schedules two concurrent tasks
+          # on the real ISA" is now a hard gate: a regression in the runtime breaks
+          # CI. This is the Track-1 payoff — emulation proves behaviour, not just
+          # compilation.
           - board: nucleo_f722ze
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
-            experimental: true
           - board: nucleo_g071rb
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
-            experimental: true
           # Broader boot coverage: emit-verified locally, boot unproven → experimental.
           # nucleo_g0b1re shares the proven STM32 USART model and boots green.
           # The RP2040 boards (rp2040_zero / raspberry_pi_pico) are DEFERRED: they
