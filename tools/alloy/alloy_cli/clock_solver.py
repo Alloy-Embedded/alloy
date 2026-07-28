@@ -91,12 +91,19 @@ def _same70_program(ws: int, m: int, n: int, _div: int, tok: Any) -> list[dict[s
     mula = n - 1  # PLLA multiplies by MULA+1
     # CKGR_PLLAR = ONE(bit29) | MULA<<16 | PLLACOUNT(0x3F)<<8 | DIVA. 12 MHz xtal.
     pllar = 0x2000_0000 | (mula << 16) | (0x3F << 8) | m
+    # The fixed prologue below is frequency-INDEPENDENT and is copied verbatim from
+    # the silicon-validated `plla_150mhz` profile in alloy-devices
+    # (chips/microchip/atsame70q21.yaml). These four writes MUST be full-register
+    # writes, not decomposable `rmw` field ops: WDT/RSWDT `MR` are write-once, and
+    # `CKGR_MOR` is KEY-protected (0x37) — a read-modify-write would be rejected by
+    # the silicon. test_same70_prologue_matches_chip_data pins them to the yaml so
+    # they can't drift from the single source of truth.
     return [
-        {"op": "write", "peripheral": "wdt", "register": "MR", "value": "0x0FFF8000"},
-        {"op": "write", "peripheral": "rswdt", "register": "MR", "value": "0x0FFF8000"},
-        {"op": "write", "peripheral": "pmc", "register": "CKGR_MOR", "value": "0x0037FF29"},
+        {"op": "write", "peripheral": "wdt", "register": "MR", "value": "0x0FFF8000"},  # contract-ok: watchdog-disable, write-once MR; mirrors atsame70q21.yaml
+        {"op": "write", "peripheral": "rswdt", "register": "MR", "value": "0x0FFF8000"},  # contract-ok: reinforced-watchdog-disable, write-once MR; mirrors atsame70q21.yaml
+        {"op": "write", "peripheral": "pmc", "register": "CKGR_MOR", "value": "0x0037FF29"},  # contract-ok: enable 12 MHz crystal, KEY=0x37 full write; mirrors atsame70q21.yaml
         _poll("pmc", "SR", "MOSCXTS", 100000),
-        {"op": "write", "peripheral": "pmc", "register": "CKGR_MOR", "value": "0x0137FF29"},
+        {"op": "write", "peripheral": "pmc", "register": "CKGR_MOR", "value": "0x0137FF29"},  # contract-ok: select crystal as main clock, KEY=0x37 full write; mirrors atsame70q21.yaml
         _poll("pmc", "SR", "MOSCSELS", 100000),
         {"op": "rmw", "peripheral": "efc", "register": "FMR", "fields": {"FWS": ws}},
         {"op": "write", "peripheral": "pmc", "register": "CKGR_PLLAR",

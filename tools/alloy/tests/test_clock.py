@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from alloy_cli.clock_solver import MODELS, solve
 from alloy_cli.emit.common import EmitError
+
+_DEVICES_ROOT = Path(__file__).resolve().parents[3].parent / "alloy-devices"
+_have_devices = (_DEVICES_ROOT / "chips").is_dir()
 
 
 def _pll_fields(result: dict) -> dict:
@@ -75,6 +80,27 @@ def test_same70_150mhz_reproduces_the_validated_recipe() -> None:
 def test_esp32_clock_is_not_solvable() -> None:
     with pytest.raises(EmitError, match="fixed"):
         solve("esp32", 160_000_000)
+
+
+@pytest.mark.skipif(not _have_devices, reason="alloy-devices not beside the framework")
+def test_same70_prologue_matches_chip_data() -> None:
+    # The SAME70 solver copies a fixed WDT/CKGR_MOR init prologue into every program
+    # (see clock_solver._same70_program). Those magic writes also live, as the single
+    # source of truth, in the validated plla profile in the chip yaml. Pin them together
+    # so the duplication can never drift silently.
+    import yaml  # noqa: PLC0415
+
+    chip = yaml.safe_load((_DEVICES_ROOT / "chips/microchip/atsame70q21.yaml").read_text())
+    profiles = chip["clock"]["profiles"]
+    validated = next(p for name, p in profiles.items() if name.startswith("plla_"))
+
+    def fixed_writes(program: list[dict]) -> list[tuple]:
+        return [(s["peripheral"], s["register"], s["value"]) for s in program
+                if s.get("op") == "write" and s["register"] in ("MR", "CKGR_MOR")]
+
+    solved = solve("same70", 150_000_000)["profile"]["program"]
+    assert fixed_writes(solved) == fixed_writes(validated["program"]), \
+        "SAME70 solver prologue drifted from the validated atsame70q21.yaml profile"
 
 
 def test_every_model_with_flash_ws_covers_its_max() -> None:
