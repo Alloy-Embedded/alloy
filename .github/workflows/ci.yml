@@ -166,6 +166,16 @@ jobs:
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
             experimental: true
+          # Driver conformance: the platform now carries the real STM32 I2C
+          # controller; the robot attaches a DummyI2CSlave at 0x44 and asserts the
+          # scanner discovers it — proving the I2C driver talks to a device on the
+          # bus with no hardware. Experimental until CI confirms the slave ACKs the
+          # probe (unverifiable locally — the x86_64 Renode tlib can't run here).
+          - board: nucleo_g071rb
+            example: i2c_scan
+            robot: i2c_scan.robot
+            banner: alloy i2c_scan
+            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:

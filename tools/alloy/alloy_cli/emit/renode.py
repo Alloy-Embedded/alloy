@@ -44,6 +44,17 @@ RENODE_UART = {
     "raspberrypi/uart_pl011": "UART.PL011",
 }
 
+# Renode I2C CONTROLLER model per IP version — same idea as RENODE_UART, and the
+# same honesty rule: only IPs whose register layout Renode models compatibly are
+# listed. This adds the real silicon controller to the emulated platform (a
+# faithful, data-driven addition); the DummyI2CSlave a conformance test needs is a
+# TEST FIXTURE the Robot attaches at runtime, not something the platform emitter
+# bakes in. A board without a curated i2c role, or whose i2c IP is absent here,
+# simply gets no I2C block — the rest of the platform is unaffected.
+RENODE_I2C = {
+    "st/i2c_v2": "I2C.STM32F7_I2C",  # the v2 IP alloy's STM32G0 chips declare
+}
+
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
 # Cortex-M, the same constant the hand-written arch layer uses (src/alloy/arch/),
 # NOT a per-chip silicon fact. Kept as a named constant so the codegen carries no
@@ -79,6 +90,29 @@ def _resolve(chip: dict[str, Any], board: dict[str, Any]):
     return cpu, name, periph, model, irqn
 
 
+def _resolve_i2c(chip: dict[str, Any], board: dict[str, Any]):
+    """Optional gate for the I2C controller: returns (name, base, model, irq) if
+    the board has a curated i2c role whose IP Renode models, else None. Never
+    raises — I2C is an ADDITION to the platform, so a board without it just emits
+    the CPU/UART platform unchanged."""
+    roles = board.get("roles") or board
+    role = roles.get("i2c")
+    if not role or "peripheral" not in role:
+        return None
+    name = role["peripheral"]
+    periph = chip["peripherals"].get(name)
+    if periph is None or periph.get("uncurated"):
+        return None
+    model = RENODE_I2C.get(periph.get("ip"))
+    if model is None:
+        return None
+    irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
+    irqn = irqs.get(periph.get("irq"))
+    if irqn is None:
+        return None
+    return name, int(periph["base"], 16), model, irqn
+
+
 def renode_supported(chip: dict[str, Any], board: dict[str, Any]) -> bool:
     """True if this board can be emulated (used to gate the CI matrix)."""
     try:
@@ -106,7 +140,7 @@ def emit_renode_platform(chip: dict[str, Any], board: dict[str, Any]) -> str:
     flash = _mem(chip, "flash")
     ram = _mem(chip, "ram")
     base = int(periph["base"], 16)
-    return f"""{_REPL_BANNER}// {chip['vendor']}/{chip['part']} — minimal platform for headless CI emulation.
+    platform = f"""{_REPL_BANNER}// {chip['vendor']}/{chip['part']} — minimal platform for headless CI emulation.
 
 cpu: CPU.CortexM @ sysbus
     cpuType: "{cpu}"
@@ -127,6 +161,19 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
     frequency: 8000000
     IRQ -> nvic@{irqn}
 """
+    i2c = _resolve_i2c(chip, board)
+    if i2c is not None:
+        i2c_name, i2c_base, i2c_model, _ = i2c
+        # No interrupt line: I2C.STM32F7_I2C exposes EventInterrupt/ErrorInterrupt
+        # (not the UART's `IRQ`), and on real STM32G0 they route through EXTI,
+        # which this minimal platform omits. alloy's I2C driver is polling
+        # (bounded-spin on the status register), so the controller works for
+        # probe/read/write with no interrupt wired — and an unconnected model is
+        # inert for the boot/UART legs that share this platform.
+        platform += f"""
+{i2c_name}: {i2c_model} @ sysbus {i2c_base:#010x}
+"""
+    return platform
 
 
 def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
