@@ -65,6 +65,13 @@ RENODE_I2C = {
     "st/i2c_v2": "I2C.STM32F7_I2C",  # the v2 IP alloy's STM32G0 chips declare
 }
 
+# Renode SPI CONTROLLER model per IP version — same rule again. Unlike the I2C
+# model, SPI.STM32SPI exposes an `IRQ` line, so it is wired to the NVIC.
+RENODE_SPI = {
+    "st/spi_v2": "SPI.STM32SPI",
+    "st/spi_v3": "SPI.STM32SPI",
+}
+
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
 # Cortex-M, the same constant the hand-written arch layer uses (src/alloy/arch/),
 # NOT a per-chip silicon fact. Kept as a named constant so the codegen carries no
@@ -114,6 +121,28 @@ def _resolve_i2c(chip: dict[str, Any], board: dict[str, Any]):
     if periph is None or periph.get("uncurated"):
         return None
     model = RENODE_I2C.get(periph.get("ip"))
+    if model is None:
+        return None
+    irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
+    irqn = irqs.get(periph.get("irq"))
+    if irqn is None:
+        return None
+    return name, int(periph["base"], 16), model, irqn
+
+
+def _resolve_spi(chip: dict[str, Any], board: dict[str, Any]):
+    """Optional gate for the SPI controller: returns (name, base, model, irq) if
+    the board has a curated spi role whose IP Renode models, else None. Like
+    _resolve_i2c, never raises — SPI is an addition to the platform."""
+    roles = board.get("roles") or board
+    role = roles.get("spi")
+    if not role or "peripheral" not in role:
+        return None
+    name = role["peripheral"]
+    periph = chip["peripherals"].get(name)
+    if periph is None or periph.get("uncurated"):
+        return None
+    model = RENODE_SPI.get(periph.get("ip"))
     if model is None:
         return None
     irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
@@ -183,6 +212,16 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
         # inert for the boot/UART legs that share this platform.
         platform += f"""
 {i2c_name}: {i2c_model} @ sysbus {i2c_base:#010x}
+"""
+    spi = _resolve_spi(chip, board)
+    if spi is not None:
+        spi_name, spi_base, spi_model, spi_irq = spi
+        # SPI.STM32SPI has an IRQ line (unlike the I2C model), wired to the NVIC.
+        # Like the I2C controller, this is real silicon added to the platform; a
+        # test attaches any SPI slave device at runtime.
+        platform += f"""
+{spi_name}: {spi_model} @ sysbus {spi_base:#010x}
+    IRQ -> nvic@{spi_irq}
 """
     return platform
 
