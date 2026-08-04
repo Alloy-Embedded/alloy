@@ -178,16 +178,20 @@ jobs:
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
             experimental: true
-          # I2C driver conformance (i2c_scan + tests/emulation/i2c_scan.robot) is
-          # DEFERRED. emit/renode.py DOES add the real STM32 I2C controller (kept —
-          # validated to load, inert for the legs above). But CI showed even a
-          # probe of a PRESENT slave (DummyI2CSlave at 0x08, the first address
-          # scanned) never completes: the driver spins its full poll budget because
-          # Renode's STM32F7_I2C model doesn't raise the ISR flag st_i2c_v2 waits
-          # on (TXIS/TC/STOPF). That is a driver↔model protocol mismatch only
-          # debuggable by EXECUTING and watching the register traffic — needs a
-          # local runnable Renode (this host can't execute the x86_64 tlib), not a
-          # blind CI-only loop. See [[alloy-audit-2026-07]].
+          # I2C DRIVER CONFORMANCE — the driver talks to a device on the bus with
+          # no hardware. The platform carries the real STM32 I2C controller; the
+          # robot attaches a DummyI2CSlave at 0x08 and i2c_read does a 1-byte write
+          # + 1-byte read, printing "device acked" only if both were ACKed. (A bus
+          # SCAN can't be emulated: probe() is a zero-length write / NBYTES=0, valid
+          # on silicon but unimplemented by Renode's STM32F7_I2C model — diagnosed
+          # by tracing register traffic on a local arm64 Renode. A real >=1-byte
+          # transfer is what the model supports.) Verified locally incl. a negative
+          # control (no slave → "no ack"); experimental one cycle before it blocks.
+          - board: nucleo_g071rb
+            example: i2c_read
+            robot: i2c_read.robot
+            banner: alloy i2c_read
+            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -237,7 +241,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:
