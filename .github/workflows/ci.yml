@@ -210,10 +210,18 @@ jobs:
           release: "14.2.Rel1"
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
-      - name: install renode (latest portable)
+      - name: install renode (PINNED v1.16.1 portable)
         run: |
-          wget -q https://builds.renode.io/renode-latest.linux-portable.tar.gz
-          mkdir -p "$HOME/renode" && tar xf renode-latest.linux-portable.tar.gz -C "$HOME/renode" --strip-components=1
+          # Pinned, NOT builds.renode.io/renode-latest (a moving nightly). A stable
+          # release makes the emulation gate reproducible and — critically — lets a
+          # peripheral model verified against local Renode 1.16.1 be trusted in CI.
+          # renode-latest drift is exactly what broke a platform once (SPI.STM32SPI
+          # gained a required `series` ctor param). Bump deliberately, re-verifying
+          # locally against the same version.
+          RENODE_VER=1.16.1
+          url="https://github.com/renode/renode/releases/download/v${RENODE_VER}/renode-${RENODE_VER}.linux-portable.tar.gz"
+          wget -q "$url" -O renode.tar.gz
+          mkdir -p "$HOME/renode" && tar xf renode.tar.gz -C "$HOME/renode" --strip-components=1
           echo "$HOME/renode" >> "$GITHUB_PATH"
           # renode-test (Robot framework runner) needs these Python deps
           pip3 install --quiet -r "$HOME/renode/tests/requirements.txt"
