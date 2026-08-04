@@ -213,16 +213,13 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
         platform += f"""
 {i2c_name}: {i2c_model} @ sysbus {i2c_base:#010x}
 """
-    spi = _resolve_spi(chip, board)
-    if spi is not None:
-        spi_name, spi_base, spi_model, spi_irq = spi
-        # SPI.STM32SPI has an IRQ line (unlike the I2C model), wired to the NVIC.
-        # Like the I2C controller, this is real silicon added to the platform; a
-        # test attaches any SPI slave device at runtime.
-        platform += f"""
-{spi_name}: {spi_model} @ sysbus {spi_base:#010x}
-    IRQ -> nvic@{spi_irq}
-"""
+    # NOTE: SPI controller emission is intentionally NOT done here yet. Renode's
+    # SPI.STM32SPI constructor gained a REQUIRED `series` parameter after v1.16.1
+    # (present on builds.renode.io/renode-latest, which CI used), so emitting the
+    # controller without it made EVERY spi-role board's platform fail to load in
+    # CI. Re-enabled once the CI Renode is pinned to a version whose SPI.STM32SPI
+    # matches what _resolve_spi emits. See [[alloy-audit-2026-07]]. _resolve_spi +
+    # RENODE_SPI are kept for that follow-up.
     return platform
 
 

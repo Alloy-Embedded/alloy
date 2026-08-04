@@ -189,17 +189,13 @@ jobs:
             example: i2c_read
             robot: i2c_read.robot
             banner: alloy i2c_read
-          # SPI DRIVER CONFORMANCE — the full-duplex sibling of i2c_read. The
-          # platform carries the real STM32 SPI controller; the robot attaches a
-          # DummySPISlave primed with 0x5A and spi_read exchanges a byte, printing
-          # "spi: 0x5a" iff it read back exactly what the slave shifted out (a
-          # different primed value prints a different byte — no coincidental pass).
-          # Verified locally on the native arm64 Renode; experimental one cycle.
-          - board: nucleo_g071rb
-            example: spi_read
-            robot: spi_read.robot
-            banner: alloy spi_read
-            experimental: true
+          # SPI DRIVER CONFORMANCE (spi_read + tests/emulation/spi_read.robot) is
+          # TEMPORARILY HELD. The proof works (verified locally on native arm64
+          # Renode 1.16.1: DummySPISlave primed with EnqueueValue, firmware reads it
+          # back on MISO), but Renode-latest's SPI.STM32SPI needs a required `series`
+          # ctor param that 1.16.1's doesn't, so emitting the controller broke every
+          # spi-role platform in CI. Re-enable together with pinning the CI Renode
+          # to a matching version. See [[alloy-audit-2026-07]].
     steps:
       - uses: actions/checkout@v4
         with:
