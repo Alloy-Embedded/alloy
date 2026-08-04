@@ -2,46 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/getting-started/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/adding-a-board/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/async/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/boards/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/cli/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/examples/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/peripherals/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/portable-code/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/reference/architecture/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/reference/error-handling/</loc>
-         <lastmod>2026-07-28</lastmod>
+         <lastmod>2026-08-04</lastmod>
     </url>
 </urlset>
