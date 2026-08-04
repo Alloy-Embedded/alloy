@@ -394,9 +394,29 @@ def cmd_debug_info(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_emulate(args: argparse.Namespace) -> int:
+def _find_renode() -> str | None:
+    """Locate a runnable Renode launcher: PATH first, then an alloy-managed install
+    under ~/.alloy/tools/ (the same place `alloy` keeps its cross toolchains). This
+    lets `alloy emulate` run locally right after a Renode is dropped in there,
+    without the user editing their PATH. Newest version wins."""
+    import os  # noqa: PLC0415
     import shutil  # noqa: PLC0415
 
+    on_path = shutil.which("renode")
+    if on_path:
+        return on_path
+    tools = Path.home() / ".alloy" / "tools"
+    # macOS .app bundle first, then Linux/portable layouts.
+    for pattern in ("renode-*/Renode.app/Contents/MacOS/renode",
+                    "renode*/Renode.app/Contents/MacOS/renode",
+                    "renode*/renode", "renode*/bin/renode"):
+        for hit in sorted(tools.glob(pattern), reverse=True):
+            if hit.is_file() and os.access(hit, os.X_OK):
+                return str(hit)
+    return None
+
+
+def cmd_emulate(args: argparse.Namespace) -> int:
     from .emit.renode import (  # noqa: PLC0415
         debug_uart_name,
         emit_renode_platform,
@@ -427,10 +447,11 @@ def cmd_emulate(args: argparse.Namespace) -> int:
     if getattr(args, "emit_only", False):
         return 0
 
-    renode = shutil.which("renode")
+    renode = _find_renode()
     if renode is None:
-        print("error: `renode` not found on PATH — install Renode to run the "
-              "emulation, or pass --emit-only to just write the .repl/.resc",
+        print("error: no runnable Renode found — put it on PATH, or drop a Renode "
+              "install under ~/.alloy/tools/ (e.g. ~/.alloy/tools/renode-1.16.1/"
+              "Renode.app), or pass --emit-only to just write the .repl/.resc",
               file=sys.stderr)
         return 1
     return subprocess.call(
