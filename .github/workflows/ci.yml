@@ -162,36 +162,33 @@ jobs:
             example: uart_echo
             robot: firmware_boots.robot
             banner: alloy uart_echo ready
-          # The async runtime on a SECOND vendor: two concurrent coroutines on a
-          # Microchip Cortex-M7, proving the heap-less executor + timer wheel are
-          # genuinely portable, not ST-specific. Compiles + loads locally;
-          # experimental until CI confirms the beats/tick land on SAM_USART.
+          # The async runtime on a SECOND vendor — BLOCKING. Two concurrent
+          # coroutines on a Microchip Cortex-M7 (banner + beat 1/2/3 + tick on
+          # SAM_USART), proving the heap-less executor + timer wheel are genuinely
+          # portable, not ST-specific. Green in CI + locally (native arm64 Renode).
           - board: same70_xplained
             example: async_heartbeat
             robot: async_runs.robot
             banner: alloy async_heartbeat ready
-            experimental: true
-          # I/O behaviour (echo roundtrip), not just boot — newest assertion path,
-          # experimental one more cycle before it blocks.
+          # I/O behaviour (echo roundtrip) — BLOCKING. Injects a line, asserts the
+          # firmware echoes it. Green across several runs.
           - board: nucleo_g071rb
             example: uart_echo
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
-            experimental: true
-          # I2C DRIVER CONFORMANCE — the driver talks to a device on the bus with
-          # no hardware. The platform carries the real STM32 I2C controller; the
-          # robot attaches a DummyI2CSlave at 0x08 and i2c_read does a 1-byte write
-          # + 1-byte read, printing "device acked" only if both were ACKed. (A bus
-          # SCAN can't be emulated: probe() is a zero-length write / NBYTES=0, valid
-          # on silicon but unimplemented by Renode's STM32F7_I2C model — diagnosed
-          # by tracing register traffic on a local arm64 Renode. A real >=1-byte
-          # transfer is what the model supports.) Verified locally incl. a negative
-          # control (no slave → "no ack"); experimental one cycle before it blocks.
+          # I2C DRIVER CONFORMANCE — BLOCKING. The driver talks to a device on the
+          # bus with no hardware: the platform carries the real STM32 I2C
+          # controller, the robot attaches a DummyI2CSlave at 0x08, and i2c_read
+          # does a 1-byte write + 1-byte read, printing "device acked" only if both
+          # were ACKed. (A bus SCAN can't be emulated: probe() is a zero-length
+          # write / NBYTES=0, valid on silicon but unimplemented by Renode's
+          # STM32F7_I2C model — diagnosed by tracing register traffic on a local
+          # arm64 Renode. A real >=1-byte transfer is what the model supports.)
+          # Green in CI + locally, with a negative control (no slave → "no ack").
           - board: nucleo_g071rb
             example: i2c_read
             robot: i2c_read.robot
             banner: alloy i2c_read
-            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
