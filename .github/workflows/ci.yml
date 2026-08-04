@@ -195,13 +195,12 @@ jobs:
           # attaches a DummySPISlave primed with 0x5A via EnqueueValue and spi_read
           # exchanges a byte, printing "spi: 0x5a" iff it read back exactly what the
           # slave shifted out on MISO (a different primed value prints a different
-          # byte — no coincidental pass). Verified locally on Renode 1.16.1 (the
-          # pinned version); experimental one cycle, then blocks.
+          # byte — no coincidental pass). Green on the pinned Renode 1.16.1 in CI
+          # and locally — BLOCKING.
           - board: nucleo_g071rb
             example: spi_read
             robot: spi_read.robot
             banner: alloy spi_read
-            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
