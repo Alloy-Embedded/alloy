@@ -1,0 +1,5 @@
+[project]
+name = "bootloader_uart"
+
+[board]
+id = "nucleo_g071rb"

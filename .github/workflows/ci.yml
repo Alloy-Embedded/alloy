@@ -273,6 +273,78 @@ jobs:
             --variable BANNER:'${{ matrix.banner }}' \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/${{ matrix.robot }}"
 
+  # The UART update bootloader end-to-end in emulation: build the bootloader
+  # (--slot bl), pack a slot-A app with `alloy image`, place it at the slot base,
+  # and assert verify -> newest-valid pick -> Cortex-M jump -> the APP's banner;
+  # plus the blank-board path (stays recoverable in update mode). Verified green
+  # locally on the pinned Renode; experimental one cycle, then blocks.
+  bootloader-e2e:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: install renode (PINNED v1.16.1 portable)
+        run: |
+          RENODE_VER=1.16.1
+          url="https://github.com/renode/renode/releases/download/v${RENODE_VER}/renode-${RENODE_VER}.linux-portable.tar.gz"
+          wget -q "$url" -O renode.tar.gz
+          mkdir -p "$HOME/renode" && tar xf renode.tar.gz -C "$HOME/renode" --strip-components=1
+          echo "$HOME/renode" >> "$GITHUB_PATH"
+          pip3 install --quiet -r "$HOME/renode/tests/requirements.txt"
+      - name: build the bootloader (--slot bl) + emit the platform
+        working-directory: alloy/examples/bootloader_uart
+        run: |
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot bl
+          uv run --project ../../tools/alloy alloy emulate --board nucleo_g071rb --emit-only
+          out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
+          echo "repl=$out/nucleo_g071rb.repl" >> "$GITHUB_ENV"
+          echo "bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+      - name: build a slot-A app + pack it with `alloy image`
+        working-directory: alloy/examples/uart_echo
+        run: |
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot a
+          arm-none-eabi-objcopy -O binary \
+            .alloy/build-tree/nucleo_g071rb/out/uart_echo.elf /tmp/app.bin
+          uv run --project ../../tools/alloy alloy image /tmp/app.bin --set-version 1 -o /tmp/app.img
+          # the slot base comes from the GENERATED layout, never hardcoded here
+          slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
+            .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
+          echo "slot_a=$slot_a" >> "$GITHUB_ENV"
+      - name: craft the two machines (image in slot A / blank slots)
+        run: |
+          cat > /tmp/full.resc <<EOF
+          using sysbus
+          mach create "boot"
+          machine LoadPlatformDescription @$repl
+          sysbus LoadELF @$bl_elf
+          sysbus LoadBinary @/tmp/app.img $slot_a
+          EOF
+          cat > /tmp/empty.resc <<EOF
+          using sysbus
+          mach create "bootE"
+          machine LoadPlatformDescription @$repl
+          sysbus LoadELF @$bl_elf
+          EOF
+      - name: run the bootloader oracle
+        run: |
+          renode-test \
+            --variable RESC_FULL:/tmp/full.resc \
+            --variable RESC_EMPTY:/tmp/empty.resc \
+            --variable UART:sysbus.usart2 \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+
   build:
     runs-on: ubuntu-latest
     strategy:
