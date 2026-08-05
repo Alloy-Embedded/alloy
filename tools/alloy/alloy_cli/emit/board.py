@@ -56,9 +56,12 @@ def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) 
     return None
 
 
-def _ip_stem(chip, periph_name):
-    """The IP file stem for a peripheral (microchip/gmac_v1 -> gmac_v1)."""
-    return chip["peripherals"][periph_name]["ip"].split("/")[-1]
+def _eth_mac_names(ip_key: str) -> tuple[str, str]:
+    """(HAL include stem, HAL type name) for a MAC IP version, so a MAC is picked
+    by data like every other peripheral: microchip/gmac_v1 ->
+    ('microchip_gmac_v1', 'gmac'); st/eth_v1 -> ('st_eth_v1', 'eth')."""
+    vendor, ip = ip_key.split("/", 1)
+    return f"{vendor}_{ip}", ip.rsplit("_v", 1)[0]
 
 
 def _require_curated(board_id: str, chip: dict[str, Any], periph: str, role: str) -> None:
@@ -563,12 +566,19 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"    alloy::hal::pin_impl<alloy::dev::{pn}_t>::make_af({rmii_spec['af']});\n"
             for pn in rmii
         )
-        extra_includes.append(f"alloy/hal/net/microchip_{_ip_stem(chip, eth['peripheral'])}.hpp")
+        # The MAC HAL is selected by IP version, exactly like every other
+        # peripheral (facts generated, behavior per-IP): the include is
+        # alloy/hal/net/<vendor>_<ip>.hpp and the type is alloy::hal::<ip-stem>
+        # (gmac_v1 -> alloy::hal::gmac, eth_v1 -> alloy::hal::eth). A second MAC
+        # family plugs in with data + its HAL, no change here.
+        eth_ip = chip["peripherals"][eth["peripheral"]]["ip"]  # e.g. "microchip/gmac_v1"
+        eth_include, eth_hal = _eth_mac_names(eth_ip)
+        extra_includes.append(f"alloy/hal/net/{eth_include}.hpp")
         extra_includes.append(f"alloy/drivers/net/{phy['kind']}.hpp")
         decls.append(
-            f"// Ethernet: GMAC + {phy['kind']} PHY (addr {phy.get('addr', 0)}, "
-            f"{phy.get('mode', 'rmii')}).\n"
-            f"using eth_mac_t = alloy::hal::gmac<alloy::dev::{eth['peripheral']}_t>;\n"
+            f"// Ethernet: {eth_hal} MAC ({eth_ip}) + {phy['kind']} PHY (addr "
+            f"{phy.get('addr', 0)}, {phy.get('mode', 'rmii')}).\n"
+            f"using eth_mac_t = alloy::hal::{eth_hal}<alloy::dev::{eth['peripheral']}_t>;\n"
             f"inline eth_mac_t eth{{}};\n"
             f"using eth_reset_t = alloy::gpio::output<alloy::dev::{eth['reset_pin']}_t, "
             f"alloy::gpio::active_low_t>;\n"
@@ -576,7 +586,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"inline constexpr std::uint8_t eth_phy_addr = {phy.get('addr', 0)}u;\n"
             f"inline alloy::drivers::{phy['kind']}<eth_mac_t, eth_reset_t> eth_phy{{\n"
             f"    eth, eth_reset, eth_phy_addr}};\n"
-            f"// Route the RMII pads to the GMAC (peripheral function) — call\n"
+            f"// Route the RMII pads to the MAC (peripheral function) — call\n"
             f"// once before eth.begin_mdio().\n"
             f"inline void eth_configure_pins() {{\n{pin_cfg}}}"
         )

@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from alloy_cli.emit.board import _polarity, _region_bytes_ok
+from alloy_cli.emit.board import _eth_mac_names, _polarity, _region_bytes_ok
 from alloy_cli.emit.common import (
     EmitError,
     cpp_ip_namespace,
@@ -65,6 +65,14 @@ def test_field_lookup_rejects_out_of_range_and_unknown() -> None:
         field_lookup(reg, "MODER16")  # count is 16 -> indices 0..15
     with pytest.raises(EmitError, match="no field NOPE"):
         field_lookup(reg, "NOPE")
+
+
+def test_eth_mac_names_are_ip_version_driven() -> None:
+    # The MAC HAL is selected by IP version, so a 2nd MAC family plugs in with data
+    # only — no GMAC hardcoding in the emitter.
+    assert _eth_mac_names("microchip/gmac_v1") == ("microchip_gmac_v1", "gmac")
+    assert _eth_mac_names("st/eth_v1") == ("st_eth_v1", "eth")
+    assert _eth_mac_names("st/eth_v2b") == ("st_eth_v2b", "eth")
 
 
 def test_polarity_maps_high_and_treats_anything_else_as_low() -> None:
