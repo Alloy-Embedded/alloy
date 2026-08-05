@@ -225,6 +225,14 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 {spi_name}: {spi_model} @ sysbus {spi_base:#010x}
     IRQ -> nvic@{spi_irq}
 """
+    # NO ADC controller: alloy's only ADC driver is st/adc_v2 (STM32G0-style
+    # ISR/CR/CFGR register map, used by ALL its ST chips), but Renode 1.16.1 only
+    # ships Analog.STM32_ADC — the F1/F4-style SR/CR1/CR2 model. A local register
+    # trace confirmed the mismatch: the driver spins on the status register waiting
+    # for ADRDY, which that model never sets. No G0 ADC model exists, so ADC
+    # conformance is not emulable. Likewise DMA (st/dma_v1 channel-style; the only
+    # DMA example rides the ADC) and PWM (no UART-observable output). See
+    # [[alloy-audit-2026-07]].
     return platform
 
 
