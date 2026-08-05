@@ -17,7 +17,7 @@ import zlib
 from dataclasses import dataclass
 from typing import Protocol
 
-MAGIC = 0x594F4C41  # "ALOY" little-endian, as the device stores it
+MAGIC = int.from_bytes(b"ALOY", "little")  # as image.hpp composes it
 HEADER_SIZE = 32
 APP_OFFSET_DEFAULT = 0x200
 
