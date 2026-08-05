@@ -37,7 +37,8 @@ def _write(path: Path, content: str, written: list[Path]) -> None:
     written.append(path)
 
 
-def generate(project: Project, db=None, layout: str = "flash") -> list[Path]:
+def generate(project: Project, db=None, layout: str = "flash",
+             slot: str | None = None) -> list[Path]:
     if db is None:
         db = load_database(project.devices_root)
     run_all(db)
@@ -57,7 +58,7 @@ def generate(project: Project, db=None, layout: str = "flash") -> list[Path]:
     gen = project.gen_dir
     written: list[Path] = []
     _emit_chip_sources(gen, chip, db.registers, arch_ns, project.alloy_root, written,
-                       layout, flash_reserved_bytes(board))
+                       layout, flash_reserved_bytes(board), _slot_window(chip, slot))
     _write(gen / "alloy" / "board.hpp",
            emit_board_header(board, chip, db.registers), written)
     _write(gen / "board.cpp",
@@ -76,6 +77,21 @@ def generate(project: Project, db=None, layout: str = "flash") -> list[Path]:
     return written
 
 
+def _slot_window(chip: dict[str, Any], slot: str | None) -> tuple[int, int] | None:
+    """FLASH link window for an A/B build: the bootloader region, or a slot at
+    its app offset (the first app_offset bytes of a slot hold the image header +
+    padding, never code). None for the default whole-flash build."""
+    if slot is None:
+        return None
+    from .slots import APP_OFFSET, slot_layout  # noqa: PLC0415
+
+    lay = slot_layout(chip)  # raises EmitError when the chip can't do A/B
+    if slot == "bl":
+        return lay.bootloader.base, lay.bootloader.size
+    region = lay.slot_a if slot == "a" else lay.slot_b
+    return region.base + APP_OFFSET, region.size - APP_OFFSET
+
+
 def _arch_ns(chip: dict[str, Any]) -> str:
     arch = chip["cores"][0]["arch"]
     ns = _ARCH_NS.get(arch)
@@ -87,7 +103,8 @@ def _arch_ns(chip: dict[str, Any]) -> str:
 def _emit_chip_sources(gen: Path, chip: dict[str, Any],
                        registers: dict[str, dict[str, Any]], arch_ns: str,
                        alloy_root: Path, written: list[Path],
-                       layout: str = "flash", flash_reserved: int = 0) -> None:
+                       layout: str = "flash", flash_reserved: int = 0,
+                       flash_window: tuple[int, int] | None = None) -> None:
     """Chip-level artifacts — everything that depends only on the chip, not the
     board (ip headers, device.hpp, routes, vector table, linker, boot2). Shared
     by generate() and emit_chip_check() so the gen-all CI smoke runs the exact
@@ -117,7 +134,15 @@ def _emit_chip_sources(gen: Path, chip: dict[str, Any],
     elif chip.get("interrupts") and arch_ns == "xtensa":
         _write(gen / "irq_data.c", emit_xtensa_irq_data(chip, registers), written)
     _write(gen / "linker.ld",
-           emit_linker_script(chip, arch_ns, layout, flash_reserved), written)
+           emit_linker_script(chip, arch_ns, layout, flash_reserved, flash_window),
+           written)
+    # A/B slot table — emitted whenever the chip's flash IP has a known layout so
+    # apps/bootloaders can `#include <alloy/slots.hpp>`; chips without a supported
+    # flash controller simply don't get one (and gen-all stays green).
+    from .slots import emit_slots_header, has_slot_layout  # noqa: PLC0415
+
+    if has_slot_layout(chip):
+        _write(gen / "alloy" / "slots.hpp", emit_slots_header(chip), written)
     if "boot" in chip:
         from .boot import emit_boot2  # noqa: PLC0415
 
