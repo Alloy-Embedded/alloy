@@ -277,10 +277,9 @@ jobs:
   # (--slot bl), pack a slot-A app with `alloy image`, place it at the slot base,
   # and assert verify -> newest-valid pick -> Cortex-M jump -> the APP's banner;
   # plus the blank-board path (stays recoverable in update mode). Verified green
-  # locally on the pinned Renode; experimental one cycle, then blocks.
+  # in CI and locally on the pinned Renode — BLOCKING.
   bootloader-e2e:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
         with:
