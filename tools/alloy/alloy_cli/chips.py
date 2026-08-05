@@ -98,6 +98,29 @@ def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
                 out.append(entry)
         return out
 
+    # Per-PIN view for the CubeMX-style configurator: every GPIO with its port/
+    # index (grid placement) and every alternate function the route table offers
+    # on it. Builder-generated chips carry the full AF matrix (~150 routes);
+    # hand-curated ones only their curated subset — the UI shows what the data
+    # honestly knows, never a guessed pinout.
+    funcs_by_pin: dict[str, list[dict[str, Any]]] = {}
+    for r in data.get("routes") or []:
+        if "pin" in r and "peripheral" in r and "signal" in r:
+            entry: dict[str, Any] = {"peripheral": r["peripheral"], "signal": r["signal"]}
+            if "af" in r:
+                entry["af"] = r["af"]
+            funcs_by_pin.setdefault(r["pin"], []).append(entry)
+    pins = [
+        {
+            "name": name,
+            "port": meta.get("port"),
+            "index": meta.get("index"),
+            "functions": sorted(funcs_by_pin.get(name, []),
+                                key=lambda f: (f["peripheral"], f["signal"])),
+        }
+        for name, meta in sorted((data.get("pins") or {}).items())
+    ]
+
     return {
         "schema": "alloy.chip_info.v1",
         "chip": chip_id,
@@ -105,6 +128,7 @@ def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
         "clock_profiles": profiles,
         "boot_profile": profiles[0]["name"] if profiles else None,
         "gpio_pins": sorted((data.get("pins") or {}).keys()),
+        "pins": pins,
         "peripherals": {
             "debug_uart": instances(("usart", "uart", "lpuart"), ["tx", "rx"]),
             "i2c": instances(("i2c",), ["scl", "sda"]),

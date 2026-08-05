@@ -49,3 +49,30 @@ def test_clean_board_json_is_valid_and_minimal() -> None:
     assert board["chip"] == "st/stm32g071rb"
     assert board["clock_profile"] == "hsi_16mhz"
     assert board["roles"] == {}  # clean: the user fills these in
+
+
+@skip_no_devices
+def test_chip_info_pins_carry_grid_position_and_functions() -> None:
+    # A builder-generated chip has the full AF matrix — the CubeMX-style pin
+    # picker's data. Every pin must place itself (port/index) and pa0 on the
+    # G474 must offer its documented alternates (tim2 ch1 on AF1 among them).
+    info = chips.chip_info(DEVICES_ROOT, "st/stm32g474re")
+    assert info["schema"] == "alloy.chip_info.v1"
+    pins = {p["name"]: p for p in info["pins"]}
+    assert len(pins) >= 40
+    pa0 = pins["pa0"]
+    assert (pa0["port"], pa0["index"]) == ("a", 0)
+    assert {"peripheral": "tim2", "signal": "ch1", "af": 1} in pa0["functions"]
+    # functions sorted deterministically, and a pin with no routes still lists
+    for p in info["pins"]:
+        fns = p["functions"]
+        assert fns == sorted(fns, key=lambda f: (f["peripheral"], f["signal"]))
+
+
+@skip_no_devices
+def test_chip_info_pins_exist_for_curated_chips_too() -> None:
+    info = chips.chip_info(DEVICES_ROOT, "st/stm32g071rb")
+    pins = {p["name"]: p for p in info["pins"]}
+    assert "pa2" in pins  # curated route: usart2 tx
+    assert any(f["peripheral"] == "usart2" and f["signal"] == "tx"
+               for f in pins["pa2"]["functions"])
