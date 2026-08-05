@@ -344,6 +344,32 @@ jobs:
             --variable RESC_EMPTY:/tmp/empty.resc \
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+      # The FULL-WIRE update: Renode runs the real bootloader (blank slots) with
+      # its UART bridged to a TCP socket; the REAL `alloy update` client streams
+      # the packed image over it; the device programs slot A through the real
+      # flash driver, verifies, resets (SYSRESETREQ + the resc's reset macro),
+      # and the UPDATED firmware must boot and print. Every layer is production.
+      - name: full-wire update over the emulated UART
+        working-directory: alloy
+        run: |
+          cat > /tmp/wire.resc <<EOF
+          using sysbus
+          mach create "upd"
+          machine LoadPlatformDescription @$repl
+          macro reset
+          """
+              sysbus LoadELF @$bl_elf
+          """
+          runMacro \$reset
+          emulation CreateServerSocketTerminal 3456 "term" false
+          connector Connect sysbus.usart2 term
+          start
+          EOF
+          nohup renode --disable-xwt -P 12349 -e "include @/tmp/wire.resc" \
+            > /tmp/renode_wire.log 2>&1 < /dev/null &
+          sleep 8
+          uv run --project tools/alloy python scripts/update_e2e.py /tmp/app.img \
+            || { tail -30 /tmp/renode_wire.log; exit 1; }
 
   build:
     runs-on: ubuntu-latest

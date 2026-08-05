@@ -322,7 +322,9 @@ def cmd_update(args: argparse.Namespace) -> int:
     from .ota_host import UpdateError, update  # noqa: PLC0415
 
     image = Path(args.image).read_bytes()
-    link = serial.Serial(args.port, args.baud, timeout=args.timeout)
+    # serial_for_url accepts device paths AND pyserial URLs (socket://host:port —
+    # how the emulation E2E drives a Renode socket terminal — rfc2217://, etc.).
+    link = serial.serial_for_url(args.port, baudrate=args.baud, timeout=args.timeout)
 
     def progress(done: int, total: int) -> None:
         print(f"\r  {done}/{total} B ({100 * done // total}%)", end="", flush=True)
