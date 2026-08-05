@@ -317,10 +317,20 @@ jobs:
           arm-none-eabi-objcopy -O binary \
             .alloy/build-tree/nucleo_g071rb/out/uart_echo.elf /tmp/app.bin
           uv run --project ../../tools/alloy alloy image /tmp/app.bin --set-version 1 -o /tmp/app.img
+          # v2 of the same app doubles as the "bad" update in the lifecycle test:
+          # uart_echo never calls confirm(), so its trial must exhaust and revert.
+          uv run --project ../../tools/alloy alloy image /tmp/app.bin --set-version 2 -o /tmp/bad.img
           # the slot base comes from the GENERATED layout, never hardcoded here
           slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
             .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
           echo "slot_a=$slot_a" >> "$GITHUB_ENV"
+      - name: build the confirming app (--slot b) — the "good" update
+        working-directory: alloy/examples/ota_app
+        run: |
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot b
+          arm-none-eabi-objcopy -O binary \
+            .alloy/build-tree/nucleo_g071rb/out/ota_app.elf /tmp/good.bin
+          uv run --project ../../tools/alloy alloy image /tmp/good.bin --set-version 1 -o /tmp/good.img
       - name: craft the two machines (image in slot A / blank slots)
         run: |
           cat > /tmp/full.resc <<EOF
@@ -343,12 +353,15 @@ jobs:
             --variable RESC_EMPTY:/tmp/empty.resc \
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
-      # The FULL-WIRE update: Renode runs the real bootloader (blank slots) with
-      # its UART bridged to a TCP socket; the REAL `alloy update` client streams
-      # the packed image over it; the device programs slot A through the real
-      # flash driver, verifies, resets (SYSRESETREQ + the resc's reset macro),
-      # and the UPDATED firmware must boot and print. Every layer is production.
-      - name: full-wire update over the emulated UART
+      # The FULL LIFECYCLE over the wire: Renode runs the real bootloader (blank
+      # flash) with its UART on a TCP socket and its monitor as the "power
+      # button". scripts/update_e2e.py then drives, through the REAL `alloy
+      # update` client: install good app -> trial boot -> the app confirm()s ->
+      # confirm persists across a power cycle -> bad update (never confirms) ->
+      # three exhausted trial boots -> AUTOMATIC ROLLBACK to the good app.
+      # Transport, updater, flash driver, verify, the power-atomic boot_store,
+      # the trial/confirm machine and the Cortex-M reset/jump — all production.
+      - name: full-wire update lifecycle (trial/confirm/rollback)
         working-directory: alloy
         run: |
           cat > /tmp/wire.resc <<EOF
@@ -367,7 +380,7 @@ jobs:
           nohup renode --disable-xwt -P 12349 -e "include @/tmp/wire.resc" \
             > /tmp/renode_wire.log 2>&1 < /dev/null &
           sleep 8
-          uv run --project tools/alloy python scripts/update_e2e.py /tmp/app.img \
+          uv run --project tools/alloy python scripts/update_e2e.py /tmp/good.img /tmp/bad.img \
             || { tail -30 /tmp/renode_wire.log; exit 1; }
 
   build:

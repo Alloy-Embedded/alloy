@@ -1,22 +1,32 @@
 #!/usr/bin/env python3
-"""The full-wire firmware-update proof, against an emulated device.
+"""The full trial/confirm/rollback firmware-update proof, against an emulated device.
 
-Renode runs the REAL bootloader with its UART bridged to a TCP socket; this
-script plays the field technician: it pushes a packed image through the REAL
-`alloy update` client over that socket, then keeps listening and asserts the
-device REBOOTS into the image it just received (bootloader banner -> "boot slot
-A" -> the app's own banner). Every layer is the production one — host client,
-wire protocol, transport receiver, updater, flash driver, verify, Cortex-M
-reset+jump — with zero hardware.
+Renode runs the REAL bootloader (blank flash) with its UART bridged to a TCP
+socket and its monitor on a second port (the harness's "power button"). This
+script then walks the whole product lifecycle through the REAL `alloy update`
+client and asserts every transition on the UART:
 
-Usage: update_e2e.py <image.img> [port] (default 3456; Renode side must have
-  emulation CreateServerSocketTerminal <port> "term" false
+  1. install GOOD app (ota_app, links slot B on a blank board)  -> update ok
+  2. reboot: TRIAL boot slot B -> app health-checks -> "ota_app confirmed"
+  3. power-cycle: normal "boot slot B" (the confirm stuck across reset)
+  4. update BAD app (uart_echo v2, links slot A, never confirms) -> update ok
+  5. trial boot slot A x3 (each consumes one attempt; app never confirms)
+  6. next boot: "reverted, boot slot B" -> the GOOD app is back
+
+Every layer is production: host client, wire protocol, transport receiver,
+updater, flash driver, verify, the power-atomic boot_store, the trial/confirm
+machine, and the Cortex-M reset/jump. Zero hardware.
+
+Usage: update_e2e.py <good_slot_b.img> <bad_slot_a.img> [uart_port] [monitor_port]
+Renode side (before this script):
+  emulation CreateServerSocketTerminal <uart_port> "term" false
   connector Connect sysbus.<uart> term
-running before this script starts.)
+plus a `macro reset` that re-LoadELF's the bootloader, and -P <monitor_port>.
 """
 
 from __future__ import annotations
 
+import socket
 import sys
 import time
 from pathlib import Path
@@ -27,8 +37,7 @@ import serial  # noqa: E402
 from alloy_cli.ota_host import update  # noqa: E402
 
 
-def wait_for(link, needles: list[bytes], deadline_s: float) -> None:
-    """Read the UART stream until every needle has appeared, in order."""
+def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
     got = b""
     end = time.monotonic() + deadline_s
     want = list(needles)
@@ -40,27 +49,81 @@ def wait_for(link, needles: list[bytes], deadline_s: float) -> None:
                 got = got.split(want[0], 1)[1]
                 want.pop(0)
     if want:
-        raise SystemExit(
-            f"FAIL: never saw {want[0]!r} after the update; last output: {got[-200:]!r}")
+        raise SystemExit(f"FAIL [{stage}]: never saw {want[0]!r}; "
+                         f"last output: {got[-200:]!r}")
+    print(f"  ok: {stage}")
+
+
+class Monitor:
+    """The harness's power button: drives Renode's monitor socket."""
+
+    def __init__(self, port: int):
+        self.sock = socket.create_connection(("localhost", port), timeout=5)
+        self.sock.settimeout(0.2)
+        time.sleep(0.3)
+        self._drain()
+        self.send('mach set "upd"')
+
+    def _drain(self) -> None:
+        try:
+            while self.sock.recv(4096):
+                pass
+        except (TimeoutError, OSError):
+            pass
+
+    def send(self, cmd: str) -> None:
+        self.sock.sendall(cmd.encode() + b"\r\n")
+        time.sleep(0.4)
+        self._drain()
+
+    def power_cycle(self) -> None:
+        self.send("machine Reset")
+        self.send("start")  # harmless if already running
 
 
 def main() -> None:
-    image = Path(sys.argv[1]).read_bytes()
-    port = int(sys.argv[2]) if len(sys.argv) > 2 else 3456
-    link = serial.serial_for_url(f"socket://localhost:{port}", timeout=2)
+    good = Path(sys.argv[1]).read_bytes()
+    bad = Path(sys.argv[2]).read_bytes()
+    uart_port = int(sys.argv[3]) if len(sys.argv) > 3 else 3456
+    mon_port = int(sys.argv[4]) if len(sys.argv) > 4 else 12349
+    link = serial.serial_for_url(f"socket://localhost:{uart_port}", timeout=2)
+    mon = Monitor(mon_port)
 
-    # The bootloader may still be printing its startup lines; the HELLO retry
-    # loop inside update() rides over them.
-    info = update(link, image, retries=10)
-    print(f"update accepted: {info}")
+    # 1. blank board -> install the good app (bootloader targets slot B: 1-active(0))
+    info = update(link, good, retries=10)
+    assert info["target_slot"] == 1, f"expected target B on a blank board, got {info}"
+    print(f"  ok: good image accepted -> slot B {info}")
 
-    # The device prints this, resets (SYSRESETREQ), and the fresh boot must pick
-    # the image we just wrote — bootloader banner again, then the app's banner.
-    wait_for(link, [b"update ok, rebooting",
-                    b"alloy bootloader",
-                    b"boot slot A",
-                    b"alloy uart_echo ready"], deadline_s=30)
-    print("PASS: device rebooted into the updated firmware")
+    # 2. reboot -> trial boot -> the app confirms itself
+    wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
+                    b"trial boot slot B", b"alloy ota_app ready",
+                    b"ota_app confirmed"], 30, "trial boot + confirm")
+
+    # 3. power-cycle -> a NORMAL boot of the confirmed slot (state persisted)
+    mon.power_cycle()
+    wait_for(link, [b"alloy bootloader", b"boot slot B", b"alloy ota_app ready"],
+             30, "confirm persisted across power cycle")
+
+    # 4. update with the bad app (never confirms); device now targets slot A
+    mon.power_cycle()  # reopen the bootloader's update window
+    info = update(link, bad, retries=10)
+    assert info["target_slot"] == 0, f"expected target A, got {info}"
+    print(f"  ok: bad image accepted -> slot A {info}")
+
+    # 5. three trial boots, no confirm ever
+    wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
+                    b"trial boot slot A", b"alloy uart_echo ready"], 30, "trial 1/3")
+    for n in (2, 3):
+        mon.power_cycle()
+        wait_for(link, [b"alloy bootloader", b"trial boot slot A",
+                        b"alloy uart_echo ready"], 30, f"trial {n}/3")
+
+    # 6. attempts exhausted -> automatic rollback to the confirmed good app
+    mon.power_cycle()
+    wait_for(link, [b"alloy bootloader", b"reverted, boot slot B",
+                    b"alloy ota_app ready"], 30, "AUTOMATIC ROLLBACK")
+
+    print("PASS: install -> trial -> confirm -> bad update -> 3 trials -> rollback")
 
 
 if __name__ == "__main__":
