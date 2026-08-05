@@ -201,6 +201,18 @@ jobs:
             example: spi_read
             robot: spi_read.robot
             banner: alloy spi_read
+          # ADC DRIVER CONFORMANCE against a PURPOSE-WRITTEN STM32G0 ADC model.
+          # Renode ships only the incompatible F1/F4-style Analog.STM32_ADC, so
+          # emit/renode.py emits a ~30-line inline Python peripheral implementing
+          # the st/adc_v2 handshakes (ADCAL/ADEN/CHSELR/CCRDY/ADSTART/EOC). adc_read
+          # converts channel 3; the model returns 1000+channel, so "adc: 1003"
+          # proves the right channel was selected + converted. Verified locally on
+          # the pinned Renode 1.16.1; experimental one cycle, then blocks.
+          - board: nucleo_g071rb
+            example: adc_read
+            robot: adc_read.robot
+            banner: alloy adc_read
+            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -258,7 +270,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:

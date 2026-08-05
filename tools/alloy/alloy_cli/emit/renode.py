@@ -72,6 +72,51 @@ RENODE_SPI = {
     "st/spi_v3": "SPI.STM32SPI",
 }
 
+# ADC is different: Renode ships only the F1/F4-style Analog.STM32_ADC, whose
+# SR/CR1/CR2 register map is INCOMPATIBLE with alloy's st/adc_v2 (STM32G0-style
+# ISR/CR/CHSELR — a local register trace showed the driver spinning on ISR.ADRDY
+# that the F4 model never sets). So instead of a built-in model, emit a tiny
+# purpose-written model as an inline Python peripheral (IronPython 2.7). It
+# implements just the handshakes st_adc_v2 performs — ADCAL self-clears; ADEN
+# sets ISR.ADRDY; CHSELR (1<<ch) sets ISR.CCRDY and latches the channel; ADSTART
+# sets ISR.EOC and loads DR with a channel-ENCODED value (1000 + channel) so a
+# read of channel N returns 1000+N (a wrong channel would return a wrong number,
+# so a conformance test can't pass by coincidence); reading DR clears EOC.
+_ADC_G0_MODEL = {"st/adc_v2"}
+_ADC_G0_SCRIPT = """if request.IsInit:
+    regs = [0] * (size / 4)
+    sel = 0
+elif request.IsWrite:
+    o = request.Offset
+    v = request.Value
+    if o == 0x08:
+        if v & 0x80000000: v = v & ~0x80000000
+        if v & 0x1: regs[0] = regs[0] | 0x1
+        if v & 0x4:
+            regs[0] = regs[0] | 0x4
+            regs[0x40 >> 2] = 1000 + sel
+            v = v & ~0x4
+        regs[2] = v
+    elif o == 0x28:
+        regs[0x28 >> 2] = v
+        sel = 0
+        m = v
+        while m > 1:
+            m = m >> 1
+            sel = sel + 1
+        regs[0] = regs[0] | (1 << 13)
+    elif o == 0x00:
+        regs[0] = regs[0] & ~v
+    else:
+        regs[o >> 2] = v
+elif request.IsRead:
+    o = request.Offset
+    if o == 0x40:
+        request.Value = regs[0x40 >> 2]
+        regs[0] = regs[0] & ~0x4
+    else:
+        request.Value = regs[o >> 2]"""
+
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
 # Cortex-M, the same constant the hand-written arch layer uses (src/alloy/arch/),
 # NOT a per-chip silicon fact. Kept as a named constant so the codegen carries no
@@ -152,6 +197,22 @@ def _resolve_spi(chip: dict[str, Any], board: dict[str, Any]):
     return name, int(periph["base"], 16), model, irqn
 
 
+def _resolve_adc(chip: dict[str, Any], board: dict[str, Any]):
+    """Optional gate for the ADC. Returns (name, base) if the board has a curated
+    adc role whose IP has a Renode model (the inline G0 Python model), else None."""
+    roles = board.get("roles") or board
+    role = roles.get("adc")
+    name = role.get("peripheral") if isinstance(role, dict) else None
+    if name is None:
+        name = "adc1" if "adc1" in chip["peripherals"] else "adc"
+    periph = chip["peripherals"].get(name)
+    if periph is None or periph.get("uncurated"):
+        return None
+    if periph.get("ip") not in _ADC_G0_MODEL:
+        return None
+    return name, int(periph["base"], 16)
+
+
 def renode_supported(chip: dict[str, Any], board: dict[str, Any]) -> bool:
     """True if this board can be emulated (used to gate the CI matrix)."""
     try:
@@ -225,14 +286,22 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 {spi_name}: {spi_model} @ sysbus {spi_base:#010x}
     IRQ -> nvic@{spi_irq}
 """
-    # NO ADC controller: alloy's only ADC driver is st/adc_v2 (STM32G0-style
-    # ISR/CR/CFGR register map, used by ALL its ST chips), but Renode 1.16.1 only
-    # ships Analog.STM32_ADC — the F1/F4-style SR/CR1/CR2 model. A local register
-    # trace confirmed the mismatch: the driver spins on the status register waiting
-    # for ADRDY, which that model never sets. No G0 ADC model exists, so ADC
-    # conformance is not emulable. Likewise DMA (st/dma_v1 channel-style; the only
-    # DMA example rides the ADC) and PWM (no UART-observable output). See
-    # [[alloy-audit-2026-07]].
+    adc = _resolve_adc(chip, board)
+    if adc is not None:
+        adc_name, adc_base = adc
+        # Renode has no STM32G0 ADC model, so emit a tiny purpose-written one as an
+        # inline Python peripheral (see _ADC_G0_SCRIPT). The script sits inside a
+        # `'''…'''` block at column 0, exactly like Renode's own vegaboard.repl.
+        platform += f"""
+{adc_name}: Python.PythonPeripheral @ sysbus {adc_base:#010x}
+    size: 0x400
+    initable: true
+    script: '''
+{_ADC_G0_SCRIPT}
+'''
+"""
+    # (DMA/PWM conformance stays out: st/dma_v1's only example rides the ADC burst,
+    # and PWM has no UART-observable output. See [[alloy-audit-2026-07]].)
     return platform
 
 

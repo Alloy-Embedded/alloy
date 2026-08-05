@@ -1,0 +1,5 @@
+[project]
+name = "adc_read"
+
+[board]
+id = "nucleo_g071rb"
