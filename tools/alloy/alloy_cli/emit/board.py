@@ -566,6 +566,21 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"    alloy::hal::pin_impl<alloy::dev::{pn}_t>::make_af({rmii_spec['af']});\n"
             for pn in rmii
         )
+        # Some MACs select RMII in a register OUTSIDE their own block (STM32: in
+        # SYSCFG). That address is a chip fact, carried as data and emitted here
+        # into the generated eth_configure_pins() — so no silicon address lives in
+        # the hand-written HAL. MACs whose select is in-block (GMAC's UR) omit it.
+        sel = chip["peripherals"][eth["peripheral"]].get("rmii_select")
+        sel_cfg = ""
+        if sel:
+            clk = sel["clock"]
+            sel_cfg = (
+                "    // Enable the select register's clock, then choose RMII (chip data).\n"
+                f"    *reinterpret_cast<volatile std::uint32_t*>({clk['addr']}u) |= "
+                f"(1u << {clk['bit']}u);\n"
+                f"    *reinterpret_cast<volatile std::uint32_t*>({sel['addr']}u) |= "
+                f"(1u << {sel['bit']}u);\n"
+            )
         # The MAC HAL is selected by IP version, exactly like every other
         # peripheral (facts generated, behavior per-IP): the include is
         # alloy/hal/net/<vendor>_<ip>.hpp and the type is alloy::hal::<ip-stem>
@@ -586,9 +601,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             f"inline constexpr std::uint8_t eth_phy_addr = {phy.get('addr', 0)}u;\n"
             f"inline alloy::drivers::{phy['kind']}<eth_mac_t, eth_reset_t> eth_phy{{\n"
             f"    eth, eth_reset, eth_phy_addr}};\n"
-            f"// Route the RMII pads to the MAC (peripheral function) — call\n"
-            f"// once before eth.begin_mdio().\n"
-            f"inline void eth_configure_pins() {{\n{pin_cfg}}}"
+            f"// Route the RMII pads to the MAC (peripheral function) + select RMII —\n"
+            f"// call once before eth.begin_mdio().\n"
+            f"inline void eth_configure_pins() {{\n{sel_cfg}{pin_cfg}}}"
         )
     else:
         # No Ethernet: no-op stubs (same doctrine as the led_pwm/i2c/spi

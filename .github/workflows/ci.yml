@@ -317,15 +317,17 @@ jobs:
   # The net examples pull in vendored lwIP, whose build seam only compiles for a
   # board with an Ethernet MAC — so they CANNOT ride the board×example matrix above
   # (it would try to build them for every board and fail on the ones without eth,
-  # where lwIP is never put on the include path). Build them for the one Ethernet
-  # board on their own. This is compile coverage; silicon (a real link + DHCP lease
-  # on the SAME70 Xplained) is validated separately. The net stack LOGIC is already
-  # exercised host-side in the host-tests job (tests/test_net.cpp).
+  # where lwIP is never put on the include path). Build them for the Ethernet
+  # boards on their own — across TWO MAC families (Microchip GMAC + STM32 ETH), so
+  # the "same main.cpp, new MAC = data + per-IP HAL" claim stays green. Compile
+  # coverage; silicon (a real link/lease) is validated separately, and the net
+  # stack LOGIC is exercised host-side in the host-tests job (tests/test_net.cpp).
   build-net:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        board: [same70_xplained, nucleo_f767zi]
         example: [tcp_echo, udp_echo, dhcp_echo, http_server]
     steps:
       - uses: actions/checkout@v4
@@ -341,9 +343,9 @@ jobs:
           release: "14.2.Rel1"
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
-      - name: build ${{ matrix.example }} for same70_xplained
+      - name: build ${{ matrix.example }} for ${{ matrix.board }}
         working-directory: alloy/examples/${{ matrix.example }}
-        run: uv run --project ../../tools/alloy alloy build --board same70_xplained
+        run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}
 
   # NORTH_STAR guard #8: no feature ships unless CI compiles what it emits —
   # `alloy new` scaffolds must build, out-of-repo, exactly as a user would.

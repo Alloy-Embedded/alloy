@@ -1,0 +1,46 @@
+{
+  "schema": "alloy.board.v1",
+  "id": "nucleo_f767zi",
+  "name": "ST Nucleo-F767ZI (Nucleo-144)",
+  "chip": "st/stm32f767",
+  "clock_profile": "pll_180mhz",
+  "roles": {
+    "led": {
+      "pin": "pb0",
+      "active": "high",
+      "label": "LD1 (green; LD2 blue=PB7, LD3 red=PB14)"
+    },
+    "button": {
+      "pin": "pc13",
+      "active": "high",
+      "label": "B1 USER (Nucleo-144: pressed = high)"
+    },
+    "debug_uart": {
+      "peripheral": "usart3",
+      "tx": "pd8",
+      "rx": "pd9",
+      "baud": 115200,
+      "label": "ST-Link VCP (USART3 — Nucleo-144 wiring, PD8/PD9 AF7)"
+    },
+    "watchdog": {
+      "peripheral": "iwdg",
+      "timeout_ms": 4000,
+      "label": "IWDG (LSI ~32 kHz, runtime-configured, ~32 s max)"
+    },
+    "ethernet": {
+      "peripheral": "eth",
+      "phy": {
+        "kind": "lan8742",
+        "addr": 0,
+        "mode": "rmii"
+      },
+      "label": "onboard 10/100 Ethernet: ETH MAC + LAN8742A PHY (RMII, addr 0, RJ45 CN14). PHY nRST is tied to the board NRST net on MB1137 — there is NO dedicated GPIO PHY reset; reset_pin=PG2 is an unused placeholder to satisfy the driver's reset-pin requirement (the driver also soft-resets the PHY via BMCR.RESET over MDIO, which is the reset that actually matters here).",
+      "reset_pin": "pg2"
+    }
+  },
+  "probe": {
+    "kind": "stlink",
+    "runner": "openocd",
+    "chip_id": "STM32F767ZITx"
+  }
+}
