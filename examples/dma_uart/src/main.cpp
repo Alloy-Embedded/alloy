@@ -7,6 +7,7 @@
 #include <alloy/dma.hpp>
 
 #include <cstdint>
+#include <span>
 
 using namespace alloy::literals;
 
@@ -15,14 +16,24 @@ int main() {
     auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
     uart.write("alloy dma_uart\r\n");
 
+    bool used_dma = false;
     if constexpr (board::caps::dma) {
-        auto chan = alloy::dma::channel<board::dma_t, 1>::claim();
-        std::uint8_t msg[] = "dma via DMA\r\n";  // in RAM (stack) for the m2p read
-        const bool ok = uart.write_dma(chan, {msg, sizeof(msg) - 1});
-        if (!ok) {
-            uart.write("dma: FAIL\r\n");
+        using chan_t = alloy::dma::channel<board::dma_t, 1>;
+        // write_dma is only available where the debug UART exposes a DMA TX request
+        // (dmareq_tx); guard on the actual call so this compiles on every board
+        // (e.g. the STM32F7 USART has no such request).
+        if constexpr (requires(chan_t& c) {
+                          uart.write_dma(c, std::span<const std::uint8_t>{});
+                      }) {
+            auto chan = chan_t::claim();
+            std::uint8_t msg[] = "dma via DMA\r\n";  // in RAM (stack) for the m2p read
+            if (!uart.write_dma(chan, {msg, sizeof(msg) - 1})) {
+                uart.write("dma: FAIL\r\n");
+            }
+            used_dma = true;
         }
-    } else {
+    }
+    if (!used_dma) {
         uart.write("dma: not available on this board\r\n");
     }
 
