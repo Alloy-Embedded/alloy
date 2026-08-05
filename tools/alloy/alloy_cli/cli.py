@@ -304,6 +304,42 @@ def cmd_monitor(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_image(args: argparse.Namespace) -> int:
+    from .ota_host import make_image  # noqa: PLC0415
+
+    app = Path(args.app).read_bytes()
+    out = Path(args.out) if args.out else Path(args.app).with_suffix(".img")
+    image = make_image(app, args.set_version, app_offset=int(args.app_offset, 0))
+    out.write_bytes(image)
+    print(f"image: {out}  ({len(image)} B = 32 B header + "
+          f"{len(image) - 32} B payload, version {args.set_version})")
+    return 0
+
+
+def cmd_update(args: argparse.Namespace) -> int:
+    import serial  # noqa: PLC0415
+
+    from .ota_host import UpdateError, update  # noqa: PLC0415
+
+    image = Path(args.image).read_bytes()
+    link = serial.Serial(args.port, args.baud, timeout=args.timeout)
+
+    def progress(done: int, total: int) -> None:
+        print(f"\r  {done}/{total} B ({100 * done // total}%)", end="", flush=True)
+
+    try:
+        info = update(link, image, progress=progress)
+    except UpdateError as exc:
+        print(f"\nerror: {exc}", file=sys.stderr)
+        return 1
+    finally:
+        link.close()
+    print(f"\nupdate accepted -> slot {'B' if info['target_slot'] else 'A'} "
+          f"(device was running version {info['running_version']}); "
+          f"device now reboots into a TRIAL boot — it must be confirmed to stick")
+    return 0
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     from .emit.common import EmitError  # noqa: PLC0415
     from .monitor import monitor  # noqa: PLC0415
@@ -636,6 +672,29 @@ def main() -> None:
     p_lib_add.add_argument("name")
     p_lib_add.add_argument("--project", default=".")
     p_lib_add.set_defaults(func=cmd_lib)
+
+    p_img = sub.add_parser(
+        "image", help="pack an app binary into a signed-format update image "
+                      "([header|payload], alloy/ota/image.hpp)")
+    p_img.add_argument("app", help="raw app binary (objcopy -O binary of a --slot build)")
+    p_img.add_argument("-o", "--out", help="output path (default: <app>.img)")
+    p_img.add_argument("--set-version", type=int, required=True,
+                       help="monotonic image version (higher = newer)")
+    p_img.add_argument("--app-offset", default="0x200",
+                       help="vector-table offset inside the slot (must match "
+                            "the --slot link; default 0x200)")
+    p_img.set_defaults(func=cmd_image)
+
+    p_upd = sub.add_parser(
+        "update", help="send an update image to a device over serial (the "
+                       "bootloader's UART update window)")
+    p_upd.add_argument("image", help="packed image from `alloy image`")
+    p_upd.add_argument("--port", required=True, help="serial port (e.g. /dev/ttyUSB0)")
+    p_upd.add_argument("--baud", type=int, default=115200)
+    p_upd.add_argument("--timeout", type=float, default=5.0,
+                       help="per-reply timeout in seconds (slot erase happens "
+                            "during HELLO, so keep this generous)")
+    p_upd.set_defaults(func=cmd_update)
 
     for cmd, func in (("gen", cmd_gen), ("build", cmd_build), ("flash", cmd_flash),
                       ("monitor", cmd_monitor), ("run", cmd_run)):
