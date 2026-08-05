@@ -117,6 +117,43 @@ elif request.IsRead:
     else:
         request.Value = regs[o >> 2]"""
 
+# Renode has no STM32 channel-style (F0/G0) DMA model either — DMA.STM32DMA is the
+# F4 stream-style controller. So, same approach as the ADC: a small inline Python
+# peripheral modelling alloy's st/dma_v1. It implements the single-shot transfer
+# the driver kicks off: on a CCR write with EN=1, read the channel's CNDTR/CPAR/
+# CMAR and, for a memory->peripheral transfer (DIR=1, e.g. UART TX), copy CNDTR
+# bytes CMAR->CPAR through the system bus (incrementing per MINC/PINC), then set
+# the channel's TCIF so the driver's `wait()` (which polls TCIF, never EN) returns.
+# Register layout (RM0444): ISR@0x00 (per-channel flags at bit (n-1)*4, TCIF=+1),
+# IFCR@0x04 (w1c), then CCR/CNDTR/CPAR/CMAR per channel from 0x08, stride 0x14.
+_DMA_G0_MODEL = {"st/dma_v1"}
+_DMA_G0_SCRIPT = """if request.IsInit:
+    regs = [0] * (size / 4)
+    membus = emulationManager.Instance.CurrentEmulation.Machines[0].SystemBus
+elif request.IsWrite:
+    o = request.Offset
+    v = request.Value
+    regs[o >> 2] = v
+    if o == 0x04:
+        regs[0] = regs[0] & ~v
+    elif o >= 0x08 and ((o - 0x08) % 0x14) == 0 and (v & 1):
+        ch = (o - 0x08) / 0x14
+        cndtr = regs[(o + 0x04) >> 2]
+        cpar = regs[(o + 0x08) >> 2]
+        cmar = regs[(o + 0x0C) >> 2]
+        minc = (v >> 7) & 1
+        pinc = (v >> 6) & 1
+        if (v >> 4) & 1:
+            i = 0
+            while i < cndtr:
+                src = cmar + i if minc else cmar
+                dst = cpar + i if pinc else cpar
+                membus.WriteByte(dst, membus.ReadByte(src))
+                i = i + 1
+        regs[0] = regs[0] | (1 << (ch * 4 + 1))
+elif request.IsRead:
+    request.Value = regs[request.Offset >> 2]"""
+
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
 # Cortex-M, the same constant the hand-written arch layer uses (src/alloy/arch/),
 # NOT a per-chip silicon fact. Kept as a named constant so the codegen carries no
@@ -213,6 +250,16 @@ def _resolve_adc(chip: dict[str, Any], board: dict[str, Any]):
     return name, int(periph["base"], 16)
 
 
+def _resolve_dma(chip: dict[str, Any]):
+    """The DMA1 controller if it's the st/dma_v1 (G0) IP. DMA is a capability, not
+    a pin-routed board role, so this keys straight off the chip peripheral."""
+    for name in ("dma1", "dma"):
+        periph = chip["peripherals"].get(name)
+        if periph and not periph.get("uncurated") and periph.get("ip") in _DMA_G0_MODEL:
+            return name, int(periph["base"], 16)
+    return None
+
+
 def renode_supported(chip: dict[str, Any], board: dict[str, Any]) -> bool:
     """True if this board can be emulated (used to gate the CI matrix)."""
     try:
@@ -300,8 +347,19 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 {_ADC_G0_SCRIPT}
 '''
 """
-    # (DMA/PWM conformance stays out: st/dma_v1's only example rides the ADC burst,
-    # and PWM has no UART-observable output. See [[alloy-audit-2026-07]].)
+    dma = _resolve_dma(chip)
+    if dma is not None:
+        dma_name, dma_base = dma
+        platform += f"""
+{dma_name}: Python.PythonPeripheral @ sysbus {dma_base:#010x}
+    size: 0x400
+    initable: true
+    script: '''
+{_DMA_G0_SCRIPT}
+'''
+"""
+    # (PWM conformance stays out: it has no UART-observable output — it drives a
+    # timer/GPIO. See [[alloy-audit-2026-07]].)
     return platform
 
 
