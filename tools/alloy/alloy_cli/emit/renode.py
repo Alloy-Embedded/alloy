@@ -90,7 +90,7 @@ elif request.IsWrite:
     o = request.Offset
     v = request.Value
     if o == 0x08:
-        if v & 0x80000000: v = v & ~0x80000000
+        if v & (1 << 31): v = v & ~(1 << 31)
         if v & 0x1: regs[0] = regs[0] | 0x1
         if v & 0x4:
             regs[0] = regs[0] | 0x4
