@@ -201,30 +201,27 @@ jobs:
             example: spi_read
             robot: spi_read.robot
             banner: alloy spi_read
-          # ADC DRIVER CONFORMANCE against a PURPOSE-WRITTEN STM32G0 ADC model.
-          # Renode ships only the incompatible F1/F4-style Analog.STM32_ADC, so
-          # emit/renode.py emits a ~30-line inline Python peripheral implementing
-          # the st/adc_v2 handshakes (ADCAL/ADEN/CHSELR/CCRDY/ADSTART/EOC). adc_read
-          # converts channel 3; the model returns 1000+channel, so "adc: 1003"
-          # proves the right channel was selected + converted. Verified locally on
-          # the pinned Renode 1.16.1; experimental one cycle, then blocks.
+          # ADC DRIVER CONFORMANCE — BLOCKING — against a PURPOSE-WRITTEN STM32G0
+          # ADC model. Renode ships only the incompatible F1/F4-style
+          # Analog.STM32_ADC, so emit/renode.py emits a ~30-line inline Python
+          # peripheral implementing the st/adc_v2 handshakes (ADCAL/ADEN/CHSELR/
+          # CCRDY/ADSTART/EOC). adc_read converts channel 3; the model returns
+          # 1000+channel, so "adc: 1003" proves the right channel was selected +
+          # converted. Green in CI + locally (pinned Renode 1.16.1).
           - board: nucleo_g071rb
             example: adc_read
             robot: adc_read.robot
             banner: alloy adc_read
-            experimental: true
-          # DMA DRIVER CONFORMANCE against a PURPOSE-WRITTEN STM32G0 (channel-style)
-          # DMA model — Renode ships only the F4 stream-style DMA.STM32DMA. The
-          # inline Python peripheral copies CMAR->CPAR through the system bus on a
-          # CCR/EN write and sets TCIF. dma_uart sends a line to the UART BY DMA
-          # (m2p), so "dma via DMA" on the UART proves the channel config + transfer
-          # + completion moved the bytes. Verified locally on the pinned Renode
-          # 1.16.1; experimental one cycle, then blocks.
+          # DMA DRIVER CONFORMANCE — BLOCKING — against a PURPOSE-WRITTEN STM32G0
+          # (channel-style) DMA model; Renode ships only the F4 stream-style
+          # DMA.STM32DMA. The inline Python peripheral copies CMAR->CPAR through the
+          # system bus on a CCR/EN write and sets TCIF. dma_uart sends a line to the
+          # UART BY DMA (m2p), so "dma via DMA" on the UART proves the channel config
+          # + transfer + completion moved the bytes. Green in CI + locally.
           - board: nucleo_g071rb
             example: dma_uart
             robot: dma_uart.robot
             banner: alloy dma_uart
-            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
