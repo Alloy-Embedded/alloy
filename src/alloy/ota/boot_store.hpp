@@ -102,6 +102,13 @@ public:
         const std::uint32_t crc = record_crc(new_seq, value);
         const std::uint64_t dw1 = (static_cast<std::uint64_t>(crc ^ 0xFFFF'FFFFu) << 32) | crc;
         if (!flash_.program(page_[stale] + 8u, &dw1, 1u)) return false;
+        // Latch-buffered controllers (SAME70 EEFC) commit on flush; the record
+        // must be DURABLE before this returns — a confirm() that only reached
+        // the latch would be lost at reset and the trial would revert. No-op at
+        // compile time for direct-program controllers (G0/F7).
+        if constexpr (requires(Flash f) { { f.flush() } -> std::convertible_to<bool>; }) {
+            if (!flash_.flush()) return false;
+        }
         return true;
     }
 };

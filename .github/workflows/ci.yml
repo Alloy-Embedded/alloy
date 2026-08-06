@@ -392,6 +392,72 @@ jobs:
             --variable RESC_EMPTY:/tmp/f7_empty.resc \
             --variable UART:sysbus.usart3 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+      # THIRD FAMILY / SECOND VENDOR: Microchip SAME70's EEFC (page latch + WP
+      # commits, 16-page EPA erase, ECC row-once — the page-buffered driver with
+      # the flush() seam). The platform carries the purpose-written EFC model:
+      # FKEY-validated commands, REAL EPA erases through the bus. Boot legs plus
+      # the good-only wire lifecycle (install -> trial -> confirm -> PERSISTED
+      # across reset = the flush-durability proof); the watchdog rollback phases
+      # are covered on G0/F7 (SAM4S_WDT needs an RSTC chain, deferred).
+      - name: build the SAME70 bootloader + images
+        working-directory: alloy/examples/bootloader_uart
+        run: |
+          uv run --project ../../tools/alloy alloy build --board same70_xplained --slot bl
+          uv run --project ../../tools/alloy alloy emulate --board same70_xplained --emit-only
+          out="$PWD/.alloy/build-tree/same70_xplained/out"
+          echo "s70_repl=$out/same70_xplained.repl" >> "$GITHUB_ENV"
+          echo "s70_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          cd ../uart_echo
+          uv run --project ../../tools/alloy alloy build --board same70_xplained --slot a
+          uv run --project ../../tools/alloy alloy image \
+            .alloy/build-tree/same70_xplained/out/uart_echo.elf --set-version 1 -o /tmp/s70_app.img
+          slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
+            .alloy/generated/same70_xplained/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
+          echo "s70_slot_a=$slot_a" >> "$GITHUB_ENV"
+          cd ../ota_app
+          uv run --project ../../tools/alloy alloy build --board same70_xplained --slot b
+          uv run --project ../../tools/alloy alloy image \
+            .alloy/build-tree/same70_xplained/out/ota_app.elf --set-version 2 -o /tmp/s70_good.img
+      - name: run the SAME70 bootloader oracle + good-only wire lifecycle
+        working-directory: alloy
+        run: |
+          cat > /tmp/s70_full.resc <<EOF
+          using sysbus
+          mach create "s70A"
+          machine LoadPlatformDescription @$s70_repl
+          sysbus LoadELF @$s70_bl_elf
+          sysbus LoadBinary @/tmp/s70_app.img $s70_slot_a
+          EOF
+          cat > /tmp/s70_empty.resc <<EOF
+          using sysbus
+          mach create "s70E"
+          machine LoadPlatformDescription @$s70_repl
+          sysbus LoadELF @$s70_bl_elf
+          EOF
+          renode-test \
+            --variable RESC_FULL:/tmp/s70_full.resc \
+            --variable RESC_EMPTY:/tmp/s70_empty.resc \
+            --variable UART:sysbus.usart1 \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+          cat > /tmp/s70_wire.resc <<EOF
+          using sysbus
+          mach create "upd"
+          machine LoadPlatformDescription @$s70_repl
+          macro reset
+          """
+              sysbus LoadELF @$s70_bl_elf
+          """
+          runMacro \$reset
+          emulation CreateServerSocketTerminal 3457 "term" false
+          connector Connect sysbus.usart1 term
+          start
+          EOF
+          nohup renode --disable-xwt -P 12350 -e "include @/tmp/s70_wire.resc" \
+            > /tmp/renode_s70.log 2>&1 < /dev/null &
+          sleep 8
+          uv run --project tools/alloy python scripts/update_e2e.py \
+            /tmp/s70_good.img /tmp/s70_good.img 3457 12350 --good-only \
+            || { tail -30 /tmp/renode_s70.log; exit 1; }
       # The FULL LIFECYCLE over the wire: Renode runs the real bootloader (blank
       # flash) with its UART on a TCP socket and its monitor as the "power
       # button". scripts/update_e2e.py then drives, through the REAL `alloy

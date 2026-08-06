@@ -127,3 +127,15 @@ def test_f7_1m_layout_scales_the_sector_pattern() -> None:
 def test_g0_store_page_b_is_one_page_after_store_base() -> None:
     lay = slot_layout(_g0_chip())
     assert lay.store_page_b == lay.store.base + lay.page_size
+
+
+def test_same70_efc_uniform_layout() -> None:
+    c = _g0_chip(2 * 1024 * 1024)
+    c["part"] = "ATSAME70Q21B"
+    c["memories"][0]["base"] = "0x00400000"
+    c["peripherals"]["flash"]["ip"] = "microchip/efc_v1"
+    lay = slot_layout(c)
+    assert lay.page_size == 8192                    # 16-page EPA erase block
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x00400000, 16 * 1024)
+    assert lay.store_page_b == lay.store.base + 8192
+    assert lay.slot_a.base % 8192 == 0 and lay.slot_a.size % 8192 == 0

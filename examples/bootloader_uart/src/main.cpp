@@ -25,7 +25,7 @@
 
 namespace {
 
-using flash_hal = alloy::hal::flash_impl<alloy::dev::flash_t>;
+using flash_hal = alloy::hal::flash_impl<alloy::slots::flash_ctrl_t>;
 using store_t = alloy::ota::boot_store<flash_hal>;
 using manager_t = alloy::ota::boot_manager<store_t>;
 

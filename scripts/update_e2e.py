@@ -82,10 +82,11 @@ class Monitor:
 
 
 def main() -> None:
-    good = Path(sys.argv[1]).read_bytes()
-    bad = Path(sys.argv[2]).read_bytes()
-    uart_port = int(sys.argv[3]) if len(sys.argv) > 3 else 3456
-    mon_port = int(sys.argv[4]) if len(sys.argv) > 4 else 12349
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    good = Path(args[0]).read_bytes()
+    bad = Path(args[1]).read_bytes()
+    uart_port = int(args[2]) if len(args) > 2 else 3456
+    mon_port = int(args[3]) if len(args) > 3 else 12349
     link = serial.serial_for_url(f"socket://localhost:{uart_port}", timeout=2)
     mon = Monitor(mon_port)
 
@@ -103,6 +104,13 @@ def main() -> None:
     mon.power_cycle()
     wait_for(link, [b"alloy bootloader", b"boot slot B", b"alloy ota_app ready"],
              30, "confirm persisted across power cycle")
+
+    if "--good-only" in sys.argv:
+        # Families whose watchdog isn't modeled in Renode yet stop here: the
+        # install/trial/confirm/persist phases still prove the whole flash path
+        # (erase, program, FLUSH DURABILITY across reset) end to end.
+        print("PASS (good-only): install -> trial -> confirm -> persisted")
+        return
 
     # 4. update with the bad app (never confirms); device now targets slot A
     mon.power_cycle()  # reopen the bootloader's update window

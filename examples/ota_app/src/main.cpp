@@ -21,7 +21,7 @@ int main() {
 
     // Health check passed (the UART we just printed over) -> confirm the trial.
     // Idempotent: on a normal (already-confirmed) boot this writes nothing.
-    using flash_hal = alloy::hal::flash_impl<alloy::dev::flash_t>;
+    using flash_hal = alloy::hal::flash_impl<alloy::slots::flash_ctrl_t>;
     alloy::ota::boot_store<flash_hal> store{
         flash_hal{}, alloy::slots::store_base,
         alloy::slots::store_page_b};

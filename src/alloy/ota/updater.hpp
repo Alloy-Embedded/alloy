@@ -93,6 +93,16 @@ public:
             flushed_ += 8u;
             stage_len_ = 0;
         }
+        // Latch-buffered controllers (SAME70 EEFC: writes gather in a page latch
+        // and only a WP command commits them) expose an optional flush(); verify
+        // re-reads the FLASH, so everything must be committed first. Controllers
+        // without one (G0/F7: program lands directly) skip this at compile time.
+        if constexpr (requires(Flash f) { { f.flush() } -> std::convertible_to<bool>; }) {
+            if (!flash_.flush()) {
+                open_ = false;
+                return ota_error::flash_io;
+            }
+        }
         open_ = false;
         return verify_slot(tgt_);  // check what ACTUALLY landed in flash
     }

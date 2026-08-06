@@ -386,6 +386,60 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 flash_ctrl: MTD.STM32F4_FlashController @ sysbus {int(fc["base"], 16):#010x}
     flash: flash
 """
+    # SAME70 EEFC: Renode ships no EFC model, so emit a purpose-written one (the
+    # ADC/DMA technique). It is deliberately FAITHFUL where a stub would lie:
+    # FCR commands are refused without the 0x5A key (FSR.FCMDE, clear-on-read),
+    # EPA performs the REAL 4/8/16/32-page erase against the memory through the
+    # system bus (wrong FARG block math would visibly eat neighbours), and FMR
+    # passes through for the clock program's wait-state write. WP is accepted
+    # after key validation — page-latch content itself can't be modelled over a
+    # MappedMemory (writes land directly), which is exactly why the driver's ECC
+    # row-once discipline is enforced by construction in microchip_efc_v1.hpp,
+    # not claimed as emulation-proven.
+    efc = chip.get("peripherals", {}).get("efc")
+    if efc and not efc.get("uncurated") and efc.get("ip") == "microchip/efc_v1":
+        flash_mem = next(m for m in chip["memories"] if m["kind"] == "flash")
+        fb = int(flash_mem["base"], 16) if isinstance(flash_mem["base"], str) else int(flash_mem["base"])
+        platform += f"""
+efc: Python.PythonPeripheral @ sysbus {int(efc["base"], 16):#010x}
+    size: 0x200
+    initable: true
+    script: '''
+if request.IsInit:
+    fmr = 0
+    fsr = 1
+    membus = emulationManager.Instance.CurrentEmulation.Machines[0].SystemBus
+elif request.IsWrite:
+    o = request.Offset
+    v = request.Value
+    if o == 0x0:
+        fmr = v
+    elif o == 0x4:
+        if ((v >> 24) & 0xFF) != 0x5A:
+            fsr = fsr | 2
+        else:
+            cmd = v & 0xFF
+            arg = (v >> 8) & 0xFFFF
+            if cmd == 0x07:
+                count = (4, 8, 16, 32)[arg & 3]
+                first = arg & ~(count - 1)
+                base = {fb:#x} + first * 512
+                ones = (1 << 64) - 1
+                i = 0
+                while i < count * 512:
+                    membus.WriteQuadWord(base + i, ones)
+                    i = i + 8
+elif request.IsRead:
+    o = request.Offset
+    if o == 0x0:
+        request.Value = fmr
+    elif o == 0x8:
+        request.Value = fsr
+        fsr = 1
+    else:
+        request.Value = 0
+'''
+"""
     wdg = _resolve_wdg(chip)
     if wdg is not None:
         wdg_name, wdg_base, wdg_model = wdg
