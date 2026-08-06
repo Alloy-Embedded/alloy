@@ -8,6 +8,7 @@ generation with a message naming the board.json entry.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .common import BANNER, EmitError, field_lookup, register_by_name
@@ -636,6 +637,46 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         "// Umbrella capability: any owned-MAC or vendor-blob link.\n"
         "namespace caps { inline constexpr bool net = ethernet || wifi; }"
     )
+
+    # User-named pins from the visual configurator (board.json "pins"): each
+    # entry becomes a code alias under board::pins so the label on the pin map IS
+    # the identifier in firmware. gpio_out/gpio_in emit ready-to-use gpio
+    # handles; an alternate-function assignment ("periph:signal") is validated
+    # against the chip's route table (a function the pin can't do is a GENERATION
+    # error naming the pin, same spirit as guard #7) and emits the pin-type alias
+    # for use in explicit bind<>s.
+    pin_decls: list[str] = []
+    for pin, assign in sorted((board.get("pins") or {}).items()):
+        _require(pin in chip.get("pins", {}),
+                 f"board {board['id']}: named pin '{pin}' not in chip data")
+        fn = assign.get("function", "")
+        label = assign.get("label")
+        if label is not None and not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", label):
+            raise EmitError(f"board {board['id']}: pin '{pin}' label '{label}' is "
+                            f"not a valid identifier")
+        if fn in ("gpio_out", "gpio_in"):
+            if label:
+                tmpl = "output" if fn == "gpio_out" else "input"
+                pin_decls.append(
+                    f"inline constexpr alloy::gpio::{tmpl}<alloy::dev::{pin}_t, "
+                    f"alloy::gpio::active_high_t> {label}{{}};  // {pin}")
+        elif ":" in fn:
+            periph, _, signal = fn.partition(":")
+            routes = chip.get("routes") or []
+            _require(any(r.get("pin") == pin and r.get("peripheral") == periph
+                         and r.get("signal") == signal for r in routes),
+                     f"board {board['id']}: pin '{pin}' has no route to "
+                     f"{periph} {signal} on this chip")
+            if label:
+                pin_decls.append(
+                    f"using {label} = alloy::dev::{pin}_t;  // {pin}: {periph} {signal}")
+        else:
+            raise EmitError(f"board {board['id']}: pin '{pin}' has unknown "
+                            f"function '{fn}'")
+    if pin_decls:
+        pins_body = "\n".join(pin_decls)
+        decls.append("// Named pins from the board's pin map (see board.json \"pins\").\n"
+                     f"namespace pins {{\n{pins_body}\n}}  // namespace pins")
 
     caps_body = "\n".join(
         f"inline constexpr bool {name} = {'true' if value else 'false'};"
