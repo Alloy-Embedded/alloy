@@ -157,3 +157,55 @@ def test_update_gives_up_on_a_dead_device() -> None:
 
     with pytest.raises(UpdateError, match="not responding"):
         update(Dead(), make_image(b"D", version=1), retries=2)
+
+
+def _mini_elf(segs: list[tuple[int, bytes]]) -> bytes:
+    """A minimal ELF32-LE with the given (paddr, data) PT_LOAD segments."""
+    ehsize, phentsize = 52, 32
+    phoff = ehsize
+    data_off = phoff + phentsize * len(segs)
+    head = bytearray(b"\x7fELF" + bytes([1, 1, 1, 0]) + b"\x00" * 8)
+    head += struct.pack("<HHIIIIIHHHHHH", 2, 40, 1, 0, phoff, 0, 0,
+                        ehsize, phentsize, len(segs), 0, 0, 0)
+    body = bytearray()
+    phdrs = bytearray()
+    for paddr, data in segs:
+        off = data_off + len(body)
+        phdrs += struct.pack("<IIIIIIII", 1, off, paddr, paddr,
+                             len(data), len(data), 5, 4)
+        body += data
+    return bytes(head) + bytes(phdrs) + bytes(body)
+
+
+def test_elf_to_bin_lays_out_segments_by_lma_with_ff_gaps() -> None:
+    from alloy_cli.ota_host import elf_to_bin
+
+    elf = _mini_elf([(0x08004200, b"AAAA"), (0x08004210, b"BB")])
+    out = elf_to_bin(elf)
+    assert out == b"AAAA" + b"\xff" * 12 + b"BB"
+
+
+def test_elf_to_bin_rejects_non_elf_and_64bit() -> None:
+    from alloy_cli.ota_host import elf_to_bin
+
+    with pytest.raises(ValueError, match="not an ELF"):
+        elf_to_bin(b"\x00\x01\x02\x03rubbish")
+    bad = bytearray(_mini_elf([(0, b"x")]))
+    bad[4] = 2  # ELFCLASS64
+    with pytest.raises(ValueError, match="ELF32"):
+        elf_to_bin(bytes(bad))
+
+
+def test_update_dual_image_picks_the_devices_target_slot() -> None:
+    img_a = make_image(b"A" * 40, version=9)
+    img_b = make_image(b"B" * 40, version=9)
+    dev = FakeDevice(max_chunk=64)  # its INFO reports target_slot = 1 (B)
+    info = update(dev, {0: img_a, 1: img_b})
+    assert info["target_slot"] == 1
+    assert bytes(dev.written) == img_b  # picked B, not A
+
+
+def test_update_dual_image_missing_target_is_a_clear_error() -> None:
+    dev = FakeDevice()
+    with pytest.raises(UpdateError, match="targets slot B"):
+        update(dev, {0: make_image(b"A", version=1)})

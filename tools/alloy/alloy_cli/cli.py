@@ -305,9 +305,11 @@ def cmd_monitor(args: argparse.Namespace) -> int:
 
 
 def cmd_image(args: argparse.Namespace) -> int:
-    from .ota_host import make_image  # noqa: PLC0415
+    from .ota_host import elf_to_bin, make_image  # noqa: PLC0415
 
     app = Path(args.app).read_bytes()
+    if app[:4] == b"\x7fELF":  # accept the build's .elf directly — no objcopy needed
+        app = elf_to_bin(app)
     out = Path(args.out) if args.out else Path(args.app).with_suffix(".img")
     image = make_image(app, args.set_version, app_offset=int(args.app_offset, 0))
     out.write_bytes(image)
@@ -316,12 +318,46 @@ def cmd_image(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_ports(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from serial.tools import list_ports  # noqa: PLC0415
+
+    ports = [{"device": p.device, "description": p.description or ""}
+             for p in sorted(list_ports.comports(), key=lambda p: p.device)]
+    if getattr(args, "json", False):
+        print(json.dumps({"schema": "alloy.ports.v1", "ports": ports}))
+    else:
+        for p in ports:
+            print(f"{p['device']}  {p['description']}")
+        if not ports:
+            print("no serial ports found")
+    return 0
+
+
 def cmd_update(args: argparse.Namespace) -> int:
     import serial  # noqa: PLC0415
 
     from .ota_host import UpdateError, update  # noqa: PLC0415
 
-    image = Path(args.image).read_bytes()
+    # One positional image (you know the target slot), or --image-a/--image-b so
+    # the right one is picked after the device reports its target in INFO.
+    if args.image_a or args.image_b:
+        if args.image:
+            print("error: give either a single image or --image-a/--image-b, not both",
+                  file=sys.stderr)
+            return 2
+        image: bytes | dict[int, bytes] = {}
+        if args.image_a:
+            image[0] = Path(args.image_a).read_bytes()
+        if args.image_b:
+            image[1] = Path(args.image_b).read_bytes()
+    elif args.image:
+        image = Path(args.image).read_bytes()
+    else:
+        print("error: an image is required (positional, or --image-a/--image-b)",
+              file=sys.stderr)
+        return 2
     # serial_for_url accepts device paths AND pyserial URLs (socket://host:port —
     # how the emulation E2E drives a Renode socket terminal — rfc2217://, etc.).
     link = serial.serial_for_url(args.port, baudrate=args.baud, timeout=args.timeout)
@@ -687,10 +723,17 @@ def main() -> None:
                             "the --slot link; default 0x200)")
     p_img.set_defaults(func=cmd_image)
 
+    p_ports = sub.add_parser("ports", help="list serial ports")
+    p_ports.add_argument("--json", action="store_true")
+    p_ports.set_defaults(func=cmd_ports)
+
     p_upd = sub.add_parser(
         "update", help="send an update image to a device over serial (the "
                        "bootloader's UART update window)")
-    p_upd.add_argument("image", help="packed image from `alloy image`")
+    p_upd.add_argument("image", nargs="?",
+                       help="packed image from `alloy image` (or use --image-a/-b)")
+    p_upd.add_argument("--image-a", help="slot-A image; picked if the device targets A")
+    p_upd.add_argument("--image-b", help="slot-B image; picked if the device targets B")
     p_upd.add_argument("--port", required=True, help="serial port (e.g. /dev/ttyUSB0)")
     p_upd.add_argument("--baud", type=int, default=115200)
     p_upd.add_argument("--timeout", type=float, default=5.0,

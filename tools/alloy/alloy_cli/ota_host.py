@@ -26,6 +26,36 @@ T_HELLO, T_DATA, T_FINISH = 0x01, 0x02, 0x03
 T_INFO, T_ACK, T_NAK = 0x81, 0x82, 0x83
 
 
+def elf_to_bin(elf: bytes) -> bytes:
+    """Flatten an ELF32-LE firmware image to the raw bytes objcopy -O binary
+    would produce: PT_LOAD segments laid out by physical address (LMA), gaps
+    filled with erased-flash 0xFF. Pure python so `alloy image` and `alloy
+    update` work on machines with no cross toolchain (a field tech's laptop)."""
+    if elf[:4] != b"\x7fELF":
+        raise ValueError("not an ELF file")
+    if elf[4] != 1 or elf[5] != 1:
+        raise ValueError("only ELF32 little-endian firmware is supported")
+    e_phoff, = struct.unpack_from("<I", elf, 28)
+    e_phentsize, e_phnum = struct.unpack_from("<HH", elf, 42)
+    segs = []
+    for i in range(e_phnum):
+        off = e_phoff + i * e_phentsize
+        p_type, p_offset, _va, p_paddr, p_filesz = struct.unpack_from("<IIIII", elf, off)
+        if p_type == 1 and p_filesz > 0:  # PT_LOAD with file contents
+            segs.append((p_paddr, elf[p_offset:p_offset + p_filesz]))
+    if not segs:
+        raise ValueError("ELF has no loadable segments")
+    segs.sort()
+    base = segs[0][0]
+    out = bytearray()
+    for paddr, data in segs:
+        gap = paddr - base - len(out)
+        if gap < 0:
+            raise ValueError("overlapping PT_LOAD segments")
+        out += b"\xff" * gap + data
+    return bytes(out)
+
+
 def make_image(app: bytes, version: int, app_offset: int = APP_OFFSET_DEFAULT) -> bytes:
     """[image_header | 0xFF pad | app] — the payload starts at slot offset 32 and
     pads up to app_offset so the app's vector table lands where it was linked
@@ -104,9 +134,14 @@ def _exchange(link: Link, out: bytes, retries: int) -> Frame:
     raise UpdateError("device not responding (retries exhausted)")
 
 
-def update(link: Link, image: bytes, retries: int = 8,
+def update(link: Link, image: bytes | dict[int, bytes], retries: int = 8,
            progress=None) -> dict:
-    """Push a packed image. Returns the INFO facts (slot/version) on success."""
+    """Push a packed image. Returns the INFO facts (slot/version) on success.
+
+    A/B-correct mode: pass {0: slot_a_image, 1: slot_b_image} and the right one
+    is chosen AFTER the device reports its target slot in INFO — an app image is
+    linked for a specific slot, so sending the wrong one would trial-boot into a
+    crash (the rollback saves the device, but the update wastes a cycle)."""
     info = _exchange(link, encode_frame(T_HELLO, 0), retries)
     if info.ftype != T_INFO or len(info.payload) < 8:
         raise UpdateError(f"unexpected reply to HELLO (type 0x{info.ftype:02x})")
@@ -115,6 +150,11 @@ def update(link: Link, image: bytes, retries: int = 8,
     max_chunk = struct.unpack("<H", info.payload[6:8])[0]
     if proto != 1:
         raise UpdateError(f"device speaks protocol {proto}, host speaks 1")
+    if isinstance(image, dict):
+        if slot not in image:
+            raise UpdateError(f"device targets slot {'B' if slot else 'A'} but no "
+                              f"image for it was provided")
+        image = image[slot]
 
     seq = 0
     for off in range(0, len(image), max_chunk):
