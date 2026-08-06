@@ -55,11 +55,15 @@ class Region:
 
 @dataclass(frozen=True)
 class SlotLayout:
+    # For uniform-page flash this is the erase page; for sector flash it is the
+    # SLOT erase stride (one big sector), so the updater's page-by-page erase
+    # hits each sector exactly once. Store pages are addressed explicitly.
     page_size: int
     bootloader: Region
     slot_a: Region
     slot_b: Region
     store: Region
+    store_page_b: int  # base of the store's second independently-erasable page
 
 
 def flash_ip(chip: dict[str, Any]) -> str | None:
@@ -84,17 +88,21 @@ def slot_layout(chip: dict[str, Any]) -> SlotLayout:
     """Partition the chip's flash for A/B update. Raises EmitError when the chip
     can't support it (unknown flash IP, or flash too small to be worth it)."""
     ip = flash_ip(chip)
+    flash = next((m for m in chip["memories"] if m["kind"] == "flash"), None)
+    if flash is None:
+        raise EmitError(f"chip {chip['part']}: no flash memory in chip data")
+    base = int(flash["base"], 16) if isinstance(flash["base"], str) else int(flash["base"])
+    total = int(flash["size"])
+
+    if ip == "st/flash_f7":
+        return _sector_layout_f7(chip, base, total)
+
     page = _FLASH_PAGE_SIZE.get(ip or "")
     if page is None:
         raise EmitError(
             f"chip {chip['part']}: no A/B slot layout — flash controller IP "
             f"'{ip}' has no page-size entry (add it to emit/slots.py when the "
             f"flash HAL for it exists)")
-    flash = next((m for m in chip["memories"] if m["kind"] == "flash"), None)
-    if flash is None:
-        raise EmitError(f"chip {chip['part']}: no flash memory in chip data")
-    base = int(flash["base"], 16) if isinstance(flash["base"], str) else int(flash["base"])
-    total = int(flash["size"])
 
     bl_size = _BOOTLOADER_BYTES
     store_size = _STORE_PAGES * page
@@ -110,7 +118,34 @@ def slot_layout(chip: dict[str, Any]) -> SlotLayout:
     slot_a = Region(base + bl_size, slot_size)
     slot_b = Region(slot_a.base + slot_size, slot_size)
     store = Region(base + total - store_size, store_size)
-    return SlotLayout(page, Region(base, bl_size), slot_a, slot_b, store)
+    return SlotLayout(page, Region(base, bl_size), slot_a, slot_b, store,
+                      store.base + page)
+
+
+def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout:
+    """F7 flash is SECTOR-based with mixed sizes (RM0431/RM0385, single bank):
+    4 small sectors, one medium (4x small), then big sectors (8x small); small is
+    16K on 512K parts and 32K on 1M/2M. The layout uses the natural boundaries —
+
+        s0: bootloader | s1+s2: boot-state store | s3+s4: reserved (nvm/fs later)
+        first big sector: slot A | second big sector: slot B | rest: reserved
+
+    so the updater's erase stride (page_size = one big sector) hits each sector
+    exactly once and the store's two pages are independently-erasable sectors."""
+    small = 32 * 1024 if total >= 1024 * 1024 else 16 * 1024
+    big = small * 8
+    bigs_base = base + 4 * small + 4 * small  # 4 small + 1 medium (4x small)
+    if bigs_base + 2 * big > base + total:
+        raise EmitError(f"chip {chip['part']}: flash too small for the F7 A/B "
+                        f"sector layout (needs two {big // 1024}K sectors)")
+    return SlotLayout(
+        page_size=big,
+        bootloader=Region(base, small),
+        slot_a=Region(bigs_base, big),
+        slot_b=Region(bigs_base + big, big),
+        store=Region(base + small, 2 * small),
+        store_page_b=base + 2 * small,
+    )
 
 
 def emit_slots_header(chip: dict[str, Any]) -> str:
@@ -142,6 +177,9 @@ inline constexpr std::uint32_t slot_b_size = {lay.slot_b.size}u;
 
 inline constexpr std::uintptr_t store_base = {lay.store.base:#010x}u;
 inline constexpr std::uint32_t store_size = {lay.store.size}u;
+// The store's second independently-erasable page (== store_base + page_size on
+// uniform-page flash; its own sector on sector-based flash like F7).
+inline constexpr std::uintptr_t store_page_b = {lay.store_page_b:#010x}u;
 
 }}  // namespace alloy::slots
 """

@@ -353,6 +353,45 @@ jobs:
             --variable RESC_EMPTY:/tmp/empty.resc \
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+      # SECOND FAMILY: the SAME bootloader source on the STM32F7's sector-based
+      # flash (st_flash_f7: mixed 16K/64K/128K sectors; slots on natural sector
+      # boundaries). The platform carries MTD.STM32F4_FlashController, so slot
+      # erases here are REAL modeled sector erases, not no-ops.
+      - name: build the F722 bootloader + slot-A app image
+        working-directory: alloy/examples/bootloader_uart
+        run: |
+          uv run --project ../../tools/alloy alloy build --board nucleo_f722ze --slot bl
+          uv run --project ../../tools/alloy alloy emulate --board nucleo_f722ze --emit-only
+          out="$PWD/.alloy/build-tree/nucleo_f722ze/out"
+          echo "f7_repl=$out/nucleo_f722ze.repl" >> "$GITHUB_ENV"
+          echo "f7_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          cd ../uart_echo
+          uv run --project ../../tools/alloy alloy build --board nucleo_f722ze --slot a
+          uv run --project ../../tools/alloy alloy image \
+            .alloy/build-tree/nucleo_f722ze/out/uart_echo.elf --set-version 1 -o /tmp/f7_app.img
+          slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
+            .alloy/generated/nucleo_f722ze/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
+          echo "f7_slot_a=$slot_a" >> "$GITHUB_ENV"
+      - name: run the F722 bootloader oracle
+        run: |
+          cat > /tmp/f7_full.resc <<EOF
+          using sysbus
+          mach create "f7A"
+          machine LoadPlatformDescription @$f7_repl
+          sysbus LoadELF @$f7_bl_elf
+          sysbus LoadBinary @/tmp/f7_app.img $f7_slot_a
+          EOF
+          cat > /tmp/f7_empty.resc <<EOF
+          using sysbus
+          mach create "f7E"
+          machine LoadPlatformDescription @$f7_repl
+          sysbus LoadELF @$f7_bl_elf
+          EOF
+          renode-test \
+            --variable RESC_FULL:/tmp/f7_full.resc \
+            --variable RESC_EMPTY:/tmp/f7_empty.resc \
+            --variable UART:sysbus.usart3 \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
       # The FULL LIFECYCLE over the wire: Renode runs the real bootloader (blank
       # flash) with its UART on a TCP socket and its monitor as the "power
       # button". scripts/update_e2e.py then drives, through the REAL `alloy

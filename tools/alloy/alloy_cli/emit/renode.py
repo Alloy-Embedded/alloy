@@ -375,6 +375,17 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 {_DMA_G0_SCRIPT}
 '''
 """
+    # Flash controller: only for IPs Renode models faithfully. MTD's F4 model
+    # covers the F7 (same CR/SR + sector map at each size) and services REAL
+    # sector erases against the MappedMemory — so an F7 bootloader's slot erase
+    # is genuinely modeled, not a no-op. G0 stays without a controller model on
+    # purpose (its legs are green on direct memory writes; do not disturb).
+    fc = chip.get("peripherals", {}).get("flash")
+    if fc and not fc.get("uncurated") and fc.get("ip") == "st/flash_f7":
+        platform += f"""
+flash_ctrl: MTD.STM32F4_FlashController @ sysbus {int(fc["base"], 16):#010x}
+    flash: flash
+"""
     wdg = _resolve_wdg(chip)
     if wdg is not None:
         wdg_name, wdg_base, wdg_model = wdg

@@ -96,3 +96,34 @@ def test_slot_build_refuses_boards_with_flash_reserved() -> None:
     with pytest.raises(EmitError, match="nvm/fs"):
         emit_linker_script(chip, "cortex_m", "flash", 4096,
                           (lay.slot_a.base + APP_OFFSET, lay.slot_a.size - APP_OFFSET))
+
+
+def _f7_chip(flash_size: int = 512 * 1024) -> dict:
+    c = _g0_chip(flash_size)
+    c["part"] = "STM32F722ZE"
+    c["memories"][0]["base"] = "0x08000000"
+    c["peripherals"]["flash"]["ip"] = "st/flash_f7"
+    return c
+
+
+def test_f7_512k_sector_layout_uses_natural_boundaries() -> None:
+    lay = slot_layout(_f7_chip())
+    assert lay.page_size == 128 * 1024              # updater stride = one big sector
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 16 * 1024)
+    assert (lay.store.base, lay.store.size) == (0x08004000, 32 * 1024)
+    assert lay.store_page_b == 0x08008000           # sector 2, independently erasable
+    assert (lay.slot_a.base, lay.slot_a.size) == (0x08020000, 128 * 1024)
+    assert (lay.slot_b.base, lay.slot_b.size) == (0x08040000, 128 * 1024)
+
+
+def test_f7_1m_layout_scales_the_sector_pattern() -> None:
+    lay = slot_layout(_f7_chip(1024 * 1024))
+    assert lay.page_size == 256 * 1024
+    assert lay.bootloader.size == 32 * 1024
+    assert lay.slot_a.base == 0x08040000            # after 4x32K + 128K
+    assert lay.slot_b.base == 0x08080000
+
+
+def test_g0_store_page_b_is_one_page_after_store_base() -> None:
+    lay = slot_layout(_g0_chip())
+    assert lay.store_page_b == lay.store.base + lay.page_size

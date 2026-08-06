@@ -60,7 +60,7 @@ int main() {
     uart.write("alloy bootloader\r\n");
 
     store_t store{flash_hal{}, alloy::slots::store_base,
-                  alloy::slots::store_base + alloy::slots::page_size};
+                  alloy::slots::store_page_b};
     manager_t mgr{store};
 
     // Decide once per reset (consumes a trial attempt), then verify what we were
@@ -83,7 +83,9 @@ int main() {
     }
 
     const std::uint8_t target = mgr.update_target();
-    alloy::ota::updater<flash_hal> up{flash_hal{}, kSlots[target], flash_hal::page_size};
+    // Erase stride = the layout's page_size: the chip's erase page on uniform
+    // flash, one big sector on sector flash (F7) — never the driver's business.
+    alloy::ota::updater<flash_hal> up{flash_hal{}, kSlots[target], alloy::slots::page_size};
     arming_sink sink{up, mgr, target};
     auto tx = [&uart](std::span<const std::uint8_t> frame) {
         for (auto b : frame) {

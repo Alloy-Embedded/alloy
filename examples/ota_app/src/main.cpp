@@ -24,7 +24,7 @@ int main() {
     using flash_hal = alloy::hal::flash_impl<alloy::dev::flash_t>;
     alloy::ota::boot_store<flash_hal> store{
         flash_hal{}, alloy::slots::store_base,
-        alloy::slots::store_base + alloy::slots::page_size};
+        alloy::slots::store_page_b};
     alloy::ota::boot_manager mgr{store};
     if (mgr.confirm()) {
         uart.write("ota_app confirmed\r\n");
