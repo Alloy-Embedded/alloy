@@ -159,22 +159,33 @@ def test_update_gives_up_on_a_dead_device() -> None:
         update(Dead(), make_image(b"D", version=1), retries=2)
 
 
-def _mini_elf(segs: list[tuple[int, bytes]]) -> bytes:
-    """A minimal ELF32-LE with the given (paddr, data) PT_LOAD segments."""
-    ehsize, phentsize = 52, 32
+def _mini_elf(segs: list[tuple[int, bytes]], seg_prefix: int = 0) -> bytes:
+    """A minimal ELF32-LE with one PT_LOAD + one ALLOC section per (paddr, data).
+    seg_prefix widens each SEGMENT to start `seg_prefix` bytes before its section
+    (paddr shifted back accordingly) — modelling GCC's page-aligned first LOAD
+    that maps the ELF header itself, which sections must exclude."""
+    ehsize, phentsize, shentsize = 52, 32, 40
+    n = len(segs)
     phoff = ehsize
-    data_off = phoff + phentsize * len(segs)
+    shoff = phoff + phentsize * n
+    data_off = shoff + shentsize * (n + 1)  # +1: null section 0
     head = bytearray(b"\x7fELF" + bytes([1, 1, 1, 0]) + b"\x00" * 8)
-    head += struct.pack("<HHIIIIIHHHHHH", 2, 40, 1, 0, phoff, 0, 0,
-                        ehsize, phentsize, len(segs), 0, 0, 0)
+    head += struct.pack("<HHIIIIIHHHHHH", 2, 40, 1, 0, phoff, shoff, 0,
+                        ehsize, phentsize, n, shentsize, n + 1, 0)
     body = bytearray()
     phdrs = bytearray()
+    shdrs = bytearray(b"\x00" * shentsize)  # null section
     for paddr, data in segs:
-        off = data_off + len(body)
-        phdrs += struct.pack("<IIIIIIII", 1, off, paddr, paddr,
-                             len(data), len(data), 5, 4)
-        body += data
-    return bytes(head) + bytes(phdrs) + bytes(body)
+        sec_off = data_off + len(body) + seg_prefix
+        seg_off = sec_off - seg_prefix
+        phdrs += struct.pack("<IIIIIIII", 1, seg_off, paddr - seg_prefix,
+                             paddr - seg_prefix, len(data) + seg_prefix,
+                             len(data) + seg_prefix, 5, 4)
+        # sh: name type=1(PROGBITS) flags=ALLOC|EXEC addr offset size ...
+        shdrs += struct.pack("<IIIIIIIIII", 0, 1, 0x6, paddr, sec_off,
+                             len(data), 0, 0, 4, 0)
+        body += b"\x00" * seg_prefix + data
+    return bytes(head) + bytes(phdrs) + bytes(shdrs) + bytes(body)
 
 
 def test_elf_to_bin_lays_out_segments_by_lma_with_ff_gaps() -> None:
@@ -209,3 +220,13 @@ def test_update_dual_image_missing_target_is_a_clear_error() -> None:
     dev = FakeDevice()
     with pytest.raises(UpdateError, match="targets slot B"):
         update(dev, {0: make_image(b"A", version=1)})
+
+
+def test_elf_to_bin_excludes_segment_prefix_like_objcopy() -> None:
+    # GCC page-aligns the first PT_LOAD so it maps the ELF header itself; the
+    # flattened binary must contain ONLY the sections (a header byte where the
+    # vector table belongs sent a real bootloader jumping into garbage).
+    from alloy_cli.ota_host import elf_to_bin
+
+    elf = _mini_elf([(0x08004200, b"VECTORS!")], seg_prefix=0x200)
+    assert elf_to_bin(elf) == b"VECTORS!"

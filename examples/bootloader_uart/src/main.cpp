@@ -19,6 +19,7 @@
 #include <alloy/slots.hpp>
 #include <alloy/time.hpp>
 
+#include <chrono>
 #include <cstdint>
 #include <span>
 
@@ -112,6 +113,16 @@ int main() {
     if (boot >= 0) {
         if (plan.kind == alloy::ota::boot_kind::trial && boot == plan.slot) {
             uart.write(boot == 0 ? "trial boot slot A\r\n" : "trial boot slot B\r\n");
+            // A trial that HANGS (no crash, no confirm) would otherwise wedge the
+            // device forever — plan_boot() only consumes attempts across RESETS.
+            // Arm the hardware watchdog before handing over: a healthy app
+            // confirms and keeps feeding (see examples/ota_app); a hung or
+            // never-feeding one is reset, consuming attempts until the automatic
+            // rollback. Confirmed boots are NOT armed here — that's the
+            // product's own policy, not the bootloader's.
+            if constexpr (board::caps::watchdog) {
+                board::watchdog.start(std::chrono::seconds{2});
+            }
         } else if (plan.kind == alloy::ota::boot_kind::reverted) {
             uart.write(boot == 0 ? "reverted, boot slot A\r\n" : "reverted, boot slot B\r\n");
         } else {

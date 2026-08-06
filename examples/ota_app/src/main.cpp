@@ -9,6 +9,7 @@
 #include <alloy/ota.hpp>
 #include <alloy/slots.hpp>
 
+#include <chrono>
 #include <cstdint>
 
 using namespace alloy::literals;
@@ -31,7 +32,17 @@ int main() {
         uart.write("ota_app confirm FAILED\r\n");
     }
 
+    // The recommended product pattern: the bootloader armed the watchdog for a
+    // TRIAL boot; arm it here too (covers confirmed boots) and feed it only from
+    // the healthy main loop. A hang anywhere after this point resets the MCU —
+    // during a trial that consumes an attempt and ends in automatic rollback.
+    if constexpr (board::caps::watchdog) {
+        board::watchdog.start(std::chrono::seconds{2});
+    }
     for (;;) {
-        alloy::sleep_for(1s);
+        if constexpr (board::caps::watchdog) {
+            board::watchdog.feed();
+        }
+        alloy::sleep_for(250ms);
     }
 }

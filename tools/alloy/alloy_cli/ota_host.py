@@ -28,30 +28,53 @@ T_INFO, T_ACK, T_NAK = 0x81, 0x82, 0x83
 
 def elf_to_bin(elf: bytes) -> bytes:
     """Flatten an ELF32-LE firmware image to the raw bytes objcopy -O binary
-    would produce: PT_LOAD segments laid out by physical address (LMA), gaps
-    filled with erased-flash 0xFF. Pure python so `alloy image` and `alloy
-    update` work on machines with no cross toolchain (a field tech's laptop)."""
+    produces. Pure python so `alloy image` and `alloy update` work on machines
+    with no cross toolchain (a field tech's laptop).
+
+    objcopy works on SECTIONS, not segments — and that difference bit for real:
+    GCC page-aligns the first PT_LOAD so it maps from file offset 0, ELF header
+    included; flattening whole segments put those header bytes where the vector
+    table belongs and the bootloader jumped into them. So: take each allocated,
+    non-NOBITS section, compute its LMA through its containing PT_LOAD
+    (lma = p_paddr + (sh_offset - p_offset)), and lay sections out by LMA with
+    0xFF (erased flash) in the gaps."""
     if elf[:4] != b"\x7fELF":
         raise ValueError("not an ELF file")
     if elf[4] != 1 or elf[5] != 1:
         raise ValueError("only ELF32 little-endian firmware is supported")
     e_phoff, = struct.unpack_from("<I", elf, 28)
+    e_shoff, = struct.unpack_from("<I", elf, 32)
     e_phentsize, e_phnum = struct.unpack_from("<HH", elf, 42)
-    segs = []
+    e_shentsize, e_shnum = struct.unpack_from("<HH", elf, 46)
+
+    loads = []
     for i in range(e_phnum):
         off = e_phoff + i * e_phentsize
         p_type, p_offset, _va, p_paddr, p_filesz = struct.unpack_from("<IIIII", elf, off)
-        if p_type == 1 and p_filesz > 0:  # PT_LOAD with file contents
-            segs.append((p_paddr, elf[p_offset:p_offset + p_filesz]))
-    if not segs:
-        raise ValueError("ELF has no loadable segments")
-    segs.sort()
-    base = segs[0][0]
+        if p_type == 1:  # PT_LOAD
+            loads.append((p_offset, p_filesz, p_paddr))
+
+    pieces = []
+    for i in range(e_shnum):
+        off = e_shoff + i * e_shentsize
+        (sh_type, sh_flags, _addr, sh_offset,
+         sh_size) = struct.unpack_from("<IIIII", elf, off + 4)
+        if not (sh_flags & 0x2) or sh_type == 8 or sh_size == 0:  # !ALLOC | NOBITS
+            continue
+        for p_offset, p_filesz, p_paddr in loads:
+            if p_offset <= sh_offset < p_offset + p_filesz:
+                pieces.append((p_paddr + (sh_offset - p_offset),
+                               elf[sh_offset:sh_offset + sh_size]))
+                break
+    if not pieces:
+        raise ValueError("ELF has no loadable sections")
+    pieces.sort()
+    base = pieces[0][0]
     out = bytearray()
-    for paddr, data in segs:
-        gap = paddr - base - len(out)
+    for lma, data in pieces:
+        gap = lma - base - len(out)
         if gap < 0:
-            raise ValueError("overlapping PT_LOAD segments")
+            raise ValueError("overlapping sections")
         out += b"\xff" * gap + data
     return bytes(out)
 

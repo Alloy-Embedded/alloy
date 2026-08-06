@@ -110,20 +110,23 @@ def main() -> None:
     assert info["target_slot"] == 0, f"expected target A, got {info}"
     print(f"  ok: bad image accepted -> slot A {info}")
 
-    # 5. three trial boots, no confirm ever
+    # 5. three trial boots with NO help from the harness: the bad app (uart_echo)
+    # never confirms and never feeds, so the WATCHDOG the bootloader armed before
+    # each trial jump resets the device by itself — the "hung trial" answer.
+    # Only trial 1's reboot comes from the update's own reset.
     wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
-                    b"trial boot slot A", b"alloy uart_echo ready"], 30, "trial 1/3")
+                    b"trial boot slot A", b"alloy uart_echo ready"], 60, "trial 1/3")
     for n in (2, 3):
-        mon.power_cycle()
         wait_for(link, [b"alloy bootloader", b"trial boot slot A",
-                        b"alloy uart_echo ready"], 30, f"trial {n}/3")
+                        b"alloy uart_echo ready"], 240,
+                 f"trial {n}/3 (watchdog self-reset, no power button)")
 
-    # 6. attempts exhausted -> automatic rollback to the confirmed good app
-    mon.power_cycle()
+    # 6. attempts exhausted -> automatic rollback, again via the watchdog alone
     wait_for(link, [b"alloy bootloader", b"reverted, boot slot B",
-                    b"alloy ota_app ready"], 30, "AUTOMATIC ROLLBACK")
+                    b"alloy ota_app ready"], 240, "AUTOMATIC ROLLBACK (autonomous)")
 
-    print("PASS: install -> trial -> confirm -> bad update -> 3 trials -> rollback")
+    print("PASS: install -> trial -> confirm -> bad update -> "
+          "3 watchdog-reset trials -> autonomous rollback")
 
 
 if __name__ == "__main__":

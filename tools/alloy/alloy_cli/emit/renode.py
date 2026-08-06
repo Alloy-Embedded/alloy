@@ -82,6 +82,15 @@ RENODE_SPI = {
 # sets ISR.EOC and loads DR with a channel-ENCODED value (1000 + channel) so a
 # read of channel N returns 1000+N (a wrong channel would return a wrong number,
 # so a conformance test can't pass by coincidence); reading DR clears EOC.
+# Independent watchdog: Renode models the ST IWDG faithfully (down-counter off
+# LSI; timeout resets the machine). frequency must match the LSI the HAL's tick
+# math assumes (st_iwdg_detail: iwdg_lsi_hz = 32000). Inert until the firmware
+# starts it, so it's safe in every leg's platform; the OTA trial/rollback E2E is
+# what actually exercises it (a never-feeding trial image self-resets).
+RENODE_WDG = {
+    "st/iwdg_v2": "Timers.STM32_IndependentWatchdog",
+}
+
 _ADC_G0_MODEL = {"st/adc_v2"}
 _ADC_G0_SCRIPT = """if request.IsInit:
     regs = [0] * (size / 4)
@@ -250,6 +259,14 @@ def _resolve_adc(chip: dict[str, Any], board: dict[str, Any]):
     return name, int(periph["base"], 16)
 
 
+def _resolve_wdg(chip: dict[str, Any]):
+    """The independent watchdog, if the chip declares one Renode models."""
+    periph = chip.get("peripherals", {}).get("iwdg")
+    if periph and not periph.get("uncurated") and periph.get("ip") in RENODE_WDG:
+        return "iwdg", int(periph["base"], 16), RENODE_WDG[periph["ip"]]
+    return None
+
+
 def _resolve_dma(chip: dict[str, Any]):
     """The DMA1 controller if it's the st/dma_v1 (G0) IP. DMA is a capability, not
     a pin-routed board role, so this keys straight off the chip peripheral."""
@@ -357,6 +374,14 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
     script: '''
 {_DMA_G0_SCRIPT}
 '''
+"""
+    wdg = _resolve_wdg(chip)
+    if wdg is not None:
+        wdg_name, wdg_base, wdg_model = wdg
+        # frequency = the LSI the HAL's timeout math assumes (iwdg_lsi_hz).
+        platform += f"""
+{wdg_name}: {wdg_model} @ sysbus {wdg_base:#010x}
+    frequency: 32000
 """
     # (PWM conformance stays out: it has no UART-observable output — it drives a
     # timer/GPIO. See [[alloy-audit-2026-07]].)
