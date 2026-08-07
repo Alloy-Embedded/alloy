@@ -27,7 +27,9 @@ def _resolve_baud(board: dict[str, Any]) -> int:
     return baud
 
 
-def monitor(board: dict[str, Any]) -> None:
+def _open_port(board: dict[str, Any]) -> tuple[Any, str, int]:
+    """(port, name, baud) — the setup both the interactive and the NDJSON
+    monitor need, including the DTR/RTS handling that differs per probe."""
     probe = board.get("probe")
     if probe is None:
         raise EmitError(f"board {board['id']} declares no probe — no serial to monitor")
@@ -39,6 +41,17 @@ def monitor(board: dict[str, Any]) -> None:
     port_name = find_serial_port(probe)
     baud = _resolve_baud(board)
     port = serial.Serial(port_name, baud, timeout=0.1)
+    if probe.get("kind") == "esptool":
+        port.dtr = False
+        port.rts = False
+    return port, port_name, baud
+
+
+def monitor(board: dict[str, Any]) -> None:
+    import serial  # noqa: PLC0415
+
+    port, port_name, baud = _open_port(board)
+    probe = board.get("probe") or {}
     # pyserial asserts DTR/RTS on open; on FT2232H auto-download circuits
     # (ESP32 boards) an asserted RTS holds the chip in reset — release both.
     # But do this ONLY for those USB-UART bridges: on an EDBG/CMSIS-DAP CDC
@@ -106,3 +119,74 @@ def _forward_keys(port: Any, stop: threading.Event) -> None:
             port.write(ch)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+
+
+# ---------------------------------------------------------------- NDJSON mode
+
+def monitor_ndjson(board: dict[str, Any]) -> None:
+    """The same serial link, as one JSON object per line on stdout.
+
+    The interactive monitor puts the terminal in cbreak mode to forward
+    keystrokes, which needs a TTY it does not have when an editor spawns it. So
+    this is a separate path rather than a flag threaded through that one: RX is
+    line-buffered and stamped, TX arrives as whole lines on stdin.
+
+    Timestamps are milliseconds since the link opened, not wall clock — what a
+    reader wants from a device log is the interval between lines.
+    """
+    import json  # noqa: PLC0415
+    import time  # noqa: PLC0415
+
+    import serial  # noqa: PLC0415
+
+    port, port_name, baud = _open_port(board)
+    started = time.monotonic()
+
+    def emit(obj: dict[str, Any]) -> None:
+        sys.stdout.write(json.dumps(obj) + "\n")
+        sys.stdout.flush()
+
+    emit({"event": "open", "port": port_name, "baud": baud})
+    stop = threading.Event()
+
+    def writer() -> None:
+        """Whole lines from stdin go to the device.
+
+        End of stdin means "nothing more to send", NOT "close the link" — a
+        caller that only wants to LISTEN passes no stdin at all, and stopping
+        there would end the session before a single line was read.
+        """
+        for line in sys.stdin:
+            if stop.is_set():
+                return
+            try:
+                port.write(line.encode("utf-8", "replace"))
+            except (OSError, serial.SerialException):
+                return
+
+    threading.Thread(target=writer, daemon=True).start()
+
+    pending = bytearray()
+    try:
+        while not stop.is_set():
+            try:
+                data = port.read(4096)
+            except (OSError, serial.SerialException) as exc:
+                emit({"event": "error", "message": str(exc)})
+                break
+            if not data:
+                continue
+            pending.extend(data)
+            while b"\n" in pending:
+                raw, _, rest = pending.partition(b"\n")
+                pending = bytearray(rest)
+                emit({"t": round((time.monotonic() - started) * 1000),
+                      "line": raw.rstrip(b"\r").decode("utf-8", "replace")})
+    finally:
+        stop.set()
+        if pending:
+            # Do not swallow a device that printed a prompt with no newline.
+            emit({"t": round((time.monotonic() - started) * 1000),
+                  "line": pending.decode("utf-8", "replace"), "partial": True})
+        port.close()
+        emit({"event": "closed"})

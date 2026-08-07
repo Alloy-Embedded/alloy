@@ -256,6 +256,29 @@ def cmd_board_clone(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_ci_init(args: argparse.Namespace) -> int:
+    from .ci_init import write_workflow  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    if project_root is None:
+        print("error: run this inside an alloy project (no alloy.toml)", file=sys.stderr)
+        return 1
+    project = load_project(project_root)
+    path, details = write_workflow(
+        project, alloy_root, force=args.force,
+        boards=[b.strip() for b in args.boards.split(",")] if args.boards else None,
+        every_board=args.all)
+    print(f"wrote {path.relative_to(project_root)}")
+    print(f"  builds on: {', '.join(details['boards'])}")
+    if details["local_boards"]:
+        print(f"  validates: {', '.join(details['local_boards'])}")
+    # The dev layout points alloy.toml at a local checkout, which CI cannot see.
+    if (project_root / "alloy.toml").read_text().find("[alloy]") != -1:
+        print("  note: alloy.toml pins a local framework path; CI installs the "
+              "published CLI instead")
+    return 0
+
+
 def cmd_matrix(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -405,8 +428,21 @@ def cmd_clock(args: argparse.Namespace) -> int:
     if not family:
         print(f"error: no family for chip '{args.chip}'", file=sys.stderr)
         return 1
-    result = solve(family, round(args.mhz * 1_000_000))
-    print(json.dumps(result, indent=2))
+    solved = solve(family, round(args.mhz * 1_000_000)) if args.mhz else None
+    if not getattr(args, "graph", False):
+        if solved is None:
+            print("error: --mhz is required without --graph", file=sys.stderr)
+            return 1
+        print(json.dumps(solved, indent=2))
+        return 0
+
+    from .clock_graph import clock_graph  # noqa: PLC0415
+    from .devices import load_chip, load_registers  # noqa: PLC0415
+
+    devices_root = _find_devices_root(alloy_root)
+    graph = clock_graph(load_chip(devices_root, args.chip), load_registers(devices_root),
+                        chip_id=args.chip, profile_name=args.profile, solved=solved)
+    print(json.dumps(graph, indent=2))
     return 0
 
 
@@ -492,10 +528,15 @@ def cmd_flash(args: argparse.Namespace) -> int:
 
 
 def cmd_monitor(args: argparse.Namespace) -> int:
-    from .monitor import monitor  # noqa: PLC0415
+    from .monitor import monitor, monitor_ndjson  # noqa: PLC0415
 
     project = _project(args)
-    monitor(project.load_board())
+    board = project.load_board()
+    if getattr(args, "json", False):
+        # For an editor: one JSON object per line, and no terminal required.
+        monitor_ndjson(board)
+    else:
+        monitor(board)
     return 0
 
 
@@ -875,6 +916,18 @@ def main() -> None:
     p_bclone.add_argument("--project", default=".")
     p_bclone.set_defaults(func=cmd_board_clone)
 
+    p_ci = sub.add_parser(
+        "ci-init",
+        help="write a GitHub Actions workflow that validates this project's "
+             "boards and builds its sources for each of them")
+    p_ci.add_argument("--project", default=".")
+    p_ci.add_argument("--force", action="store_true", help="replace an existing workflow")
+    p_ci.add_argument("--boards", help="comma-separated boards to build in CI")
+    p_ci.add_argument("--all", action="store_true",
+                      help="build every supported board, not just the ones this "
+                           "project targets")
+    p_ci.set_defaults(func=cmd_ci_init)
+
     p_mtx = sub.add_parser(
         "matrix",
         help="build this project for every supported board — the same src/, one "
@@ -926,7 +979,14 @@ def main() -> None:
     p_clock = sub.add_parser("clock",
                              help="solve a PLL clock for a target frequency (JSON)")
     p_clock.add_argument("--chip", required=True, help="an MCU id (see `alloy chips`)")
-    p_clock.add_argument("--mhz", type=float, required=True, help="target system clock in MHz")
+    p_clock.add_argument("--mhz", type=float,
+                         help="target system clock in MHz (solve a PLL for it)")
+    p_clock.add_argument("--graph", action="store_true",
+                         help="the WHOLE clock: sources, buses, and the clock each "
+                              "peripheral is fed, with what it implies")
+    p_clock.add_argument("--profile",
+                         help="with --graph: a named profile of the chip "
+                              "(default: the boot-safe one)")
     p_clock.set_defaults(func=cmd_clock)
 
     p_clean = sub.add_parser("clean", help="remove per-board build trees")
@@ -1038,6 +1098,10 @@ def main() -> None:
         p = sub.add_parser(cmd)
         p.add_argument("--project", default=".")
         p.add_argument("--board", help="override the board declared in alloy.toml")
+        if cmd == "monitor":
+            p.add_argument("--json", action="store_true",
+                           help="stream NDJSON (one object per line) instead of raw "
+                                "bytes, and take TX as whole lines on stdin")
         if cmd != "monitor":
             p.add_argument("--ram", action="store_true",
                            help="run-from-RAM: link every section into RAM and load it "
