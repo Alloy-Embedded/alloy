@@ -22,6 +22,15 @@ so the same command is useful in a terminal.
   Exits non-zero, so it works as a CI gate.
 - **`alloy board-clone <src> <new>`** — copy a curated board into your project
   as an editable one.
+- **A `board.json` value is a default; `alloy.toml` chooses.** The fields a
+  project may pick — `debug_uart.baud`, `watchdog.timeout_ms`, `nvm`/`fs`
+  `bytes`, and `[clock]` — can be set per project, so a framework board keeps
+  receiving upstream fixes instead of being forked to change a number. Which
+  fields those are is declared once, in `roles.py`; anything else is refused
+  with the reason and the command that would actually do it, and an override
+  for a role the board does not define is reported as inert rather than
+  silently dropped. `board-info` reports the effective board *and* a
+  `project_overrides` block with the board's own value beside each change.
 
 ### New: see what you built
 

@@ -105,7 +105,8 @@ def _check_external_clock(board: dict[str, Any],
     return []
 
 
-def _check_overrides(settings: dict[str, Any]) -> list[dict[str, Any]]:
+def _check_overrides(settings: dict[str, Any],
+                     board: dict[str, Any]) -> list[dict[str, Any]]:
     """alloy.toml may choose, not redesign.
 
     A project field is one the same hardware supports many values of — a baud
@@ -115,12 +116,23 @@ def _check_overrides(settings: dict[str, Any]) -> list[dict[str, Any]]:
     explanation.
     """
     out: list[dict[str, Any]] = []
+    enabled = board.get("roles") or {}
     for role, overrides in (settings.get("roles") or {}).items():
         spec = ROLES.get(role)
         if spec is None:
             out.append(_issue("error",
                               f"alloy.toml: '{role}' is not a board role",
                               role=role, suggestions=sorted(ROLES)[:MAX_SUGGESTIONS]))
+            continue
+        if role not in enabled:
+            # The override is real and well-formed, and does nothing: there is
+            # no such role on this board to change. Saying so beats leaving the
+            # user to wonder why their timeout had no effect.
+            out.append(_issue(
+                "warning",
+                f"alloy.toml: [roles.{role}] has no effect — "
+                f"{board.get('id') or 'this board'} has no {role} role",
+                role=role, suggestions=sorted(enabled)[:MAX_SUGGESTIONS]))
             continue
         for key in (overrides or {}):
             if key in spec.project_fields:
@@ -140,7 +152,7 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
                    registers: dict[str, dict[str, Any]],
                    settings: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Every problem in a board, as located, fixable issues."""
-    issues: list[dict[str, Any]] = _check_overrides(settings or {})
+    issues: list[dict[str, Any]] = _check_overrides(settings or {}, board)
     roles = board.get("roles") or {}
     pins = chip.get("pins") or {}
     classes = ip_classes(chip, registers)
@@ -330,10 +342,28 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
     return issues
 
 
-def validate_board_file(devices_root: Path, path: Path) -> dict[str, Any]:
+def _project_board_id(project_root: Path | None) -> str | None:
+    from .project import load_project  # noqa: PLC0415
+
+    try:
+        return load_project(project_root).board_id if project_root else None
+    except Exception:  # noqa: BLE001 - a broken alloy.toml is not this verb's news
+        return None
+
+
+def validate_board_file(devices_root: Path, path: Path,
+                        project_root: Path | None = None) -> dict[str, Any]:
     """Validate a board.json on disk (or '-' for stdin, so an editor can check a
-    candidate before writing it)."""
+    candidate before writing it).
+
+    `project_root` brings alloy.toml into it. Without it this verb checked the
+    board and ignored the overrides applied to it — so the CI gate passed on a
+    project whose `[roles.led] pin` was quietly doing nothing, which is the one
+    outcome the override rules exist to prevent.
+    """
     import sys  # noqa: PLC0415
+
+    from .project import read_project_settings  # noqa: PLC0415
 
     text = sys.stdin.read() if str(path) == "-" else path.read_text()
     try:
@@ -343,7 +373,12 @@ def validate_board_file(devices_root: Path, path: Path) -> dict[str, Any]:
     if not isinstance(board, dict) or "chip" not in board:
         raise EmitError(f"{path}: not a board.json (no 'chip')")
     chip = load_chip(devices_root, board["chip"])
-    issues = validate_board(board, chip, load_registers(devices_root))
+    # Only the project's OWN board gets the project's choices: validating some
+    # other board with them would report overrides as inert that are not.
+    settings = read_project_settings(project_root) if project_root else {}
+    if settings and board.get("id") != _project_board_id(project_root):
+        settings = {}
+    issues = validate_board(board, chip, load_registers(devices_root), settings)
     return {
         "schema": "alloy.board_validate.v1",
         "id": board.get("id"),

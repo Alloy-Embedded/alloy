@@ -115,6 +115,16 @@ Anything else is refused, with the reason and the command that would actually
 do it — silently ignoring `[roles.led] pin = "pb7"` would leave you with a dark
 LED and no explanation.
 
+An override for a role the board does not define is reported as a **warning**
+rather than applied — `[roles.watchdog]` on a board with no watchdog changes
+nothing, and finding that out from a message beats finding it out from a
+timeout that never fires.
+
 `alloy board-info --json` reports the effective board *and* a
 `project_overrides` block saying which values your project changed and what the
 board itself says, so a tool can show both.
+
+In the VS Code configurator this is what keeps a curated board useful: it opens
+read-only, but the project fields stay editable and **Apply** writes them to
+`alloy.toml` — you can raise the debug baud of `nucleo_g071rb` without
+duplicating it, and the field shows what the board itself says beside it.

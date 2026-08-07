@@ -162,3 +162,50 @@ def test_a_project_with_no_overrides_reports_none(tmp_path: Path) -> None:
     info = bi.board_info(DEVICES_ROOT, ALLOY_ROOT, _project(tmp_path),
                          "nucleo_g071rb")
     assert info["project_overrides"] == {"roles": {}, "clock": None}
+
+
+@skip_no_devices
+def test_override_of_a_role_the_board_lacks_is_reported(tmp_path: Path) -> None:
+    """The silent case. `apply_project_overrides` skips a role the board does not
+    define — correctly, there is nothing to change — but skipping it quietly is
+    the failure this whole check exists to prevent: the user writes a timeout,
+    nothing happens, and there is no way to find out why."""
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = _board()
+    board["roles"].pop("watchdog")          # this board has no watchdog at all
+    settings = {"roles": {"watchdog": {"timeout_ms": 2000}}}
+
+    issues = validate_board(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT), settings)
+    matching = [i for i in issues if i["role"] == "watchdog"]
+    assert matching, "an override that does nothing must be reported"
+    assert matching[0]["level"] == "warning", "it is not an error — it is inert"
+    assert "no effect" in matching[0]["message"]
+    # And it stays inert: the board is not given a role it does not have.
+    applied = apply_project_overrides(board, settings, DEVICES_ROOT)
+    assert "watchdog" not in applied["roles"]
+
+
+@skip_no_devices
+def test_the_ci_gate_sees_alloy_toml(tmp_path: Path) -> None:
+    """`alloy board-validate` exits non-zero, which is what makes it a CI gate.
+    It used to validate the board and ignore the overrides applied to it, so a
+    project whose `[roles.led] pin` was silently doing nothing passed the gate —
+    the one outcome these rules exist to prevent."""
+    from alloy_cli.board_validate import validate_board_file
+    from alloy_cli.project import _find_devices_root
+
+    root = _project(tmp_path, '\n[roles.led]\npin = "pb7"\n')
+    board_path = ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json"
+
+    report = validate_board_file(_find_devices_root(ALLOY_ROOT), board_path, root)
+    assert not report["ok"], "the gate must fail on an override that does nothing"
+    assert any("property of the BOARD" in i["message"] for i in report["issues"])
+
+    # Another board is not this project's, so this project's choices say nothing
+    # about it — reporting them against it would be noise.
+    other = ALLOY_ROOT / "boards" / "nucleo_f411re" / "board.json"
+    if other.exists():
+        clean = validate_board_file(_find_devices_root(ALLOY_ROOT), other, root)
+        assert not any("alloy.toml" in i["message"] for i in clean["issues"])

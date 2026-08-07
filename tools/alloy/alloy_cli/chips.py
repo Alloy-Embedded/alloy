@@ -77,6 +77,10 @@ def _role_catalogue(data: dict[str, Any], classes: dict[str, str | None],
             "kind": spec.kind,
             "required": list(spec.required),
             "optional": list(spec.optional),
+            # Fields a PROJECT may choose from alloy.toml without owning the
+            # board. An editor needs this to keep them editable on a curated
+            # board that is otherwise read-only.
+            "project_fields": list(spec.project_fields),
             "candidates": [],
         }
         if spec.requires_role:

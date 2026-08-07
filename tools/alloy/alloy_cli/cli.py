@@ -352,7 +352,8 @@ def cmd_board_validate(args: argparse.Namespace) -> int:
                 return 1
             board_id = load_project(project_root).board_id
         path, _ = resolve_board(alloy_root, project_root, board_id)
-    report = validate_board_file(_find_devices_root(alloy_root), path)
+    report = validate_board_file(_find_devices_root(alloy_root), path,
+                                 project_root)
 
     if getattr(args, "json", False):
         print(json.dumps(report, indent=2))
