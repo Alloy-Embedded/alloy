@@ -50,6 +50,9 @@ packages = ["alloy_cli"]
 # The ecosystem library registry + reference drivers + testkit, so an installed
 # CLI can `alloy lib list` / `alloy lib add` (the drivers vendor from here).
 "../../libs" = "alloy_cli/payload/libs"
+# Vendored Ed25519 (image signing): an installed CLI must be able to build a
+# bootloader with `[ota] public_key` set, which compiles these sources.
+"../../third_party" = "alloy_cli/payload/third_party"
 
 [tool.uv.sources]
 # Development wiring: the db loader/lints come from the sibling repo so there
