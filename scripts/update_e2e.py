@@ -37,6 +37,15 @@ import serial  # noqa: E402
 from alloy_cli.ota_host import update  # noqa: E402
 
 
+# Wall-clock budget for a phase that includes an emulated slot ERASE plus a
+# boot. On the SAME70 that erase is ~1 MB driven page-by-page through the Python
+# EFC model (~128k bus writes), and a shared CI runner measures ~4x slower than
+# a dev machine — the SAME70 boot legs take 44 s there versus 11 s here. 30 s was
+# tuned on local timings and expired mid-boot in CI on a device that was working
+# perfectly. A genuinely stuck device still fails; it just fails later.
+PHASE_TIMEOUT_S = 150
+
+
 def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
     got = b""
     end = time.monotonic() + deadline_s
@@ -98,12 +107,12 @@ def main() -> None:
     # 2. reboot -> trial boot -> the app confirms itself
     wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
                     b"trial boot slot B", b"alloy ota_app ready",
-                    b"ota_app confirmed"], 30, "trial boot + confirm")
+                    b"ota_app confirmed"], PHASE_TIMEOUT_S, "trial boot + confirm")
 
     # 3. power-cycle -> a NORMAL boot of the confirmed slot (state persisted)
     mon.power_cycle()
     wait_for(link, [b"alloy bootloader", b"boot slot B", b"alloy ota_app ready"],
-             30, "confirm persisted across power cycle")
+             PHASE_TIMEOUT_S, "confirm persisted across power cycle")
 
     if "--good-only" in sys.argv:
         # Families whose watchdog isn't modeled in Renode yet stop here: the
@@ -123,7 +132,7 @@ def main() -> None:
     # each trial jump resets the device by itself — the "hung trial" answer.
     # Only trial 1's reboot comes from the update's own reset.
     wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
-                    b"trial boot slot A", b"alloy uart_echo ready"], 60, "trial 1/3")
+                    b"trial boot slot A", b"alloy uart_echo ready"], PHASE_TIMEOUT_S, "trial 1/3")
     for n in (2, 3):
         wait_for(link, [b"alloy bootloader", b"trial boot slot A",
                         b"alloy uart_echo ready"], 240,
