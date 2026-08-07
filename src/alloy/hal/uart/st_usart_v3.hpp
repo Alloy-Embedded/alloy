@@ -38,12 +38,45 @@ struct uart_impl<Inst> {
     }
 
     static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+        configure(kernel_hz, hal::serial_config{.baud = baud});
+    }
+
+    // Full line shape, runtime-safe: UE must be LOW while CR1/CR2/CR3/BRR
+    // change (RM0394 §38 marks them "only written when UE=0"), and the
+    // re-enable is only complete when the hardware acks BOTH directions —
+    // TEACK and REACK. A reconfigure that skips those waits and transmits
+    // immediately ships its first byte at the OLD line shape. This is what
+    // lets a running system change baud/parity from a protocol write: send
+    // the ACK at the old settings, then call this.
+    static void configure(std::uint32_t kernel_hz, hal::serial_config c) {
         alloy::gate_on(Inst::gate);
         IP::ue.clear(r());
-        r().BRR = baud_div(kernel_hz, baud);
+
+        r().BRR = baud_div(kernel_hz, c.baud);
+
+        // Parity lives in a 9th frame bit when enabled with 8 data bits:
+        // M[1:0]=01 (9-bit frame) + PCE. data9 without parity is the raw
+        // 9-bit frame some multidrop protocols use.
+        const bool nine = c.data9 || c.parity != hal::parity::none;
+        IP::m0.write(r(), nine ? 1u : 0u);
+        IP::m1.write(r(), 0u);
+        IP::pce.write(r(), c.parity != hal::parity::none ? 1u : 0u);
+        IP::ps.write(r(), c.parity == hal::parity::odd ? 1u : 0u);
+        IP::deat.write(r(), c.de_assert_16ths);
+        IP::dedt.write(r(), c.de_deassert_16ths);
+
+        IP::stop.write(r(), c.stop_bits >= 2u ? 2u : 0u);
+        IP::txinv.write(r(), c.invert_tx ? 1u : 0u);
+        IP::rxinv.write(r(), c.invert_rx ? 1u : 0u);
+
+        IP::dem.write(r(), c.de_enable ? 1u : 0u);
+        IP::dep.write(r(), 0u);  // active-high DE (the transceiver norm)
+
         IP::te.set(r());
         IP::re.set(r());
         IP::ue.set(r());
+        while (IP::teack.read(r()) == 0u || IP::reack.read(r()) == 0u) {
+        }
     }
 
     static void write(std::uint8_t byte) {

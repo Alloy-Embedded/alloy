@@ -26,6 +26,12 @@ struct config {
     std::uint32_t baud = 115'200;
 };
 
+// Full line shape (parity/stop/inversion/hardware-DE) for drivers that can
+// program it — see hal::serial_config. Offered through bind::reconfigure(),
+// capability-gated: a board whose driver only speaks baud doesn't grow a
+// method that lies.
+using serial_config = hal::serial_config;
+
 template <class Pin>
 struct tx {
     using pin = Pin;
@@ -185,6 +191,17 @@ struct bind {
         hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
         hal::uart_impl<Inst>::enable(kernel_hz(), c.baud);
         return handle<Inst>{};
+    }
+
+    // Reprogram the full line shape on a RUNNING port — the RS-485/multidrop
+    // path: a protocol write changes baud/parity, the ACK goes out at the old
+    // settings, then this applies the new ones (UE-low rewrite + TEACK/REACK
+    // waits live in the driver). Only exists where the driver implements
+    // configure().
+    static void reconfigure(serial_config c)
+        requires requires { hal::uart_impl<Inst>::configure(0u, c); }
+    {
+        hal::uart_impl<Inst>::configure(kernel_hz(), c);
     }
 
     // Compile-time-checked open: the requested baud is REJECTED AT COMPILE TIME
