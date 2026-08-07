@@ -42,6 +42,13 @@ summary = "InvenSense MPU-6050 6-axis accel+gyro IMU (I2C)"
 concepts = ["I2cBus"]
 source = "path:libs/mpu6050"
 
+[ntc]
+version = "0.1.0"
+category = "sensor"
+summary = "NTC thermistor conversion — divider to resistance, beta (fixed or ln-linear) to temperature, open/short detection"
+concepts = []
+source = "path:libs/ntc"
+
 [sht31]
 version = "0.1.0"
 category = "sensor"

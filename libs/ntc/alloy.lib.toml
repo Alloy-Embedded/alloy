@@ -1,0 +1,15 @@
+[lib]
+name = "ntc"
+version = "0.1.0"
+description = "NTC thermistor conversion — divider to resistance, beta (fixed or ln-linear) to temperature, open/short detection"
+category = "sensor"
+license = "MIT"
+homepage = "https://en.wikipedia.org/wiki/Thermistor"
+
+[requires]
+concepts = []
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"
