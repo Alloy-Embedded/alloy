@@ -180,6 +180,20 @@ SECTIONS
         _ebss = .;
     }} > RAM
 
+    /* SURVIVES A RESET. RAM keeps its contents across a warm reset, so anything
+       here is readable by the code that runs after a crash — which is the whole
+       point: a fault handler writes its record, resets, and the next boot reads
+       it. Deliberately OUTSIDE .bss so startup's zero-fill cannot erase it, and
+       NOLOAD so nothing is copied over it at boot either. */
+    .noinit (NOLOAD) :
+    {{
+        . = ALIGN(4);
+        _snoinit = .;
+        *(.noinit .noinit.*)
+        . = ALIGN(4);
+        _enoinit = .;
+    }} > RAM
+
     /* Heapless, but reserve the minimum stack in RAM and expose the heap-base
        symbols newlib's _sbrk expects. Placed `> RAM`, so a static footprint that
        overflows RAM fails the LINK with a readable "region RAM overflowed"
