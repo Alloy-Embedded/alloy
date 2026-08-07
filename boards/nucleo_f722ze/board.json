@@ -4,6 +4,10 @@
   "name": "ST Nucleo-F722ZE (Nucleo-144)",
   "chip": "st/stm32f722",
   "clock_profile": "pll_180mhz",
+  "hse": {
+    "hz": 8000000,
+    "bypass": true
+  },
   "roles": {
     "led": {
       "pin": "pb0",
@@ -20,7 +24,7 @@
       "tx": "pd8",
       "rx": "pd9",
       "baud": 115200,
-      "label": "ST-Link VCP (USART3 — Nucleo-144 wiring)"
+      "label": "ST-Link VCP (USART3 \u2014 Nucleo-144 wiring)"
     },
     "watchdog": {
       "peripheral": "iwdg",
@@ -32,7 +36,7 @@
       "sck": "pa5",
       "miso": "pa6",
       "mosi": "pa7",
-      "label": "SPI1 on Arduino D13/D12/D11 = PA5/PA6/PA7 (CN7, per UM1974 Nucleo-144 pinout — old repo had no SPI map for this board); no LED conflict"
+      "label": "SPI1 on Arduino D13/D12/D11 = PA5/PA6/PA7 (CN7, per UM1974 Nucleo-144 pinout \u2014 old repo had no SPI map for this board); no LED conflict"
     }
   },
   "probe": {

@@ -428,7 +428,9 @@ def cmd_clock(args: argparse.Namespace) -> int:
     if not family:
         print(f"error: no family for chip '{args.chip}'", file=sys.stderr)
         return 1
-    solved = solve(family, round(args.mhz * 1_000_000)) if args.mhz else None
+    hse_hz = round(args.hse * 1_000_000) if getattr(args, "hse", None) else None
+    solved = solve(family, round(args.mhz * 1_000_000), external_hz=hse_hz,
+                   bypass=getattr(args, "hse_bypass", False)) if args.mhz else None
     if not getattr(args, "graph", False):
         if solved is None:
             print("error: --mhz is required without --graph", file=sys.stderr)
@@ -987,6 +989,14 @@ def main() -> None:
     p_clock.add_argument("--profile",
                          help="with --graph: a named profile of the chip "
                               "(default: the boot-safe one)")
+    p_clock.add_argument("--hse", type=float, metavar="MHZ",
+                         help="run the PLL from the board's external oscillator at "
+                              "this frequency in MHz (a crystal — what a product "
+                              "uses; USB, CAN and high baud rates need one)")
+    p_clock.add_argument("--hse-bypass", action="store_true",
+                         help="with --hse: the input is a DRIVEN clock signal, not a "
+                              "crystal (an active oscillator, or the 8 MHz an "
+                              "ST-Link feeds a Nucleo)")
     p_clock.set_defaults(func=cmd_clock)
 
     p_clean = sub.add_parser("clean", help="remove per-board build trees")

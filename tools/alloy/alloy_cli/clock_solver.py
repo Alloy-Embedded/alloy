@@ -18,6 +18,15 @@ reproduces the validated recipe exactly at its anchor frequency:
 Safety: solutions are correct-by-construction against the datasheet limits, but
 only families/frequencies with an in-repo silicon reference (validated_max_hz)
 are board-tested. ESP32 v1 runs a fixed ROM/XTAL clock — not solvable here.
+
+EXTERNAL SOURCES (crystals). A product almost never runs the PLL off the
+internal RC: USB, CAN, high baud rates and RTC accuracy all need a crystal. The
+crystal is a BOARD fact — the chip only says an external input exists and over
+what range it is legal — so `solve(..., external_hz=…)` takes the frequency from
+the board and the family model bounds it (`hse_hz`). Every generated program
+keeps the same shape, so the fallback in the generated `board::init()` still
+applies: if the crystal is absent or dead the HSERDY poll times out, the program
+aborts, and the board runs on its boot source instead of hanging.
 """
 
 from __future__ import annotations
@@ -33,12 +42,53 @@ def _poll(periph: str, reg: str, fld: str, us: int) -> dict[str, Any]:
             "equals": 1, "timeout_us": us}
 
 
+@dataclass(frozen=True)
+class Source:
+    """Where the PLL takes its reference.
+
+    `external` means a crystal or an oscillator wired on the board, so `hz` came
+    from board.json rather than from the chip data. `bypass` distinguishes a
+    driven clock signal (an active oscillator, or the 8 MHz MCO an ST-Link feeds
+    a Nucleo) from a passive crystal the MCU has to excite itself.
+    """
+
+    hz: int
+    name: str
+    external: bool = False
+    bypass: bool = False
+
+
+# A crystal needs milliseconds to start and stabilize; the internal RC needs
+# microseconds. ST's own HAL waits 100 ms for HSE, and that is the number that
+# decides whether a board with a marginal crystal boots or falls back.
+_HSE_STARTUP_US = 100_000
+_HSI_STARTUP_US = 2_000
+
+
 # ---- STM32 program builders ------------------------------------------------
 
-def _stm32_common(ws: int, pll_fields: dict[str, Any]) -> list[dict[str, Any]]:
+def _stm32_start(src: Source) -> list[dict[str, Any]]:
+    if not src.external:
+        return [
+            {"op": "rmw", "peripheral": "rcc", "register": "CR", "fields": {"HSION": 1}},
+            _poll("rcc", "CR", "HSIRDY", _HSI_STARTUP_US),
+        ]
+    ops: list[dict[str, Any]] = []
+    if src.bypass:
+        # HSEBYP is writable only while HSEON is clear — set it FIRST or the
+        # write is dropped and the MCU tries to drive a crystal that isn't there.
+        ops.append({"op": "rmw", "peripheral": "rcc", "register": "CR",
+                    "fields": {"HSEBYP": 1}})
+    ops.append({"op": "rmw", "peripheral": "rcc", "register": "CR",
+                "fields": {"HSEON": 1}})
+    ops.append(_poll("rcc", "CR", "HSERDY", _HSE_STARTUP_US))
+    return ops
+
+
+def _stm32_common(ws: int, pll_fields: dict[str, Any],
+                  src: Source) -> list[dict[str, Any]]:
     return [
-        {"op": "rmw", "peripheral": "rcc", "register": "CR", "fields": {"HSION": 1}},
-        _poll("rcc", "CR", "HSIRDY", 2000),
+        *_stm32_start(src),
         {"op": "rmw", "peripheral": "flash", "register": "ACR", "fields": {"LATENCY": ws}},
         {"op": "rmw", "peripheral": "rcc", "register": "PLLCFGR", "fields": pll_fields},
         {"op": "rmw", "peripheral": "rcc", "register": "CR", "fields": {"PLLON": 1}},
@@ -49,20 +99,27 @@ def _stm32_common(ws: int, pll_fields: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _g0g4_program(r_field: Callable[[int], int]) -> Callable[..., list[dict[str, Any]]]:
-    def build(ws: int, m: int, n: int, div: int, _tok: Any) -> list[dict[str, Any]]:
-        return _stm32_common(ws, {"PLLSRC": 2, "PLLM": m - 1, "PLLN": n,
-                                  "PLLR": r_field(div), "PLLREN": 1})
+    def build(ws: int, m: int, n: int, div: int, _tok: Any,
+              src: Source) -> list[dict[str, Any]]:
+        # RM0444/RM0440 PLLSRC[1:0]: 10 = HSI16, 11 = HSE.
+        return _stm32_common(ws, {"PLLSRC": 3 if src.external else 2,
+                                  "PLLM": m - 1, "PLLN": n,
+                                  "PLLR": r_field(div), "PLLREN": 1}, src)
     return build
 
 
-def _f4f7_program(ws: int, m: int, n: int, div: int, _tok: Any) -> list[dict[str, Any]]:
-    return _stm32_common(ws, {"PLLSRC": 0, "PLLM": m, "PLLN": n,
-                              "PLLP": div // 2 - 1, "PLLQ": 4})
+def _f4f7_program(ws: int, m: int, n: int, div: int, _tok: Any,
+                  src: Source) -> list[dict[str, Any]]:
+    # RM0090/RM0410 PLLCFGR.PLLSRC is one bit: 0 = HSI, 1 = HSE.
+    return _stm32_common(ws, {"PLLSRC": 1 if src.external else 0,
+                              "PLLM": m, "PLLN": n,
+                              "PLLP": div // 2 - 1, "PLLQ": 4}, src)
 
 
 # ---- RP2040 program builder (pll_125mhz template, FBDIV/POSTDIV substituted) --
 
-def _rp2040_program(_ws: int, _m: int, n: int, _div: int, tok: Any) -> list[dict[str, Any]]:
+def _rp2040_program(_ws: int, _m: int, n: int, _div: int, tok: Any,
+                    _src: Source) -> list[dict[str, Any]]:
     pd1, pd2 = tok
     return [
         {"op": "rmw", "peripheral": "clocks", "register": "CLK_SYS_CTRL", "fields": {"SYS_SRC": 0}},
@@ -86,7 +143,8 @@ def _rp2040_program(_ws: int, _m: int, n: int, _div: int, tok: Any) -> list[dict
 
 # ---- SAME70 program builder (plla_150mhz template, MULA/DIVA/PRES/FWS subst.) --
 
-def _same70_program(ws: int, m: int, n: int, _div: int, tok: Any) -> list[dict[str, Any]]:
+def _same70_program(ws: int, m: int, n: int, _div: int, tok: Any,
+                    _src: Source) -> list[dict[str, Any]]:
     pres_field = tok
     mula = n - 1  # PLLA multiplies by MULA+1
     # CKGR_PLLAR = ONE(bit29) | MULA<<16 | PLLACOUNT(0x3F)<<8 | DIVA. 12 MHz xtal.
@@ -141,6 +199,11 @@ class ClockModel:
     validated_max_hz: int | None = None
     source_name: str = "internal oscillator"
     note: str | None = None
+    # Legal frequency range of the family's EXTERNAL oscillator input, or None
+    # when this family's source is fixed by the board designs alloy supports
+    # (RP2040 and SAME70 hardcode a 12 MHz crystal in their bring-up prologue).
+    external_hz: tuple[int, int] | None = None
+    external_name: str = "HSE"
 
 
 def _r_divs(rs: range) -> tuple[Divisor, ...]:
@@ -170,17 +233,24 @@ MODELS: dict[str, ClockModel] = {
     "stm32g0": ClockModel(
         family="stm32g0", source_hz=16_000_000, source_name="HSI16",
         m_range=(1, 8), n_range=(8, 86), divisors=_r_divs(range(2, 9)),
+        # RM0444: the PLL input (source/M) must land in 2.66–16 MHz. With HSI16
+        # this only excludes M=7,8; with an arbitrary crystal it is what keeps
+        # the solver from proposing an out-of-spec divider.
+        vco_in_hz=(2_660_000, 16_000_000),
         vco_out_hz=(64_000_000, 344_000_000), sysclk_max_hz=64_000_000,
         flash_ws=((24_000_000, 0), (48_000_000, 1), (64_000_000, 2)),
         program=_g0g4_program(lambda r: r - 1), validated_max_hz=64_000_000,
+        external_hz=(4_000_000, 48_000_000),
     ),
     "stm32g4": ClockModel(
         family="stm32g4", source_hz=16_000_000, source_name="HSI16",
         m_range=(1, 16), n_range=(8, 127), divisors=_r_divs(range(2, 9, 2)),
+        vco_in_hz=(2_660_000, 16_000_000),  # RM0440, same window as the G0
         vco_out_hz=(96_000_000, 344_000_000), sysclk_max_hz=150_000_000,
         flash_ws=((30_000_000, 0), (60_000_000, 1), (90_000_000, 2),
                   (120_000_000, 3), (150_000_000, 4)),
         program=_g0g4_program(lambda r: {2: 0, 4: 1, 6: 2, 8: 3}[r]),
+        external_hz=(4_000_000, 48_000_000),
     ),
     "stm32f4": ClockModel(
         family="stm32f4", source_hz=16_000_000, source_name="HSI16",
@@ -190,6 +260,7 @@ MODELS: dict[str, ClockModel] = {
         flash_ws=((30_000_000, 0), (60_000_000, 1), (90_000_000, 2), (120_000_000, 3),
                   (150_000_000, 4), (168_000_000, 5)),
         program=_f4f7_program,
+        external_hz=(4_000_000, 26_000_000),
     ),
     "stm32f7": ClockModel(
         family="stm32f7", source_hz=16_000_000, source_name="HSI16",
@@ -199,6 +270,7 @@ MODELS: dict[str, ClockModel] = {
         flash_ws=((30_000_000, 0), (60_000_000, 1), (90_000_000, 2), (120_000_000, 3),
                   (150_000_000, 4), (180_000_000, 5)),
         program=_f4f7_program,
+        external_hz=(4_000_000, 26_000_000),
     ),
     # RP2040 — XOSC 12 MHz, PLL_SYS: /REFDIV ×FBDIV /(POSTDIV1×POSTDIV2). VCO
     # 400–1600 MHz, sysclk ≤ 133. Flash is external XIP (no core wait states here).
@@ -236,8 +308,35 @@ def _wait_states(table: tuple[tuple[int, int], ...], sysclk: int) -> int:
     return table[-1][1] if table else 0
 
 
-def solve(family: str, target_hz: int) -> dict[str, Any]:
-    """Best PLL setup for `target_hz` on `family` — the computed clock profile."""
+def _source_for(model: ClockModel, external_hz: int | None, bypass: bool) -> Source:
+    if external_hz is None:
+        if bypass:
+            raise EmitError("--hse-bypass only means something with an external clock "
+                            f"— pass the frequency too (--hse <Hz>)")
+        return Source(hz=model.source_hz, name=model.source_name)
+    if model.external_hz is None:
+        raise EmitError(
+            f"{model.family} already runs from {model.source_name} and its bring-up "
+            "sequence hardcodes that frequency — an arbitrary external clock is not "
+            "supported for this family yet")
+    lo, hi = model.external_hz
+    if not (lo <= external_hz <= hi):
+        raise EmitError(
+            f"{external_hz/1e6:g} MHz is outside {model.family}'s {model.external_name} "
+            f"range {lo/1e6:g}–{hi/1e6:g} MHz")
+    kind = "external clock" if bypass else "crystal"
+    return Source(hz=external_hz, name=f"{model.external_name} {external_hz/1e6:g} MHz {kind}",
+                  external=True, bypass=bypass)
+
+
+def solve(family: str, target_hz: int, external_hz: int | None = None,
+          bypass: bool = False) -> dict[str, Any]:
+    """Best PLL setup for `target_hz` on `family` — the computed clock profile.
+
+    `external_hz` switches the PLL to the board's crystal/oscillator (a board
+    fact); `bypass` says that input is a driven clock signal rather than a
+    passive crystal.
+    """
     if family in _UNSOLVABLE:
         raise EmitError(_UNSOLVABLE[family])
     model = MODELS.get(family)
@@ -248,15 +347,16 @@ def solve(family: str, target_hz: int) -> dict[str, Any]:
         raise EmitError(
             f"{target_hz/1e6:.0f} MHz exceeds {family}'s max {model.sysclk_max_hz/1e6:.0f} MHz "
             "(higher needs a power boost/overdrive not modelled yet)")
+    src = _source_for(model, external_hz, bypass)
 
     best: tuple[float, int, int, int, Divisor] | None = None
     for m in range(model.m_range[0], model.m_range[1] + 1):
         if model.vco_in_hz:
-            vco_in = model.source_hz / m
+            vco_in = src.hz / m
             if not (model.vco_in_hz[0] <= vco_in <= model.vco_in_hz[1]):
                 continue
         for n in range(model.n_range[0], model.n_range[1] + 1):
-            vco = model.source_hz / m * n
+            vco = src.hz / m * n
             if not (model.vco_out_hz[0] <= vco <= model.vco_out_hz[1]):
                 continue
             for d in model.divisors:
@@ -272,7 +372,12 @@ def solve(family: str, target_hz: int) -> dict[str, Any]:
 
     _, sysclk, m, n, d = best
     ws = _wait_states(model.flash_ws, sysclk)
-    validated = model.validated_max_hz is not None and sysclk <= model.validated_max_hz
+    # An external source is never silicon-validated by the in-repo reference: the
+    # anchor recipes all run from the internal RC. Say so rather than inherit a
+    # confidence that was measured on a different clock path.
+    validated = (model.validated_max_hz is not None
+                 and sysclk <= model.validated_max_hz
+                 and not src.external)
     return {
         "schema": "alloy.clock.v1",
         "family": family,
@@ -281,17 +386,20 @@ def solve(family: str, target_hz: int) -> dict[str, Any]:
         "ahb_hz": sysclk,
         "apb_hz": sysclk,
         "wait_states": ws,
-        "pll": {"m": m, "n": n, "div": d.value, "vco_hz": int(round(model.source_hz / m * n))},
+        "source": {"hz": src.hz, "name": src.name,
+                   "external": src.external, "bypass": src.bypass},
+        "pll": {"m": m, "n": n, "div": d.value, "vco_hz": int(round(src.hz / m * n))},
         "silicon_validated": validated,
         "profile": {
             "description": (
-                f"PLL {int(model.source_hz/1e6)}MHz /{m} x{n} /{d.value} = "
+                f"PLL {src.hz/1e6:g}MHz /{m} x{n} /{d.value} = "
                 f"{sysclk/1e6:.0f} MHz" + (f", {ws} wait states" if model.flash_ws else "")
+                + (f" from {src.name}" if src.external else "")
                 + ("" if validated else " (computed — not silicon-validated)")
             ),
             "sysclk_hz": sysclk,
             "ahb_hz": sysclk,
             "apb_hz": sysclk,
-            "program": model.program(ws, m, n, d.value, d.token),
+            "program": model.program(ws, m, n, d.value, d.token, src),
         },
     }

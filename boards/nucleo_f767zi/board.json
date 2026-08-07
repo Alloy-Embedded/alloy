@@ -4,6 +4,10 @@
   "name": "ST Nucleo-F767ZI (Nucleo-144)",
   "chip": "st/stm32f767",
   "clock_profile": "pll_180mhz",
+  "hse": {
+    "hz": 8000000,
+    "bypass": true
+  },
   "roles": {
     "led": {
       "pin": "pb0",
@@ -20,7 +24,7 @@
       "tx": "pd8",
       "rx": "pd9",
       "baud": 115200,
-      "label": "ST-Link VCP (USART3 — Nucleo-144 wiring, PD8/PD9 AF7)"
+      "label": "ST-Link VCP (USART3 \u2014 Nucleo-144 wiring, PD8/PD9 AF7)"
     },
     "watchdog": {
       "peripheral": "iwdg",
@@ -34,7 +38,7 @@
         "addr": 0,
         "mode": "rmii"
       },
-      "label": "onboard 10/100 Ethernet: ETH MAC + LAN8742A PHY (RMII, addr 0, RJ45 CN14). PHY nRST is tied to the board NRST net on MB1137 — there is NO dedicated GPIO PHY reset; reset_pin=PG2 is an unused placeholder to satisfy the driver's reset-pin requirement (the driver also soft-resets the PHY via BMCR.RESET over MDIO, which is the reset that actually matters here).",
+      "label": "onboard 10/100 Ethernet: ETH MAC + LAN8742A PHY (RMII, addr 0, RJ45 CN14). PHY nRST is tied to the board NRST net on MB1137 \u2014 there is NO dedicated GPIO PHY reset; reset_pin=PG2 is an unused placeholder to satisfy the driver's reset-pin requirement (the driver also soft-resets the PHY via BMCR.RESET over MDIO, which is the reset that actually matters here).",
       "reset_pin": "pg2"
     }
   },

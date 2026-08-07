@@ -11,7 +11,13 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .common import BANNER, EmitError, field_lookup, register_by_name
+from .common import (
+    BANNER,
+    EmitError,
+    field_lookup,
+    register_by_name,
+    uses_external_clock,
+)
 
 
 def _require(cond: bool, msg: str) -> None:
@@ -125,6 +131,13 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         profile = chip["clock"]["profiles"].get(profile_name)
         _require(profile is not None,
                  f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
+    # Same rule as board_validate._check_external_clock, enforced here too so a
+    # board can never GENERATE while depending on a crystal it never declared.
+    _require(not uses_external_clock(profile.get("program") or [])
+             or isinstance(board.get("hse"), dict),
+             f"board {board['id']}: the clock program starts an external "
+             "oscillator but the board declares no 'hse' — add "
+             '"hse": {"hz": <frequency>, "bypass": <true|false>}')
 
     # Capabilities come from role_caps() so `alloy board-info` and the generated
     # header can never drift apart. The heavy connectivity roles (ethernet/wifi)
@@ -714,6 +727,10 @@ struct clock_profile {{
     static constexpr std::uint32_t apb_hz = {profile['apb_hz']}u;
     // Mirrors apb_hz when the chip data declares no second APB bus.
     static constexpr std::uint32_t apb2_hz = {profile.get('apb2_hz', profile['apb_hz'])}u;
+    // The board's external oscillator, 0 when it has none. Peripherals that can
+    // be clocked straight off it (CAN bit timing, MCO, USB) read it from here
+    // instead of assuming the PLL source.
+    static constexpr std::uint32_t hse_hz = {int((board.get('hse') or {}).get('hz', 0))}u;
 }};
 inline constexpr std::uint32_t system_clock_hz = clock_profile::sysclk_hz;
 
@@ -771,6 +788,14 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
     # profile from the chip data — same shape either way.
     profile = board["clock"] if isinstance(board.get("clock"), dict) \
         else chip["clock"]["profiles"][board["clock_profile"]]
+    # A board carrying its own PLL (from `alloy clock` or the visual editor) has
+    # no profile NAME to quote — reading one unconditionally used to make every
+    # custom-clock board fail codegen with a KeyError.
+    clock_origin = (
+        f"Custom clock carried by the board: {profile.get('description', 'inline PLL')}"
+        if isinstance(board.get("clock"), dict)
+        else f"Clock profile '{board['clock_profile']}' resolved from chip data."
+    )
     boot_hz = chip["clock"]["sources"][chip["clock"]["boot_source"]]["hz"]
 
     program = profile["program"]
@@ -826,7 +851,7 @@ def emit_board_source(board: dict[str, Any], chip: dict[str, Any],
 {vectors_decl}namespace board {{
 namespace {{
 
-// Clock profile '{board['clock_profile']}' resolved from chip data.
+// {clock_origin}
 constexpr alloy::clock_step kClockProgram[] = {{
 {steps}
 }};

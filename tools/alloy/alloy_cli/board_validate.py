@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from .devices import load_chip, load_registers
-from .emit.common import EmitError
+from .emit.common import EmitError, uses_external_clock
 from .roles import ROLES, ip_classes, role_pin_fields, routes_by_peripheral
 
 MAX_SUGGESTIONS = 6
@@ -72,6 +72,39 @@ def _check_peripheral(role: str, cfg: dict[str, Any], spec, chip: dict[str, Any]
     return name, []
 
 
+def _check_external_clock(board: dict[str, Any],
+                          program: list[Any]) -> list[dict[str, Any]]:
+    """A board whose clock program starts a crystal MUST declare that crystal.
+
+    Not pedantry: without the declaration nothing records that this firmware
+    needs a component the PCB may not have. The failure it prevents is quiet —
+    the HSERDY poll times out, `board::init()` falls back to the boot source, and
+    the product runs at the wrong speed with every baud rate silently off.
+    """
+    hse = board.get("hse")
+    uses = uses_external_clock(program)
+    if uses and not isinstance(hse, dict):
+        return [_issue(
+            "error",
+            "this clock runs from an external oscillator but the board declares no "
+            "'hse' — add e.g. \"hse\": {\"hz\": 8000000, \"bypass\": false}, or "
+            "re-solve without --hse",
+            field="hse")]
+    if isinstance(hse, dict):
+        out: list[dict[str, Any]] = []
+        if not isinstance(hse.get("hz"), int) or hse["hz"] <= 0:
+            out.append(_issue("error", "hse.hz must be the oscillator frequency in Hz",
+                              field="hse.hz"))
+        if not uses:
+            out.append(_issue(
+                "warning",
+                "the board declares an external oscillator but its clock does not use "
+                "it — the crystal is unused (solve with --hse to run the PLL from it)",
+                field="hse"))
+        return out
+    return []
+
+
 def validate_board(board: dict[str, Any], chip: dict[str, Any],
                    registers: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     """Every problem in a board, as located, fixable issues."""
@@ -82,18 +115,26 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
     routes = routes_by_peripheral(chip)
 
     # --- clock -----------------------------------------------------------
+    # Resolve the program whichever way the board names its clock, so the
+    # external-oscillator rule applies to a curated chip profile too.
+    program: list[Any] = []
     if isinstance(board.get("clock"), dict):
         for key in ("program", "sysclk_hz"):
             if key not in board["clock"]:
                 issues.append(_issue("error",
                                      f"inline clock is missing '{key}'", field="clock"))
+        program = board["clock"].get("program") or []
     else:
         profile = board.get("clock_profile")
-        known = list((chip.get("clock") or {}).get("profiles") or {})
+        profiles = (chip.get("clock") or {}).get("profiles") or {}
+        known = list(profiles)
         if profile not in known:
             issues.append(_issue(
                 "error", f"clock profile '{profile}' is not one this chip offers",
                 field="clock_profile", suggestions=known[:MAX_SUGGESTIONS]))
+        else:
+            program = (profiles[profile] or {}).get("program") or []
+    issues.extend(_check_external_clock(board, program))
 
     # --- roles -----------------------------------------------------------
     for role, cfg in sorted(roles.items()):

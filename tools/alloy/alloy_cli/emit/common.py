@@ -19,6 +19,25 @@ SIGNALS = {
 
 CLOCK_NODES = {"sysclk", "ahb", "apb", "apb2"}
 
+# Register fields a clock program touches only when it runs off the board's
+# external oscillator. Both the emitter and the board validator ask this
+# question, and they must never answer it differently — so it is asked once,
+# here.
+EXTERNAL_CLOCK_FIELDS = frozenset({"HSEON", "HSERDY", "HSEBYP"})
+
+
+def uses_external_clock(program: list[Any]) -> bool:
+    """Does this clock program depend on a crystal/oscillator on the board?"""
+    for op in program:
+        if not isinstance(op, dict):
+            continue
+        names = set(op.get("fields") or {})
+        if op.get("field"):
+            names.add(op["field"])
+        if names & EXTERNAL_CLOCK_FIELDS:
+            return True
+    return False
+
 
 class EmitError(RuntimeError):
     pass
