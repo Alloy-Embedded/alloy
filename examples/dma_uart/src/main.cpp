@@ -33,6 +33,7 @@ int main() {
     [&uart]<class Dma>(Dma*) {
         if constexpr (HasDma<Dma> && requires(alloy::dma::channel<Dma, 1>& c) {
                           uart.write_dma(c, std::span<const std::uint8_t>{});
+                          c.on_complete(nullptr, nullptr);  // absent on the SAM E70 XDMAC
                       }) {
             auto chan = alloy::dma::channel<Dma, 1>::claim();
             // Registered BEFORE the transfer on purpose: the channel config

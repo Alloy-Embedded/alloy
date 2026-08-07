@@ -98,13 +98,26 @@ public:
     /// errors). Register it BEFORE the transfer that should report — see the
     /// header note. `fn` runs in interrupt context: keep it to setting a flag,
     /// waking a task, or starting the next transfer.
-    void on_complete(void (*fn)(void*), void* ctx = nullptr) const {
+    ///
+    /// Only exists where the backing controller implements it (ST dma_v1
+    /// today; the SAM E70 XDMAC does not). The requires-gate is not cosmetic:
+    /// without it these two methods DECLARE fine on every controller and fail
+    /// deep inside their bodies, so a portable example could not detect the
+    /// gap with `requires` and simply failed to compile for same70_xplained —
+    /// which is exactly what dma_uart did before this gate existed.
+    void on_complete(void (*fn)(void*), void* ctx = nullptr) const
+        requires requires { impl::template enable_complete_irq<Ch>(nullptr, nullptr); }
+    {
         impl::template enable_complete_irq<Ch>(fn, ctx);
     }
 
     /// Stop reporting completions. Safe while a transfer is in flight; the
     /// transfer itself is unaffected and `done()` still works.
-    void clear_on_complete() const { impl::template disable_complete_irq<Ch>(); }
+    void clear_on_complete() const
+        requires requires { impl::template disable_complete_irq<Ch>(); }
+    {
+        impl::template disable_complete_irq<Ch>();
+    }
 
     [[nodiscard]] bool done() const { return impl::template complete<Ch>(); }
     [[nodiscard]] bool error() const { return impl::template error<Ch>(); }

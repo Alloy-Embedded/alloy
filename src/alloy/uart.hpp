@@ -79,12 +79,43 @@ public:
             Inst::dmareq_tx;
         }
     {
+        write_dma_begin(dma, data);
+        const bool ok = dma.wait();
+        write_dma_end(dma);
+        return ok;
+    }
+
+    // The two halves of write_dma(), split so the wait in the middle can be a
+    // `co_await` instead of a spin (alloy::async::dma_waiter). Call them in
+    // order and wait for the channel between them:
+    //
+    //     co_await w.run([&] { uart.write_dma_begin(chan, msg); });
+    //     uart.write_dma_end(chan);
+    //
+    // write_dma() itself is now written in terms of these, so there is one
+    // sequence, not two that can drift.
+    //
+    // HONEST NOTE on write_dma_end(): it still SPINS, on the transmitter's
+    // TC flag — the DMA finishing means the last byte reached TDR, not that it
+    // reached the wire. That is one character time (~87 µs at 115200 baud) and
+    // this change does not remove it; TC has no interrupt path in the driver.
+    template <class Chan>
+    void write_dma_begin(const Chan& dma, std::span<const std::uint8_t> data) const
+        requires requires {
+            hal::uart_impl<Inst>::dma_tx_begin();
+            Inst::dmareq_tx;
+        }
+    {
         hal::uart_impl<Inst>::dma_tx_begin();
         dma.start_m2p_u8(data, hal::uart_impl<Inst>::tdr_addr(), Inst::dmareq_tx);
-        const bool ok = dma.wait();
+    }
+
+    template <class Chan>
+    void write_dma_end(const Chan& dma) const
+        requires requires { hal::uart_impl<Inst>::dma_tx_end(); }
+    {
         dma.stop();
         hal::uart_impl<Inst>::dma_tx_end();
-        return ok;
     }
 
 private:

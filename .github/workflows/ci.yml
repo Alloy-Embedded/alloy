@@ -110,6 +110,10 @@ jobs:
   #    REPEATEDLY — after the banner it must emit three successive "beat N" lines,
   #    each gated behind a `co_await delay(250ms)`. Proves the async runtime
   #    actually runs on the ISA, not just that it compiled.
+  #  - async_io.robot (async_io): a coroutine parked on a PERIPHERAL is resumed by
+  #    that peripheral's interrupt — asserted on the executor's resume COUNT per
+  #    leg (SPI, I2C, DMA), which the same I/O done without suspending cannot
+  #    produce.
   #
   # `experimental: true` legs are continue-on-error: a real signal that doesn't
   # block merges while a new board/behaviour is being confirmed green (the local
@@ -235,6 +239,20 @@ jobs:
             example: dma_uart
             robot: dma_uart.robot
             banner: alloy dma_uart
+          # DRIVER AWAITABLES — BLOCKING. async_runs.robot proves the executor and
+          # the timer wheel run on the ISA; this proves a coroutine parked on a
+          # PERIPHERAL is resumed by its interrupt. async_io runs one leg per
+          # interrupt-driven bus (SPI, I2C, DMA) and prints how many times the
+          # executor RESUMED that leg's task — 2, 3, 2 respectively. The count is
+          # the assertion: the same I/O written WITHOUT coroutines (start, then
+          # spin on busy()) retires its task in one resume and prints resumes=1,
+          # which fails; and an interrupt that never fires makes the leg's bounded
+          # pump print "STUCK" and fail in ~31 s instead of hanging the run. Both
+          # were verified locally by deliberately breaking the firmware.
+          - board: nucleo_g071rb
+            example: async_io
+            robot: async_io.robot
+            banner: alloy async_io
     steps:
       - uses: actions/checkout@v4
         with:
@@ -566,7 +584,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:
