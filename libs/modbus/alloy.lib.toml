@@ -1,0 +1,17 @@
+[lib]
+name = "modbus"
+version = "0.1.0"
+description = "Modbus RTU protocol core — CRC-16, 8 function-code PDU codecs, dual-rule sans-IO framer"
+category = "protocol"
+license = "MIT"
+homepage = "https://modbus.org/specs.php"
+
+[requires]
+# The v0.1 core is sans-IO (no concept needed to use the codecs/framer); the
+# client/server layers of the next versions bind to these.
+concepts = ["ByteStream"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

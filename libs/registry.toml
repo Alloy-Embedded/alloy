@@ -28,6 +28,13 @@ summary = "Maxim DS3231 high-accuracy real-time clock (I2C)"
 concepts = ["I2cBus"]
 source = "path:libs/ds3231"
 
+[modbus]
+version = "0.1.0"
+category = "protocol"
+summary = "Modbus RTU protocol core — CRC-16, 8 function-code PDU codecs, dual-rule sans-IO framer"
+concepts = ["ByteStream"]
+source = "path:libs/modbus"
+
 [mpu6050]
 version = "0.1.0"
 category = "sensor"
