@@ -19,6 +19,41 @@ if constexpr (board::caps::button) {
 }
 ```
 
+### Pin interrupts
+
+An input can report its own edges instead of being polled — what a sensor's DRDY/INT line, a
+button that must not be sampled in a loop, and wake-on-pin all need:
+
+```cpp
+board::user_button().on_active(+[](void*) { g_pressed = true; });   // ISR context
+```
+
+`on_active()` is the portable form: the edge comes from the **board's** declared polarity, so an
+active-low button arms the falling edge and an active-high one the rising edge without the app
+knowing which. `on_edge(alloy::gpio::edge::rising, fn, ctx)` is the explicit form for a signal
+whose polarity belongs to the part, not the board. `clear_on_edge()` stops reporting.
+
+Between edges, the handler keeps a **software** count — never the hardware pending bit, so
+reading it can never eat an interrupt:
+
+```cpp
+while (btn.take_edge()) { /* once per edge that actually happened */ }
+std::uint32_t total = btn.edges();   // monotonic: you can see that you missed some
+```
+
+Like every other interrupt hook in alloy, these methods are `requires`-gated on the pin driver
+actually having them. On a board with no button, or a chip whose interrupt controller isn't
+curated yet, the methods **do not exist** and portable code detects that directly:
+
+```cpp
+if constexpr (requires { btn.on_active(nullptr, nullptr); }) { /* ... */ }
+```
+
+Two costs worth knowing before you design around them. Each armed pin takes one slot from the
+firmware-wide `alloy::irq::kMaxHandlers` pool (16, shared with UART/SPI/I²C/DMA — attaching past
+it traps). And on STM32 the interrupt line number **is** the pin number, shared by every port:
+PA13 and PC13 cannot both have a pin interrupt at once. That is silicon, not a framework limit.
+
 ## UART
 
 ```cpp

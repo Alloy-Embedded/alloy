@@ -10,6 +10,7 @@
 #include <cstdint>
 
 #include "alloy/core/types.hpp"
+#include "alloy/hal/exti/exti_impl.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
 #include "alloy/ip/st/gpio_v2.hpp"
 
@@ -81,6 +82,51 @@ struct pin_impl<Pin> {
         r().BSRR = set_bits | (clear_bits << 16u);
     }
     [[nodiscard]] static std::uint32_t read_port() { return r().IDR; }
+
+    // --- pin interrupts ------------------------------------------------------
+    //
+    // The pin-interrupt block is a SEPARATE peripheral on ST, so this driver
+    // reaches it through the port's `exti` COMPANION — the same shape dma_v1
+    // uses for its DMAMUX, and for the same reason: which controller serves a
+    // port is a chip fact, not something a GPIO driver may assume. Its
+    // specialization (hal/exti/st_exti_g0.hpp) is auto-included by codegen for
+    // any chip whose EXTI is curated; only exti_impl's primary template is
+    // included here, so a chip with no EXTI still compiles.
+    //
+    // Every method below is `requires`-gated on the companion AND on
+    // port_index. A chip whose EXTI is not curated has neither, so these
+    // methods DO NOT EXIST there and gpio::input's own gates report that
+    // truthfully instead of failing deep inside a body.
+    //
+    // NOTE the pad is left in whatever mode it is already in. EXTI samples the
+    // input path, and re-running make_input() here would quietly undo a
+    // pull-up, an open-drain setting, or an alternate function the caller
+    // deliberately chose. Only the port clock is forced on, because a gated
+    // port drives nothing into the controller.
+    static void enable_edge_irq(pin_edge e, void (*fn)(void*), void* ctx)
+        requires requires { typename Port::exti_t; Port::port_index; }
+    {
+        alloy::gate_on(Port::gate);
+        exti_impl<typename Port::exti_t>::template arm<Port::port_index, index>(e, fn, ctx);
+    }
+
+    static void disable_edge_irq()
+        requires requires { typename Port::exti_t; Port::port_index; }
+    {
+        exti_impl<typename Port::exti_t>::template disarm<index>();
+    }
+
+    [[nodiscard]] static std::uint32_t edge_count()
+        requires requires { typename Port::exti_t; Port::port_index; }
+    {
+        return exti_impl<typename Port::exti_t>::template edges<index>();
+    }
+
+    [[nodiscard]] static bool take_edge()
+        requires requires { typename Port::exti_t; Port::port_index; }
+    {
+        return exti_impl<typename Port::exti_t>::template take_edge<index>();
+    }
 };
 
 }  // namespace alloy::hal

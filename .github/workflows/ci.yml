@@ -284,6 +284,27 @@ jobs:
             robot: modbus_rtu.robot
             banner: alloy modbus_rtu_server ready
             experimental: true
+          # PIN INTERRUPT CONFORMANCE — BLOCKING. The emitted platform now carries
+          # real GPIO ports and a real EXTI, so a monitor-injected edge travels the
+          # silicon path: pad -> EXTICR port select -> trigger -> pending -> shared
+          # NVIC vector -> alloy::irq chain -> the driver's handler. pin_irq arms
+          # board::user_button().on_active() and NEVER calls is_active(), so the
+          # only thing it can report is a counter its INTERRUPT bumped. The robot
+          # drives the pin the WRONG way first and then presses: "count=00000001"
+          # is three assertions at once — it fired, it honoured the board's
+          # active-low polarity (an extra count would mean both edges were armed),
+          # and it cleared its write-1-to-clear pending bit. Verified locally with
+          # five negative controls, each one thing different: no edge at all ->
+          # "pin irq: NOT fired" and THIS leg fails in 31 s; the rising edge alone
+          # -> NOT fired, fails in 31 s; the same edges on gpioa -> NOT fired
+          # (Renode honours EXTICR); the platform hand-edited to feed the wrong
+          # NVIC vector -> NOT fired, fails in 31 s; and the ISR's two pending
+          # stores deleted -> renode-test makes no further progress for 150 s
+          # where the good firmware passes in 2 s, which is a SPIN, not a pass.
+          - board: nucleo_g071rb
+            example: pin_irq
+            robot: pin_irq.robot
+            banner: alloy pin_irq
     steps:
       - uses: actions/checkout@v4
         with:
@@ -615,7 +636,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, time_probe, modbus_rtu_client, modbus_rtu_server, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, time_probe, modbus_rtu_client, modbus_rtu_server, irq_echo, pin_irq, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:

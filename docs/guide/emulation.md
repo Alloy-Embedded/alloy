@@ -68,6 +68,15 @@ prints a different number.
     models *this project wrote* — a self-authored model cannot falsify a mistake it shares with the
     driver. Treat those as consistency checks, not independent proof.
 
+    The **pin-interrupt** leg sits between the two: it runs against Renode's own
+    `STM32WBA_EXTI`, standing in for the G0's identically-laid-out block — so the port select,
+    the trigger selection and the delivery to the right NVIC vector are all genuinely
+    falsifiable (verified by breaking each in turn). Two things it *cannot* check: this model
+    leaves `IMR1` unimplemented and delivers the interrupt whether or not the driver unmasks
+    the line, and it latches **both** edge directions in `FPR1` where the G0 splits them across
+    `RPR1`/`FPR1`. So "the driver unmasks correctly" and "the driver clears the right pending
+    half" are open until silicon.
+
 ## Writing a test
 
 Tests are [Robot Framework](https://robotframework.org) files under `tests/emulation/`. The

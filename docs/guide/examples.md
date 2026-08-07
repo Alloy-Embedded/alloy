@@ -13,6 +13,7 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | `i2c_scan` | probing an I²C bus for devices |
 | `spi_loopback` | SPI transfers (MOSI→MISO looped) |
 | `irq_echo` | interrupt-driven UART RX |
+| `pin_irq` | a button that reports its own edges — [pin interrupts](peripherals.md), never polled |
 | `dma_probe` | ADC burst + PWM waveform streamed by DMA, zero CPU |
 | `pwm_fade`, `services` | the cooperative scheduler + control loop |
 | `async_blink`, `async_heartbeat` | two concurrent coroutine tasks, no heap, no RTOS |
