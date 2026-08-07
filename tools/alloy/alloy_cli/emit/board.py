@@ -77,6 +77,40 @@ def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
 
+# Every role whose capability is simply "the board declares it". The order is
+# the emission order below; `alloy board-info` reports the SAME set, so the IDE
+# can never disagree with the generated board::caps.
+PRESENCE_ROLES = (
+    "led", "button", "debug_uart", "led_pwm", "adc", "i2c", "spi", "eeprom",
+    "watchdog", "nvm", "fs", "rtc", "dac", "can", "gpio_bus", "ethernet",
+)
+
+
+def role_caps(board: dict[str, Any], chip: dict[str, Any],
+              registers: dict[str, dict[str, Any]]) -> dict[str, bool]:
+    """board::caps as a plain dict — the one place that decides what a board can
+    do. Presence of a role is the capability; the emitter still VALIDATES each
+    declared role and fails generation on a bad one, so a cap reported here can
+    only be wrong in a board that would not build at all.
+
+    `net` is deliberately absent: it is emitted as a derived constant
+    (`ethernet || wifi`) inside the caps namespace, and duplicating it here
+    would redefine it in the generated header.
+    """
+    roles = board.get("roles", {})
+    caps = {name: name in roles for name in PRESENCE_ROLES}
+    # Interrupt layer: needs a generated vector table (chips without an
+    # interrupts list — ESP32 v1 — have no dispatch to attach to).
+    caps["irq"] = bool(chip.get("interrupts"))
+    # DMA: the chip declares a controller whose IP is class "dma" (st dma1,
+    # microchip xdmac, ...).
+    caps["dma"] = _dma_controller(chip, registers) is not None
+    # Vendor-blob radio: no supported family yet, but portable
+    # `if constexpr (caps::wifi)` code must still compile.
+    caps["wifi"] = False
+    return caps
+
+
 def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                       registers: dict[str, dict[str, Any]]) -> str:
     roles = board.get("roles", {})
@@ -92,25 +126,12 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(profile is not None,
                  f"board {board['id']}: clock_profile '{profile_name}' not in chip data")
 
-    caps: dict[str, bool] = {"led": False, "button": False, "debug_uart": False,
-                             "led_pwm": False, "adc": False, "i2c": False,
-                             "spi": False, "eeprom": False, "watchdog": False,
-                             "nvm": False, "fs": False, "rtc": False, "dac": False,
-                             "can": False, "gpio_bus": False,
-                             # Interrupt layer: needs a generated vector table
-                             # (chips without an interrupts list — ESP32 v1 —
-                             # have no dispatch to attach to).
-                             "irq": bool(chip.get("interrupts")),
-                             # DMA: chip declares a controller whose IP is
-                             # class "dma" (st dma1, microchip xdmac, ...).
-                             "dma": _dma_controller(chip, registers) is not None,
-                             # Heavy connectivity roles: unlike the small
-                             # peripherals these do NOT get a no-op stub — an
-                             # absent one emits a POISONED type (static_assert
-                             # on use) so portable if-constexpr(caps::net) code
-                             # compiles everywhere but unconditional use of a
-                             # missing subsystem is a readable compile error.
-                             "ethernet": False, "wifi": False}
+    # Capabilities come from role_caps() so `alloy board-info` and the generated
+    # header can never drift apart. The heavy connectivity roles (ethernet/wifi)
+    # differ from the small peripherals in what an ABSENT one emits — a poisoned
+    # type rather than a no-op stub — but the capability itself is still just
+    # "declared or not".
+    caps = role_caps(board, chip, registers)
     decls: list[str] = []
 
     extra_includes: list[str] = []
@@ -118,7 +139,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     if led:
         _require(led["pin"] in chip.get("pins", {}),
                  f"board {board['id']}: led pin '{led['pin']}' not in chip data")
-        caps["led"] = True
         led_kind = led.get("kind", "gpio")
         if led_kind == "ws2812":
             extra_includes.append("alloy/drivers/ws2812.hpp")
@@ -150,7 +170,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     if button:
         _require(button["pin"] in chip.get("pins", {}),
                  f"board {board['id']}: button pin '{button['pin']}' not in chip data")
-        caps["button"] = True
         decls.append(
             f"inline constexpr alloy::gpio::input<alloy::dev::{button['pin']}_t, "
             f"{_polarity(button.get('active', 'high'))}> button{{}};"
@@ -175,7 +194,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                  f"board {board['id']}: watchdog peripheral "
                  f"'{watchdog['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, watchdog["peripheral"], "watchdog")
-        caps["watchdog"] = True
         decls.append(
             f"inline constexpr alloy::wdt::watchdog<alloy::dev::{watchdog['peripheral']}_t> "
             f"watchdog{{}};"
@@ -227,7 +245,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             raise EmitError(f"board {board['id']}: chip declares no flash memory for the nvm region")
         size = int(nvm.get("bytes", _NVM_DEFAULT_BYTES))
         base = _carve("nvm", size)
-        caps["nvm"] = True
         decls.append(
             f"inline alloy::nvm::store<alloy::flash::controller<alloy::dev::{fp}_t>> "
             f"nvm{{0x{base:08X}u, {size}u}};"
@@ -249,7 +266,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             raise EmitError(f"board {board['id']}: chip declares no flash memory for the fs region")
         size = int(fs_role.get("bytes", _FS_DEFAULT_BYTES))
         base = _carve("fs", size)
-        caps["fs"] = True
         decls.append(
             f"inline alloy::fs::flash_filesystem<alloy::flash::controller<alloy::dev::{fp}_t>> "
             f"fs{{{{0x{base:08X}u, {size}u}}}};"
@@ -267,7 +283,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(rtc["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: rtc peripheral '{rtc['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, rtc["peripheral"], "rtc")
-        caps["rtc"] = True
         decls.append(
             f"inline constexpr alloy::rtc::rtc<alloy::dev::{rtc['peripheral']}_t> rtc{{}};")
     else:
@@ -282,7 +297,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(dac["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: dac peripheral '{dac['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, dac["peripheral"], "dac")
-        caps["dac"] = True
         decls.append(
             f"inline constexpr alloy::dac::channel<alloy::dev::{dac['peripheral']}_t> dac{{}};")
     else:
@@ -297,7 +311,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(can["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: can peripheral '{can['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, can["peripheral"], "can")
-        caps["can"] = True
         decls.append(
             f"inline constexpr alloy::can::controller<alloy::dev::{can['peripheral']}_t> can{{}};")
     else:
@@ -313,7 +326,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         for p in pins:
             _require(p in chip.get("pins", {}),
                      f"board {board['id']}: gpio_bus pin '{p}' not in chip data")
-        caps["gpio_bus"] = True
         pin_types = ", ".join(f"alloy::dev::{p}_t" for p in pins)
         decls.append(f"inline constexpr alloy::gpio::bus<{pin_types}> gpio_bus{{}};")
     else:
@@ -325,7 +337,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(uart["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: debug_uart peripheral '{uart['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, uart["peripheral"], "debug_uart")
-        caps["debug_uart"] = True
         if uart.get("mode") == "rom":
             # Boot-ROM-configured UART (classic ESP32 UART0): no pin routing.
             decls.append(
@@ -365,7 +376,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(led_pwm["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: led_pwm peripheral '{led_pwm['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, led_pwm["peripheral"], "led_pwm")
-        caps["led_pwm"] = True
         ch = led_pwm["channel"]
         decls.append(
             f"using led_pwm = alloy::pwm::bind<alloy::dev::{led_pwm['peripheral']}_t, {ch}u,\n"
@@ -391,7 +401,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(i2c_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: i2c peripheral '{i2c_role['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, i2c_role["peripheral"], "i2c")
-        caps["i2c"] = True
         decls.append(
             f"using i2c = alloy::i2c::bind<alloy::dev::{i2c_role['peripheral']}_t,\n"
             f"                             alloy::i2c::scl<alloy::dev::{i2c_role['scl']}_t>,\n"
@@ -420,7 +429,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(spi_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: spi peripheral '{spi_role['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, spi_role["peripheral"], "spi")
-        caps["spi"] = True
         decls.append(
             f"using spi = alloy::spi::bind<alloy::dev::{spi_role['peripheral']}_t,\n"
             f"                             alloy::spi::sck<alloy::dev::{spi_role['sck']}_t>,\n"
@@ -464,7 +472,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                  f"board {board['id']}: eeprom role only supports bus 'i2c' for now")
         _require("i2c" in roles,
                  f"board {board['id']}: eeprom role needs the i2c role on the same board")
-        caps["eeprom"] = True
         decls.append(
             f"inline constexpr std::uint8_t eeprom_addr = {int(eeprom_role['addr'], 16)}u;\n"
             f"// 0 = the part has no separate identity/serial block.\n"
@@ -503,7 +510,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         periph_name = adc_role["peripheral"]
         _require(periph_name in chip["peripherals"],
                  f"board {board['id']}: adc peripheral '{periph_name}' not in chip data")
-        caps["adc"] = True
         decls.append(
             f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, clock_profile>;"
         )
@@ -549,7 +555,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require_curated(board["id"], chip, eth["peripheral"], "ethernet")
         phy = eth.get("phy", {})
         _require("kind" in phy, f"board {board['id']}: ethernet.phy missing 'kind'")
-        caps["ethernet"] = True
         _require("reset_pin" in eth, f"board {board['id']}: ethernet role missing 'reset_pin'")
         _require(eth["reset_pin"] in chip.get("pins", {}),
                  f"board {board['id']}: ethernet reset_pin '{eth['reset_pin']}' not in chip data")

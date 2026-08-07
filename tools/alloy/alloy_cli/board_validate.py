@@ -1,0 +1,280 @@
+"""Board validation — every problem at once, located, with a way out.
+
+`board-info` reports what the EMITTER would reject, which is exactly one problem
+per run (it raises on the first bad role) and arrives as a sentence with no
+structure. That is fine for a build log and useless for a form: a UI needs to
+know which field is wrong and what to put there instead.
+
+So the rules live here, expressed independently of emission. The headline one is
+the ROUTE check. `alloy::i2c::bind` already refuses a pin that has no route to
+its peripheral — but only as a `static_assert`, only when the app instantiates
+the bus, and only at build time. A board can carry a wrong pin for months if
+nothing opens that bus. This moves the same question to the moment of choosing,
+and answers it with the pins that WOULD work.
+
+Two rule sets describing one contract is a drift risk, so `test_board_validate`
+pins them together: a board this module calls clean must generate, and a board
+the emitter rejects must be reported here.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from .devices import load_chip, load_registers
+from .emit.common import EmitError
+from .roles import ROLES, ip_classes, role_pin_fields, routes_by_peripheral
+
+MAX_SUGGESTIONS = 6
+
+
+def _issue(level: str, message: str, *, role: str | None = None,
+           field: str | None = None, pin: str | None = None,
+           suggestions: list[str] | None = None) -> dict[str, Any]:
+    return {
+        "level": level, "role": role, "field": field, "pin": pin,
+        "message": message, "suggestions": suggestions or [],
+    }
+
+
+def _check_peripheral(role: str, cfg: dict[str, Any], spec, chip: dict[str, Any],
+                      classes: dict[str, str | None]) -> tuple[str | None, list[dict[str, Any]]]:
+    """Resolve the role's peripheral, reporting why it can't be used."""
+    peripherals = chip.get("peripherals") or {}
+    name = cfg.get("peripheral")
+    alternatives = sorted(p for p, c in classes.items() if c == spec.ip_class
+                          and not peripherals[p].get("uncurated", False))
+    if not isinstance(name, str):
+        return None, [_issue("error", f"{role}: no peripheral chosen",
+                             role=role, field="peripheral",
+                             suggestions=alternatives[:MAX_SUGGESTIONS])]
+    if name not in peripherals:
+        return None, [_issue("error",
+                             f"{role}: peripheral '{name}' is not on this chip",
+                             role=role, field="peripheral",
+                             suggestions=alternatives[:MAX_SUGGESTIONS])]
+    if peripherals[name].get("uncurated", False):
+        return None, [_issue(
+            "error",
+            f"{role}: '{name}' has no curated register file, so no driver can "
+            f"be selected for it",
+            role=role, field="peripheral",
+            suggestions=alternatives[:MAX_SUGGESTIONS])]
+    if classes.get(name) != spec.ip_class:
+        return name, [_issue(
+            "warning",
+            f"{role}: '{name}' is a '{classes.get(name)}' peripheral, not "
+            f"'{spec.ip_class}' — the driver may not match",
+            role=role, field="peripheral",
+            suggestions=alternatives[:MAX_SUGGESTIONS])]
+    return name, []
+
+
+def validate_board(board: dict[str, Any], chip: dict[str, Any],
+                   registers: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every problem in a board, as located, fixable issues."""
+    issues: list[dict[str, Any]] = []
+    roles = board.get("roles") or {}
+    pins = chip.get("pins") or {}
+    classes = ip_classes(chip, registers)
+    routes = routes_by_peripheral(chip)
+
+    # --- clock -----------------------------------------------------------
+    if isinstance(board.get("clock"), dict):
+        for key in ("program", "sysclk_hz"):
+            if key not in board["clock"]:
+                issues.append(_issue("error",
+                                     f"inline clock is missing '{key}'", field="clock"))
+    else:
+        profile = board.get("clock_profile")
+        known = list((chip.get("clock") or {}).get("profiles") or {})
+        if profile not in known:
+            issues.append(_issue(
+                "error", f"clock profile '{profile}' is not one this chip offers",
+                field="clock_profile", suggestions=known[:MAX_SUGGESTIONS]))
+
+    # --- roles -----------------------------------------------------------
+    for role, cfg in sorted(roles.items()):
+        spec = ROLES.get(role)
+        if spec is None:
+            issues.append(_issue("error", f"'{role}' is not a board role the "
+                                          f"framework knows", role=role,
+                                 suggestions=sorted(ROLES)[:MAX_SUGGESTIONS]))
+            continue
+        if not isinstance(cfg, dict):
+            issues.append(_issue("error", f"{role}: expected a table of settings",
+                                 role=role))
+            continue
+
+        peripheral: str | None = None
+        if spec.kind == "peripheral":
+            peripheral, found = _check_peripheral(role, cfg, spec, chip, classes)
+            issues.extend(found)
+
+        if spec.requires_role and spec.requires_role not in roles:
+            issues.append(_issue(
+                "error",
+                f"{role}: needs the {spec.requires_role} role on the same board",
+                role=role, suggestions=[spec.requires_role]))
+
+        # Some settings switch a role into a shape with fewer requirements — a
+        # boot-ROM UART has no pins to name at all.
+        waived: set[str] = set()
+        for field_name, value, fields in spec.waivers:
+            if cfg.get(field_name) == value:
+                waived.update(fields)
+
+        for name in spec.required:
+            if name not in cfg and name not in waived:
+                issues.append(_issue("error", f"{role}: missing '{name}'",
+                                     role=role, field=name))
+
+        # Routed signal pins — the static_assert, moved forward.
+        for signal in spec.signals:
+            pin = cfg.get(signal)
+            if pin is None or signal in waived:
+                continue
+            if pin not in pins:
+                issues.append(_issue(
+                    "error", f"{role}.{signal}: '{pin}' is not a pin on this chip",
+                    role=role, field=signal, pin=pin,
+                    suggestions=(routes.get(peripheral or "", {}).get(signal, [])
+                                 )[:MAX_SUGGESTIONS]))
+                continue
+            if peripheral is None:
+                continue
+            routable = routes.get(peripheral, {}).get(signal, [])
+            if routable and pin not in routable:
+                issues.append(_issue(
+                    "error",
+                    f"{role}.{signal}: {pin} has no route to {peripheral} {signal} "
+                    f"— this fails to compile with a static_assert when the app "
+                    f"opens it",
+                    role=role, field=signal, pin=pin,
+                    suggestions=routable[:MAX_SUGGESTIONS]))
+            elif not routable and signal not in spec.optional_signals:
+                issues.append(_issue(
+                    "warning",
+                    f"{role}.{signal}: this chip's data has no {peripheral} "
+                    f"{signal} route to check {pin} against",
+                    role=role, field=signal, pin=pin))
+
+        # Plain GPIO fields — existence is the whole contract.
+        for name in spec.pin_fields:
+            pin = cfg.get(name)
+            if pin is not None and pin not in pins:
+                issues.append(_issue(
+                    "error", f"{role}.{name}: '{pin}' is not a pin on this chip",
+                    role=role, field=name, pin=pin,
+                    suggestions=sorted(pins)[:MAX_SUGGESTIONS]))
+
+        if spec.pin_list_field:
+            listed = cfg.get(spec.pin_list_field)
+            if listed is not None and (not isinstance(listed, list) or not listed):
+                issues.append(_issue(
+                    "error", f"{role}: '{spec.pin_list_field}' must be a non-empty list",
+                    role=role, field=spec.pin_list_field))
+            for pin in listed or []:
+                if pin not in pins:
+                    issues.append(_issue(
+                        "error", f"{role}: '{pin}' is not a pin on this chip",
+                        role=role, field=spec.pin_list_field, pin=pin,
+                        suggestions=sorted(pins)[:MAX_SUGGESTIONS]))
+
+        # A PWM role names a channel; the pin must be one that channel drives.
+        if role == "led_pwm" and peripheral and "channel" in cfg:
+            signal = f"ch{cfg['channel']}"
+            drivable = routes.get(peripheral, {}).get(signal, [])
+            channels = sorted(s for s in routes.get(peripheral, {}) if s.startswith("ch"))
+            pin = cfg.get("pin")
+            if drivable and pin not in drivable:
+                issues.append(_issue(
+                    "error",
+                    f"{role}: {pin} is not an output of {peripheral} channel "
+                    f"{cfg['channel']}",
+                    role=role, field="pin", pin=pin,
+                    suggestions=drivable[:MAX_SUGGESTIONS]))
+            elif not drivable:
+                # The pin still has to route to THIS channel's signal at compile
+                # time, and the data cannot say whether it does.
+                issues.append(_issue(
+                    "warning",
+                    f"{role}: this chip's data has no {peripheral} {signal} route, "
+                    f"so {pin} cannot be checked against channel {cfg['channel']}",
+                    role=role, field="channel",
+                    suggestions=[c.removeprefix("ch") for c in channels][:MAX_SUGGESTIONS]))
+
+    # --- named pins (board.json "pins") -----------------------------------
+    for pin, assign in sorted((board.get("pins") or {}).items()):
+        if pin not in pins:
+            issues.append(_issue("error", f"named pin '{pin}' is not on this chip",
+                                 field="pins", pin=pin))
+            continue
+        function = (assign or {}).get("function", "")
+        if function in ("gpio_out", "gpio_in"):
+            continue
+        if ":" not in function:
+            issues.append(_issue("error",
+                                 f"pin {pin}: unknown function '{function}'",
+                                 field="pins", pin=pin,
+                                 suggestions=["gpio_out", "gpio_in"]))
+            continue
+        periph, _, signal = function.partition(":")
+        if pin not in routes.get(periph, {}).get(signal, []):
+            available = [f"{p}:{s}" for p, sigs in routes.items()
+                         for s, ps in sigs.items() if pin in ps]
+            issues.append(_issue(
+                "error", f"pin {pin} has no route to {periph} {signal}",
+                field="pins", pin=pin,
+                suggestions=(available or ["gpio_out", "gpio_in"])[:MAX_SUGGESTIONS]))
+
+    # --- pins claimed twice ----------------------------------------------
+    # NOT an error: a board may deliberately expose one LED as both a GPIO and a
+    # PWM output (every shipped Nucleo does). Worth saying out loud, because the
+    # app must then use one or the other.
+    owners: dict[str, list[str]] = {}
+    for role, cfg in roles.items():
+        spec = ROLES.get(role)
+        if spec is None or not isinstance(cfg, dict):
+            continue
+        claimed = [cfg.get(f) for f in role_pin_fields(spec)]
+        claimed += list(cfg.get(spec.pin_list_field) or []) if spec.pin_list_field else []
+        for pin in claimed:
+            if isinstance(pin, str):
+                owners.setdefault(pin, []).append(role)
+    for pin, sharing in sorted(owners.items()):
+        if len(sharing) > 1:
+            issues.append(_issue(
+                "warning",
+                f"{pin} is used by {' and '.join(sorted(sharing))} — only one of "
+                f"them can drive it at a time",
+                pin=pin))
+
+    order = {"error": 0, "warning": 1}
+    issues.sort(key=lambda i: (order.get(i["level"], 2), i["role"] or "", i["field"] or ""))
+    return issues
+
+
+def validate_board_file(devices_root: Path, path: Path) -> dict[str, Any]:
+    """Validate a board.json on disk (or '-' for stdin, so an editor can check a
+    candidate before writing it)."""
+    import sys  # noqa: PLC0415
+
+    text = sys.stdin.read() if str(path) == "-" else path.read_text()
+    try:
+        board = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise EmitError(f"{path}: not valid JSON — {exc}") from exc
+    if not isinstance(board, dict) or "chip" not in board:
+        raise EmitError(f"{path}: not a board.json (no 'chip')")
+    chip = load_chip(devices_root, board["chip"])
+    issues = validate_board(board, chip, load_registers(devices_root))
+    return {
+        "schema": "alloy.board_validate.v1",
+        "id": board.get("id"),
+        "chip": board["chip"],
+        "ok": not any(i["level"] == "error" for i in issues),
+        "issues": issues,
+    }
