@@ -701,6 +701,39 @@ jobs:
         working-directory: alloy/examples/${{ matrix.example }}
         run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}
 
+  # The PRODUCT dimension: one codebase, many products (examples/product_line).
+  # Not in the board×example matrix above — products multiply build time, so the
+  # sweep rides its own narrow job: two boards × every product of the family,
+  # gated by `alloy product-validate` (the mirror of board-validate), built with
+  # `--product` so each pair gets its own board+product-keyed tree.
+  build-products:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [nucleo_g071rb, nucleo_f722ze]
+        product: [chiller_s, chiller_l]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: validate ${{ matrix.product }}
+        working-directory: alloy/examples/product_line
+        run: uv run --project ../../tools/alloy alloy product-validate ${{ matrix.product }}
+      - name: build product_line as ${{ matrix.product }} for ${{ matrix.board }}
+        working-directory: alloy/examples/product_line
+        run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }} --product ${{ matrix.product }}
+
   # NORTH_STAR guard #8: no feature ships unless CI compiles what it emits —
   # `alloy new` scaffolds must build, out-of-repo, exactly as a user would.
   scaffold:

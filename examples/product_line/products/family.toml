@@ -1,0 +1,69 @@
+# The inverter family: the parameter space every product shares. Products
+# overlay THIS file, exactly one level deep — no product-extends-product.
+schema = "alloy.family.v1"
+name = "inverter"
+
+# ---- typed params (defaults here; a product states only what differs) ------
+
+[params.bus_voltage_mv]        # data holds physical quantities in base units;
+type = "int"                   # unit scaling stays in C++ constexpr, not TOML
+default = 24000
+min = 0
+max = 400000
+
+[params.max_phase_current_ma]
+type = "int"
+default = 4000
+min = 100
+max = 30000
+
+[params.pwm]                   # emitted as alloy::frequency (u32 Hz)
+type = "frequency"
+default = 20000
+
+[params.compressor]            # wire values EXPLICIT — never auto-assigned
+type = "enum"
+values = { none = 0, small = 1, large = 2 }
+default = "small"
+
+[params.modbus_baud]           # runtime-configured: emitted as an nvm_kv key +
+type = "int"                   # per-product DEFAULT (product_nvm.hpp), never
+nvm = true                     # as a constexpr the flash value could disagree
+key = 0x10                     # with. Keys are explicit and unique; 0xFFFF_FFFF
+default = 19200                # is nvm_kv's erased-slot marker and is rejected.
+
+# ---- boolean capabilities (if constexpr in app code) -----------------------
+
+[caps]
+has_display = false
+has_encoder = false
+
+# ---- strategies: the app provides the types, the product picks one ---------
+
+[strategies.control]
+options = ["six_step", "foc"]
+default = "six_step"
+
+# ---- derivations: data, not #ifdef -----------------------------------------
+# A large compressor switches slower and draws more — derived ONCE here, not
+# repeated (and eventually mistyped) in every product file. An explicit value
+# in a product file still wins over a rule.
+
+[[rules]]
+when = { compressor = "large" }
+set = "pwm"
+value = 16000
+
+[[rules]]
+when = { compressor = "large" }
+set = "max_phase_current_ma"
+value = 12000
+
+# ---- combinations that must not ship ---------------------------------------
+
+[constraints.foc_needs_encoder]
+when = { control = "foc" }
+require = { has_encoder = true }
+
+[constraints.no_compressor_means_no_foc]
+forbid = { compressor = "none", control = "foc" }

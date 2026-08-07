@@ -1,0 +1,8 @@
+# The small chiller: close to the family defaults — this file is exactly the
+# diff between this product and the family, nothing else.
+schema = "alloy.product.v1"
+name = "chiller_s"
+family = "inverter"
+
+[params]
+modbus_baud = 9600   # per-product NVM default; the field stays runtime-set

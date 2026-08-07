@@ -63,6 +63,13 @@ def generate(project: Project, db=None, layout: str = "flash",
            emit_board_header(board, chip, db.registers), written)
     _write(gen / "board.cpp",
            emit_board_source(board, chip, db.registers, arch_ns), written)
+    # The product layer — only when a product is selected ([product] name or
+    # --product); a project with no product dimension is byte-for-byte
+    # unchanged. Validate-before-emit, same doctrine as run_all above: a bad
+    # product TOML fails generation with every problem listed, never the
+    # compile.
+    if project.product_id is not None:
+        _emit_product(project, gen, written)
     # lwIP's config header is a generated fact sheet (features/pools/checksums
     # derived from the board's MAC + the project's [net] table), not a hand-tuned
     # C file — emitted only for boards that declare an ethernet role, which is the
@@ -82,6 +89,38 @@ def generate(project: Project, db=None, layout: str = "flash",
     key = load_public_key(ota["public_key"], project.root) if ota.get("public_key") else None
     _write(gen / "alloy" / "ota_key.hpp", emit_ota_key_header(key), written)
     return written
+
+
+def _emit_product(project: Project, gen: Path, written: list[Path]) -> None:
+    """Product artifacts: product.hpp (constexpr params/caps/strategy aliases),
+    product_nvm.hpp (nvm_kv keys + defaults, runtime-configured fields), and
+    the plain-C twin product.h. gen/ is already on the include path, so
+    `#include <alloy/product.hpp>` resolves with zero build changes."""
+    from ..product_validate import validate_product  # noqa: PLC0415
+    from ..products import known_products, load_family, load_product, resolve  # noqa: PLC0415
+    from .product import (  # noqa: PLC0415
+        emit_product_c_header,
+        emit_product_header,
+        emit_product_nvm_header,
+    )
+
+    pdir = project.root / "products"
+    known = known_products(pdir)
+    family = load_family(pdir)
+    product = load_product(pdir, project.product_id)
+    issues = validate_product(family, product, known)
+    errors = [i for i in issues if i["level"] == "error"]
+    if errors:
+        details = "\n".join(f"  {i['field'] or 'product'}: {i['message']}"
+                            for i in errors)
+        raise EmitError(f"product '{project.product_id}' failed validation "
+                        "(alloy product-validate shows the same list):\n"
+                        f"{details}")
+    model = resolve(family, product, known)
+    _write(gen / "alloy" / "product.hpp", emit_product_header(model), written)
+    _write(gen / "alloy" / "product_nvm.hpp", emit_product_nvm_header(model),
+           written)
+    _write(gen / "product.h", emit_product_c_header(model), written)
 
 
 def _slot_window(chip: dict[str, Any], slot: str | None) -> tuple[int, int] | None:

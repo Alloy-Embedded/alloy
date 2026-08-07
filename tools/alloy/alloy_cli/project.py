@@ -28,16 +28,31 @@ class Project:
     board_id: str
     alloy_root: Path
     devices_root: Path
+    # The selected PRODUCT (products/<id>.toml), or None for a project with no
+    # product dimension. Resolved HERE — in load_project, from [product] name
+    # or --product — never in per-verb code, so build/size/frame-audit/
+    # debug-info always agree about which product a tree belongs to (the same
+    # lesson apply_project_overrides records: per-verb resolution once let the
+    # header say 48 MHz while the panel said 64).
+    product_id: str | None = None
 
-    # Per-board trees: switching boards must never reuse another board's
-    # CMake cache (cached CPU flags) or stale generated headers.
+    # Per-configuration trees: switching boards must never reuse another
+    # board's CMake cache (cached CPU flags) or stale generated headers — and
+    # switching PRODUCTS must never serve product A's product.hpp or compiled
+    # objects as product B's firmware, so the product joins the key. No
+    # product -> the bare board id, so existing trees stay valid.
+    @property
+    def _tree_key(self) -> str:
+        return self.board_id if self.product_id is None \
+            else f"{self.board_id}+{self.product_id}"
+
     @property
     def gen_dir(self) -> Path:
-        return self.root / ".alloy" / "generated" / self.board_id
+        return self.root / ".alloy" / "generated" / self._tree_key
 
     @property
     def build_dir(self) -> Path:
-        return self.root / ".alloy" / "build-tree" / self.board_id
+        return self.root / ".alloy" / "build-tree" / self._tree_key
 
     @property
     def board_json(self) -> Path:
@@ -245,7 +260,8 @@ def _find_devices_root(alloy_root: Path) -> Path:
     )
 
 
-def load_project(project_dir: Path, board_override: str | None = None) -> Project:
+def load_project(project_dir: Path, board_override: str | None = None,
+                 product_override: str | None = None) -> Project:
     root = project_dir.resolve()
     toml_path = root / "alloy.toml"
     if not toml_path.exists():
@@ -256,6 +272,18 @@ def load_project(project_dir: Path, board_override: str | None = None) -> Projec
         board_id = board_override or data["board"]["id"]
     except KeyError as exc:
         raise ProjectError(f"{toml_path}: missing required key {exc}") from exc
+
+    # [product] name selects one of products/<name>.toml; --product overrides
+    # it for a one-shot build, exactly like --board over [board] id. Existence
+    # is NOT checked here (load_project runs for verbs that never touch
+    # products); generation and product-validate check it and name the
+    # products that do exist.
+    product_table = data.get("product") or {}
+    product_id = product_override or product_table.get("name")
+    if product_id is not None and not isinstance(product_id, str):
+        raise ProjectError(f"{toml_path}: [product] name must be a string")
+    if product_table and "name" not in product_table and not product_override:
+        raise ProjectError(f"{toml_path}: [product] carries no name = \"…\"")
 
     # Out-of-repo projects: `alloy new` records the framework root it was
     # scaffolded against; in-repo examples keep discovery by walking up.
@@ -274,4 +302,5 @@ def load_project(project_dir: Path, board_override: str | None = None) -> Projec
         board_id=board_id,
         alloy_root=alloy_root,
         devices_root=_find_devices_root(alloy_root),
+        product_id=product_id,
     )

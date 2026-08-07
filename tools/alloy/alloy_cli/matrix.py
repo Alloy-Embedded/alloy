@@ -45,11 +45,19 @@ def _reason(exc: BaseException) -> str:
 
 
 def build_matrix(project_root: Path, board_ids: list[str],
-                 quiet: bool = False, db: Any = None) -> dict[str, Any]:
-    """Build every board in turn. Returns the alloy.matrix.v1 envelope.
+                 quiet: bool = False, db: Any = None,
+                 product_ids: list[str] | None = None) -> dict[str, Any]:
+    """Build every board (x every product, with --products) in turn. Returns
+    the alloy.matrix.v1 envelope.
 
     `db` lets a caller that already validated the device database pass it in —
     loading it costs more than several of the builds it precedes.
+
+    `product_ids` adds the product dimension: each row is one (board, product)
+    pair, resolved through load_project's product_override so the build tree is
+    keyed by both — never a row that builds product A into product B's cache.
+    Without products every row's "product" is None and the envelope is shaped
+    exactly as before.
     """
     from alloy_devices.loader import load_database  # noqa: PLC0415
 
@@ -58,33 +66,36 @@ def build_matrix(project_root: Path, board_ids: list[str],
 
     rows: list[dict[str, Any]] = []
     for board_id in board_ids:
-        started = time.monotonic()
-        row: dict[str, Any] = {
-            "board": board_id, "chip": None, "ok": False, "seconds": 0.0,
-            "flash": None, "ram": None, "error": None,
-        }
-        project: Project | None = None
-        try:
-            project = load_project(project_root, board_override=board_id)
-            if db is None:
-                db = load_database(project.devices_root)
-            board = project.load_board()
-            row["chip"] = board["chip"]
-            generate(project, db)
-            elf = build(project, db.chips[board["chip"]])
-            report = size_report(project, db.chips[board["chip"]], elf)
-            row["flash"] = report["flash"]
-            row["ram"] = report["ram"]
-            row["ok"] = True
-        except (EmitError, OSError, KeyError, ValueError, RuntimeError) as exc:
-            row["error"] = _reason(exc)
-        except Exception as exc:  # noqa: BLE001 - a failing board must not end the sweep
-            row["error"] = _reason(exc)
-        row["seconds"] = round(time.monotonic() - started, 2)
-        rows.append(row)
-        if not quiet:
-            mark = "ok  " if row["ok"] else "FAIL"
-            print(f"  {mark} {board_id}", flush=True)
+        for product_id in (product_ids or [None]):
+            started = time.monotonic()
+            row: dict[str, Any] = {
+                "board": board_id, "product": product_id, "chip": None,
+                "ok": False, "seconds": 0.0,
+                "flash": None, "ram": None, "error": None,
+            }
+            project: Project | None = None
+            try:
+                project = load_project(project_root, board_override=board_id,
+                                       product_override=product_id)
+                if db is None:
+                    db = load_database(project.devices_root)
+                board = project.load_board()
+                row["chip"] = board["chip"]
+                generate(project, db)
+                elf = build(project, db.chips[board["chip"]])
+                report = size_report(project, db.chips[board["chip"]], elf)
+                row["flash"] = report["flash"]
+                row["ram"] = report["ram"]
+                row["ok"] = True
+            except (EmitError, OSError, KeyError, ValueError, RuntimeError) as exc:
+                row["error"] = _reason(exc)
+            except Exception as exc:  # noqa: BLE001 - a failing row must not end the sweep
+                row["error"] = _reason(exc)
+            row["seconds"] = round(time.monotonic() - started, 2)
+            rows.append(row)
+            if not quiet:
+                mark = "ok  " if row["ok"] else "FAIL"
+                print(f"  {mark} {_row_label(row)}", flush=True)
 
     return {
         "schema": "alloy.matrix.v1",
@@ -96,19 +107,29 @@ def build_matrix(project_root: Path, board_ids: list[str],
 
 
 def run_matrix(project_root: Path, board_ids: list[str],
-               as_json: bool, db: Any = None) -> dict[str, Any]:
+               as_json: bool, db: Any = None,
+               product_ids: list[str] | None = None) -> dict[str, Any]:
     """build_matrix with the child-process output kept off stdout when the
     caller wants a machine-readable envelope (cmake and ninja write to fd 1
     directly, where a Python-level redirect cannot reach)."""
     if not as_json:
-        return build_matrix(project_root, board_ids, db=db)
+        return build_matrix(project_root, board_ids, db=db,
+                            product_ids=product_ids)
     saved = os.dup(1)
     try:
         os.dup2(2, 1)
-        return build_matrix(project_root, board_ids, quiet=True, db=db)
+        return build_matrix(project_root, board_ids, quiet=True, db=db,
+                            product_ids=product_ids)
     finally:
         os.dup2(saved, 1)
         os.close(saved)
+
+
+def _row_label(row: dict[str, Any]) -> str:
+    """One cell naming the configuration: board, or board+product — the same
+    key the build tree uses (.alloy/build-tree/<board>+<product>)."""
+    return row["board"] if not row.get("product") \
+        else f"{row['board']}+{row['product']}"
 
 
 def _kb(value: int | None) -> str:
@@ -116,20 +137,26 @@ def _kb(value: int | None) -> str:
 
 
 def format_table(report: dict[str, Any]) -> str:
-    """The sweep as a table: the point is comparing boards, so align them."""
-    width = max((len(r["board"]) for r in report["boards"]), default=5)
-    lines = [f"{'board'.ljust(width)}  {'flash':>16}  {'ram':>16}  time"]
+    """The sweep as a table: the point is comparing configurations, so align
+    them. With the product dimension the row label is board+product."""
+    has_products = any(r.get("product") for r in report["boards"])
+    width = max((len(_row_label(r)) for r in report["boards"]), default=5)
+    head = "board+product" if has_products else "board"
+    width = max(width, len(head))
+    lines = [f"{head.ljust(width)}  {'flash':>16}  {'ram':>16}  time"]
     for row in report["boards"]:
+        label = _row_label(row)
         if not row["ok"]:
-            lines.append(f"{row['board'].ljust(width)}  {row['error']}")
+            lines.append(f"{label.ljust(width)}  {row['error']}")
             continue
         flash, ram = row["flash"], row["ram"]
         lines.append(
-            f"{row['board'].ljust(width)}  "
+            f"{label.ljust(width)}  "
             f"{_kb(flash['used']) + ' / ' + _kb(flash['total']):>16}  "
             f"{_kb(ram['used']) + ' / ' + _kb(ram['total']):>16}  "
             f"{row['seconds']:.1f}s")
     lines.append("")
-    lines.append(f"{report['built']} of {len(report['boards'])} boards — "
+    what = "configurations" if has_products else "boards"
+    lines.append(f"{report['built']} of {len(report['boards'])} {what} — "
                  f"the same src/, no #ifdef")
     return "\n".join(lines)

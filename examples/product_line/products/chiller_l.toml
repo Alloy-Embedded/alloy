@@ -1,0 +1,17 @@
+# The large chiller: bigger bus, encoder + display fitted, FOC control. The
+# PWM and current limit are NOT stated — the family's rules derive them from
+# compressor = "large".
+schema = "alloy.product.v1"
+name = "chiller_l"
+family = "inverter"
+
+[params]
+compressor = "large"
+bus_voltage_mv = 48000
+
+[caps]
+has_display = true
+has_encoder = true
+
+[strategies]
+control = "foc"

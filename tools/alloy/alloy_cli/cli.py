@@ -76,6 +76,7 @@ def _project(args: argparse.Namespace) -> Project:
     return load_project(
         Path(getattr(args, "project", ".") or "."),
         board_override=getattr(args, "board", None),
+        product_override=getattr(args, "product", None),
     )
 
 
@@ -294,10 +295,23 @@ def cmd_matrix(args: argparse.Namespace) -> int:
         print("error: no boards to build", file=sys.stderr)
         return 1
 
+    product_ids: list[str] | None = None
+    if getattr(args, "products", False):
+        from .products import known_products  # noqa: PLC0415
+
+        product_ids = known_products(project_root / "products")
+        if not product_ids:
+            print("error: --products, but this project has no products/*.toml",
+                  file=sys.stderr)
+            return 1
+
     as_json = getattr(args, "json", False)
     if not as_json:
-        print(f"building {len(board_ids)} board(s) from the same src/\n")
-    report = run_matrix(project_root, board_ids, as_json)
+        dims = f"{len(board_ids)} board(s)"
+        if product_ids:
+            dims += f" x {len(product_ids)} product(s)"
+        print(f"building {dims} from the same src/\n")
+    report = run_matrix(project_root, board_ids, as_json, product_ids=product_ids)
     print(json.dumps(report, indent=2) if as_json else "\n" + format_table(report))
     return 0 if report["ok"] else 1
 
@@ -365,6 +379,34 @@ def cmd_board_validate(args: argparse.Namespace) -> int:
                   file=sys.stderr if issue["level"] == "error" else sys.stdout)
         if report["ok"]:
             print(f"{report['id'] or path}: ok")
+    return 0 if report["ok"] else 1
+
+
+def cmd_product_validate(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .product_validate import validate_product_file  # noqa: PLC0415
+
+    _, project_root = _roots(args)
+    if project_root is None:
+        print("error: run this inside an alloy project (products/ lives in the "
+              "project root)", file=sys.stderr)
+        return 1
+    report = validate_product_file(
+        project_root, name=getattr(args, "name", None),
+        file=Path(args.file) if getattr(args, "file", None) else None)
+
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        for issue in report["issues"]:
+            hint = (f"  (try: {', '.join(issue['suggestions'])})"
+                    if issue["suggestions"] else "")
+            print(f"{issue['level']}: {issue['field'] or 'product'}: "
+                  f"{issue['message']}{hint}",
+                  file=sys.stderr if issue["level"] == "error" else sys.stdout)
+        if report["ok"]:
+            print(f"{report['id']}: ok (family: {report['family']})")
     return 0 if report["ok"] else 1
 
 
@@ -667,11 +709,16 @@ def cmd_clean(args: argparse.Namespace) -> int:
         print(f"error: {root} is not an alloy project (no alloy.toml)", file=sys.stderr)
         return 1
     base = root / ".alloy"
-    targets = [base] if args.all else (
-        [base / "build-tree" / args.board, base / "generated" / args.board]
-        if getattr(args, "board", None)
-        else [base / "build-tree"]
-    )
+    if args.all:
+        targets = [base]
+    elif getattr(args, "board", None):
+        # A board's trees include its product-keyed variants (<board>+<product>).
+        targets = []
+        for kind in ("build-tree", "generated"):
+            targets.append(base / kind / args.board)
+            targets += sorted((base / kind).glob(f"{args.board}+*"))
+    else:
+        targets = [base / "build-tree"]
     removed = 0
     for target in targets:
         if target.exists():
@@ -936,6 +983,9 @@ def main() -> None:
         help="build this project for every supported board — the same src/, one "
              "table of what fits where")
     p_mtx.add_argument("--boards", help="comma-separated subset (default: all)")
+    p_mtx.add_argument("--products", action="store_true",
+                       help="cross every board with every products/*.toml — "
+                            "the boards x products build table")
     p_mtx.add_argument("--project", default=".")
     p_mtx.add_argument("--json", action="store_true")
     p_mtx.set_defaults(func=cmd_matrix)
@@ -961,11 +1011,29 @@ def main() -> None:
     p_bval.add_argument("--json", action="store_true")
     p_bval.set_defaults(func=cmd_board_validate)
 
+    p_pval = sub.add_parser(
+        "product-validate",
+        help="every problem in a product TOML, located, with a way out "
+             "(the mirror of board-validate for the product dimension)")
+    p_pval.add_argument("name", nargs="?",
+                        help="product name (default: the one alloy.toml "
+                             "[product] selects)")
+    p_pval.add_argument("--file", help="validate this product .toml instead "
+                                       "('-' = stdin, so an editor can check "
+                                       "before writing)")
+    p_pval.add_argument("--project", default=".")
+    p_pval.add_argument("--json", action="store_true")
+    p_pval.set_defaults(func=cmd_product_validate)
+
     p_size = sub.add_parser(
         "size", help="flash/RAM the LAST build uses, against the chip's memories "
                      "(and its update slots)")
     p_size.add_argument("--project", default=".")
     p_size.add_argument("--board", help="override the board declared in alloy.toml")
+    p_size.add_argument("--product",
+                        help="override the product declared in alloy.toml — must "
+                             "match the build being sized (the tree is keyed by "
+                             "board+product)")
     p_size.add_argument("--json", action="store_true")
     p_size.set_defaults(func=cmd_size)
 
@@ -1022,6 +1090,8 @@ def main() -> None:
     p_dbg = sub.add_parser("debug-info", help="debug-server facts for a board")
     p_dbg.add_argument("--project", default=".")
     p_dbg.add_argument("--board")
+    p_dbg.add_argument("--product",
+                       help="the product whose build tree to report on")
     p_dbg.add_argument("--json", action="store_true")
     p_dbg.set_defaults(func=cmd_debug_info)
 
@@ -1029,6 +1099,8 @@ def main() -> None:
         "emulate", help="run the built firmware headless in Renode (data-generated platform)")
     p_emu.add_argument("--project", default=".")
     p_emu.add_argument("--board", help="override the board declared in alloy.toml")
+    p_emu.add_argument("--product",
+                       help="override the product declared in alloy.toml")
     p_emu.add_argument("--emit-only", action="store_true",
                        help="write the .repl/.resc but do not launch Renode")
     p_emu.set_defaults(func=cmd_emulate)
@@ -1042,6 +1114,8 @@ def main() -> None:
                           help="report async coroutine frame sizes vs task_storage<N>")
     p_fa.add_argument("--project", default=".")
     p_fa.add_argument("--board", help="override the board declared in alloy.toml")
+    p_fa.add_argument("--product",
+                      help="the product whose build tree to audit")
     p_fa.add_argument("--elf", help="audit this ELF directly (skip project lookup)")
     p_fa.add_argument("--objdump", help="objdump binary to use (default: auto on PATH)")
     p_fa.set_defaults(func=cmd_frame_audit)
@@ -1120,6 +1194,9 @@ def main() -> None:
             p.add_argument("--slot", choices=("bl", "a", "b"),
                            help="A/B-update placement: link into the bootloader region "
                                 "(bl) or a firmware slot (a/b) instead of whole flash")
+            p.add_argument("--product",
+                           help="override the product declared in alloy.toml "
+                                "[product] (one firmware, many products)")
         if cmd == "build":
             p.add_argument("--json", action="store_true",
                            help="print an alloy.build.v1 envelope (ELF + memory use) on "

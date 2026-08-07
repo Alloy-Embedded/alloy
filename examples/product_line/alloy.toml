@@ -1,0 +1,11 @@
+[project]
+name = "product_line"
+
+[board]
+id = "nucleo_g071rb"
+
+# One firmware codebase, many PRODUCTS: products/family.toml declares the
+# space, products/<name>.toml overlays it (one product = one file = one clean
+# diff). This selects which one to build; `--product` overrides it one-shot.
+[product]
+name = "chiller_s"
