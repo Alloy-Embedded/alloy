@@ -266,6 +266,24 @@ jobs:
             example: time_probe
             robot: time_probe.robot
             banner: alloy time_probe
+          # MODBUS RTU SERVER — the robot plays a byte-level Modbus master with
+          # an INDEPENDENT CRC-16 (bitwise, in monitor Python) against the
+          # firmware's rtu_server: a well-formed FC03 answered byte-exactly, a
+          # CRC-corrupt request and another unit's request answered with TOTAL
+          # SILENCE, an out-of-model address answered with exception 0x02, and
+          # the oversized-length sequence (11 10 00 00 00 7F FF — 7 bytes that
+          # permanently wedged the reference C library this design was measured
+          # against) recovered from in one t3.5, with the next valid request
+          # served. Runs at 9600 baud so t3.5 = 4011 µs spans several SysTick
+          # periods — the leg tests framer LOGIC, not the emulator's sub-ms
+          # fidelity. `experimental` per the convention above: authored without
+          # an end-to-end local run (arm64 host vs x86_64 tlib) — PROMOTE TO
+          # BLOCKING after a few green CI runs.
+          - board: nucleo_g071rb
+            example: modbus_rtu_server
+            robot: modbus_rtu.robot
+            banner: alloy modbus_rtu_server ready
+            experimental: true
     steps:
       - uses: actions/checkout@v4
         with:
