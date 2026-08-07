@@ -257,7 +257,19 @@ rejected. Both rejections land the device back in update mode.
 See [Emulation](emulation.md) for how that harness works.
 
 !!! warning "Honest status"
-    The three flash drivers (STM32G0, STM32F7 sector, SAME70 EEFC page-latch) are proven against
-    faithful emulated flash controllers and by construction, **not yet on silicon**. Chips whose
-    flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout at all
-    rather than a guessed one, so `--slot` simply is not offered for them.
+    None of the three flash drivers has run on silicon, and they are not equally proven in
+    emulation either:
+
+    - **STM32F7** runs against Renode's own flash-controller model — real sector erases.
+    - **SAME70 EEFC** runs against a model this project wrote, so it cannot independently falsify a
+      misreading of the reference manual.
+    - **STM32G0** has **no flash-controller model at all** in Renode. Its register writes land on
+      unmapped addresses during the emulation legs, so `st_flash_g0`'s program/erase sequences are
+      *not* exercised — only the layer above them is. (The G0 driver has, separately, been reported
+      working on silicon through the NVM key/value store, whose boot counter survives resets.)
+
+    The full lifecycle — bad image, exhausted trials, automatic rollback — and the signed-image
+    oracle run on `nucleo_g071rb` only; SAME70 runs the install/trial/confirm half.
+
+    Chips whose flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout
+    at all rather than a guessed one, so `--slot` is simply not offered for them.

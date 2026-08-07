@@ -100,17 +100,27 @@ $ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
 
 </div>
 
-## Hardware-validated families
+## Supported boards
 
-The same 14-line `main.cpp` runs on all of these — validated on real silicon, enforced by CI.
+The same 14-line `main.cpp` runs on all of these. The last column says how far each has actually
+been proven — a distinction alloy keeps everywhere.
 
-| Family | Core | Board(s) | Validated on silicon |
+| Family | Core | Board | Proven |
 | --- | --- | --- | --- |
-| ST STM32G0 | Cortex-M0+ | Nucleo-G071RB, G0B1RE | <span class="status-pill ok">silicon</span> PLL, GPIO, UART echo |
-| Microchip SAME70 | Cortex-M7 | SAM E70 Xplained | <span class="status-pill ok">silicon</span> PLLA, PIO, USART echo |
-| ST STM32F7 | Cortex-M7 | Nucleo-F722ZE | <span class="status-pill ok">silicon</span> clocks, UART |
-| Raspberry Pi RP2040 | 2× Cortex-M0+ | RP2040-Zero, Pico | <span class="status-pill ok">silicon</span> boot2+CRC, WS2812 |
-| Espressif ESP32 | Xtensa LX6 | WROVER-KIT, DevKit | <span class="status-pill ok">silicon</span> boot chain, UART |
+| ST STM32G0 | Cortex-M0+ | Nucleo-G0B1RE | <span class="status-pill ok">silicon</span> I²C, ADC, DMA, PWM, RTC, DAC, CAN, watchdog, flash |
+| ST STM32G0 | Cortex-M0+ | Nucleo-G071RB | <span class="status-pill ok">silicon</span> PLL, GPIO, UART echo · 8 emulation gates |
+| Microchip SAME70 | Cortex-M7 | SAM E70 Xplained | <span class="status-pill ok">silicon</span> PLLA, PIO, USART, I²C, ADC, DMA, EEPROM, Ethernet |
+| Espressif ESP32 | Xtensa LX6 | WROVER-KIT, DevKit | <span class="status-pill ok">silicon</span> boot chain, UART, LEDC PWM |
+| Raspberry Pi RP2040 | 2× Cortex-M0+ | RP2040-Zero | <span class="status-pill ok">silicon</span> boot2+CRC, 125 MHz clock, WS2812 |
+| ST STM32F7 | Cortex-M7 | Nucleo-F722ZE | <span class="status-pill beta">emulation</span> boot + async runtime |
+| Raspberry Pi RP2040 | 2× Cortex-M0+ | Raspberry Pi Pico | <span class="status-pill beta">compiles</span> hardware validation pending |
+| ST STM32F7 | Cortex-M7 | Nucleo-F767ZI | <span class="status-pill beta">compiles</span> the network examples only |
+
+!!! note "What “silicon” means here"
+    A commit reports the peripheral running on that named board, with observed register values or
+    byte-level results. These are maintainer self-reports — there is no hardware CI runner. See the
+    [README](https://github.com/Alloy-Embedded/alloy#supported-silicon) for the per-family driver
+    matrix.
 
 !!! tip "Your board isn't listed?"
     alloy is designed so a new board is **data, not code**. See
@@ -119,7 +129,7 @@ The same 14-line `main.cpp` runs on all of these — validated on real silicon, 
 
 ## What you get
 
-- **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM.
+- **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM — [coverage varies by family](https://github.com/Alloy-Embedded/alloy#peripheral-drivers-by-vendor-and-family); GPIO and UART are everywhere, CAN and DAC are one chip.
 - **Async without an RTOS**: C++20 coroutines with [no heap and no dynamic allocation](guide/async.md).
 - **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `image`, `update`, `test` — [see all commands](guide/cli.md).
 - **A driver ecosystem**: sensors, displays and clocks you [vendor with one command](guide/libraries.md) — grown outside the core, portable by construction.

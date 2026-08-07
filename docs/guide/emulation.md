@@ -53,13 +53,20 @@ and every one of them is a *blocking* CI gate.
 | SPI driver conformance | `nucleo_g071rb` |
 | ADC conversion of the *right* channel | `nucleo_g071rb` |
 | UART transmit driven by DMA | `nucleo_g071rb` |
-| The whole [firmware-update lifecycle](firmware-update.md) | all three flash families |
+| Bootloader verify → jump → recover | `nucleo_g071rb`, `nucleo_f722ze`, `same70_xplained` |
+| The full [update lifecycle](firmware-update.md) + signed-image oracle | `nucleo_g071rb` (SAME70 runs the install/confirm half) |
 
 Two of those deserve a note. The async legs cover **two vendors**, which is what turns "the
 coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
 driver-conformance legs are designed so they cannot pass by coincidence: the ADC model returns
 `1000 + channel`, so printing `adc: 1003` proves the driver selected channel 3 — a wrong channel
 prints a different number.
+
+!!! warning "Not every leg is equally strong"
+    The I²C and SPI legs run against **Renode's own** slave models, so they can genuinely
+    contradict a misreading of the reference manual. The ADC, DMA and SAME70-flash legs run against
+    models *this project wrote* — a self-authored model cannot falsify a mistake it shares with the
+    driver. Treat those as consistency checks, not independent proof.
 
 ## Writing a test
 
@@ -108,6 +115,10 @@ Known gaps, so you do not go looking:
 
 - **RP2040** — this Renode ships no RP2040 peripheral models at all, so those boards are not
   emulated. Not an alloy gap; it needs a newer Renode.
+- **STM32G0 flash** — there is no G0 flash-controller model, and the emitter deliberately does not
+  invent one. The G0 bootloader legs therefore exercise everything *above* the flash driver while
+  its own register sequences go unchecked. (The F7 legs use Renode's controller; the SAME70 legs
+  use a model written here.)
 - **PWM** — nothing observable comes out over a UART, so there is no meaningful assertion to
   make. Verified on silicon instead.
 - **I²C bus scan** — a zero-length write (a valid probe on real silicon) is not implemented by

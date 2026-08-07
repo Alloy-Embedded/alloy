@@ -5,16 +5,22 @@ the board wires up (LED, button, debug UART, buses…). No hand-written C++ live
 
 ## Supported boards
 
-| Board id | Chip | Core | Notes |
-| --- | --- | --- | --- |
-| `nucleo_g071rb` | STM32G071RB | Cortex-M0+ | ST Nucleo-64 |
-| `nucleo_g0b1re` | STM32G0B1RE | Cortex-M0+ | ST Nucleo-64, FDCAN |
-| `nucleo_f722ze` | STM32F722ZE | Cortex-M7 | ST Nucleo-144 |
-| `same70_xplained` | ATSAME70Q21 | Cortex-M7 | Microchip, Ethernet |
-| `rp2040_zero` | RP2040 | 2× Cortex-M0+ | Waveshare, WS2812 |
-| `raspberry_pi_pico` | RP2040 | 2× Cortex-M0+ | BOOTSEL flashing |
-| `esp_wrover_kit` | ESP32 | Xtensa LX6 | Espressif |
-| `esp32_devkit` | ESP32 | Xtensa LX6 | Espressif DevKitC |
+| Board id | Chip | Core | Roles wired | Notes |
+| --- | --- | --- | --- | --- |
+| `nucleo_g0b1re` | STM32G0B1RE | Cortex-M0+ | 14 | ST Nucleo-64 — the most complete board |
+| `nucleo_g071rb` | STM32G071RB | Cortex-M0+ | 8 | ST Nucleo-64 |
+| `same70_xplained` | ATSAME70Q21 | Cortex-M7 | 9 | Microchip, Ethernet + EEPROM |
+| `nucleo_f722ze` | STM32F722ZE | Cortex-M7 | 5 | ST Nucleo-144 |
+| `nucleo_f767zi` | STM32F767ZI | Cortex-M7 | 5 | ST Nucleo-144 — for the network examples |
+| `esp_wrover_kit` | ESP32 | Xtensa LX6 | 4 | Espressif |
+| `esp32_devkit` | ESP32 | Xtensa LX6 | 4 | Espressif DevKitC |
+| `rp2040_zero` | RP2040 | 2× Cortex-M0+ | 2 | Waveshare, WS2812 |
+| `raspberry_pi_pico` | RP2040 | 2× Cortex-M0+ | 2 | BOOTSEL flashing |
+
+**Roles wired** is what the board file actually connects. A driver existing for your chip family
+does not mean your board routes the pins for it — `alloy board-info` prints the exact list, and the
+[README](https://github.com/Alloy-Embedded/alloy#supported-silicon) carries the per-family driver
+matrix and how far each board has been proven.
 
 List them from the CLI at any time (with `--json` for tooling/IDEs):
 
