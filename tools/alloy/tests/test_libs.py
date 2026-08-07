@@ -122,3 +122,41 @@ def test_resolve_source_rejects_bad_git_ref(tmp_path: Path) -> None:
 def test_resolve_source_rejects_malformed_git() -> None:
     with pytest.raises(ProjectError):
         libs._resolve_source(ALLOY_ROOT, "x", "git:no-at-sign-here", workdir=Path("/tmp"))
+
+
+def test_lib_includes_falls_back_to_the_framework_copy(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A project that lists a library it has NOT vendored resolves the
+    framework's own libs/<name>/include — local-wins-framework-covers, the
+    same rule board_json applies. This is what lets in-tree examples consume
+    a library without duplicating it into every example directory."""
+    from alloy_cli.project import load_project
+
+    monkeypatch.setenv("ALLOY_ROOT", str(ALLOY_ROOT))
+    proj = tmp_path / "p"
+    proj.mkdir()
+    (proj / "alloy.toml").write_text(
+        '[project]\nname = "p"\n\n[board]\nid = "nucleo_g071rb"\n\n'
+        '[libs]\nmodbus = "0.2.0"\n'
+    )
+    incs = load_project(proj).lib_includes()
+    assert incs == [ALLOY_ROOT / "libs" / "modbus" / "include"]
+
+    # A vendored copy takes precedence the moment it exists.
+    local = proj / "libs" / "modbus" / "include"
+    local.mkdir(parents=True)
+    assert load_project(proj).lib_includes() == [local]
+
+
+def test_lib_includes_skips_entries_found_nowhere(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from alloy_cli.project import load_project
+
+    monkeypatch.setenv("ALLOY_ROOT", str(ALLOY_ROOT))
+    proj = tmp_path / "p"
+    proj.mkdir()
+    (proj / "alloy.toml").write_text(
+        '[project]\nname = "p"\n\n[board]\nid = "nucleo_g071rb"\n\n'
+        '[libs]\nghost = "9.9.9"\n'
+    )
+    assert load_project(proj).lib_includes() == []

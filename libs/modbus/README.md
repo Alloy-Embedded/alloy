@@ -6,21 +6,31 @@ Modbus RTU protocol core for alloy — sans-IO, heap-free, chip-free.
 $ alloy lib add modbus
 ```
 
-## What v0.1.0 is, exactly
+## What v0.2.0 is, exactly
 
-The **protocol core only**: CRC-16 with a compile-time-folded table, PDU
+The **sans-IO protocol core** — CRC-16 with a compile-time-folded table, PDU
 codecs for the eight core function codes (FC01/02/03/04/05/06/0F/10 +
 exception responses, all four build/parse quadrants), the spec's t1.5/t3.5
 timing arithmetic, and a dual-rule RTU framer (length prediction primary,
-t3.5 silence resync). Everything is host-tested under ASan/UBSan, including
-regression cases for two wire-reachable framing bugs found in the reference C
-implementation this library studied (a permanent wedge on an oversized length
-claim, and desync on a torn frame).
+t3.5 silence resync) — **plus the blocking `rtu_client` (master)**: any
+`alloy::ByteStream` uart, injected microsecond clock, optional RS-485 DE pin
+(degrades to a no-op where unwired), full correlation checking (unit,
+function, echo), and a pre-request RX drain so a late reply to a timed-out
+transaction can never answer the next one. Everything is host-tested under
+ASan/UBSan, including regression cases for two wire-reachable framing bugs
+found in the reference C implementation this library studied (a permanent
+wedge on an oversized length claim, and desync on a torn frame).
 
-**Not yet here** — arriving as the versions that bind this core to a board:
+```cpp
+mb::rtu_client<decltype(uart), /*MaxRegisters=*/8> bus{
+    uart, {.baud = 19'200, .response_timeout = 500ms}};
+std::array<std::uint16_t, 2> regs{};
+if (const auto r = bus.read_holding(/*unit=*/17, 0, regs)) { /* regs valid */ }
+```
 
-- `rtu_client` (master) over any `alloy::ByteStream` uart — next version
-- `rtu_server` (slave) + the `DataModel` concept — after that
+**Not yet here:**
+
+- `rtu_server` (slave) + the `DataModel` concept — next version
 - Modbus TCP (MBAP), ISR-fed RX with per-byte timestamps: deferred
 
 ## Honest support claim

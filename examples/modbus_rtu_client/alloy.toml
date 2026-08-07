@@ -1,0 +1,8 @@
+[project]
+name = "modbus_rtu_client"
+
+[board]
+id = "nucleo_g071rb"
+
+[libs]
+modbus = "0.2.0"

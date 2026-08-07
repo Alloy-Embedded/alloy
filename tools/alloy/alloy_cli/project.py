@@ -49,12 +49,15 @@ class Project:
         return local if local.exists() else self.alloy_root / "boards" / self.board_id / "board.json"
 
     def lib_includes(self) -> list[Path]:
-        """Include dirs of libraries vendored under ./libs and listed in [libs].
+        """Include dirs of libraries listed in [libs].
 
         `alloy lib add` copies a library into ./libs/<name> and records it in
         alloy.toml; the build adds each one's include/ dir so `#include <name.hpp>`
-        resolves. Missing/renamed entries are skipped (a stale toml never breaks
-        the build).
+        resolves. A project WITHOUT a vendored copy falls back to the framework's
+        own libs/<name> — the same local-wins-framework-covers rule board_json
+        uses above, and what lets the in-tree examples consume a library without
+        duplicating it into every example directory. Entries found in neither
+        place are skipped (a stale toml never breaks the build).
         """
         toml_path = self.root / "alloy.toml"
         if not toml_path.exists():
@@ -62,9 +65,12 @@ class Project:
         data = tomllib.loads(toml_path.read_text())
         out: list[Path] = []
         for name in data.get("libs", {}):
-            inc = self.root / "libs" / name / "include"
-            if inc.is_dir():
-                out.append(inc)
+            local = self.root / "libs" / name / "include"
+            framework = self.alloy_root / "libs" / name / "include"
+            if local.is_dir():
+                out.append(local)
+            elif framework.is_dir():
+                out.append(framework)
         return out
 
     def ota_options(self) -> dict[str, Any]:

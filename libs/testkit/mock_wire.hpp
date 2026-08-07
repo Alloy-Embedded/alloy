@@ -21,6 +21,13 @@ inline constexpr std::size_t kWireCap = 512;  // two full RTU ADUs
 // A scriptable serial port. read() yields queued peer bytes one at a time
 // (false when drained — the same "nothing waiting" contract the uart handle
 // has); write() captures everything the code under test transmits.
+//
+// respond_after_tx models a half-duplex PEER instead of bytes-on-the-line:
+// bytes queued while it is set stay unreadable until the code under test
+// transmits something more — exactly when a real request/response server
+// could have answered. Left false, queued bytes are readable immediately
+// (stale traffic already sitting in the RX path — what a client's hygiene
+// drain exists to kill).
 struct mock_serial {
     std::uint8_t rx[kWireCap]{};
     std::size_t rx_len = 0;
@@ -29,14 +36,20 @@ struct mock_serial {
     std::uint8_t tx[kWireCap]{};
     std::size_t tx_len = 0;
 
+    bool respond_after_tx = false;
+    std::size_t rx_unlock_tx = 0;
+
     void queue_rx(std::span<const std::uint8_t> data) {
+        if (respond_after_tx) {
+            rx_unlock_tx = tx_len;  // readable only once tx grows past here
+        }
         for (std::uint8_t b : data) {
             if (rx_len < kWireCap) {
                 rx[rx_len++] = b;
             }
         }
     }
-    void reset() { rx_len = rx_pos = tx_len = 0; }
+    void reset() { rx_len = rx_pos = tx_len = rx_unlock_tx = 0; }
 
     void write(std::uint8_t b) {
         if (tx_len < kWireCap) {
@@ -49,6 +62,9 @@ struct mock_serial {
         }
     }
     [[nodiscard]] bool read(std::uint8_t& b) {
+        if (respond_after_tx && tx_len <= rx_unlock_tx) {
+            return false;  // the peer hasn't been asked anything yet
+        }
         if (rx_pos >= rx_len) {
             return false;
         }

@@ -1,7 +1,7 @@
 [lib]
 name = "modbus"
-version = "0.1.0"
-description = "Modbus RTU protocol core — CRC-16, 8 function-code PDU codecs, dual-rule sans-IO framer"
+version = "0.2.0"
+description = "Modbus RTU — sans-IO protocol core + blocking client (master) over any ByteStream uart"
 category = "protocol"
 license = "MIT"
 homepage = "https://modbus.org/specs.php"
