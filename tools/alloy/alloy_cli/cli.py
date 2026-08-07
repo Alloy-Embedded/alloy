@@ -201,6 +201,88 @@ def cmd_boards(args: argparse.Namespace) -> int:
     return 0
 
 
+def _roots(args: argparse.Namespace) -> tuple[Path, Path | None]:
+    """(framework root, project root or None). Board lookups work outside a
+    project too — `alloy board-info nucleo_g071rb` from anywhere in the repo."""
+    from .project import _find_alloy_root  # noqa: PLC0415
+
+    project_dir = Path(getattr(args, "project", ".") or ".")
+    try:
+        project = load_project(project_dir)
+    except ProjectError:
+        return _find_alloy_root(project_dir.resolve()), None
+    return project.alloy_root, project.root
+
+
+def cmd_board_info(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .board_info import board_info  # noqa: PLC0415
+    from .project import _find_devices_root  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    board_id = args.board_id
+    if not board_id:
+        if project_root is None:
+            print("error: no board given and no alloy.toml here", file=sys.stderr)
+            return 1
+        board_id = load_project(project_root).board_id
+    info = board_info(_find_devices_root(alloy_root), alloy_root, project_root, board_id)
+    if getattr(args, "json", False):
+        print(json.dumps(info, indent=2))
+        return 0
+    print(f"{info['id']}  {info['name']}")
+    print(f"  chip     {info['chip']} ({info['part']})")
+    print(f"  source   {info['source']}" + ("" if info["editable"] else "  (read-only)"))
+    print(f"  clock    {info['clock']['profile']} — {info['clock']['description']}")
+    print(f"  roles    {', '.join(sorted(info['roles'])) or '(none)'}")
+    on = [name for name, value in info["caps"].items() if value]
+    print(f"  caps     {', '.join(on) or '(none)'}")
+    for issue in info["issues"]:
+        print(f"  {issue['level']}: [{issue['stage']}] {issue['message']}", file=sys.stderr)
+    return 1 if any(i["level"] == "error" for i in info["issues"]) else 0
+
+
+def cmd_board_clone(args: argparse.Namespace) -> int:
+    from .board_info import clone_board  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    if project_root is None:
+        print("error: run this inside an alloy project (no alloy.toml)", file=sys.stderr)
+        return 1
+    dest = clone_board(alloy_root, project_root, args.source_id, args.new_id)
+    print(f"cloned {args.source_id} -> {dest}")
+    print(f"next:  alloy set-board {args.new_id}   # then edit it visually or by hand")
+    return 0
+
+
+def cmd_size(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .devices import load_chip  # noqa: PLC0415
+    from .sizes import size_report  # noqa: PLC0415
+
+    project = _project(args)
+    chip = load_chip(project.devices_root, project.load_board()["chip"])
+    report = size_report(project, chip)
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+        return 0
+    if not report["available"]:
+        print(f"no size report: {report['reason']}", file=sys.stderr)
+        return 1
+    for region in ("flash", "ram"):
+        row = report[region]
+        pct = f"{row['percent']:.1f}%" if row["percent"] is not None else "?"
+        print(f"{region:6} {row['used']:>8} / {row['total']:>8} B  ({pct})")
+    for region in (report["slots"] or {}).get("regions", []):
+        if region["fits"] is not None:
+            verdict = "fits" if region["fits"] else "TOO BIG"
+            print(f"{region['name']:12} {region['size']:>8} B  image "
+                  f"{report['slots']['image_bytes']} B — {verdict}")
+    return 0
+
+
 def cmd_chips(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -277,8 +359,33 @@ def cmd_build(args: argparse.Namespace) -> int:
     generate(project, db, layout=_layout(args), slot=_slot(args))
     board = project.load_board()
     chip = db.chips[board["chip"]]
-    elf = build(project, chip)
-    print(f"\nbuilt {elf}")
+
+    if not getattr(args, "json", False):
+        elf = build(project, chip)
+        print(f"\nbuilt {elf}")
+        return 0
+
+    # --json: stdout must be JUST the envelope, but cmake/ninja/size write to
+    # fd 1 from child processes, where redirect_stdout cannot reach. Point fd 1
+    # at stderr for the duration so the whole build log stays visible and stdout
+    # stays machine-readable.
+    import json  # noqa: PLC0415
+    import os  # noqa: PLC0415
+
+    from .sizes import size_report  # noqa: PLC0415
+
+    saved = os.dup(1)
+    try:
+        os.dup2(2, 1)
+        elf = build(project, chip)
+    finally:
+        os.dup2(saved, 1)
+        os.close(saved)
+    report = size_report(project, chip, elf)
+    report["schema"] = "alloy.build.v1"
+    report["slot"] = _slot(args)
+    report["layout"] = _layout(args)
+    print(json.dumps(report, indent=2))
     return 0
 
 
@@ -312,9 +419,36 @@ def cmd_image(args: argparse.Namespace) -> int:
         app = elf_to_bin(app)
     out = Path(args.out) if args.out else Path(args.app).with_suffix(".img")
     image = make_image(app, args.set_version, app_offset=int(args.app_offset, 0))
+    if args.sign:
+        from .ota_host import sign_image  # noqa: PLC0415
+
+        key = Path(args.sign).read_text().strip()
+        image = sign_image(image, bytes.fromhex(key))
     out.write_bytes(image)
     print(f"image: {out}  ({len(image)} B = 32 B header + "
-          f"{len(image) - 32} B payload, version {args.set_version})")
+          f"{len(image) - 32} B payload, version {args.set_version}"
+          f"{', SIGNED' if args.sign else ''})")
+    return 0
+
+
+def cmd_keygen(args: argparse.Namespace) -> int:
+    from .ota_host import generate_keypair  # noqa: PLC0415
+
+    priv, pub = generate_keypair()
+    out = Path(args.out)
+    if out.exists() and not args.force:
+        print(f"error: {out} exists — refusing to overwrite a signing key "
+              f"(pass --force if you really mean it)", file=sys.stderr)
+        return 1
+    out.write_text(priv.hex() + "\n")
+    out.chmod(0o600)
+    pub_path = out.with_suffix(".pub")
+    pub_path.write_text(pub.hex() + "\n")
+    print(f"private key: {out}  (0600 — KEEP THIS SECRET AND BACKED UP: lose it "
+          f"and fielded devices can never be updated again)\n"
+          f"public key:  {pub_path}\n\n"
+          f"Add to the project's alloy.toml to require signed updates:\n"
+          f"  [ota]\n  public_key = \"{pub_path.name}\"")
     return 0
 
 
@@ -425,12 +559,17 @@ def cmd_set_board(args: argparse.Namespace) -> int:
     if not toml_path.exists():
         print(f"error: {root} is not an alloy project (no alloy.toml)", file=sys.stderr)
         return 1
-    # Validate against known boards first.
+    # Validate against known boards first — including the project's OWN boards/,
+    # which is where `alloy board-clone` puts an editable copy. Only checking the
+    # framework's boards made a cloned board unselectable.
+    from .board_info import list_board_ids, resolve_board  # noqa: PLC0415
+
     project = load_project(root)
-    boards_dir = project.alloy_root / "boards"
-    if not (boards_dir / args.board_id / "board.json").exists():
-        known = sorted(p.name for p in boards_dir.iterdir() if (p / "board.json").exists())
-        print(f"error: unknown board '{args.board_id}' — known: {', '.join(known)}",
+    try:
+        resolve_board(project.alloy_root, root, args.board_id)
+    except EmitError:
+        known = ", ".join(list_board_ids(project.alloy_root, root))
+        print(f"error: unknown board '{args.board_id}' — known: {known}",
               file=sys.stderr)
         return 1
     text = toml_path.read_text()
@@ -632,6 +771,30 @@ def main() -> None:
     p_boards.add_argument("--json", action="store_true")
     p_boards.set_defaults(func=cmd_boards)
 
+    p_binfo = sub.add_parser(
+        "board-info", help="roles, capabilities, used pins and problems of a board "
+                           "(curated or project-local)")
+    p_binfo.add_argument("board_id", nargs="?",
+                         help="board id (default: the one in alloy.toml)")
+    p_binfo.add_argument("--project", default=".")
+    p_binfo.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
+    p_binfo.set_defaults(func=cmd_board_info)
+
+    p_bclone = sub.add_parser(
+        "board-clone", help="copy a board into this project as an editable one")
+    p_bclone.add_argument("source_id", help="board to copy (see `alloy boards`)")
+    p_bclone.add_argument("new_id", help="id for the copy (letters, digits, underscore)")
+    p_bclone.add_argument("--project", default=".")
+    p_bclone.set_defaults(func=cmd_board_clone)
+
+    p_size = sub.add_parser(
+        "size", help="flash/RAM the LAST build uses, against the chip's memories "
+                     "(and its update slots)")
+    p_size.add_argument("--project", default=".")
+    p_size.add_argument("--board", help="override the board declared in alloy.toml")
+    p_size.add_argument("--json", action="store_true")
+    p_size.set_defaults(func=cmd_size)
+
     p_chips = sub.add_parser("chips", help="list MCUs you can scaffold a clean board for")
     p_chips.add_argument("--vendor", help="filter by vendor (st, espressif, …)")
     p_chips.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
@@ -718,10 +881,21 @@ def main() -> None:
     p_img.add_argument("-o", "--out", help="output path (default: <app>.img)")
     p_img.add_argument("--set-version", type=int, required=True,
                        help="monotonic image version (higher = newer)")
+    p_img.add_argument("--sign", metavar="KEYFILE",
+                       help="Ed25519 private key from `alloy keygen` — appends a "
+                            "signature trailer so signing-enabled devices accept it")
     p_img.add_argument("--app-offset", default="0x200",
                        help="vector-table offset inside the slot (must match "
                             "the --slot link; default 0x200)")
     p_img.set_defaults(func=cmd_image)
+
+    p_key = sub.add_parser(
+        "keygen", help="generate an Ed25519 update-signing keypair")
+    p_key.add_argument("-o", "--out", default="update_key",
+                       help="private key path (public key gets .pub)")
+    p_key.add_argument("--force", action="store_true",
+                       help="overwrite an existing private key")
+    p_key.set_defaults(func=cmd_keygen)
 
     p_ports = sub.add_parser("ports", help="list serial ports")
     p_ports.add_argument("--json", action="store_true")
@@ -753,6 +927,10 @@ def main() -> None:
             p.add_argument("--slot", choices=("bl", "a", "b"),
                            help="A/B-update placement: link into the bootloader region "
                                 "(bl) or a firmware slot (a/b) instead of whole flash")
+        if cmd == "build":
+            p.add_argument("--json", action="store_true",
+                           help="print an alloy.build.v1 envelope (ELF + memory use) on "
+                                "stdout; the build log goes to stderr")
         p.set_defaults(func=func)
 
     args = parser.parse_args()

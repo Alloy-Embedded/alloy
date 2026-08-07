@@ -74,6 +74,13 @@ def generate(project: Project, db=None, layout: str = "flash",
         _write(gen / "lwipopts.h",
                render_lwipopts(net_profile(board, chip, project.net_options())),
                written)
+    # The update root of trust (alloy.toml [ota] public_key) — always emitted so
+    # `if constexpr (alloy::ota_key::configured)` compiles either way.
+    from .ota_key import emit_ota_key_header, load_public_key  # noqa: PLC0415
+
+    ota = project.ota_options()
+    key = load_public_key(ota["public_key"], project.root) if ota.get("public_key") else None
+    _write(gen / "alloy" / "ota_key.hpp", emit_ota_key_header(key), written)
     return written
 
 

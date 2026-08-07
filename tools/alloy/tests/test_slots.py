@@ -36,10 +36,10 @@ def _g0_chip(flash_size: int = 128 * 1024) -> dict:
 def test_g0_layout_partitions_128k_correctly() -> None:
     lay = slot_layout(_g0_chip())
     assert lay.page_size == 2048
-    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 16 * 1024)
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 32 * 1024)
     # 128K - 16K bootloader - 4K store = 108K -> 54K per slot
-    assert lay.slot_a.base == 0x08004000
-    assert lay.slot_a.size == 54 * 1024
+    assert lay.slot_a.base == 0x08008000
+    assert lay.slot_a.size == 46 * 1024
     assert lay.slot_b.base == lay.slot_a.base + lay.slot_a.size
     assert lay.slot_b.size == lay.slot_a.size
     assert lay.store.base == 0x08000000 + 128 * 1024 - 2 * 2048
@@ -74,7 +74,7 @@ def test_too_small_flash_is_rejected() -> None:
 
 def test_slots_header_carries_the_layout() -> None:
     text = emit_slots_header(_g0_chip())
-    assert "slot_a_base = 0x08004000u" in text
+    assert "slot_a_base = 0x08008000u" in text
     assert "bootloader_base = 0x08000000u" in text
     assert f"app_offset = {APP_OFFSET:#x}u" in text
     assert "store_base = 0x0801f000u" in text
@@ -86,8 +86,8 @@ def test_linker_window_places_app_inside_slot() -> None:
     text = emit_linker_script(
         chip, "cortex_m", "flash", 0,
         (lay.slot_a.base + APP_OFFSET, lay.slot_a.size - APP_OFFSET))
-    assert "ORIGIN = 0x08004200" in text
-    assert f"LENGTH = {54 * 1024 - APP_OFFSET}" in text
+    assert "ORIGIN = 0x08008200" in text
+    assert f"LENGTH = {46 * 1024 - APP_OFFSET}" in text
 
 
 def test_slot_build_refuses_boards_with_flash_reserved() -> None:
@@ -109,9 +109,9 @@ def _f7_chip(flash_size: int = 512 * 1024) -> dict:
 def test_f7_512k_sector_layout_uses_natural_boundaries() -> None:
     lay = slot_layout(_f7_chip())
     assert lay.page_size == 128 * 1024              # updater stride = one big sector
-    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 16 * 1024)
-    assert (lay.store.base, lay.store.size) == (0x08004000, 32 * 1024)
-    assert lay.store_page_b == 0x08008000           # sector 2, independently erasable
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 32 * 1024)
+    assert (lay.store.base, lay.store.size) == (0x08008000, 32 * 1024)
+    assert lay.store_page_b == 0x0800c000           # sector 3, independently erasable
     assert (lay.slot_a.base, lay.slot_a.size) == (0x08020000, 128 * 1024)
     assert (lay.slot_b.base, lay.slot_b.size) == (0x08040000, 128 * 1024)
 
@@ -119,7 +119,7 @@ def test_f7_512k_sector_layout_uses_natural_boundaries() -> None:
 def test_f7_1m_layout_scales_the_sector_pattern() -> None:
     lay = slot_layout(_f7_chip(1024 * 1024))
     assert lay.page_size == 256 * 1024
-    assert lay.bootloader.size == 32 * 1024
+    assert lay.bootloader.size == 64 * 1024
     assert lay.slot_a.base == 0x08040000            # after 4x32K + 128K
     assert lay.slot_b.base == 0x08080000
 
@@ -136,6 +136,6 @@ def test_same70_efc_uniform_layout() -> None:
     c["peripherals"]["flash"]["ip"] = "microchip/efc_v1"
     lay = slot_layout(c)
     assert lay.page_size == 8192                    # 16-page EPA erase block
-    assert (lay.bootloader.base, lay.bootloader.size) == (0x00400000, 16 * 1024)
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x00400000, 32 * 1024)
     assert lay.store_page_b == lay.store.base + 8192
     assert lay.slot_a.base % 8192 == 0 and lay.slot_a.size % 8192 == 0

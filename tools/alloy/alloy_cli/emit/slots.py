@@ -41,9 +41,13 @@ _FLASH_PAGE_SIZE = {
 # Vector table offset of the app inside its slot (see module docstring).
 APP_OFFSET = 0x200
 
-# Bootloader region: 16 KB default. Generous for the UART update bootloader
-# (protocol + flash driver measure a few KB) without eating the app space.
-_BOOTLOADER_BYTES = 16 * 1024
+# Bootloader region: 32 KB. The UART bootloader itself is ~4 KB, but Ed25519
+# image verification (third_party/monocypher) costs ~14 KB on Cortex-M0+ and
+# ~11 KB on M7 — and the region is sized for it WHETHER OR NOT a given build
+# signs. That is deliberate: the layout is baked into fielded devices, so if
+# turning signing on later moved the slots, deployed products could never take
+# the update that introduces it. Pay the address space once, up front.
+_BOOTLOADER_BYTES = 32 * 1024
 
 # Boot-state store: two pages (the power-atomic ping-pong pair in
 # alloy/ota/boot_store.hpp needs exactly two independently-erasable pages).
@@ -145,11 +149,14 @@ def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout
     4 small sectors, one medium (4x small), then big sectors (8x small); small is
     16K on 512K parts and 32K on 1M/2M. The layout uses the natural boundaries —
 
-        s0: bootloader | s1+s2: boot-state store | s3+s4: reserved (nvm/fs later)
+        s0+s1: bootloader | s2+s3: boot-state store | s4 (medium): reserved
         first big sector: slot A | second big sector: slot B | rest: reserved
 
-    so the updater's erase stride (page_size = one big sector) hits each sector
-    exactly once and the store's two pages are independently-erasable sectors."""
+    Two small sectors for the bootloader because one (16 K on 512 K parts) can't
+    hold the UART bootloader PLUS Ed25519 verification — see _BOOTLOADER_BYTES.
+    The store gets two whole sectors so its ping-pong pages are independently
+    erasable, and the updater's erase stride (page_size = one big sector) hits
+    each slot sector exactly once."""
     small = 32 * 1024 if total >= 1024 * 1024 else 16 * 1024
     big = small * 8
     bigs_base = base + 4 * small + 4 * small  # 4 small + 1 medium (4x small)
@@ -158,11 +165,11 @@ def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout
                         f"sector layout (needs two {big // 1024}K sectors)")
     return SlotLayout(
         page_size=big,
-        bootloader=Region(base, small),
+        bootloader=Region(base, 2 * small),
         slot_a=Region(bigs_base, big),
         slot_b=Region(bigs_base + big, big),
-        store=Region(base + small, 2 * small),
-        store_page_b=base + 2 * small,
+        store=Region(base + 2 * small, 2 * small),
+        store_page_b=base + 3 * small,
     )
 
 

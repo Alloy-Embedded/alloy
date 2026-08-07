@@ -67,6 +67,16 @@ class Project:
                 out.append(inc)
         return out
 
+    def ota_options(self) -> dict[str, Any]:
+        """The optional ``[ota]`` table from alloy.toml. `public_key` (a path to
+        an `alloy keygen` .pub, or 64 hex chars inline) turns on signed-image
+        verification: codegen bakes the key into alloy/ota_key.hpp and the build
+        pulls in the Ed25519 verifier. Absent -> integrity-only v1 behaviour."""
+        toml_path = self.root / "alloy.toml"
+        if not toml_path.exists():
+            return {}
+        return tomllib.loads(toml_path.read_text()).get("ota", {})
+
     def net_options(self) -> dict[str, Any]:
         """The optional ``[net]`` table from alloy.toml (lwIP feature/pool policy).
 

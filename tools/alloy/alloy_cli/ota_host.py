@@ -26,6 +26,40 @@ T_HELLO, T_DATA, T_FINISH = 0x01, 0x02, 0x03
 T_INFO, T_ACK, T_NAK = 0x81, 0x82, 0x83
 
 
+SIGNATURE_BYTES = 64
+
+
+def generate_keypair() -> tuple[bytes, bytes]:
+    """(private_seed_32, public_32) for Ed25519 image signing."""
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import (  # noqa: PLC0415
+        Ed25519PrivateKey,
+    )
+    from cryptography.hazmat.primitives.serialization import (  # noqa: PLC0415
+        Encoding, NoEncryption, PrivateFormat, PublicFormat,
+    )
+
+    priv = Ed25519PrivateKey.generate()
+    return (priv.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption()),
+            priv.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw))
+
+
+def sign_image(image: bytes, private_seed: bytes) -> bytes:
+    """Append the Ed25519 signature TRAILER over [header|payload].
+
+    The signature covers the header too, so image_version can't be relabelled by
+    an attacker — and it lives AFTER payload_length bytes, which is why nothing
+    about the v1 header/CRC changes: the device's `covered` span (what
+    verify_slot already computes) IS the signed message."""
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import (  # noqa: PLC0415
+        Ed25519PrivateKey,
+    )
+
+    if len(private_seed) != 32:
+        raise ValueError("Ed25519 private key must be 32 raw bytes")
+    priv = Ed25519PrivateKey.from_private_bytes(private_seed)
+    return image + priv.sign(image)
+
+
 def elf_to_bin(elf: bytes) -> bytes:
     """Flatten an ELF32-LE firmware image to the raw bytes objcopy -O binary
     produces. Pure python so `alloy image` and `alloy update` work on machines

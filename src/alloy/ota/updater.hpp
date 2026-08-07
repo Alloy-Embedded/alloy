@@ -76,7 +76,11 @@ public:
 
     // Flush any partial tail (padded to a dword with 0xFF — excluded from the CRC
     // because verify uses payload_length), then re-read + verify the slot.
-    [[nodiscard]] Result<image_header, ota_error> finish() {
+    // `v` is the authenticity policy (v2 signing): defaulted to no_auth so v1
+    // callers are unchanged, and passed straight to verify_slot so a REJECTED
+    // image fails the UPDATE — not later, at boot, after a wasted trial.
+    template <Verifier V = no_auth>
+    [[nodiscard]] Result<image_header, ota_error> finish(V v = {}) {
         if (!open_) return ota_error::not_open;
         if (stage_len_ > 0) {
             if (static_cast<std::uint64_t>(flushed_) + 8u > tgt_.size) {
@@ -104,17 +108,17 @@ public:
             }
         }
         open_ = false;
-        return verify_slot(tgt_);  // check what ACTUALLY landed in flash
+        return verify_slot(tgt_, v);  // check what ACTUALLY landed in flash
     }
 };
 
 // Tie updater + boot_manager: verify the freshly-written slot, THEN atomically arm
 // the trial. A crash between finish() and mark_updated leaves pending==none, so the
 // old (confirmed) firmware still boots — the confirmed slot is never perturbed.
-template <alloy::FlashController Flash, BootStore Store>
+template <alloy::FlashController Flash, BootStore Store, Verifier V = no_auth>
 [[nodiscard]] Result<image_header, ota_error>
-install(updater<Flash>& up, boot_manager<Store>& boot, std::uint8_t target) {
-    auto h = up.finish();
+install(updater<Flash>& up, boot_manager<Store>& boot, std::uint8_t target, V v = {}) {
+    auto h = up.finish(v);
     if (!h) return h.error();
     if (auto r = boot.mark_updated(target); !r) return r.error();
     return h;

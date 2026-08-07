@@ -15,7 +15,9 @@
 #include <alloy/arch/cpu.hpp>
 #include <alloy/board.hpp>
 #include <alloy/ota.hpp>
+#include <alloy/ota/signed.hpp>
 #include <alloy/ota/uart_transport.hpp>
+#include <alloy/ota_key.hpp>
 #include <alloy/slots.hpp>
 #include <alloy/time.hpp>
 
@@ -34,6 +36,19 @@ constexpr alloy::ota::slot kSlots[2] = {
     {alloy::slots::slot_b_base, alloy::slots::slot_b_size},
 };
 
+// The project's root of trust, in ONE place: Ed25519 authenticity when
+// alloy.toml declares an [ota] public_key, integrity-only otherwise. Same policy
+// for the boot decision AND the install, so an unsigned image is refused ON THE
+// WIRE (a NAK the operator sees) instead of silently wasting a trial boot.
+[[nodiscard]] auto verify(const alloy::ota::slot& s) {
+    if constexpr (alloy::ota_key::configured) {
+        return alloy::ota::verify_slot(
+            s, alloy::ota::signed_verifier{s, alloy::ota_key::public_key});
+    } else {
+        return alloy::ota::verify_slot(s);
+    }
+}
+
 // The transport's sink: stream into the updater, and on FINISH run the
 // verify-then-arm tie (ota::install) so a crash in between leaves pending==none
 // and the confirmed firmware still boots.
@@ -45,7 +60,14 @@ struct arming_sink {
     [[nodiscard]] rvoid begin() { return up.begin(); }
     [[nodiscard]] rvoid write(std::span<const std::uint8_t> c) { return up.write(c); }
     [[nodiscard]] rvoid finish() {
-        if (auto h = alloy::ota::install(up, mgr, target); !h) {
+        const alloy::ota::slot& s = kSlots[target];
+        if constexpr (alloy::ota_key::configured) {
+            if (auto h = alloy::ota::install(up, mgr, target,
+                                             alloy::ota::signed_verifier{s, alloy::ota_key::public_key});
+                !h) {
+                return h.error();
+            }
+        } else if (auto h = alloy::ota::install(up, mgr, target); !h) {
             return h.error();
         }
         return {};
@@ -68,7 +90,7 @@ int main() {
     const auto plan = mgr.plan_boot();
     int boot = -1;
     std::uint32_t running_version = 0;
-    if (const auto h = alloy::ota::verify_slot(kSlots[plan.slot])) {
+    if (const auto h = verify(kSlots[plan.slot])) {
         boot = plan.slot;
         running_version = h->image_version;
     } else {
@@ -76,7 +98,7 @@ int main() {
             (void)mgr.reject_pending();  // never re-try a slot that doesn't verify
         }
         const std::uint8_t other = static_cast<std::uint8_t>(1u - plan.slot);
-        if (const auto ho = alloy::ota::verify_slot(kSlots[other])) {
+        if (const auto ho = verify(kSlots[other])) {
             boot = other;
             running_version = ho->image_version;
         }

@@ -178,7 +178,8 @@ add_executable({project.name}.elf
 
 target_include_directories({project.name}.elf PRIVATE
     "{project.alloy_root / 'src'}"
-    "{gen}"{lib_includes}
+    "{gen}"
+    "{project.alloy_root / 'third_party' / 'monocypher'}"{lib_includes}
 )
 
 target_compile_options({project.name}.elf PRIVATE
@@ -217,6 +218,15 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
     # block emits `bool fs = true;` for an fs role). This keeps every other
     # example's build lean (no needless littlefs TUs) — the real "build seam".
     vendor_sources: list[Path] = []
+    # Ed25519 image verification: compiled ONLY when the project configures an
+    # [ota] public_key (generated ota_key.hpp is the signal, same "build seam"
+    # rule as fs/lwIP). Its headers are always on the include path so
+    # alloy/ota/signed.hpp parses in every build.
+    key_hpp = project.gen_dir / "alloy" / "ota_key.hpp"
+    if key_hpp.exists() and "configured = true" in key_hpp.read_text():
+        mono = project.alloy_root / "third_party" / "monocypher"
+        vendor_sources += [mono / "monocypher.c", mono / "monocypher-ed25519.c"]
+
     board_hpp = project.gen_dir / "alloy" / "board.hpp"
     board_text = board_hpp.read_text() if board_hpp.exists() else ""
     if "bool fs = true;" in board_text:
