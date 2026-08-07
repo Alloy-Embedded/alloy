@@ -63,19 +63,33 @@ _UART_CLOCK_PROP = {
 # simply gets no I2C block — the rest of the platform is unaffected.
 RENODE_I2C = {
     "st/i2c_v2": "I2C.STM32F7_I2C",  # the v2 IP alloy's STM32G0 chips declare
+    # The v1 IP (STM32F1/F4 SR1/SR2/CR1/CR2 layout) that all 149 F4 chips
+    # declare. Renode ships I2C.STM32F4_I2C, a model written for exactly this
+    # controller, and stm32f4.repl instantiates it at all three F411 bases. The
+    # F4 I2C driver is labelled "tier-2, compile-checked" only because no F4
+    # board exists yet — the emulation half is available the moment one does.
+    "st/i2c_v1": "I2C.STM32F4_I2C",
 }
 
 # Renode SPI CONTROLLER model per IP version — same rule again. Unlike the I2C
 # model, SPI.STM32SPI exposes an `IRQ` line, so it is wired to the NVIC.
 RENODE_SPI = {
+    "st/spi_v1": "SPI.STM32SPI",  # the F1/F4 IP — same model, same reason as i2c_v1
     "st/spi_v2": "SPI.STM32SPI",
     "st/spi_v3": "SPI.STM32SPI",
 }
 
-# ADC is different: Renode ships only the F1/F4-style Analog.STM32_ADC, whose
-# SR/CR1/CR2 register map is INCOMPATIBLE with alloy's st/adc_v2 (STM32G0-style
-# ISR/CR/CHSELR — a local register trace showed the driver spinning on ISR.ADRDY
-# that the F4 model never sets). So instead of a built-in model, emit a tiny
+# ADC is different. The F1/F4-style Analog.STM32_ADC has an SR/CR1/CR2 register
+# map INCOMPATIBLE with alloy's st/adc_v2 (STM32G0-style ISR/CR/CHSELR — a local
+# register trace showed the driver spinning on an ISR.ADRDY the F4 model never
+# sets). Renode 1.16.1 DOES also ship Analog.STM32G0_ADC, and its own
+# platforms/cpus/stm32g0.repl instantiates it at the G0's ADC base — an earlier
+# version of this comment claimed no G0 model existed, which is wrong. Swapping
+# was tried and the firmware did not complete its handshake against it (the run
+# hung rather than failing cleanly), so the diagnosis is unfinished and the
+# purpose-written model below stays for now. Adopting the native model would
+# make this leg an INDEPENDENT check instead of a consistency one, and is worth
+# finishing. Until then, emit a tiny
 # purpose-written model as an inline Python peripheral (IronPython 2.7). It
 # implements just the handshakes st_adc_v2 performs — ADCAL self-clears; ADEN
 # sets ISR.ADRDY; CHSELR (1<<ch) sets ISR.CCRDY and latches the channel; ADSTART
@@ -126,8 +140,10 @@ elif request.IsRead:
     else:
         request.Value = regs[o >> 2]"""
 
-# Renode has no STM32 channel-style (F0/G0) DMA model either — DMA.STM32DMA is the
-# F4 stream-style controller. So, same approach as the ADC: a small inline Python
+# DMA: same correction as the ADC above. DMA.STM32DMA is the F4 stream-style
+# controller and does not fit the channel-style G0 layout, but Renode 1.16.1
+# ships DMA.STM32G0DMA and wires two of them in its own stm32g0.repl. Evaluating
+# it is part of the same unfinished swap. For now, a small inline Python
 # peripheral modelling alloy's st/dma_v1. It implements the single-shot transfer
 # the driver kicks off: on a CCR write with EN=1, read the channel's CNDTR/CPAR/
 # CMAR and, for a memory->peripheral transfer (DIR=1, e.g. UART TX), copy CNDTR
