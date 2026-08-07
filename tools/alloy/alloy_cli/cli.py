@@ -256,6 +256,61 @@ def cmd_board_clone(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_matrix(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .matrix import format_table, known_boards, run_matrix  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    if project_root is None:
+        print("error: run this inside an alloy project (no alloy.toml)", file=sys.stderr)
+        return 1
+    board_ids = ([b.strip() for b in args.boards.split(",") if b.strip()]
+                 if args.boards else known_boards(alloy_root, project_root))
+    if not board_ids:
+        print("error: no boards to build", file=sys.stderr)
+        return 1
+
+    as_json = getattr(args, "json", False)
+    if not as_json:
+        print(f"building {len(board_ids)} board(s) from the same src/\n")
+    report = run_matrix(project_root, board_ids, as_json)
+    print(json.dumps(report, indent=2) if as_json else "\n" + format_table(report))
+    return 0 if report["ok"] else 1
+
+
+def cmd_svd(args: argparse.Namespace) -> int:
+    from .devices import load_chip, load_registers  # noqa: PLC0415
+    from .emit.svd import emit_svd  # noqa: PLC0415
+    from .project import _find_devices_root  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    devices_root = _find_devices_root(alloy_root)
+
+    chip_id = args.chip
+    if not chip_id:
+        if project_root is None:
+            print("error: no --chip given and no alloy.toml here", file=sys.stderr)
+            return 1
+        project = load_project(project_root)
+        chip_id = project.load_board()["chip"]
+
+    chip = load_chip(devices_root, chip_id)
+    document, skipped = emit_svd(chip, load_registers(devices_root))
+
+    out = Path(args.out) if args.out else (
+        (project_root or Path(".")) / ".alloy" / f"{chip_id.replace('/', '_')}.svd")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(document)
+    described = document.count("<peripheral>") + document.count("<peripheral ")
+    print(f"wrote {out}  ({described} peripheral(s))")
+    if skipped:
+        # Say what is NOT in there. A viewer showing 12 of 40 peripherals with
+        # no explanation reads as a broken debugger.
+        print(f"not described (no curated register file): {', '.join(skipped)}")
+    return 0
+
+
 def cmd_board_validate(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -819,6 +874,24 @@ def main() -> None:
     p_bclone.add_argument("new_id", help="id for the copy (letters, digits, underscore)")
     p_bclone.add_argument("--project", default=".")
     p_bclone.set_defaults(func=cmd_board_clone)
+
+    p_mtx = sub.add_parser(
+        "matrix",
+        help="build this project for every supported board — the same src/, one "
+             "table of what fits where")
+    p_mtx.add_argument("--boards", help="comma-separated subset (default: all)")
+    p_mtx.add_argument("--project", default=".")
+    p_mtx.add_argument("--json", action="store_true")
+    p_mtx.set_defaults(func=cmd_matrix)
+
+    p_svd = sub.add_parser(
+        "svd",
+        help="write a CMSIS-SVD file for the chip, so a debugger can show its "
+             "peripheral registers")
+    p_svd.add_argument("--chip", help="chip id (default: the project's board's chip)")
+    p_svd.add_argument("-o", "--out", help="output path (default: .alloy/<chip>.svd)")
+    p_svd.add_argument("--project", default=".")
+    p_svd.set_defaults(func=cmd_svd)
 
     p_bval = sub.add_parser(
         "board-validate",
