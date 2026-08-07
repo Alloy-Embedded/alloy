@@ -20,6 +20,7 @@ from typing import Any
 from .devices import load_chip, load_registers
 from .emit.board import role_caps
 from .emit.common import EmitError
+from .project import apply_project_overrides, read_project_settings
 from .roles import ROLES, role_pin_fields
 
 BOARD_SCHEMA = "alloy.board.v1"
@@ -114,7 +115,8 @@ def _pins_used(board: dict[str, Any], chip: dict[str, Any]) -> list[dict[str, st
 
 
 def _validate(board: dict[str, Any], chip: dict[str, Any],
-              registers: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+              registers: dict[str, dict[str, Any]],
+              settings: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Everything wrong with this board: the located, all-at-once rules from
     `board_validate`, plus the real emitters as a backstop.
 
@@ -129,7 +131,7 @@ def _validate(board: dict[str, Any], chip: dict[str, Any],
     from .emit.board import emit_board_header, emit_board_source  # noqa: PLC0415
 
     issues: list[dict[str, Any]] = [
-        {**i, "stage": "roles"} for i in validate_board(board, chip, registers)
+        {**i, "stage": "roles"} for i in validate_board(board, chip, registers, settings)
     ]
     for stage, run in (
         ("roles", lambda: emit_board_header(board, chip, registers)),
@@ -147,10 +149,32 @@ def _validate(board: dict[str, Any], chip: dict[str, Any],
     return issues
 
 
+def _overrides_applied(stored: dict[str, Any], effective: dict[str, Any],
+                       settings: dict[str, Any]) -> dict[str, Any]:
+    """The fields alloy.toml changed, each with the board's own value beside it."""
+    out: dict[str, Any] = {"roles": {}, "clock": None}
+    for role, spec in ROLES.items():
+        for field in spec.project_fields:
+            was = (stored.get("roles", {}).get(role) or {}).get(field)
+            now = (effective.get("roles", {}).get(role) or {}).get(field)
+            if now != was:
+                out["roles"].setdefault(role, {})[field] = {"board": was, "project": now}
+    clock = settings.get("clock") or {}
+    if clock:
+        out["clock"] = {"board": stored.get("clock_profile"), "project": clock}
+    return out
+
+
 def board_info(devices_root: Path, alloy_root: Path, project_root: Path | None,
                board_id: str) -> dict[str, Any]:
     path, source = resolve_board(alloy_root, project_root, board_id)
-    board = _load(path)
+    stored = _load(path)
+    # What the project chose, applied here as well as in Project.load_board —
+    # otherwise this reports the board's defaults while the firmware is built
+    # with the project's values, and the panel disagrees with the header.
+    settings = read_project_settings(project_root)
+    board = apply_project_overrides(stored, settings,
+                                    devices_root) if settings else stored
     chip = load_chip(devices_root, board["chip"])
     registers = load_registers(devices_root)
 
@@ -170,6 +194,10 @@ def board_info(devices_root: Path, alloy_root: Path, project_root: Path | None,
         "editable": source == "project",
         "path": str(path),
         "clock": _clock_summary(board, chip),
+        # Which values this project overrode, and what the board itself says —
+        # so a UI can show "921600 (project) · 115200 (board)" instead of a
+        # number with no story.
+        "project_overrides": _overrides_applied(stored, board, settings),
         "probe": board.get("probe"),
         "roles": board.get("roles", {}),
         "caps": dict(sorted(caps.items())),
@@ -178,7 +206,7 @@ def board_info(devices_root: Path, alloy_root: Path, project_root: Path | None,
             {"pin": pin, "function": spec.get("function", ""), "label": spec.get("label")}
             for pin, spec in sorted((board.get("pins") or {}).items())
         ],
-        "issues": _validate(board, chip, registers),
+        "issues": _validate(board, chip, registers, settings),
     }
 
 

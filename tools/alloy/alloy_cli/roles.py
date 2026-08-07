@@ -39,6 +39,16 @@ class RoleSpec:
     #: Signal fields the emitter does NOT demand — a CAN board may declare only
     #: the controller, with the transceiver pins fixed by the board layout.
     optional_signals: tuple[str, ...] = field(default=())
+    #: Fields that describe what THIS PROJECT chose, not what the board IS.
+    #:
+    #: The line: a board fact is fixed by the PCB (which pin the LED is on, that
+    #: it is active-low, which peripheral the header exposes). A project field
+    #: is one the same hardware supports many values of, and the application
+    #: picks one — a baud rate, a watchdog timeout, how much flash to reserve.
+    #:
+    #: Only these may be overridden from alloy.toml. Everything else needs a
+    #: board of your own, because changing it means the hardware is different.
+    project_fields: tuple[str, ...] = field(default=())
     #: (field, value, waived fields): when the role sets `field` to `value`, the
     #: listed fields stop being required. The one case is a boot-ROM-configured
     #: UART (classic ESP32 UART0), which has no pin routing at all — the emitter
@@ -59,6 +69,7 @@ ROLES: dict[str, RoleSpec] = {
     "debug_uart": RoleSpec(
         kind="peripheral", ip_class="uart", signals=("tx", "rx"),
         required=("peripheral", "tx", "rx"), optional=("baud", "mode", "label"),
+        project_fields=("baud",),
         waivers=(("mode", "rom", ("tx", "rx")),)),
     "i2c": RoleSpec(
         kind="peripheral", ip_class="i2c", signals=("scl", "sda"),
@@ -85,13 +96,16 @@ ROLES: dict[str, RoleSpec] = {
         required=("peripheral",), optional=("label",)),
     "watchdog": RoleSpec(
         kind="peripheral", ip_class="watchdog",
-        required=("peripheral",), optional=("timeout_ms", "label")),
+        required=("peripheral",), optional=("timeout_ms", "label"),
+        project_fields=("timeout_ms",)),
     "nvm": RoleSpec(
         kind="peripheral", ip_class="flash",
-        required=("peripheral",), optional=("bytes",)),
+        required=("peripheral",), optional=("bytes",),
+        project_fields=("bytes",)),
     "fs": RoleSpec(
         kind="peripheral", ip_class="flash",
-        required=("peripheral",), optional=("bytes",)),
+        required=("peripheral",), optional=("bytes",),
+        project_fields=("bytes",)),
     "ethernet": RoleSpec(
         kind="peripheral", ip_class="eth", pin_fields=("reset_pin",),
         required=("peripheral", "reset_pin", "phy"), optional=("label",)),

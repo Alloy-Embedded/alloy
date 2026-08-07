@@ -81,3 +81,40 @@ IRQ numbers) live in the [device database](adding-a-board.md), never in the boar
 
 That is the whole contract: pick a chip, pick a clock, wire the roles. See
 [Adding a board](adding-a-board.md) to bring up one that isn't listed.
+
+## What the board is, and what your project chooses
+
+A `board.json` value is a **default**, not a decree. Most of what it says is
+hardware — which pin the LED is on, that the button is active-low, which
+peripheral the header exposes — and changing that means you have different
+hardware, so you need a board of your own (`alloy board-clone`).
+
+A few fields are different: the same board supports many values and your
+application picks one. Those you set in `alloy.toml`, and the framework's board
+keeps receiving upstream fixes instead of being forked to change a number.
+
+```toml
+[roles.debug_uart]
+baud = 921600          # the board says 115200; this project wants faster
+
+[roles.watchdog]
+timeout_ms = 1500      # depends on your loop, not on the PCB
+
+[clock]
+mhz = 48               # or: profile = "hsi_16mhz"
+```
+
+| Role | What a project may choose |
+| --- | --- |
+| `debug_uart` | `baud` |
+| `watchdog` | `timeout_ms` |
+| `nvm`, `fs` | `bytes` — how much flash to reserve |
+| (any board) | `[clock]` — a named `profile`, or a target `mhz` to solve for |
+
+Anything else is refused, with the reason and the command that would actually
+do it — silently ignoring `[roles.led] pin = "pb7"` would leave you with a dark
+LED and no explanation.
+
+`alloy board-info --json` reports the effective board *and* a
+`project_overrides` block saying which values your project changed and what the
+board itself says, so a tool can show both.

@@ -105,10 +105,42 @@ def _check_external_clock(board: dict[str, Any],
     return []
 
 
+def _check_overrides(settings: dict[str, Any]) -> list[dict[str, Any]]:
+    """alloy.toml may choose, not redesign.
+
+    A project field is one the same hardware supports many values of — a baud
+    rate, a watchdog timeout. Everything else describes what the board IS, and
+    silently ignoring an attempt to change it would be the worst outcome: the
+    user writes `pin = "pb7"`, nothing happens, and the LED stays dark with no
+    explanation.
+    """
+    out: list[dict[str, Any]] = []
+    for role, overrides in (settings.get("roles") or {}).items():
+        spec = ROLES.get(role)
+        if spec is None:
+            out.append(_issue("error",
+                              f"alloy.toml: '{role}' is not a board role",
+                              role=role, suggestions=sorted(ROLES)[:MAX_SUGGESTIONS]))
+            continue
+        for key in (overrides or {}):
+            if key in spec.project_fields:
+                continue
+            out.append(_issue(
+                "error",
+                f"alloy.toml: {role}.{key} is a property of the BOARD, not of this "
+                f"project — a project may choose "
+                f"{', '.join(spec.project_fields) or 'nothing'} here. To change "
+                f"anything else, make the board yours: alloy board-clone",
+                role=role, field=key,
+                suggestions=list(spec.project_fields)[:MAX_SUGGESTIONS]))
+    return out
+
+
 def validate_board(board: dict[str, Any], chip: dict[str, Any],
-                   registers: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+                   registers: dict[str, dict[str, Any]],
+                   settings: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Every problem in a board, as located, fixable issues."""
-    issues: list[dict[str, Any]] = []
+    issues: list[dict[str, Any]] = _check_overrides(settings or {})
     roles = board.get("roles") or {}
     pins = chip.get("pins") or {}
     classes = ip_classes(chip, registers)

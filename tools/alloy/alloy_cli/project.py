@@ -103,7 +103,76 @@ class Project:
             raise ProjectError(f"{self.board_json}: expected schema alloy.board.v1")
         if board.get("id") != self.board_id:
             raise ProjectError(f"{self.board_json}: id '{board.get('id')}' != directory '{self.board_id}'")
+        return self.apply_overrides(board)
+
+    def project_settings(self) -> dict[str, Any]:
+        """`[roles.*]` and `[clock]` from alloy.toml — what THIS project chose."""
+        return read_project_settings(self.root)
+
+    def apply_overrides(self, board: dict[str, Any]) -> dict[str, Any]:
+        return apply_project_overrides(board, self.project_settings(),
+                                       self.devices_root)
+
+
+def apply_project_overrides(board: dict[str, Any], settings: dict[str, Any],
+                            devices_root: Path) -> dict[str, Any]:
+    """The board as a project uses it.
+
+    A board.json value is a DEFAULT for the fields a project may choose — a baud
+    rate, a watchdog timeout, how much flash to reserve, the clock. Overriding
+    one from alloy.toml means a framework board keeps receiving upstream fixes
+    instead of being forked by `board-clone` just to change a number.
+
+    A module function, not a method, because every consumer must apply it: the
+    emitter reads the board through Project, but `board-info` resolves the file
+    itself, and the first version of this let those two disagree — the header
+    came out at 48 MHz while the panel still said 64.
+
+    What may be overridden is declared in roles.py. Anything else is a property
+    of the hardware, and board-validate refuses it with that reason.
+    """
+    from .roles import ROLES  # noqa: PLC0415
+
+    roles = settings.get("roles") or {}
+    clock = settings.get("clock") or {}
+    if not roles and not clock:
         return board
+
+    board = json.loads(json.dumps(board))  # never mutate the caller's dict
+    for role, overrides in roles.items():
+        spec = ROLES.get(role)
+        if spec is None or role not in board.get("roles", {}):
+            continue
+        for key, value in (overrides or {}).items():
+            if key in spec.project_fields:
+                board["roles"][role][key] = value
+
+    if clock.get("profile"):
+        board.pop("clock", None)
+        board["clock_profile"] = clock["profile"]
+    elif clock.get("mhz"):
+        from .clock_solver import solve  # noqa: PLC0415
+        from .devices import load_chip  # noqa: PLC0415
+
+        chip = load_chip(devices_root, board["chip"])
+        hse = board.get("hse") or {}
+        solved = solve(chip.get("family"),
+                       int(round(float(clock["mhz"]) * 1_000_000)),
+                       external_hz=hse.get("hz") if clock.get("hse", bool(hse)) else None)
+        board["clock"] = solved["profile"]
+        board["clock_profile"] = "custom"
+    return board
+
+
+def read_project_settings(project_root: Path | None) -> dict[str, Any]:
+    """`[roles.*]` and `[clock]` from a project's alloy.toml, or nothing."""
+    if project_root is None:
+        return {}
+    toml_path = project_root / "alloy.toml"
+    if not toml_path.exists():
+        return {}
+    data = tomllib.loads(toml_path.read_text())
+    return {"roles": data.get("roles", {}), "clock": data.get("clock", {})}
 
 
 def packaged_alloy_root() -> Path | None:
