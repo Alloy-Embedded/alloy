@@ -597,7 +597,7 @@ jobs:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, time_probe, modbus_rtu_client, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
+        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, time_probe, modbus_rtu_client, modbus_rtu_server, irq_echo, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:

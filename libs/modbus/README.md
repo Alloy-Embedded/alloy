@@ -6,7 +6,7 @@ Modbus RTU protocol core for alloy — sans-IO, heap-free, chip-free.
 $ alloy lib add modbus
 ```
 
-## What v0.2.0 is, exactly
+## What v0.3.0 is, exactly
 
 The **sans-IO protocol core** — CRC-16 with a compile-time-folded table, PDU
 codecs for the eight core function codes (FC01/02/03/04/05/06/0F/10 +
@@ -28,9 +28,23 @@ std::array<std::uint16_t, 2> regs{};
 if (const auto r = bus.read_holding(/*unit=*/17, 0, regs)) { /* regs valid */ }
 ```
 
+**And the poll-driven `rtu_server` (slave)**: the register bank is any user
+type behind the `DataModel` concept (four spaces, per-item bool access —
+false becomes the wire's exception 0x02), `holding_bank<N>` covers the
+80% case, and the spec's silences are honored exactly: another unit's
+conversation, a CRC-corrupt frame, and every broadcast get no reply —
+broadcast writes execute, broadcast reads are dropped whole.
+
+```cpp
+mb::holding_bank<64> bank;
+bank.regs[0] = 0x1234;
+mb::rtu_server<decltype(uart), mb::holding_bank<64>, 8> server{
+    uart, bank, {.unit = 17, .baud = 9'600}};
+for (;;) { (void)server.poll(); }   // bounded work, never blocks
+```
+
 **Not yet here:**
 
-- `rtu_server` (slave) + the `DataModel` concept — next version
 - Modbus TCP (MBAP), ISR-fed RX with per-byte timestamps: deferred
 
 ## Honest support claim
@@ -57,3 +71,7 @@ feed/tick/frame/consume share one poll-loop context.
 | `modbus/pdu.hpp` | 8 FC codecs, `request_view`, `expected_adu_length` |
 | `modbus/rtu_timing.hpp` | t1.5/t3.5 from baud, spec clamp above 19200 |
 | `modbus/rtu_framer.hpp` | `feed(b, now_us)` / `tick(now_us)` / `frame()` / `consume()` |
+| `modbus/clock.hpp` | `uptime_clock` — the one place the board timebase is read |
+| `modbus/client.hpp` | blocking `rtu_client` (master) |
+| `modbus/data_model.hpp` | `DataModel` concept + `holding_bank<N>` |
+| `modbus/server.hpp` | poll-driven `rtu_server` (slave) |

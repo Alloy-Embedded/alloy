@@ -3,9 +3,9 @@
 // This umbrella pulls in the whole surface: the error domain, the
 // compile-time CRC-16, the eight-function-code PDU codecs (all four
 // build/parse quadrants), the spec timing facts, the dual-rule RTU framer,
-// and the blocking rtu_client (master) that binds the sans-IO core to any
-// alloy::ByteStream uart with an injected microsecond clock. The rtu_server
-// (slave) + DataModel concept arrive in the next version.
+// the blocking rtu_client (master), and the poll-driven rtu_server (slave)
+// whose register bank is any user type satisfying the DataModel concept —
+// both bound to any alloy::ByteStream uart with an injected µs clock.
 //
 // Informed by the modbuscore C library (the API shapes worth keeping and two
 // wire-reachable framing bugs worth designing out — see rtu_framer.hpp), but
@@ -15,8 +15,11 @@
 #pragma once
 
 #include "modbus/client.hpp"       // IWYU pragma: export
+#include "modbus/clock.hpp"        // IWYU pragma: export
 #include "modbus/crc.hpp"          // IWYU pragma: export
+#include "modbus/data_model.hpp"   // IWYU pragma: export
 #include "modbus/error.hpp"        // IWYU pragma: export
 #include "modbus/pdu.hpp"          // IWYU pragma: export
 #include "modbus/rtu_framer.hpp"   // IWYU pragma: export
 #include "modbus/rtu_timing.hpp"   // IWYU pragma: export
+#include "modbus/server.hpp"       // IWYU pragma: export

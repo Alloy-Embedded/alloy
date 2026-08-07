@@ -1,14 +1,14 @@
 [lib]
 name = "modbus"
-version = "0.2.0"
-description = "Modbus RTU — sans-IO protocol core + blocking client (master) over any ByteStream uart"
+version = "0.3.0"
+description = "Modbus RTU — sans-IO core, blocking client (master) and poll-driven server (slave) over any ByteStream uart"
 category = "protocol"
 license = "MIT"
 homepage = "https://modbus.org/specs.php"
 
 [requires]
-# The v0.1 core is sans-IO (no concept needed to use the codecs/framer); the
-# client/server layers of the next versions bind to these.
+# The sans-IO core needs no concept; client and server bind to these. The
+# library also DEFINES one (DataModel — the server's register bank contract).
 concepts = ["ByteStream"]
 alloy = ">=0.1"
 

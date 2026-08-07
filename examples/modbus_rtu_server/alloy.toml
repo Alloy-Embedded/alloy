@@ -1,5 +1,5 @@
 [project]
-name = "modbus_rtu_client"
+name = "modbus_rtu_server"
 
 [board]
 id = "nucleo_g071rb"

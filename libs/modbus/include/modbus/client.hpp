@@ -33,8 +33,8 @@
 
 #include "alloy/concepts.hpp"
 #include "alloy/gpio.hpp"
-#include "alloy/time.hpp"
 #include "alloy/util/result.hpp"
+#include "modbus/clock.hpp"
 #include "modbus/crc.hpp"
 #include "modbus/error.hpp"
 #include "modbus/pdu.hpp"
@@ -42,12 +42,6 @@
 #include "modbus/rtu_timing.hpp"
 
 namespace alloy::lib::modbus {
-
-// Default clock: the board timebase. Any type with now_us() -> uint32_t
-// substitutes (testkit tests use a stepping clock over virtual_clock).
-struct uptime_clock {
-    [[nodiscard]] std::uint32_t now_us() const { return alloy::uptime_us(); }
-};
 
 // Namespace-scope (not nested) so one braced config serves every client
 // instantiation — a nested type would make configs for clients that differ

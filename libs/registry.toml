@@ -29,9 +29,9 @@ concepts = ["I2cBus"]
 source = "path:libs/ds3231"
 
 [modbus]
-version = "0.2.0"
+version = "0.3.0"
 category = "protocol"
-summary = "Modbus RTU — sans-IO protocol core + blocking client (master) over any ByteStream uart"
+summary = "Modbus RTU — sans-IO core, blocking client (master) and poll-driven server (slave) over any ByteStream uart"
 concepts = ["ByteStream"]
 source = "path:libs/modbus"
 
