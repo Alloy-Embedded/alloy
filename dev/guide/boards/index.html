@@ -667,6 +667,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#what-the-board-is-and-what-your-project-chooses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the board is, and what your project chooses
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1316,6 +1327,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#what-the-board-is-and-what-your-project-chooses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the board is, and what your project chooses
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1466,6 +1488,63 @@ IRQ numbers) live in the <a href="../adding-a-board/">device database</a>, never
 </span></code></pre></div>
 <p>That is the whole contract: pick a chip, pick a clock, wire the roles. See
 <a href="../adding-a-board/">Adding a board</a> to bring up one that isn't listed.</p>
+<h2 id="what-the-board-is-and-what-your-project-chooses">What the board is, and what your project chooses<a class="headerlink" href="#what-the-board-is-and-what-your-project-chooses" title="Permanent link">&para;</a></h2>
+<p>A <code>board.json</code> value is a <strong>default</strong>, not a decree. Most of what it says is
+hardware — which pin the LED is on, that the button is active-low, which
+peripheral the header exposes — and changing that means you have different
+hardware, so you need a board of your own (<code>alloy board-clone</code>).</p>
+<p>A few fields are different: the same board supports many values and your
+application picks one. Those you set in <code>alloy.toml</code>, and the framework's board
+keeps receiving upstream fixes instead of being forked to change a number.</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[roles.debug_uart]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">921600</span><span class="w">          </span><span class="c1"># the board says 115200; this project wants faster</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">[roles.watchdog]</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">timeout_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1500</span><span class="w">      </span><span class="c1"># depends on your loop, not on the PCB</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">[clock]</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">mhz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">48</span><span class="w">               </span><span class="c1"># or: profile = &quot;hsi_16mhz&quot;</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What a project may choose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>debug_uart</code></td>
+<td><code>baud</code></td>
+</tr>
+<tr>
+<td><code>watchdog</code></td>
+<td><code>timeout_ms</code></td>
+</tr>
+<tr>
+<td><code>nvm</code>, <code>fs</code></td>
+<td><code>bytes</code> — how much flash to reserve</td>
+</tr>
+<tr>
+<td>(any board)</td>
+<td><code>[clock]</code> — a named <code>profile</code>, or a target <code>mhz</code> to solve for</td>
+</tr>
+</tbody>
+</table>
+<p>Anything else is refused, with the reason and the command that would actually
+do it — silently ignoring <code>[roles.led] pin = "pb7"</code> would leave you with a dark
+LED and no explanation.</p>
+<p>An override for a role the board does not define is reported as a <strong>warning</strong>
+rather than applied — <code>[roles.watchdog]</code> on a board with no watchdog changes
+nothing, and finding that out from a message beats finding it out from a
+timeout that never fires.</p>
+<p><code>alloy board-info --json</code> reports the effective board <em>and</em> a
+<code>project_overrides</code> block saying which values your project changed and what the
+board itself says, so a tool can show both.</p>
+<p>In the VS Code configurator this is what keeps a curated board useful: it opens
+read-only, but the project fields stay editable and <strong>Apply</strong> writes them to
+<code>alloy.toml</code> — you can raise the debug baud of <code>nucleo_g071rb</code> without
+duplicating it, and the field shows what the board itself says beside it.</p>
 
 
 
