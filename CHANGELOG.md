@@ -6,7 +6,10 @@ Everything an editor needs to describe a board without reimplementing any of
 it. Each verb below has a versioned `--json` envelope, and a readable default
 so the same command is useful in a terminal.
 
-**Requires `alloy-devices` >= 0.2.0.**
+**Requires `alloy-devices` >= 0.3.0.** Not a formality: the interrupt-driven
+I2C driver reads `CR1.STOPIE`, which 0.2.0 does not carry — against it the
+generated IP header silently lacks the accessor and the failure lands as a
+template error inside framework headers you do not own.
 
 ### New: describe and check a board
 
