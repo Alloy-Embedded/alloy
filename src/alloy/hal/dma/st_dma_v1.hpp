@@ -19,6 +19,7 @@
 #include "alloy/core/types.hpp"
 #include "alloy/hal/dma/dma_impl.hpp"
 #include "alloy/ip/st/dma_v1.hpp"
+#include "alloy/irq.hpp"
 
 namespace alloy::hal {
 
@@ -90,7 +91,14 @@ struct dma_impl<Inst> {
                     IP::minc.mask() |
                     (static_cast<std::uint32_t>(psize) << IP::psize.pos) |
                     (static_cast<std::uint32_t>(msize) << IP::msize.pos) |
-                    (0x2u << IP::pl.pos);  // high priority, above default traffic
+                    (0x2u << IP::pl.pos) |  // high priority, above default traffic
+                    // CCR is written whole here and may only be written while
+                    // EN=0, so the interrupt enables have to be folded in at
+                    // setup rather than switched on later — otherwise every
+                    // start_*() would silently clear the callback's TCIE.
+                    (callback<Ch>::fn != nullptr
+                         ? (IP::tcie.mask() | IP::teie.mask())
+                         : 0u);
     }
 
     template <unsigned Ch>
@@ -115,6 +123,51 @@ struct dma_impl<Inst> {
     template <unsigned Ch>
     static void clear_flags() {
         r().IFCR = IP::template cgif<Ch - 1>.mask;  // clears the channel's 4 flags
+    }
+
+    // Completion callbacks. Storage is per (controller, channel): `callback` is
+    // a template, so each Ch gets its own statics without a runtime table.
+    template <unsigned Ch>
+    struct callback {
+        static inline void (*fn)(void*) = nullptr;
+        static inline void* ctx = nullptr;
+    };
+
+    // Channels SHARE NVIC lines on this IP (2-3 together, 4-7 together), so this
+    // runs for interrupts belonging to other channels. Returning immediately
+    // when our own TCIF is clear is what makes several channels attachable to
+    // one line — the same contract alloy::irq states for every shared handler.
+    template <unsigned Ch>
+    static void complete_isr(void*) {
+        if (!complete<Ch>() && !error<Ch>()) {
+            return;
+        }
+        const bool failed = error<Ch>();
+        clear_flags<Ch>();
+        if (callback<Ch>::fn != nullptr) {
+            // The callback sees a channel whose flags are already cleared, so it
+            // may start the next transfer without racing its own completion.
+            (void)failed;
+            callback<Ch>::fn(callback<Ch>::ctx);
+        }
+    }
+
+    template <unsigned Ch>
+    static void enable_complete_irq(void (*fn)(void*), void* ctx) {
+        callback<Ch>::fn = fn;
+        callback<Ch>::ctx = ctx;
+        alloy::irq::attach(irq_line_of<Ch>(), &complete_isr<Ch>);
+        alloy::irq::enable(irq_line_of<Ch>());
+    }
+
+    template <unsigned Ch>
+    static void disable_complete_irq() {
+        // Leave the shared NVIC line enabled: another channel may still be using
+        // it, and its handler is a no-op for interrupts that are not its own.
+        ccr<Ch>() = ccr<Ch>() & ~(IP::tcie.mask() | IP::teie.mask());
+        alloy::irq::detach(irq_line_of<Ch>(), &complete_isr<Ch>);
+        callback<Ch>::fn = nullptr;
+        callback<Ch>::ctx = nullptr;
     }
 
     // IRQ line grouping is IP-version behavior; the numbers are chip data.

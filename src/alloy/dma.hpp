@@ -4,9 +4,14 @@
 //
 // Honest v1 doctrine (same as irq attach / double-open): claiming an
 // already-claimed (controller, channel) TRAPS at runtime — C++ cannot make
-// cross-TU resource claims a compile error. Completion is polled
-// (wait/done); interrupt completion callbacks arrive with the DMA IRQ
-// grouping story.
+// cross-TU resource claims a compile error.
+//
+// Completion can be POLLED (wait/done) or delivered as a callback
+// (on_complete). Polling is fine when the CPU has nothing else to do; a product
+// that has a control loop to run does not, which is the whole reason the
+// callback exists. Register it BEFORE starting a transfer: the channel's config
+// register may only be written while the channel is disabled, so the interrupt
+// enables are folded in when the transfer is set up.
 
 #pragma once
 
@@ -88,6 +93,18 @@ public:
                                  static_cast<std::uint16_t>(src.size()), request);
         impl::template start<Ch>();
     }
+
+    /// Call `fn(ctx)` from the DMA interrupt when this channel finishes (or
+    /// errors). Register it BEFORE the transfer that should report — see the
+    /// header note. `fn` runs in interrupt context: keep it to setting a flag,
+    /// waking a task, or starting the next transfer.
+    void on_complete(void (*fn)(void*), void* ctx = nullptr) const {
+        impl::template enable_complete_irq<Ch>(fn, ctx);
+    }
+
+    /// Stop reporting completions. Safe while a transfer is in flight; the
+    /// transfer itself is unaffected and `done()` still works.
+    void clear_on_complete() const { impl::template disable_complete_irq<Ch>(); }
 
     [[nodiscard]] bool done() const { return impl::template complete<Ch>(); }
     [[nodiscard]] bool error() const { return impl::template error<Ch>(); }
