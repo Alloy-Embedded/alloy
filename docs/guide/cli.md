@@ -29,7 +29,7 @@ $ alloy run                 # build → flash → open the monitor
 | --- | --- |
 | `alloy build` | generate + render CMake + compile |
 | `alloy flash` | build + program the board |
-| `alloy monitor` | bidirectional serial monitor |
+| `alloy monitor [--json]` | bidirectional serial monitor; `--json` streams NDJSON and needs no terminal |
 | `alloy run` | flash + monitor |
 | `alloy gen` | regenerate `.alloy/generated` from the device database |
 | `alloy clean [--all]` | remove per-board build trees |
@@ -90,11 +90,28 @@ tells you what fits where.
 | `alloy board-validate [<id>] [--file f\|-]` — **JSON** | every problem located, with the pins that *would* work |
 | `alloy board-clone <src> <new>` | copy a curated board into your project as an editable one |
 | `alloy chip-info <chip>` — JSON | clock profiles, pin map with alternate functions, peripherals, role catalogue |
-| `alloy clock --chip <id> --mhz <n>` — JSON | solve a PLL for a target frequency |
+| `alloy clock --chip <id> --mhz <n> [--hse <mhz>]` — JSON | solve a PLL for a target frequency |
+| `alloy clock --chip <id> --graph [--profile p]` — **JSON** | the whole clock: sources, buses, and what each peripheral is fed |
 
 `board-validate --file -` reads a candidate `board.json` from stdin, which is how an editor
 checks a configuration *before* writing it. These verbs are what the
 [VS Code configurator](vscode.md) is built on — it holds no chip knowledge of its own.
+
+### The whole clock, not just the PLL
+
+`--graph` answers the question that comes after "what frequency": where the clock goes. Bus
+prescalers, and the kernel clock each peripheral is actually fed — with what that implies.
+
+```console
+$ alloy clock --chip st/stm32f767 --graph --profile pll_180mhz
+SYSCLK 180 MHz → AHB ÷1 180 MHz → eth
+                 APB ÷4  45 MHz → usart3   115200 baud → 115089 (0.10% error)
+                 APB2 ÷2 90 MHz
+```
+
+The baud error is computed with the driver's own rounding, so it is the error you will measure, not
+a different one. Peripherals whose feed the chip data does not state (an independent watchdog on its
+own oscillator) are listed as unplaceable rather than left out.
 
 ## Emulate
 
@@ -126,6 +143,26 @@ $ alloy update --image-b app_b.img --port /dev/ttyUSB0
 
 The full story — slots, trial boots, rollback, signing — is in
 [Firmware update](firmware-update.md).
+
+## Give the project its own CI
+
+| Command | What it does |
+| --- | --- |
+| `alloy ci-init [--boards a,b] [--all] [--force]` | write a GitHub Actions workflow for this project |
+
+The framework's CI is what keeps every board building; a project built *on* alloy starts with
+nothing. This writes the equivalent — validate the boards it defines, then build its sources for
+each board it targets:
+
+```console
+$ alloy ci-init
+wrote .github/workflows/alloy.yml
+  builds on: nucleo_g071rb
+```
+
+It targets what the project targets, not every supported board; `--all` widens it. Toolchain steps
+follow the same rule (an ARM-only project gets no ESP download) and are pinned to the versions alloy
+itself is tested against.
 
 ## Libraries
 
