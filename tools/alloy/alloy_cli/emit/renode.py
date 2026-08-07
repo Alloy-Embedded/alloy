@@ -140,44 +140,16 @@ elif request.IsRead:
     else:
         request.Value = regs[o >> 2]"""
 
-# DMA: same correction as the ADC above. DMA.STM32DMA is the F4 stream-style
-# controller and does not fit the channel-style G0 layout, but Renode 1.16.1
-# ships DMA.STM32G0DMA and wires two of them in its own stm32g0.repl. Evaluating
-# it is part of the same unfinished swap. For now, a small inline Python
-# peripheral modelling alloy's st/dma_v1. It implements the single-shot transfer
-# the driver kicks off: on a CCR write with EN=1, read the channel's CNDTR/CPAR/
-# CMAR and, for a memory->peripheral transfer (DIR=1, e.g. UART TX), copy CNDTR
-# bytes CMAR->CPAR through the system bus (incrementing per MINC/PINC), then set
-# the channel's TCIF so the driver's `wait()` (which polls TCIF, never EN) returns.
-# Register layout (RM0444): ISR@0x00 (per-channel flags at bit (n-1)*4, TCIF=+1),
-# IFCR@0x04 (w1c), then CCR/CNDTR/CPAR/CMAR per channel from 0x08, stride 0x14.
+# DMA uses Renode's OWN DMA.STM32G0DMA (see the block that emits it). This
+# file used to carry a ~40-line inline Python model of the channel-style
+# controller, justified by a comment claiming Renode had none; it does, and
+# its own stm32g0.repl wires two of them. The native model passes the same
+# dma_uart leg, so the hand-written one is gone: a model this project wrote
+# cannot falsify a misreading of the reference manual that it shares with the
+# driver, and this one additionally had no NVIC connection, which made every
+# interrupt-driven DMA path untestable.
 _DMA_G0_MODEL = {"st/dma_v1"}
-_DMA_G0_SCRIPT = """if request.IsInit:
-    regs = [0] * (size / 4)
-    membus = emulationManager.Instance.CurrentEmulation.Machines[0].SystemBus
-elif request.IsWrite:
-    o = request.Offset
-    v = request.Value
-    regs[o >> 2] = v
-    if o == 0x04:
-        regs[0] = regs[0] & ~v
-    elif o >= 0x08 and ((o - 0x08) % 0x14) == 0 and (v & 1):
-        ch = (o - 0x08) / 0x14
-        cndtr = regs[(o + 0x04) >> 2]
-        cpar = regs[(o + 0x08) >> 2]
-        cmar = regs[(o + 0x0C) >> 2]
-        minc = (v >> 7) & 1
-        pinc = (v >> 6) & 1
-        if (v >> 4) & 1:
-            i = 0
-            while i < cndtr:
-                src = cmar + i if minc else cmar
-                dst = cpar + i if pinc else cpar
-                membus.WriteByte(dst, membus.ReadByte(src))
-                i = i + 1
-        regs[0] = regs[0] | (1 << (ch * 4 + 1))
-elif request.IsRead:
-    request.Value = regs[request.Offset >> 2]"""
+
 
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
 # Cortex-M, the same constant the hand-written arch layer uses (src/alloy/arch/),
@@ -284,12 +256,16 @@ def _resolve_wdg(chip: dict[str, Any]):
 
 
 def _resolve_dma(chip: dict[str, Any]):
-    """The DMA1 controller if it's the st/dma_v1 (G0) IP. DMA is a capability, not
-    a pin-routed board role, so this keys straight off the chip peripheral."""
+    """The DMA1 controller if it's the st/dma_v1 (G0) IP, with the channel count
+    and NVIC lines the platform needs. DMA is a capability, not a pin-routed
+    board role, so this keys straight off the chip peripheral."""
     for name in ("dma1", "dma"):
         periph = chip["peripherals"].get(name)
         if periph and not periph.get("uncurated") and periph.get("ip") in _DMA_G0_MODEL:
-            return name, int(periph["base"], 16)
+            ch = periph.get("channels") or {}
+            if not all(k in ch for k in ("count", "irqline1", "irqline2_3", "irqline4_7")):
+                return None  # data too thin to wire interrupts: emit nothing
+            return name, int(periph["base"], 16), ch
     return None
 
 
@@ -382,14 +358,30 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
     dma = _resolve_dma(chip)
     if dma is not None:
-        dma_name, dma_base = dma
+        dma_name, dma_base, dma_ch = dma
+        count = int(dma_ch["count"])
+        line1 = int(dma_ch["irqline1"])
+        line23 = int(dma_ch["irqline2_3"])
+        line47 = int(dma_ch["irqline4_7"])
+        # Channels 2..N share NVIC lines (RM0444: ch1 alone, ch2-3 together,
+        # ch4-7 together), and Renode needs an explicit OR gate per shared line
+        # — a peripheral cannot drive an NVIC input two channels also drive.
+        # Renode indexes channels from 0, so channel N is index N-1.
+        rest = count - 3  # channels 4..N
         platform += f"""
-{dma_name}: Python.PythonPeripheral @ sysbus {dma_base:#010x}
-    size: 0x400
-    initable: true
-    script: '''
-{_DMA_G0_SCRIPT}
-'''
+nvicInput{line23}: Miscellaneous.CombinedInput @ none
+    numberOfInputs: 2
+    -> nvic@{line23}
+
+nvicInput{line47}: Miscellaneous.CombinedInput @ none
+    numberOfInputs: {rest}
+    -> nvic@{line47}
+
+{dma_name}: DMA.STM32G0DMA @ sysbus {dma_base:#010x}
+    numberOfChannels: {count}
+    0 -> nvic@{line1}
+    [1, 2] -> nvicInput{line23}@[0, 1]
+    [3-{count - 1}] -> nvicInput{line47}@[0-{rest - 1}]
 """
     # Flash controller: only for IPs Renode models faithfully. MTD's F4 model
     # covers the F7 (same CR/SR + sector map at each size) and services REAL

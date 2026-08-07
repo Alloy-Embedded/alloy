@@ -67,6 +67,21 @@ struct dma_impl<Inst> {
 
     static void enable_controller() { alloy::gate_on(Inst::gate); }
 
+    // Completion callbacks. Storage is per (controller, channel): `callback` is
+    // a template, so each Ch gets its own statics without a runtime table.
+    template <unsigned Ch>
+    struct callback {
+        static inline void (*fn)(void*) = nullptr;
+        static inline void* ctx = nullptr;
+        // The ISR MUST clear the hardware completion flag or the level-triggered
+        // interrupt re-fires forever. But wait()/done() poll that same flag, so
+        // clearing it would make a polled wait spin for a transfer that already
+        // finished. The ISR therefore hands the fact over to this latch, and
+        // complete<Ch>() reports either source.
+        static inline volatile bool latched = false;
+    };
+
+
     // Program one channel (must be idle). Peripheral address is fixed;
     // memory increments. Item count is in ITEMS of `msize`, not bytes.
     // msize/psize are separate: a halfword WRITE through the APB bridge is
@@ -82,6 +97,7 @@ struct dma_impl<Inst> {
                       "channel outside this DMA instance (chip data ch_count)");
         stop<Ch>();
         clear_flags<Ch>();
+        callback<Ch>::latched = false;  // a new transfer is not already complete
         MUX::ip::dmareq_id.write(mux_ccr<Ch>(), request);
         cpar<Ch>() = static_cast<std::uint32_t>(periph_addr);
         cmar<Ch>() = static_cast<std::uint32_t>(mem_addr);
@@ -113,7 +129,11 @@ struct dma_impl<Inst> {
 
     template <unsigned Ch>
     [[nodiscard]] static bool complete() {
-        return (r().ISR & IP::template tcif<Ch - 1>.mask) != 0u;
+        // Either source: the hardware flag, or the latch the ISR set on its way
+        // past. Without the second term a polled wait() would spin forever on a
+        // channel whose interrupt already consumed the flag.
+        return callback<Ch>::latched ||
+               (r().ISR & IP::template tcif<Ch - 1>.mask) != 0u;
     }
     template <unsigned Ch>
     [[nodiscard]] static bool error() {
@@ -124,14 +144,6 @@ struct dma_impl<Inst> {
     static void clear_flags() {
         r().IFCR = IP::template cgif<Ch - 1>.mask;  // clears the channel's 4 flags
     }
-
-    // Completion callbacks. Storage is per (controller, channel): `callback` is
-    // a template, so each Ch gets its own statics without a runtime table.
-    template <unsigned Ch>
-    struct callback {
-        static inline void (*fn)(void*) = nullptr;
-        static inline void* ctx = nullptr;
-    };
 
     // Channels SHARE NVIC lines on this IP (2-3 together, 4-7 together), so this
     // runs for interrupts belonging to other channels. Returning immediately
@@ -144,6 +156,7 @@ struct dma_impl<Inst> {
         }
         const bool failed = error<Ch>();
         clear_flags<Ch>();
+        callback<Ch>::latched = true;
         if (callback<Ch>::fn != nullptr) {
             // The callback sees a channel whose flags are already cleared, so it
             // may start the next transfer without racing its own completion.
