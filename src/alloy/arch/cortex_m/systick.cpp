@@ -93,6 +93,31 @@ namespace alloy {
 
 std::uint32_t uptime_ms() { return arch::cortex_m::g_ticks_ms; }
 
+std::uint32_t uptime_us() {
+    // Interpolate the down-counting SysTick CVR inside the current 1 ms tick.
+    // The tick count and CVR cannot be read atomically together, so re-read the
+    // tick count around the CVR sample and retry if it moved — the classic
+    // seqlock shape. One retry at most in thread context (the ISR is short).
+    //
+    // Residual window, accepted: if the counter wraps right before the sample
+    // and SysTick_Handler has not run yet (only when it is masked or preempted),
+    // the reading is up to 1 ms stale — the same staleness uptime_ms() has.
+    auto& st = arch::cortex_m::systick();
+    for (;;) {
+        const std::uint32_t ms0 = arch::cortex_m::g_ticks_ms;
+        const std::uint32_t cvr = st.CVR;
+        if (arch::cortex_m::g_ticks_ms != ms0) {
+            continue;  // tick landed between the two reads — resample
+        }
+        // CVR counts RVR -> 0, so cycles into this tick = period - CVR. The
+        // 32-bit product is safe: RVR is 24-bit, so period*1000 < 2^32 for any
+        // real core clock. ms0*1000 wrapping IS the documented 2^32 µs wrap.
+        const std::uint32_t period = st.RVR + 1u;
+        const std::uint32_t elapsed = period - cvr;
+        return ms0 * 1'000u + (elapsed * 1'000u) / period;
+    }
+}
+
 void sleep_for(std::chrono::microseconds d) {
     // Round up to whole ticks; guarantee at least the requested duration by
     // waiting one extra edge (the first counted tick may be partial).

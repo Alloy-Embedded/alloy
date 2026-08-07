@@ -88,6 +88,7 @@ add_executable(alloy_unit_tests
     main.cpp
     host_support.cpp
     test_util.cpp
+    test_uptime_us.cpp
     test_control.cpp
     test_services.cpp
     test_irq.cpp

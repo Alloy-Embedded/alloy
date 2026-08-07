@@ -55,4 +55,13 @@ std::uint32_t uptime_ms() {
     return now / (arch::xtensa::g_core_hz / 1'000u);
 }
 
+std::uint32_t uptime_us() {
+    // Same CCOUNT derivation — and the SAME ~53 s wrap as uptime_ms above,
+    // not the 71.6 min wrap the Cortex-M implementation gives. Deltas shorter
+    // than the wrap window are still exact via unsigned subtraction.
+    std::uint32_t now;
+    __asm volatile("rsr.ccount %0" : "=a"(now));
+    return now / (arch::xtensa::g_core_hz / 1'000'000u);
+}
+
 }  // namespace alloy
