@@ -53,6 +53,37 @@ if (i2c.write_read(0x68, reg, id)) {   // returns false on NACK or bus error
     A missing pull-up or a stuck bus makes I²C return `false` (bounded), not hang. Transfers are
     limited to 255 bytes on the STM32 `i2c_v2` (NBYTES is 8-bit).
 
+`write`/`read`/`write_read` spin once per byte — about 90 µs a byte at 100 kHz, with nothing else
+running. `write_async`/`read_async` program the transfer and return; the driver's ISR moves every
+byte and calls your function when the STOP lands.
+
+```cpp
+volatile bool done = false;
+const std::uint8_t cmd[3] = {0x01, 0x02, 0x03};
+
+i2c.write_async(0x68, cmd, +[](void* f) { *static_cast<volatile bool*>(f) = true; },
+                const_cast<bool*>(&done));
+// ... run the control loop here ...
+if (!i2c.wait_transfer()) {     // BOUNDED: false means the interrupt never came
+    i2c.detach_transfer();      // disarm, so the bus is not left busy() forever
+}
+if (!i2c.transfer_ok()) { /* NACK or bus error — the async form of `false` */ }
+```
+
+The callback runs in interrupt context — set a flag, wake a task, or start the next transfer,
+nothing more. `busy()` reports whether a transfer is still in flight, and `transfer_ok()` carries
+the result the blocking calls return directly.
+
+!!! warning "Do not mix the two APIs on one bus"
+    The ISR consumes the TXIS/RXNE/STOP flags the blocking calls wait for. Ask `busy()` first.
+
+!!! note "Capability-gated"
+    `write_async`/`read_async` exist only where the backing driver implements them — the ST
+    `i2c_v2` driver today. Elsewhere the methods are not declared at all, so calling one is a
+    compile error rather than a silent fall back to blocking. The ST `i2c_v1` (F1/F4), Microchip
+    TWIHS and Espressif drivers have no interrupt path yet; `i2c_v1` additionally has no poll
+    budget at all, so a wedged bus hangs it rather than returning `false`.
+
 ## SPI
 
 ```cpp

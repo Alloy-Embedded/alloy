@@ -320,15 +320,24 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
     i2c = _resolve_i2c(chip, board)
     if i2c is not None:
-        i2c_name, i2c_base, i2c_model, _ = i2c
-        # No interrupt line: I2C.STM32F7_I2C exposes EventInterrupt/ErrorInterrupt
-        # (not the UART's `IRQ`), and on real STM32G0 they route through EXTI,
-        # which this minimal platform omits. alloy's I2C driver is polling
-        # (bounded-spin on the status register), so the controller works for
-        # probe/read/write with no interrupt wired — and an unconnected model is
-        # inert for the boot/UART legs that share this platform.
+        i2c_name, i2c_base, i2c_model, i2c_irq = i2c
+        # I2C.STM32F7_I2C names its event line `EventInterrupt`, not the UART
+        # model's `IRQ` — hence the different sink name here. It goes STRAIGHT to
+        # the NVIC. Renode's own stm32g0.repl sends it to exti@23 instead, which
+        # used to read as "the interrupt needs an EXTI this platform omits", but
+        # that EXTI is above `firstDirectLine: 19` and its only job for line 23 is
+        # `[23] -> nvic@[23]` — an unconfigured pass-through. Wiring the model's
+        # line directly at the same NVIC number is equivalent and needs no EXTI.
+        # Verified by running it, not reasoned about: with this line the i2c_read
+        # leg's completion-callback assertion passes, and without it the same
+        # firmware fails that assertion.
+        #
+        # `ErrorInterrupt` (BERR/ARLO/OVR) is left unwired: no driver in the tree
+        # arms ERRIE, so wiring a line nothing enables would emit a claim the
+        # firmware does not make.
         platform += f"""
 {i2c_name}: {i2c_model} @ sysbus {i2c_base:#010x}
+    EventInterrupt -> nvic@{i2c_irq}
 """
     spi = _resolve_spi(chip, board)
     if spi is not None:

@@ -23,7 +23,40 @@ I2C Driver Talks To A Device
     # into the platform (which carries only real silicon). DummyI2CSlave ACKs its
     # address and returns bytes on read, so both transfers complete.
     Execute Command           machine LoadPlatformDescriptionFromString "probe_target: Mocks.DummyI2CSlave @ i2c1 0x08"
+    # Make that slave an ECHO: whatever the master writes is queued as the answer
+    # to the next read. DummyI2CSlave has no monitor-level "prime a byte" verb (the
+    # SPI mock's EnqueueValue has no I2C counterpart), so this hooks DataReceived
+    # from the monitor's Python, the same shape Renode's own Renesas_RA8M1.robot
+    # uses. It is what turns the second leg into a VALUE assertion: the bytes read
+    # back can only be the bytes the write leg actually put on the bus.
+    ${echo}=  Catenate     SEPARATOR=\n
+    ...  python
+    ...  """
+    ...  class EchoI2C:
+    ...  ${SPACE*4}def __init__(self, dummy):
+    ...  ${SPACE*8}self.dummy = dummy
+    ...
+    ...  ${SPACE*4}def write(self, data):
+    ...  ${SPACE*8}self.dummy.EnqueueResponseBytes(data)
+    ...
+    ...  def mc_setup_echo_i2c(path):
+    ...  ${SPACE*4}dummy = monitor.Machine[path]
+    ...  ${SPACE*4}dummy.DataReceived += EchoI2C(dummy).write
+    ...  """
+    Execute Command           ${echo}
+    Execute Command           setup_echo_i2c "sysbus.i2c1.probe_target"
     Create Terminal Tester    ${UART}
     Start Emulation
     Wait For Line On Uart     alloy i2c_read    timeout=30
     Wait For Line On Uart     device acked    timeout=30
+    # The same traffic, INTERRUPT-DRIVEN. de-ad-be were written by the driver's
+    # ISR one byte per TXIS and read back by the same ISR one byte per RXNE — the
+    # CPU touched neither TXDR nor RXDR — so this pattern appearing at all means
+    # the handler ran on both directions AND kept the bytes in order.
+    Wait For Line On Uart     i2c async: 0xdeadbe    timeout=30
+    # And the completion callback, which only runs from the STOPF branch of that
+    # ISR. It needs the platform's `EventInterrupt -> nvic@23` line: with the
+    # controller left unwired (what the emitter produced before this leg existed)
+    # the same firmware prints "i2c async: timeout" and "i2c irq: NOT fired", and
+    # this assertion fails. Verified by running it that way.
+    Wait For Line On Uart     i2c irq: fired    timeout=30

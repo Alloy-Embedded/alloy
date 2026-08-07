@@ -54,7 +54,85 @@ public:
         return hal::i2c_impl<Inst>::write(addr, {});
     }
 
+    // --- Interrupt-driven transfers ---------------------------------------
+    //
+    // write/read/write_read above spin once per byte: an N-byte transfer burns
+    // the CPU for all of it, ~90 µs a byte at 100 kHz. write_async/read_async
+    // program the transfer and RETURN; the driver's ISR moves every byte and
+    // calls fn(ctx) when the STOP lands. `fn` runs in interrupt context — set a
+    // flag, wake a task, or start the next transfer, nothing more.
+    //
+    // Whether the transfer SUCCEEDED is a separate question from whether it
+    // finished: ask transfer_ok() after it completes, the async counterpart of
+    // the bool that write()/read() return.
+    //
+    // Only exists where the backing driver implements it (ST i2c_v2 today). On
+    // a port without the hook the method is not declared at all, rather than
+    // silently degrading to a blocking loop.
+    //
+    // The two APIs must not overlap on one bus: the ISR consumes the very flags
+    // the blocking path waits for. Ask busy() first.
+    void write_async(std::uint8_t addr, std::span<const std::uint8_t> data,
+                     void (*fn)(void*) = nullptr, void* ctx = nullptr) const
+        requires requires { hal::i2c_impl<Inst>::start_transfer_irq(0u, nullptr, nullptr, 1u, fn, ctx); }
+    {
+        hal::i2c_impl<Inst>::start_transfer_irq(addr, data.data(), nullptr,
+                                                static_cast<std::uint16_t>(data.size()), fn, ctx);
+    }
+
+    void read_async(std::uint8_t addr, std::span<std::uint8_t> data,
+                    void (*fn)(void*) = nullptr, void* ctx = nullptr) const
+        requires requires { hal::i2c_impl<Inst>::start_transfer_irq(0u, nullptr, nullptr, 1u, fn, ctx); }
+    {
+        hal::i2c_impl<Inst>::start_transfer_irq(addr, nullptr, data.data(),
+                                                static_cast<std::uint16_t>(data.size()), fn, ctx);
+    }
+
+    /// True while an interrupt-driven transfer is still in flight.
+    [[nodiscard]] bool busy() const
+        requires requires { hal::i2c_impl<Inst>::transfer_busy(); }
+    {
+        return hal::i2c_impl<Inst>::transfer_busy();
+    }
+
+    /// False if the last interrupt-driven transfer NACKed, hit a bus error, or
+    /// was abandoned — the same contract as write()/read() returning false.
+    [[nodiscard]] bool transfer_ok() const
+        requires requires { hal::i2c_impl<Inst>::transfer_ok(); }
+    {
+        return hal::i2c_impl<Inst>::transfer_ok();
+    }
+
+    /// Spin until the in-flight transfer completes. BOUNDED — returns false if
+    /// the budget runs out, which is what an interrupt that never fires looks
+    /// like. An unbounded wait would turn that into a hang, and a hang is not a
+    /// test failure, it is a timeout that looks like anything at all.
+    [[nodiscard]] bool wait_transfer() const
+        requires requires { hal::i2c_impl<Inst>::transfer_busy(); }
+    {
+        for (std::uint32_t spin = 0; spin < kWaitBudget; ++spin) {
+            if (!hal::i2c_impl<Inst>::transfer_busy()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// Disarm the interrupt and forget any in-flight transfer — the escape
+    /// hatch after wait_transfer() returned false, so a bus error that produced
+    /// no STOP does not leave the bus permanently busy().
+    void detach_transfer() const
+        requires requires { hal::i2c_impl<Inst>::disable_transfer_irq(); }
+    {
+        hal::i2c_impl<Inst>::disable_transfer_irq();
+    }
+
 private:
+    // Iteration cap for wait_transfer(), the same idiom (and reasoning) as the
+    // driver's kPollBudget: far above any legal transfer's latency, so it only
+    // ever fires on a genuine fault.
+    static constexpr std::uint32_t kWaitBudget = 4'000'000u;
+
     template <class, class, class, class>
     friend struct bind;
     handle() = default;

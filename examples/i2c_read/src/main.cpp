@@ -6,11 +6,31 @@
 // back, then reports whether both transfers were ACKed. A green run under Renode
 // (with a DummyI2CSlave at 0x08) proves the driver's START / address / data /
 // ACK / STOP sequence actually talks to a device on the bus — no hardware.
+//
+// A second leg then repeats the traffic INTERRUPT-DRIVEN: the CPU programs the
+// transfer and stops touching the bus, and the driver's ISR moves every byte
+// and calls back on STOP. The test slave echoes what it was written, so the
+// bytes that come back can only be the ones the write ISR sent.
 #include <alloy/board.hpp>
 
 #include <cstdint>
+#include <span>
 
 using namespace alloy::literals;
+
+namespace {
+template <class Uart>
+void write_hex_byte(const Uart& uart, std::uint8_t value) {
+    constexpr char digits[] = "0123456789abcdef";
+    uart.write(static_cast<std::uint8_t>(digits[value >> 4]));
+    uart.write(static_cast<std::uint8_t>(digits[value & 0xF]));
+}
+
+// Set from the I2C completion INTERRUPT. Seeing it true after the transfer is
+// proof the NVIC line fired and the driver's handler ran — not merely that the
+// bytes moved, which the polled leg above already shows.
+volatile bool g_i2c_irq_fired = false;
+}  // namespace
 
 int main() {
     board::init();
@@ -30,6 +50,52 @@ int main() {
         // read completed with the slave acknowledging. The value itself is
         // whatever the mock returns and is not asserted on.
         uart.write(wrote && read ? "i2c: device acked\r\n" : "i2c: no ack\r\n");
+
+        // Second leg: the SAME kind of traffic, interrupt-driven. The CPU
+        // programs the transfer and stops touching the bus; the driver's ISR
+        // moves every byte and calls back on STOP. Three bytes are written and
+        // three read back, so the printed pattern only appears if the handler
+        // ran on both directions. The templated lambda makes `B` dependent, so
+        // the `requires` below removes the leg on a board whose I2C driver has
+        // no interrupt hook instead of hard-erroring in a concrete main.
+        [&uart]<class B>(B& b) {
+            if constexpr (requires {
+                              b.write_async(0u, std::span<const std::uint8_t>{});
+                          }) {
+                static const std::uint8_t out[] = {0xDE, 0xAD, 0xBE};
+                std::uint8_t in[3] = {};
+                bool ok = true;
+                b.write_async(kAddr, out, +[](void* flag) {
+                    *static_cast<volatile bool*>(flag) = true;
+                }, const_cast<bool*>(&g_i2c_irq_fired));
+                if (!b.wait_transfer()) {
+                    uart.write("i2c async: timeout\r\n");
+                    b.detach_transfer();
+                    ok = false;
+                }
+                ok = ok && b.transfer_ok();
+                if (ok) {
+                    b.read_async(kAddr, in);
+                    if (!b.wait_transfer()) {
+                        uart.write("i2c async: timeout\r\n");
+                        b.detach_transfer();
+                        ok = false;
+                    }
+                    ok = ok && b.transfer_ok();
+                }
+                if (!ok) {
+                    uart.write("i2c async: no ack\r\n");
+                }
+                uart.write("i2c async: 0x");
+                for (std::uint8_t byte : in) {
+                    write_hex_byte(uart, byte);
+                }
+                uart.write("\r\n");
+                uart.write(g_i2c_irq_fired ? "i2c irq: fired\r\n" : "i2c irq: NOT fired\r\n");
+            } else {
+                uart.write("i2c irq: not available on this board\r\n");
+            }
+        }(bus);
     } else {
         uart.write("i2c: not available on this board\r\n");
     }

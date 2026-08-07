@@ -184,6 +184,13 @@ jobs:
           # write / NBYTES=0, valid on silicon but unimplemented by Renode's
           # STM32F7_I2C model — diagnosed by tracing register traffic on a local
           # arm64 Renode. A real >=1-byte transfer is what the model supports.)
+          # The leg then repeats the traffic INTERRUPT-DRIVEN: the robot turns the
+          # mock into an echo, three bytes go out from the driver's ISR and come
+          # back into it as "i2c async: 0xdeadbe", and the completion callback
+          # prints "i2c irq: fired". That needs the platform's `EventInterrupt ->
+          # nvic@23` line — with the controller left unwired the same firmware
+          # prints "i2c irq: NOT fired" and the leg FAILS in ~31s instead of
+          # passing in ~1s, verified locally.
           # Green in CI + locally, with a negative control (no slave → "no ack").
           - board: nucleo_g071rb
             example: i2c_read
