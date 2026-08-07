@@ -313,6 +313,50 @@
     
     
       <li class="md-tabs__item">
+        <a href="../emulation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ship it
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tools
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../reference/architecture/" class="md-tabs__link">
           
   
@@ -792,14 +836,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../adding-a-board/" class="md-nav__link">
+      <a href="../libraries/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Adding a board
+    Driver libraries
   
 
     
@@ -820,14 +864,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../adding-a-board/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The alloy CLI
+    Adding a board
   
 
     
@@ -884,7 +928,7 @@
   <span class="md-ellipsis">
     
   
-    Concepts
+    Ship it
   
 
     
@@ -897,6 +941,248 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ship it
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The alloy CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1060,60 +1346,80 @@ the board wires up (LED, button, debug UART, buses…). No hand-written C++ live
 <th>Board id</th>
 <th>Chip</th>
 <th>Core</th>
+<th>Roles wired</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>nucleo_g071rb</code></td>
-<td>STM32G071RB</td>
-<td>Cortex-M0+</td>
-<td>ST Nucleo-64</td>
-</tr>
-<tr>
 <td><code>nucleo_g0b1re</code></td>
 <td>STM32G0B1RE</td>
 <td>Cortex-M0+</td>
-<td>ST Nucleo-64, FDCAN</td>
+<td>14</td>
+<td>ST Nucleo-64 — the most complete board</td>
 </tr>
 <tr>
-<td><code>nucleo_f722ze</code></td>
-<td>STM32F722ZE</td>
-<td>Cortex-M7</td>
-<td>ST Nucleo-144</td>
+<td><code>nucleo_g071rb</code></td>
+<td>STM32G071RB</td>
+<td>Cortex-M0+</td>
+<td>8</td>
+<td>ST Nucleo-64</td>
 </tr>
 <tr>
 <td><code>same70_xplained</code></td>
 <td>ATSAME70Q21</td>
 <td>Cortex-M7</td>
-<td>Microchip, Ethernet</td>
+<td>9</td>
+<td>Microchip, Ethernet + EEPROM</td>
 </tr>
 <tr>
-<td><code>rp2040_zero</code></td>
-<td>RP2040</td>
-<td>2× Cortex-M0+</td>
-<td>Waveshare, WS2812</td>
+<td><code>nucleo_f722ze</code></td>
+<td>STM32F722ZE</td>
+<td>Cortex-M7</td>
+<td>5</td>
+<td>ST Nucleo-144</td>
 </tr>
 <tr>
-<td><code>raspberry_pi_pico</code></td>
-<td>RP2040</td>
-<td>2× Cortex-M0+</td>
-<td>BOOTSEL flashing</td>
+<td><code>nucleo_f767zi</code></td>
+<td>STM32F767ZI</td>
+<td>Cortex-M7</td>
+<td>5</td>
+<td>ST Nucleo-144 — for the network examples</td>
 </tr>
 <tr>
 <td><code>esp_wrover_kit</code></td>
 <td>ESP32</td>
 <td>Xtensa LX6</td>
+<td>4</td>
 <td>Espressif</td>
 </tr>
 <tr>
 <td><code>esp32_devkit</code></td>
 <td>ESP32</td>
 <td>Xtensa LX6</td>
+<td>4</td>
 <td>Espressif DevKitC</td>
+</tr>
+<tr>
+<td><code>rp2040_zero</code></td>
+<td>RP2040</td>
+<td>2× Cortex-M0+</td>
+<td>2</td>
+<td>Waveshare, WS2812</td>
+</tr>
+<tr>
+<td><code>raspberry_pi_pico</code></td>
+<td>RP2040</td>
+<td>2× Cortex-M0+</td>
+<td>2</td>
+<td>BOOTSEL flashing</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Roles wired</strong> is what the board file actually connects. A driver existing for your chip family
+does not mean your board routes the pins for it — <code>alloy board-info</code> prints the exact list, and the
+<a href="https://github.com/Alloy-Embedded/alloy#supported-silicon">README</a> carries the per-family driver
+matrix and how far each board has been proven.</p>
 <p>List them from the CLI at any time (with <code>--json</code> for tooling/IDEs):</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>boards
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>boards<span class="w"> </span>--json

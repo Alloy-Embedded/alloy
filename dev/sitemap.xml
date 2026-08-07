@@ -25,7 +25,19 @@
          <lastmod>2026-08-07</lastmod>
     </url>
     <url>
+         <loc>https://alloy-embedded.github.io/alloy/dev/guide/emulation/</loc>
+         <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/examples/</loc>
+         <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
+         <loc>https://alloy-embedded.github.io/alloy/dev/guide/firmware-update/</loc>
+         <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
+         <loc>https://alloy-embedded.github.io/alloy/dev/guide/libraries/</loc>
          <lastmod>2026-08-07</lastmod>
     </url>
     <url>
@@ -34,6 +46,10 @@
     </url>
     <url>
          <loc>https://alloy-embedded.github.io/alloy/dev/guide/portable-code/</loc>
+         <lastmod>2026-08-07</lastmod>
+    </url>
+    <url>
+         <loc>https://alloy-embedded.github.io/alloy/dev/guide/vscode/</loc>
          <lastmod>2026-08-07</lastmod>
     </url>
     <url>

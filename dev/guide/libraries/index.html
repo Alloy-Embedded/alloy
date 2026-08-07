@@ -10,29 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/libraries/">
       
       
+        <link rel="prev" href="../async/">
       
-        <link rel="next" href="getting-started/">
+      
+        <link rel="next" href="../adding-a-board/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>alloy</title>
+        <title>Driver libraries - alloy</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#one-maincpp-any-microcontroller" class="md-skip">
+        <a href="#driver-libraries" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +98,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="alloy" class="md-header__button md-logo" aria-label="alloy" data-md-component="logo">
+    <a href="../.." title="alloy" class="md-header__button md-logo" aria-label="alloy" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Driver libraries
             
           </span>
         </div>
@@ -242,11 +244,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -267,7 +267,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="getting-started/" class="md-tabs__link">
+        <a href="../../getting-started/" class="md-tabs__link">
           
   
   
@@ -285,11 +285,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="guide/peripherals/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../peripherals/" class="md-tabs__link">
           
   
   
@@ -311,7 +313,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="guide/emulation/" class="md-tabs__link">
+        <a href="../emulation/" class="md-tabs__link">
           
   
   
@@ -333,7 +335,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="guide/cli/" class="md-tabs__link">
+        <a href="../cli/" class="md-tabs__link">
           
   
   
@@ -355,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/architecture/" class="md-tabs__link">
           
   
   
@@ -380,9 +382,7 @@
           
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -393,7 +393,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="alloy" class="md-nav__button md-logo" aria-label="alloy" data-md-component="logo">
+    <a href="../.." title="alloy" class="md-nav__button md-logo" aria-label="alloy" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
@@ -420,37 +420,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -466,61 +439,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why-alloy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why alloy
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-boards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supported boards
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-you-get" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What you get
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -594,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   
@@ -622,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/portable-code/" class="md-nav__link">
+      <a href="../portable-code/" class="md-nav__link">
         
   
   
@@ -650,7 +568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/boards/" class="md-nav__link">
+      <a href="../boards/" class="md-nav__link">
         
   
   
@@ -678,7 +596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -710,8 +628,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -727,19 +647,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -757,7 +680,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -775,7 +698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/peripherals/" class="md-nav__link">
+      <a href="../peripherals/" class="md-nav__link">
         
   
   
@@ -803,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/async/" class="md-nav__link">
+      <a href="../async/" class="md-nav__link">
         
   
   
@@ -828,10 +751,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="guide/libraries/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Driver libraries
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -847,6 +797,83 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-they-are-outside-the-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why they are outside the core
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-ships-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What ships today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-without-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing without hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -859,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/adding-a-board/" class="md-nav__link">
+      <a href="../adding-a-board/" class="md-nav__link">
         
   
   
@@ -952,7 +979,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/emulation/" class="md-nav__link">
+      <a href="../emulation/" class="md-nav__link">
         
   
   
@@ -980,7 +1007,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/firmware-update/" class="md-nav__link">
+      <a href="../firmware-update/" class="md-nav__link">
         
   
   
@@ -1073,7 +1100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   
@@ -1101,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/vscode/" class="md-nav__link">
+      <a href="../vscode/" class="md-nav__link">
         
   
   
@@ -1194,7 +1221,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/architecture/" class="md-nav__link">
+      <a href="../../reference/architecture/" class="md-nav__link">
         
   
   
@@ -1222,7 +1249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/error-handling/" class="md-nav__link">
+      <a href="../../reference/error-handling/" class="md-nav__link">
         
   
   
@@ -1258,9 +1285,7 @@
             
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -1281,10 +1306,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-alloy" class="md-nav__link">
+  <a href="#why-they-are-outside-the-core" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why alloy
+        Why they are outside the core
       
     </span>
   </a>
@@ -1292,10 +1317,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-boards" class="md-nav__link">
+  <a href="#what-ships-today" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported boards
+        What ships today
       
     </span>
   </a>
@@ -1303,10 +1328,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-you-get" class="md-nav__link">
+  <a href="#writing-one" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What you get
+        Writing one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-without-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing without hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing
       
     </span>
   </a>
@@ -1327,175 +1374,154 @@
               <article class="md-content__inner md-typeset">
                 
                   
-  
-
 
 
   
   
 
 
-<div class="hero">
-<h1 id="one-maincpp-any-microcontroller">One <code>main.cpp</code>. Any microcontroller.<a class="headerlink" href="#one-maincpp-any-microcontroller" title="Permanent link">&para;</a></h1>
-<p>A from-scratch <strong>C++23</strong> framework for microcontrollers: write your app once, recompile it
-for a different board by changing <strong>one line</strong> — no <code>#ifdef</code>, no RTOS required, no IDE required.
-Mistakes are caught at <strong>compile time</strong>, in errors a beginner can read.</p>
-<p><a class="md-button md-button--primary" href="getting-started/">Get started <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m13.13 22.19-1.63-3.83c1.57-.58 3.04-1.36 4.4-2.27zM5.64 12.5l-3.83-1.63 6.1-2.77C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39S16.66.269 11 5.93c-2.19 2.19-3.5 4.6-4.35 6.71-.28.75-.09 1.57.46 2.13l2.13 2.12c.55.56 1.37.74 2.12.46A19.1 19.1 0 0 0 18.07 13c5.66-5.66 3.54-10.61 3.54-10.61m-7.07 7.07c-.78-.78-.78-2.05 0-2.83s2.05-.78 2.83 0c.77.78.78 2.05 0 2.83s-2.05.78-2.83 0m-5.66 7.07-1.41-1.41zM6.24 22l3.64-3.64c-.34-.09-.67-.24-.97-.45L4.83 22zM2 22h1.41l4.77-4.76-1.42-1.41L2 20.59zm0-2.83 4.09-4.08c-.21-.3-.36-.62-.45-.97L2 17.76z"/></svg></span></a>
-<a class="md-button" href="guide/portable-code/">Browse the guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span></a>
-<a class="md-button" href="https://github.com/Alloy-Embedded/alloy">View on GitHub <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
-</div>
-<div class="language-cpp highlight"><span class="filename">src/main.cpp — identical bytes on every supported board</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
+<h1 id="driver-libraries">Driver libraries<a class="headerlink" href="#driver-libraries" title="Permanent link">&para;</a></h1>
+<p>Sensors, displays, clocks and other parts live <strong>outside the framework core</strong>, as small
+header-only libraries you vendor into your project:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>search<span class="w"> </span>humidity
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">sht31    sensor    Sensirion SHT3x temperature + humidity sensor (I2C)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>add<span class="w"> </span>sht31
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">added sht31 0.1.0 -&gt; ./libs/sht31</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">  include it: #include &lt;sht31.hpp&gt;   (namespace alloy::lib)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">  the build now compiles ./libs/*/include onto the include path</span>
 </span></code></pre></div>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>alloy-embedded<span class="w">         </span><span class="c1"># or: pipx install alloy-embedded</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>new<span class="w"> </span>hello<span class="w"> </span>--board<span class="w"> </span>esp32_devkit<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>hello
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>run<span class="w">                              </span><span class="c1"># build + flash + serial monitor</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="gp">$ </span>alloy<span class="w"> </span>build<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb<span class="w">      </span><span class="c1"># same code, different MCU — one flag</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sht31.hpp&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">bus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">i2c</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">speed_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="p">});</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">alloy</span><span class="o">::</span><span class="n">delay</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">alloy</span><span class="o">::</span><span class="n">lib</span><span class="o">::</span><span class="n">sht31</span><span class="w"> </span><span class="n">sensor</span><span class="p">{</span><span class="n">bus</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">};</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensor</span><span class="p">.</span><span class="n">measure</span><span class="p">();</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">valid</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* r.temperature_c, r.humidity_pct */</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
-<h2 id="why-alloy">Why alloy<a class="headerlink" href="#why-alloy" title="Permanent link">&para;</a></h2>
-<div class="grid cards">
-<ul>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21 9-4-4v3h-7v2h7v3M7 11l-4 4 4 4v-3h7v-2H7z"/></svg></span> <strong>Truly portable</strong></p>
-<hr />
-<p>The same <code>main.cpp</code> recompiles for another board by changing one config line.
-Portability comes from board <em>roles</em> and <code>if constexpr (board::caps::x)</code> — <strong>zero
-preprocessor conditionals</strong>, enforced by CI.</p>
-<p><a href="guide/portable-code/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Portable code</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m10 17-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5z"/></svg></span> <strong>Safe at compile time</strong></p>
-<hr />
-<p>A wrong pin route is a <strong>compile error that names the pin</strong>, not a runtime surprise.
-Peripherals are selected by type, with no vtables and no heap — the zero-cost claim is
-real.</p>
-<p><a href="reference/architecture/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Architecture</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m13.13 22.19-1.63-3.83c1.57-.58 3.04-1.36 4.4-2.27zM5.64 12.5l-3.83-1.63 6.1-2.77C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39S16.66.269 11 5.93c-2.19 2.19-3.5 4.6-4.35 6.71-.28.75-.09 1.57.46 2.13l2.13 2.12c.55.56 1.37.74 2.12.46A19.1 19.1 0 0 0 18.07 13c5.66-5.66 3.54-10.61 3.54-10.61m-7.07 7.07c-.78-.78-.78-2.05 0-2.83s2.05-.78 2.83 0c.77.78.78 2.05 0 2.83s-2.05.78-2.83 0m-5.66 7.07-1.41-1.41zM6.24 22l3.64-3.64c-.34-.09-.67-.24-.97-.45L4.83 22zM2 22h1.41l4.77-4.76-1.42-1.41L2 20.59zm0-2.83 4.09-4.08c-.21-.3-.36-.62-.45-.97L2 17.76z"/></svg></span> <strong>Trivially easy</strong></p>
-<hr />
-<p><code>uv tool install alloy-embedded &amp;&amp; alloy new &amp;&amp; alloy run</code> → a blinking LED in minutes.
-No IDE, no vendor code generator, no CMake to hand-write.</p>
-<p><a href="getting-started/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Get started</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4-3.58 4-8 4-8-1.79-8-4m8.08 11H12c-4.42 0-8-1.79-8-4v3c0 2.21 3.58 4 8 4h.29a7.4 7.4 0 0 1-.29-2c0-.34.03-.67.08-1M20 12.08V9c0 2.21-3.58 4-8 4s-8-1.79-8-4v3c0 2.21 3.58 4 8 4h.69c1.13-2.37 3.53-4 6.31-4 .34 0 .67.03 1 .08m3.8 8.32c.1 0 .1.1 0 .2l-1 1.7c-.1.1-.2.1-.3.1l-1.2-.4c-.3.2-.5.3-.8.5l-.2 1.3c0 .1-.1.2-.2.2h-2c-.1 0-.2-.1-.3-.2l-.2-1.3c-.3-.1-.6-.3-.8-.5l-1.2.5c-.1 0-.2 0-.3-.1l-1-1.7c-.1-.1 0-.2.1-.3l1.1-.8v-1l-1.1-.8c-.1-.1-.1-.2-.1-.3l1-1.7c.1-.1.2-.1.3-.1l1.2.5c.3-.2.5-.3.8-.5l.2-1.3c0-.1.1-.2.3-.2h2c.1 0 .2.1.2.2l.2 1.3c.3.1.6.3.9.5l1.2-.5c.1 0 .3 0 .3.1l1 1.7c.1.1 0 .2-.1.3l-1.1.8v1zM20.5 19c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5.7 1.5 1.5 1.5 1.5-.7 1.5-1.5"/></svg></span> <strong>Data-driven</strong></p>
-<hr />
-<p><strong>Facts are generated, behavior is hand-written.</strong> Adding a chip that reuses known
-peripheral IP costs <em>data only</em> — no new C++, no new emitter branches.</p>
-<p><a href="guide/adding-a-board/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Adding a board</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10.12h-6.78l2.74-2.82c-2.73-2.7-7.15-2.8-9.88-.1a6.887 6.887 0 0 0 0 9.8c2.73 2.7 7.15 2.7 9.88 0 1.36-1.35 2.04-2.92 2.04-4.9h2c0 1.98-.88 4.55-2.64 6.29-3.51 3.48-9.21 3.48-12.72 0-3.5-3.47-3.53-9.11-.02-12.58a8.987 8.987 0 0 1 12.65 0L21 3zM12.5 8v4.25l3.5 2.08-.72 1.21L11 13V8z"/></svg></span> <strong>Updatable in the field</strong></p>
-<hr />
-<p>A/B firmware slots computed from chip data, a trial boot that <strong>rolls back on its own</strong>, and
-optional Ed25519-signed images — over a plain UART.</p>
-<p><a href="guide/firmware-update/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Firmware update</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h14m0-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2m-9 5v8l5-4z"/></svg></span> <strong>Testable without hardware</strong></p>
-<hr />
-<p>Firmware boots on an emulated MCU generated from the same chip data, and CI <strong>asserts on real
-UART output</strong> — drivers, coroutines and the whole update lifecycle.</p>
-<p><a href="guide/emulation/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Emulation</a></p>
-</li>
-</ul>
-</div>
-<h2 id="supported-boards">Supported boards<a class="headerlink" href="#supported-boards" title="Permanent link">&para;</a></h2>
-<p>The same 14-line <code>main.cpp</code> runs on all of these. The last column says how far each has actually
-been proven — a distinction alloy keeps everywhere.</p>
+<h2 id="why-they-are-outside-the-core">Why they are outside the core<a class="headerlink" href="#why-they-are-outside-the-core" title="Permanent link">&para;</a></h2>
+<p>A driver never names a chip, a family, or a board. It is templated on the framework's horizontal
+<strong>concepts</strong> — <code>I2cBus</code>, <code>SpiBus</code>, <code>OutputPin</code>, <code>DelayNs</code> — so it compiles against any board that
+satisfies them, including boards that do not exist yet:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">Bus</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Delay</span><span class="o">&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="k">requires</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">I2cBus</span><span class="o">&lt;</span><span class="n">Bus</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">DelayNs</span><span class="o">&lt;</span><span class="n">Delay</span><span class="o">&gt;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">sht31</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* talks to a `const Bus&amp;`, never to a register address */</span><span class="w"> </span><span class="p">};</span>
+</span></code></pre></div>
+<p>That is the whole bet: <strong>the ecosystem grows without touching <code>src/</code>.</strong> The reference drivers
+happen to live in-tree to seed the registry, but nothing about the format requires it — a driver
+in its own git repository is identical in shape.</p>
+<h2 id="what-ships-today">What ships today<a class="headerlink" href="#what-ships-today" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Family</th>
-<th>Core</th>
-<th>Board</th>
-<th>Proven</th>
+<th>Library</th>
+<th>Category</th>
+<th>Part</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>ST STM32G0</td>
-<td>Cortex-M0+</td>
-<td>Nucleo-G0B1RE</td>
-<td><span class="status-pill ok">silicon</span> I²C, ADC, DMA, PWM, RTC, DAC, CAN, watchdog, flash</td>
+<td><code>sht31</code></td>
+<td>sensor</td>
+<td>Sensirion SHT3x temperature + humidity (I²C)</td>
 </tr>
 <tr>
-<td>ST STM32G0</td>
-<td>Cortex-M0+</td>
-<td>Nucleo-G071RB</td>
-<td><span class="status-pill ok">silicon</span> PLL, GPIO, UART echo · 8 emulation gates</td>
+<td><code>bme280</code></td>
+<td>sensor</td>
+<td>Bosch BME280 temperature + pressure + humidity (I²C)</td>
 </tr>
 <tr>
-<td>Microchip SAME70</td>
-<td>Cortex-M7</td>
-<td>SAM E70 Xplained</td>
-<td><span class="status-pill ok">silicon</span> PLLA, PIO, USART, I²C, ADC, DMA, EEPROM, Ethernet</td>
+<td><code>bh1750</code></td>
+<td>sensor</td>
+<td>ROHM BH1750FVI ambient light (I²C)</td>
 </tr>
 <tr>
-<td>Espressif ESP32</td>
-<td>Xtensa LX6</td>
-<td>WROVER-KIT, DevKit</td>
-<td><span class="status-pill ok">silicon</span> boot chain, UART, LEDC PWM</td>
+<td><code>mpu6050</code></td>
+<td>sensor</td>
+<td>InvenSense MPU-6050 6-axis IMU (I²C)</td>
 </tr>
 <tr>
-<td>Raspberry Pi RP2040</td>
-<td>2× Cortex-M0+</td>
-<td>RP2040-Zero</td>
-<td><span class="status-pill ok">silicon</span> boot2+CRC, 125 MHz clock, WS2812</td>
+<td><code>ds3231</code></td>
+<td>rtc</td>
+<td>Maxim DS3231 high-accuracy RTC (I²C)</td>
 </tr>
 <tr>
-<td>ST STM32F7</td>
-<td>Cortex-M7</td>
-<td>Nucleo-F722ZE</td>
-<td><span class="status-pill beta">emulation</span> boot + async runtime</td>
-</tr>
-<tr>
-<td>Raspberry Pi RP2040</td>
-<td>2× Cortex-M0+</td>
-<td>Raspberry Pi Pico</td>
-<td><span class="status-pill beta">compiles</span> hardware validation pending</td>
-</tr>
-<tr>
-<td>ST STM32F7</td>
-<td>Cortex-M7</td>
-<td>Nucleo-F767ZI</td>
-<td><span class="status-pill beta">compiles</span> the network examples only</td>
+<td><code>ssd1306</code></td>
+<td>display</td>
+<td>Solomon Systech SSD1306 128×64 OLED (I²C)</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">What “silicon” means here</p>
-<p>A commit reports the peripheral running on that named board, with observed register values or
-byte-level results. These are maintainer self-reports — there is no hardware CI runner. See the
-<a href="https://github.com/Alloy-Embedded/alloy#supported-silicon">README</a> for the per-family driver
-matrix.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Your board isn't listed?</p>
-<p>alloy is designed so a new board is <strong>data, not code</strong>. See
-<a href="guide/adding-a-board/">Adding a board</a> — if it reuses a peripheral IP alloy already
-models, it costs zero new C++.</p>
-</div>
-<h2 id="what-you-get">What you get<a class="headerlink" href="#what-you-get" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>list<span class="w">                 </span><span class="c1"># browse the registry</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>info<span class="w"> </span>sht31<span class="w">           </span><span class="c1"># manifest + the concepts it requires</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>add<span class="w"> </span>sht31<span class="w">            </span><span class="c1"># vendor into ./libs and wire the build</span>
+</span></code></pre></div>
+<p><code>add</code> copies the library into <code>./libs/&lt;name&gt;</code>, records it in your <code>alloy.toml</code> under <code>[libs]</code>,
+and the build picks up the include directory. It is <em>vendored</em>, not fetched at build time: your
+project keeps building when a registry entry moves.</p>
+<h2 id="writing-one">Writing one<a class="headerlink" href="#writing-one" title="Permanent link">&para;</a></h2>
+<p>A library is a directory with four things:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mylib/
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>├── alloy.lib.toml        # manifest
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├── include/mylib.hpp     # header-only C++23, templated on concepts
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>├── tests/test_mylib.cpp  # host test against the mock buses
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>└── README.md
+</span></code></pre></div>
+<div class="language-toml highlight"><span class="filename">alloy.lib.toml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[lib]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sht31&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Sensirion SHT3x temperature + humidity sensor (I2C)&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sensor&quot;</span><span class="w">          </span><span class="c1"># sensor | display | actuator | storage | io | comms | rtc</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">[requires]</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">concepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;I2cBus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DelayNs&quot;</span><span class="p">]</span><span class="w">   </span><span class="c1"># the contracts the driver constrains on</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">alloy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=0.1&quot;</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">[headers]</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;include&quot;</span><span class="p">]</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;alloy::lib&quot;</span>
+</span></code></pre></div>
+<p>Three habits separate a good alloy driver from a port of vendor sample code:</p>
 <ul>
-<li><strong>Peripherals</strong>: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM — <a href="https://github.com/Alloy-Embedded/alloy#peripheral-drivers-by-vendor-and-family">coverage varies by family</a>; GPIO and UART are everywhere, CAN and DAC are one chip.</li>
-<li><strong>Async without an RTOS</strong>: C++20 coroutines with <a href="guide/async/">no heap and no dynamic allocation</a>.</li>
-<li><strong>A single CLI</strong>: <code>new</code>, <code>build</code>, <code>flash</code>, <code>monitor</code>, <code>run</code>, <code>emulate</code>, <code>image</code>, <code>update</code>, <code>test</code> — <a href="guide/cli/">see all commands</a>.</li>
-<li><strong>A driver ecosystem</strong>: sensors, displays and clocks you <a href="guide/libraries/">vendor with one command</a> — grown outside the core, portable by construction.</li>
-<li><strong>Field updates</strong>: A/B slots, trial boot with automatic rollback, and <a href="guide/firmware-update/">signed images</a>.</li>
-<li><strong>An IDE, if you want one</strong>: a <a href="guide/vscode/">VS Code extension</a> with a visual pin/clock configurator — driven entirely by the CLI.</li>
-<li><strong>Host-testable app logic</strong>: the scheduler and drivers run on your laptop against fakes, so you unit-test without hardware.</li>
-<li><strong>CI that executes, not just compiles</strong>: firmware is booted under <a href="https://renode.io">Renode</a> and asserted on real UART output.</li>
+<li><strong>Constrain on concepts, not on types.</strong> If the driver mentions a peripheral name, it is no
+  longer portable.</li>
+<li><strong>Never return a value you did not verify.</strong> The SHT31 driver checks the sensor's CRC-8 on each
+  pair and marks the reading <code>valid = false</code> on mismatch, rather than handing back plausible
+  garbage.</li>
+<li><strong>Cite the datasheet in the code.</strong> Every magic number in these drivers carries the document
+  and revision it came from — the same rule the framework applies to its own register work.</li>
 </ul>
+<h2 id="testing-without-hardware">Testing without hardware<a class="headerlink" href="#testing-without-hardware" title="Permanent link">&para;</a></h2>
+<p>Each library ships a host test that runs the driver against the scriptable doubles in
+<code>libs/testkit/mock_bus.hpp</code> — <code>mock_i2c</code>, <code>mock_spi</code>, <code>mock_delay</code>, which satisfy the same
+concepts a real bus does. You queue the bytes the part would answer with, run the driver, and
+assert on what it did.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>alloy<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div>
+<p>CI compiles and runs every library's tests, so a driver that regresses cannot ship. This is also
+the fastest way to develop one: the sensor's protocol is a pure function of bytes in and bytes
+out, and you can iterate on it on your laptop long before the part arrives.</p>
+<h2 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">&para;</a></h2>
+<p>The registry (<code>libs/registry.toml</code>) is generated from the manifests, so the index cannot drift
+from what the libraries actually declare. An in-tree entry points at a path; an external one
+points at a repository and a ref:</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[sht31]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sensor&quot;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">summary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Sensirion SHT3x temperature + humidity sensor (I2C)&quot;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">concepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;I2cBus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DelayNs&quot;</span><span class="p">]</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git:https://github.com/you/alloy-sht31@v0.1.0&quot;</span>
+</span></code></pre></div>
+<p>Same manifest, same <code>alloy lib add</code>, no framework change — which is the point.</p>
+<div class="admonition tip">
+<p class="admonition-title">Drivers and coroutines mix</p>
+<p>A blocking driver call inside an async task blocks <em>that task only</em>.
+<a href="https://github.com/Alloy-Embedded/alloy/tree/main/examples/async_sensor"><code>examples/async_sensor</code></a>
+reads an SHT31 once a second in one task while another keeps an LED blinking on its own
+cadence — no RTOS, no heap. See <a href="../async/">Async tasks</a>.</p>
+</div>
 
 
 
@@ -1503,13 +1529,8 @@ models, it costs zero new C++.</p>
 
 
 
-  
-  
 
 
-
-
-  
 
 
 
@@ -1535,19 +1556,33 @@ models, it costs zero new C++.</p>
   
     
       
-        
-      
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Async tasks (coroutines)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Async tasks (coroutines)
+              </div>
+            </div>
+          </a>
         
         
           
-          <a href="getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: Get started">
+          <a href="../adding-a-board/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding a board">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Get started
+                Adding a board
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1603,10 +1638,10 @@ models, it costs zero new C++.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

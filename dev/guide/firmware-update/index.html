@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/peripherals/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/firmware-update/">
       
       
-        <link rel="prev" href="../examples/">
+        <link rel="prev" href="../emulation/">
       
       
-        <link rel="next" href="../async/">
+        <link rel="next" href="../cli/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Peripherals - alloy</title>
+        <title>Firmware update over UART - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#peripherals" class="md-skip">
+        <a href="#firmware-update-over-uart" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Peripherals
+              Firmware update over UART
             
           </span>
         </div>
@@ -285,13 +285,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../peripherals/" class="md-tabs__link">
           
   
   
@@ -309,10 +307,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../emulation/" class="md-tabs__link">
           
   
@@ -628,10 +628,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -647,22 +645,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -680,7 +675,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -695,37 +690,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Peripherals
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../peripherals/" class="md-nav__link">
         
   
   
@@ -741,127 +709,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#gpio" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GPIO
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uart" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        UART
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#i2c" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        I²C
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spi" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SPI
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ADC
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pwm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PWM
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DMA
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#interrupts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interrupts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#watchdog-rtc-nvm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Watchdog, RTC, NVM
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -962,8 +809,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -975,19 +824,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1005,7 +857,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1048,10 +900,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../firmware-update/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1067,6 +946,150 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-layout-comes-from-the-chip-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The layout comes from the chip data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-the-three-binaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the three binaries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pack-an-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pack an image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trial-confirm-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trial, confirm, rollback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Trial, confirm, rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-hung-trial-is-a-reset-not-a-wedge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A hung trial is a reset, not a wedge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anti-brick-doctrine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-brick doctrine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Signing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-signing-does-and-does-not-buy-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What signing does and does not buy you
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-wire-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The wire protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-is-proven-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this is proven against
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1350,10 +1373,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gpio" class="md-nav__link">
+  <a href="#the-layout-comes-from-the-chip-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GPIO
+        The layout comes from the chip data
       
     </span>
   </a>
@@ -1361,10 +1384,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#uart" class="md-nav__link">
+  <a href="#build-the-three-binaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        UART
+        Build the three binaries
       
     </span>
   </a>
@@ -1372,10 +1395,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#i2c" class="md-nav__link">
+  <a href="#pack-an-image" class="md-nav__link">
     <span class="md-ellipsis">
       
-        I²C
+        Pack an image
       
     </span>
   </a>
@@ -1383,10 +1406,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#spi" class="md-nav__link">
+  <a href="#trial-confirm-rollback" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SPI
+        Trial, confirm, rollback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Trial, confirm, rollback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-hung-trial-is-a-reset-not-a-wedge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A hung trial is a reset, not a wedge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anti-brick-doctrine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-brick doctrine
       
     </span>
   </a>
@@ -1394,10 +1445,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adc" class="md-nav__link">
+  <a href="#signing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ADC
+        Signing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Signing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-signing-does-and-does-not-buy-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What signing does and does not buy you
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-wire-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The wire protocol
       
     </span>
   </a>
@@ -1405,43 +1484,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pwm" class="md-nav__link">
+  <a href="#what-this-is-proven-against" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PWM
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dma" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DMA
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#interrupts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interrupts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#watchdog-rtc-nvm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Watchdog, RTC, NVM
+        What this is proven against
       
     </span>
   </a>
@@ -1468,101 +1514,325 @@
   
 
 
-<h1 id="peripherals">Peripherals<a class="headerlink" href="#peripherals" title="Permanent link">&para;</a></h1>
-<p>Every peripheral follows the same shape: a typed <strong><code>bind</code></strong> that checks pin routes at compile
-time, and an <strong><code>open()</code></strong> that returns a small, move-only handle. Drivers are selected by the
-chip's IP version — no vtables, no heap.</p>
-<p>Most apps reach peripherals through <a href="../portable-code/">board roles</a> (<code>board::debug_uart</code>,
-<code>board::i2c</code>, …). The snippets below use those roles.</p>
-<h2 id="gpio">GPIO<a class="headerlink" href="#gpio" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">off</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">();</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
+<h1 id="firmware-update-over-uart">Firmware update over UART<a class="headerlink" href="#firmware-update-over-uart" title="Permanent link">&para;</a></h1>
+<p>Shipping a product means being able to fix it after it leaves the building. alloy carries a
+complete field-update path: a resident <strong>bootloader</strong>, two firmware <strong>slots</strong>, a <strong>trial boot</strong>
+that rolls back on its own when the new firmware misbehaves, and optional <strong>Ed25519 signing</strong>.</p>
+<p>Like everything else here, it is portable — the same bootloader source builds for every family
+whose flash controller alloy models, and the slot layout is <em>computed from chip data</em>, never
+hand-written.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>keygen<span class="w"> </span>-o<span class="w"> </span>keys/update.key<span class="w">          </span><span class="c1"># once, per product</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>build<span class="w"> </span>--slot<span class="w"> </span>bl<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>flash<span class="w">     </span><span class="c1"># the bootloader, programmed with a probe</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">2</span><span class="w"> </span>--sign<span class="w"> </span>keys/update.key<span class="w"> </span>-o<span class="w"> </span>app_b.img
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">$ </span>alloy<span class="w"> </span>update<span class="w"> </span>--image-b<span class="w"> </span>app_b.img<span class="w"> </span>--port<span class="w"> </span>/dev/tty.usbmodem1103
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">  42496/42496 B (100%)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">update accepted -&gt; slot B (device was running version 1); device now reboots</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">into a TRIAL boot — it must be confirmed to stick</span>
 </span></code></pre></div>
-<h2 id="uart">UART<a class="headerlink" href="#uart" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115200</span><span class="p">});</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;hello</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">byte</span><span class="p">{};</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uart</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">byte</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// non-blocking; false when no byte is ready</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+<h2 id="the-layout-comes-from-the-chip-data">The layout comes from the chip data<a class="headerlink" href="#the-layout-comes-from-the-chip-data" title="Permanent link">&para;</a></h2>
+<p>Flash is partitioned into four regions. The CLI derives them from the flash size and the erase
+granularity of the flash-controller IP — facts already in the device database — and emits them
+as <code>alloy/slots.hpp</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[ bootloader ][ slot A ][ slot B ][ boot-state store ]
 </span></code></pre></div>
-<p>Interrupt-driven RX (where the driver supports it) attaches a callback:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">uart</span><span class="p">.</span><span class="n">on_rx</span><span class="p">([](</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* runs in ISR context */</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<table>
+<thead>
+<tr>
+<th>Board</th>
+<th>Erase stride</th>
+<th>Bootloader</th>
+<th>Slot A</th>
+<th>Slot B</th>
+<th>Store</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nucleo_g071rb</code> (128 KB)</td>
+<td>2 KB page</td>
+<td>32 KB @ <code>0x08000000</code></td>
+<td>46 KB @ <code>0x08008000</code></td>
+<td>46 KB @ <code>0x08013800</code></td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td><code>nucleo_f722ze</code> (512 KB)</td>
+<td>128 KB sector</td>
+<td>32 KB @ <code>0x08000000</code></td>
+<td>128 KB @ <code>0x08020000</code></td>
+<td>128 KB @ <code>0x08040000</code></td>
+<td>32 KB</td>
+</tr>
+<tr>
+<td><code>same70_xplained</code> (2 MB)</td>
+<td>8 KB block</td>
+<td>32 KB @ <code>0x00400000</code></td>
+<td>1000 KB @ <code>0x00408000</code></td>
+<td>1000 KB @ <code>0x00502000</code></td>
+<td>16 KB</td>
+</tr>
+</tbody>
+</table>
+<p>Two decisions in that table are worth knowing about, because they are permanent once a device is
+in the field:</p>
+<div class="admonition info">
+<p class="admonition-title">The bootloader region is 32 KB even when you don't sign</p>
+<p>The UART bootloader itself is around 4 KB. Ed25519 verification costs ~14 KB more on
+Cortex-M0+. The region is sized for signing <strong>whether or not a given build signs</strong>, because
+the layout is baked into fielded devices: if turning signing on later moved the slots,
+already-deployed products could never accept the update that introduces it. Address space is
+cheap; a bricked fleet is not.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">No image swap — apps run from the slot they were written to</p>
+<p>The active slot <em>is</em> the known-good fallback. An update lands in the other slot and boots
+from there directly. That removes the swap algorithm (and its power-loss states) entirely,
+at the cost of linking the app twice — see below.</p>
+</div>
+<p>The app's vector table sits at a fixed <code>0x200</code> offset inside its slot, so the updater can stream
+<code>[header | payload]</code> straight into flash with the vectors landing where the bootloader's jump
+expects them.</p>
+<h2 id="build-the-three-binaries">Build the three binaries<a class="headerlink" href="#build-the-three-binaries" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>build<span class="w"> </span>--slot<span class="w"> </span>bl<span class="w">      </span><span class="c1"># the bootloader → its own region</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>build<span class="w"> </span>--slot<span class="w"> </span>a<span class="w">       </span><span class="c1"># your app, linked to run from slot A</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>build<span class="w"> </span>--slot<span class="w"> </span>b<span class="w">       </span><span class="c1"># the same app, linked to run from slot B</span>
 </span></code></pre></div>
-<h2 id="i2c">I²C<a class="headerlink" href="#i2c" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">i2c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">i2c</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">speed_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400&#39;000</span><span class="p">});</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">reg</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0x0F</span><span class="p">};</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i2c</span><span class="p">.</span><span class="n">write_read</span><span class="p">(</span><span class="mh">0x68</span><span class="p">,</span><span class="w"> </span><span class="n">reg</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// returns false on NACK or bus error</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="c1">// id[0] now holds the device&#39;s WHO_AM_I</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+<p>Because there is no swap, an app is position-dependent: it must be linked for the slot it will
+execute in. You ship <strong>both</strong> builds, and <code>alloy update</code> picks the right one — the device says
+which slot it is about to write in its <code>INFO</code> reply.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>update<span class="w"> </span>--image-a<span class="w"> </span>app_a.img<span class="w"> </span>--image-b<span class="w"> </span>app_b.img<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0
+</span></code></pre></div>
+<p>Passing both is the safe form: if the device reports a slot you did not supply an image for, the
+update stops before writing anything. A single image can be passed positionally, but then you are
+asserting you already know the target slot — nothing cross-checks it, and the wrong one costs a
+trial boot (the rollback saves the device; the update cycle is wasted).</p>
+<h2 id="pack-an-image">Pack an image<a class="headerlink" href="#pack-an-image" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">3</span><span class="w"> </span>-o<span class="w"> </span>app_b.img
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">image: app_b.img  (42496 B = 32 B header + 42464 B payload, version 3)</span>
+</span></code></pre></div>
+<p><code>alloy image</code> accepts an ELF directly (it flattens it exactly the way <code>objcopy -O binary</code> does)
+or a raw <code>.bin</code>, and wraps it in a 32-byte header:</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>magic <code>"ALOY"</code></td>
+<td>fast-rejects erased (<code>0xFF</code>) flash</td>
+</tr>
+<tr>
+<td>4</td>
+<td>header version / size</td>
+<td>lets the header grow without breaking old devices</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>image_version</code></td>
+<td>monotonic — <code>--set-version</code>, reported back by the device</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>payload_length</code></td>
+<td>exact bytes to CRC; never CRC a whole slot</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>payload_crc32</code></td>
+<td>integrity of the firmware itself</td>
+</tr>
+<tr>
+<td>20</td>
+<td>flags, reserved</td>
+<td></td>
+</tr>
+<tr>
+<td>28</td>
+<td><code>header_crc32</code></td>
+<td>so a corrupt header is rejected <em>before</em> its length is trusted</td>
+</tr>
+</tbody>
+</table>
+<p>Two independent CRCs is not belt-and-braces: the header CRC is what makes <code>payload_length</code>
+trustworthy enough to use as a bound.</p>
+<h2 id="trial-confirm-rollback">Trial, confirm, rollback<a class="headerlink" href="#trial-confirm-rollback" title="Permanent link">&para;</a></h2>
+<p>A new image is armed as a <strong>one-shot trial</strong>. The bootloader consumes one attempt <em>before</em>
+jumping, so a firmware that hangs cannot retry forever. The app must call <code>confirm()</code> after its
+own health check; if it never does, the bootloader reverts to the previous firmware.</p>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; Normal: boot the confirmed slot
+    Normal --&gt; Trial: update installed (attempts = N)
+    Trial --&gt; Confirmed: app calls confirm()
+    Trial --&gt; Trial: reset — attempt consumed
+    Trial --&gt; Reverted: attempts exhausted
+    Reverted --&gt; Normal: previous firmware boots
+    Confirmed --&gt; Normal: it is now the fallback</code></pre>
+<p>The whole state — active slot, pending slot, attempts left — packs into one 32-bit word, so any
+transition commits in a <strong>single store write</strong>. There is no half-updated state to tear, and the
+store itself is a two-page ping-pong whose write leaves the previous value authoritative if power
+drops mid-write.</p>
+<p>On the app side that is three lines (<a href="https://github.com/Alloy-Embedded/alloy/tree/main/examples/ota_app"><code>examples/ota_app</code></a>):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="n">flash_hal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">hal</span><span class="o">::</span><span class="n">flash_impl</span><span class="o">&lt;</span><span class="n">alloy</span><span class="o">::</span><span class="n">slots</span><span class="o">::</span><span class="n">flash_ctrl_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">alloy</span><span class="o">::</span><span class="n">ota</span><span class="o">::</span><span class="n">boot_store</span><span class="o">&lt;</span><span class="n">flash_hal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">store</span><span class="p">{</span><span class="n">flash_hal</span><span class="p">{},</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">slots</span><span class="o">::</span><span class="n">store_base</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">                                        </span><span class="n">alloy</span><span class="o">::</span><span class="n">slots</span><span class="o">::</span><span class="n">store_page_b</span><span class="p">};</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">alloy</span><span class="o">::</span><span class="n">ota</span><span class="o">::</span><span class="n">boot_manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">{</span><span class="n">store</span><span class="p">};</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mgr</span><span class="p">.</span><span class="n">confirm</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;confirmed</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// idempotent on normal boots</span>
 </span></code></pre></div>
 <div class="admonition warning">
-<p class="admonition-title">Bounds</p>
-<p>A missing pull-up or a stuck bus makes I²C return <code>false</code> (bounded), not hang. Transfers are
-limited to 255 bytes on the STM32 <code>i2c_v2</code> (NBYTES is 8-bit).</p>
+<p class="admonition-title">Reaching <code>main()</code> is not health</p>
+<p><code>confirm()</code> is a promise that <em>this firmware works</em>. Call it after the check that would
+actually catch a bad build — the sensor answered, the radio associated, the calibration
+loaded. Confirming at the top of <code>main()</code> gives you the ceremony of rollback with none of the
+protection.</p>
 </div>
-<h2 id="spi">SPI<a class="headerlink" href="#spi" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">spi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">spi</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">clock_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1&#39;000&#39;000</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">});</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spi</span><span class="p">.</span><span class="n">xfer</span><span class="p">(</span><span class="mh">0x9F</span><span class="p">);</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">};</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">spi</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span><span class="w">              </span><span class="c1">// in-place full-duplex</span>
+<h3 id="a-hung-trial-is-a-reset-not-a-wedge">A hung trial is a reset, not a wedge<a class="headerlink" href="#a-hung-trial-is-a-reset-not-a-wedge" title="Permanent link">&para;</a></h3>
+<p>Attempts are only consumed across resets, so firmware that hangs without crashing would sit there
+forever. The bootloader closes that gap: before a <strong>trial</strong> jump — and only a trial jump — it
+arms the hardware watchdog.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">watchdog</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">watchdog</span><span class="p">.</span><span class="n">start</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">{</span><span class="mi">2</span><span class="p">});</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
-<h2 id="adc">ADC<a class="headerlink" href="#adc" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">adc_vref_channel</span><span class="p">);</span>
+<p>A healthy app confirms and keeps feeding. A hung one is reset, consumes an attempt, and the fleet
+rolls back on its own with nobody pressing anything. Confirmed boots are <em>not</em> armed by the
+bootloader — that is the product's policy, not the bootloader's.</p>
+<h2 id="anti-brick-doctrine">Anti-brick doctrine<a class="headerlink" href="#anti-brick-doctrine" title="Permanent link">&para;</a></h2>
+<p>Four rules, all enforced in the bootloader rather than documented and hoped for:</p>
+<ol>
+<li><strong>Verify what you boot, not just what you wrote.</strong> The slot is verified again at boot, with
+   the same code path the updater used.</li>
+<li><strong>A trial that fails verification is rejected immediately</strong>, not retried until attempts run
+   out.</li>
+<li><strong>If nothing verifies, stay in update mode.</strong> A blank or fully corrupt board keeps listening
+   on the same wire it was updated over — there is no state that requires a probe to escape.</li>
+<li><strong>Verify then arm, in that order.</strong> A crash between the two leaves <code>pending == none</code>, so the
+   confirmed firmware still boots.</li>
+</ol>
+<h2 id="signing">Signing<a class="headerlink" href="#signing" title="Permanent link">&para;</a></h2>
+<p>Integrity (CRC) proves the image arrived intact. It proves nothing about <em>who sent it</em>. If your
+update path is a service technician's laptop, a phone app, or anything reachable by someone you
+have not met, sign the images.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">1. Make a keypair</label><label for="__tabbed_1_2">2. Tell the project its public key</label><label for="__tabbed_1_3">3. Sign each image</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>keygen<span class="w"> </span>-o<span class="w"> </span>keys/update.key
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">private key: keys/update.key  (0600 — KEEP THIS SECRET AND BACKED UP: lose it</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">and fielded devices can never be updated again)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="go">public key:  keys/update.pub</span>
 </span></code></pre></div>
-<h2 id="pwm">PWM<a class="headerlink" href="#pwm" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">pwm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">led_pwm</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">freq_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1&#39;000</span><span class="p">});</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">pwm</span><span class="p">.</span><span class="n">set_duty</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span><span class="w">               </span><span class="c1">// 50% — LED at half brightness</span>
+</div>
+<div class="tabbed-block">
+<div class="language-toml highlight"><span class="filename">alloy.toml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[ota]</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;keys/update.pub&quot;</span>
 </span></code></pre></div>
-<h2 id="dma">DMA<a class="headerlink" href="#dma" title="Permanent link">&para;</a></h2>
-<p>DMA channels are claimed once, then drive a peripheral operation with zero CPU. Capability is
-checked at compile time — a controller without circular mode simply doesn't offer the circular
-call:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">channel</span><span class="o">&lt;</span><span class="n">board</span><span class="o">::</span><span class="n">dma_t</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;::</span><span class="n">claim</span><span class="p">();</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">// One-shot ADC burst into RAM:</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">adc</span><span class="p">.</span><span class="n">read_burst</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc_vref_channel</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">samples</span><span class="p">});</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// Circular PWM waveform (only on controllers that support it):</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">pwm</span><span class="p">.</span><span class="n">stream_duty</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">wave</span><span class="p">});</span>
+<p>Codegen bakes it into <code>alloy/ota_key.hpp</code>. The header is emitted either way, so firmware
+selects the policy with <code>if constexpr (alloy::ota_key::configured)</code> — no <code>#ifdef</code>, in
+keeping with the rest of the framework.</p>
+</div>
+<div class="tabbed-block">
+<div class="language-console highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">3</span><span class="w"> </span>--sign<span class="w"> </span>keys/update.key<span class="w"> </span>-o<span class="w"> </span>app_b.img
 </span></code></pre></div>
-<h2 id="interrupts">Interrupts<a class="headerlink" href="#interrupts" title="Permanent link">&para;</a></h2>
-<p>Attach a handler to an IRQ line, give it a priority, and dispatch runs it. Several peripherals that
-share one vector each attach their own handler and all fire — the portable code never touches an
-<code>#ifdef</code> or a vector table:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">attach</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">on_rx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">enable</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">);</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">set_priority</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// 0 = most urgent; higher = less</span>
+</div>
+</div>
+</div>
+<p>The signature is an Ed25519 trailer over exactly the bytes the device already verifies
+(header + payload), using <a href="https://monocypher.org/">Monocypher</a>. Nothing about the v1 image
+format changed, so the format did not fork when signing arrived.</p>
+<p>A signing-enabled device refuses an unsigned or wrongly-signed image <strong>on the wire</strong> — the
+operator sees a NAK — rather than accepting it and burning a trial boot on firmware it was never
+going to run.</p>
+<div class="admonition danger">
+<p class="admonition-title">Keep the private key out of the repository</p>
+<p><code>alloy keygen</code> writes the private key with a <code>.pub</code> sibling; commit only the <code>.pub</code>. Anyone
+holding the private key can update every device that trusts it.</p>
+</div>
+<h3 id="what-signing-does-and-does-not-buy-you">What signing does and does not buy you<a class="headerlink" href="#what-signing-does-and-does-not-buy-you" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Threat</th>
+<th>Covered?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Corrupted transfer</td>
+<td>Yes — CRC, before any signature work</td>
+</tr>
+<tr>
+<td>Attacker-authored firmware</td>
+<td>Yes — they cannot produce a valid signature</td>
+</tr>
+<tr>
+<td>Tampering with an image in transit, CRCs repaired</td>
+<td>Yes — this is a CI test case</td>
+</tr>
+<tr>
+<td>Replaying an <strong>older, genuinely signed</strong> image</td>
+<td><strong>No</strong> — <code>image_version</code> is carried and reported, but the device does not yet refuse a downgrade</td>
+</tr>
+<tr>
+<td>Key compromise</td>
+<td><strong>No</strong> — one public key is baked in; there is no rotation or revocation yet</td>
+</tr>
+<tr>
+<td>Reading firmware off the device</td>
+<td>No — signing is authenticity, not confidentiality</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-wire-protocol">The wire protocol<a class="headerlink" href="#the-wire-protocol" title="Permanent link">&para;</a></h2>
+<p>Stop-and-wait, every frame CRC-32 guarded, and deliberately dull:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>SOF 0x7E | type u8 | seq u8 | len u16 | payload[len] | crc32 u32
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>                     └────── crc32 covers type..payload ──────┘
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>host → device:  HELLO · DATA · FINISH
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>device → host:  INFO  · ACK  · NAK
 </span></code></pre></div>
-<p>For data shared between an ISR and the main loop, <code>critical_section</code> masks only interrupts at a
-given level <strong>or less urgent</strong> (level 0 is the most urgent) — a high-priority control loop keeps
-running. On Cortex-M3/M4/M7 this uses <code>BASEPRI</code>; on Cortex-M0/M0+ and Xtensa (no priority mask) it
-safely degrades to a full mask:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">critical_section</span><span class="w"> </span><span class="n">cs</span><span class="p">{</span><span class="mi">4</span><span class="p">};</span><span class="w">   </span><span class="c1">// mask level 4 and any less-urgent line</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">update</span><span class="p">();</span><span class="w">                    </span><span class="c1">// a level-0 control ISR still fires here</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span><span class="w">                                         </span><span class="c1">// mask lifted on scope exit (RAII)</span>
-</span></code></pre></div>
-<h2 id="watchdog-rtc-nvm">Watchdog, RTC, NVM<a class="headerlink" href="#watchdog-rtc-nvm" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">board</span><span class="o">::</span><span class="n">watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w">                         </span><span class="c1">// no-op stub where absent</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">rtc</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::rtc  */</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">nvm</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::nvm — key/value over a flash page */</span><span class="w"> </span><span class="p">}</span>
-</span></code></pre></div>
-<hr />
-<p>Need something the HAL doesn't expose yet? The generated register overlays are typed and
-available, so you can drop to registers for one peripheral without leaving the framework — see
-<a href="../../reference/architecture/">Architecture</a>.</p>
+<p>The device is a pure responder — <strong>all</strong> retransmission policy lives in the host. A duplicate
+<code>DATA</code> sequence number (a retransmit after a lost ACK) is re-ACKed without rewriting flash;
+anything else out of order is NAKed. A fresh <code>HELLO</code> restarts the session, which is what makes a
+host retry after a power blip mid-transfer safe.</p>
+<p>The receiver is sans-IO: it owns no UART, no clock and no flash. Bytes are pushed in, replies come
+out through a callable. That is why it can be host-tested exhaustively, and why the same receiver
+works from a bootloader or from a running application.</p>
+<div class="admonition note">
+<p class="admonition-title">The update window</p>
+<p>After reset the bootloader listens for ~500 ms, extended to 3 s by any traffic, then boots the
+app. <code>alloy update</code> retries <code>HELLO</code> several times, so the normal procedure is: start the
+command, then reset the device — the retry lands inside the window and the session begins.
+(An application can also reboot itself into the window on command, which is how a product with
+no reset button gets updated.)</p>
+</div>
+<h2 id="what-this-is-proven-against">What this is proven against<a class="headerlink" href="#what-this-is-proven-against" title="Permanent link">&para;</a></h2>
+<p>The whole lifecycle runs in CI, on emulated hardware, as a <strong>blocking gate</strong> — install → trial
+boot → confirm → survive a power cycle → install a bad app → three watchdog self-resets →
+autonomous rollback, driven by the real <code>alloy update</code> client over a real serial link, on all
+three flash families. The signing gate adds three cases: a correctly signed image boots, a
+tampered image with both CRCs repaired is rejected, and an image signed by the wrong key is
+rejected. Both rejections land the device back in update mode.</p>
+<p>See <a href="../emulation/">Emulation</a> for how that harness works.</p>
+<div class="admonition warning">
+<p class="admonition-title">Honest status</p>
+<p>None of the three flash drivers has run on silicon, and they are not equally proven in
+emulation either:</p>
+<ul>
+<li><strong>STM32F7</strong> runs against Renode's own flash-controller model — real sector erases.</li>
+<li><strong>SAME70 EEFC</strong> runs against a model this project wrote, so it cannot independently falsify a
+  misreading of the reference manual.</li>
+<li><strong>STM32G0</strong> has <strong>no flash-controller model at all</strong> in Renode. Its register writes land on
+  unmapped addresses during the emulation legs, so <code>st_flash_g0</code>'s program/erase sequences are
+  <em>not</em> exercised — only the layer above them is. (The G0 driver has, separately, been reported
+  working on silicon through the NVM key/value store, whose boot counter survives resets.)</li>
+</ul>
+<p>The full lifecycle — bad image, exhausted trials, automatic rollback — and the signed-image
+oracle run on <code>nucleo_g071rb</code> only; SAME70 runs the install/trial/confirm half.</p>
+<p>Chips whose flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout
+at all rather than a guessed one, so <code>--slot</code> is simply not offered for them.</p>
+</div>
 
 
 
@@ -1600,7 +1870,7 @@ available, so you can drop to registers for one peripheral without leaving the f
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../examples/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Examples">
+          <a href="../emulation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Emulation">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1610,20 +1880,20 @@ available, so you can drop to registers for one peripheral without leaving the f
                 Previous
               </span>
               <div class="md-ellipsis">
-                Examples
+                Emulation
               </div>
             </div>
           </a>
         
         
           
-          <a href="../async/" class="md-footer__link md-footer__link--next" aria-label="Next: Async tasks (coroutines)">
+          <a href="../cli/" class="md-footer__link md-footer__link--next" aria-label="Next: The alloy CLI">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Async tasks (coroutines)
+                The alloy CLI
               </div>
             </div>
             <div class="md-footer__button md-icon">

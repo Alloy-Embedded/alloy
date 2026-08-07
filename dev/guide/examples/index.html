@@ -313,6 +313,50 @@
     
     
       <li class="md-tabs__item">
+        <a href="../emulation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ship it
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tools
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../reference/architecture/" class="md-tabs__link">
           
   
@@ -781,14 +825,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../adding-a-board/" class="md-nav__link">
+      <a href="../libraries/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Adding a board
+    Driver libraries
   
 
     
@@ -809,14 +853,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../adding-a-board/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The alloy CLI
+    Adding a board
   
 
     
@@ -873,7 +917,7 @@
   <span class="md-ellipsis">
     
   
-    Concepts
+    Ship it
   
 
     
@@ -886,6 +930,248 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ship it
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The alloy CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1080,8 +1366,24 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <td>the cooperative scheduler + control loop</td>
 </tr>
 <tr>
+<td><code>async_blink</code>, <code>async_heartbeat</code></td>
+<td>two concurrent coroutine tasks, no heap, no RTOS</td>
+</tr>
+<tr>
+<td><code>async_sensor</code></td>
+<td>a <a href="../libraries/">vendored driver</a> read inside an async task</td>
+</tr>
+<tr>
 <td><code>net_probe</code>, <code>net_echo</code></td>
 <td>Ethernet (SAM E70 GMAC + PHY)</td>
+</tr>
+<tr>
+<td><code>tcp_echo</code>, <code>udp_echo</code>, <code>dhcp_echo</code>, <code>http_server</code></td>
+<td>the TCP/IP stack</td>
+</tr>
+<tr>
+<td><code>fs</code></td>
+<td>a filesystem on on-chip or external storage</td>
 </tr>
 <tr>
 <td><code>watchdog</code></td>
@@ -1091,8 +1393,15 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <td><code>nvm</code>, <code>rtc</code>, <code>dac</code>, <code>can</code></td>
 <td>on-chip flash key/value, RTC, DAC, CAN</td>
 </tr>
+<tr>
+<td><code>bootloader_uart</code> + <code>ota_app</code></td>
+<td>the <a href="../firmware-update/">field-update</a> pair: update over UART, trial boot, confirm</td>
+</tr>
 </tbody>
 </table>
+<p>The examples ending in <code>_read</code> (<code>i2c_read</code>, <code>spi_read</code>, <code>adc_read</code>, <code>dma_uart</code>) are the ones CI
+asserts on under <a href="../emulation/">emulation</a> — they print a value that only a correct driver
+sequence can produce.</p>
 <h2 id="running-an-example">Running an example<a class="headerlink" href="#running-an-example" title="Permanent link">&para;</a></h2>
 <p>The examples live in the framework tree under <code>examples/</code>. Build one for any board:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/dma_probe
