@@ -19,6 +19,7 @@
 #include "alloy/core/types.hpp"
 #include "alloy/hal/spi/spi_impl.hpp"
 #include "alloy/ip/st/spi_v1.hpp"
+#include "alloy/irq.hpp"
 
 namespace alloy::hal {
 
@@ -57,6 +58,100 @@ struct spi_impl<Inst> {
         while (!(r().SR & sr::rxne)) {
         }
         return static_cast<std::uint8_t>(r().DR);
+    }
+
+    // --- Interrupt-driven transfer, same RXNE-only lockstep as st_spi_v2 ---
+    //
+    // The reasoning is identical (see that file's long note): TXEIE would
+    // storm on an idle bus, ERRIE without an OVR clear sequence would too, and
+    // RXNE clears by reading DR so no software latch is needed on the flag
+    // itself. The ONE difference that must not be copied across: DR here is a
+    // plain 16-bit frame register — one access moves exactly one frame — so
+    // this ISR uses r().DR, not st_spi_v2's dr8() FIFO byte window.
+    //
+    // Not silicon-validated and not emulated: no board in this tree binds
+    // st/spi_v1, so this path is compile-checked only, like the rest of the
+    // file.
+    inline static const std::uint8_t* tx_ = nullptr;
+    inline static std::uint8_t* rx_ = nullptr;
+    inline static std::uint16_t len_ = 0;
+    inline static std::uint16_t idx_ = 0;
+    inline static void (*done_fn_)(void*) = nullptr;
+    inline static void* done_ctx_ = nullptr;
+    inline static volatile bool busy_ = false;
+    inline static bool attached_ = false;
+
+    static void transfer_isr(void*) {
+        // Shared-vector contract (alloy::irq): a no-op unless this instance has
+        // an interrupt we armed.
+        if (IP::rxneie.read(r()) == 0u || IP::rxne.read(r()) == 0u) {
+            return;
+        }
+        if (!busy_) {
+            IP::rxneie.clear(r());  // armed with no transfer: disarm, never storm
+            return;
+        }
+        while (IP::rxne.read(r()) != 0u) {
+            const auto got = static_cast<std::uint8_t>(r().DR);  // the read IS the clear
+            if (rx_ != nullptr) {
+                rx_[idx_] = got;
+            }
+            ++idx_;
+            if (idx_ < len_) {
+                r().DR = (tx_ != nullptr) ? tx_[idx_] : 0u;
+                continue;
+            }
+            IP::rxneie.clear(r());
+            busy_ = false;
+            if (done_fn_ != nullptr) {
+                done_fn_(done_ctx_);
+            }
+            break;
+        }
+    }
+
+    static void start_transfer_irq(const std::uint8_t* tx, std::uint8_t* rx, std::uint16_t len,
+                                   void (*fn)(void*), void* ctx) {
+        using sr = typename IP::sr;
+        if (busy_ || len == 0u) {
+            __builtin_trap();  // concurrent or empty transfer: honest runtime guard
+        }
+        while (r().SR & sr::rxne) {
+            // Drop anything a previous polled xfer left behind. Bound to a
+            // local: `(void)r().DR` is NOT a volatile access, so it would not
+            // clear RXNE and the loop would spin.
+            const auto stale = static_cast<std::uint8_t>(r().DR);
+            (void)stale;
+        }
+        tx_ = tx;
+        rx_ = rx;
+        len_ = len;
+        idx_ = 0;
+        done_fn_ = fn;
+        done_ctx_ = ctx;
+        if (!attached_) {
+            alloy::irq::attach(Inst::irq, &transfer_isr);
+            alloy::irq::enable(Inst::irq);
+            attached_ = true;
+        }
+        while (!(r().SR & sr::txe)) {
+        }
+        busy_ = true;
+        IP::rxneie.set(r());
+        r().DR = (tx != nullptr) ? tx[0] : 0u;
+    }
+
+    [[nodiscard]] static bool transfer_busy() { return busy_; }
+
+    static void disable_transfer_irq() {
+        IP::rxneie.clear(r());
+        if (attached_) {
+            alloy::irq::detach(Inst::irq, &transfer_isr);
+            attached_ = false;
+        }
+        busy_ = false;
+        done_fn_ = nullptr;
+        done_ctx_ = nullptr;
     }
 };
 

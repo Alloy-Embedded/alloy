@@ -63,6 +63,35 @@ std::uint8_t buf[4] = {1, 2, 3, 4};
 spi.transfer(buf);              // in-place full-duplex
 ```
 
+`xfer`/`write`/`transfer` are byte-at-a-time spins: an N-byte exchange burns the CPU for all of
+it. `transfer_async` starts the exchange and returns — the driver's ISR clocks every remaining
+byte and calls your function when the last one lands.
+
+```cpp
+volatile bool done = false;
+const std::uint8_t out[3] = {0x11, 0x22, 0x33};
+std::uint8_t in[3] = {};
+
+spi.transfer_async(out, in, +[](void* f) { *static_cast<volatile bool*>(f) = true; },
+                   const_cast<bool*>(&done));
+// ... run the control loop here ...
+if (!spi.wait_transfer()) {     // BOUNDED: false means the interrupt never came
+    spi.detach_transfer();      // disarm, so the bus is not left busy() forever
+}
+```
+
+The callback runs in interrupt context — set a flag, wake a task, or start the next transfer,
+nothing more. `busy()` reports whether a transfer is still in flight.
+
+!!! warning "Do not mix the two APIs on one bus"
+    The ISR consumes the RX-ready flag the blocking `xfer()` waits for. Ask `busy()` first.
+
+!!! note "Capability-gated"
+    `transfer_async` exists only where the backing driver implements it — the ST `spi_v1`/`spi_v2`
+    drivers today. On the SAM E70 the method is not declared at all (the device database carries
+    no field definitions for that SPI's IER/IDR/IMR, so there is no interrupt-enable accessor to
+    generate), so calling it is a compile error rather than a silent fall back to blocking.
+
 ## ADC
 
 ```cpp

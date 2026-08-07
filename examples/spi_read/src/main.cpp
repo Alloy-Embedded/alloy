@@ -6,6 +6,7 @@
 #include <alloy/board.hpp>
 
 #include <cstdint>
+#include <span>
 
 using namespace alloy::literals;
 
@@ -16,6 +17,11 @@ void write_hex_byte(const Uart& uart, std::uint8_t value) {
     uart.write(static_cast<std::uint8_t>(digits[value >> 4]));
     uart.write(static_cast<std::uint8_t>(digits[value & 0xF]));
 }
+
+// Set from the SPI completion INTERRUPT. Seeing it true after the transfer is
+// proof the NVIC line fired and the driver's handler ran — not merely that the
+// bytes moved, which reading the buffer already tells us.
+volatile bool g_spi_irq_fired = false;
 }  // namespace
 
 int main() {
@@ -32,6 +38,36 @@ int main() {
         uart.write("spi: 0x");
         write_hex_byte(uart, got);
         uart.write("\r\n");
+
+        // Second leg: the SAME exchange, interrupt-driven. Only the first byte
+        // is written here; the ISR clocks the rest and sets the flag when the
+        // last one lands. The templated lambda makes `S` dependent, so the
+        // `requires` below removes the leg on a board whose SPI driver has no
+        // interrupt hook (SAM E70) instead of hard-erroring in a concrete main.
+        [&uart]<class S>(S& b) {
+            if constexpr (requires {
+                              b.transfer_async(std::span<const std::uint8_t>{},
+                                               std::span<std::uint8_t>{});
+                          }) {
+                static const std::uint8_t out[] = {0x11, 0x22, 0x33};
+                std::uint8_t in[3] = {};
+                b.transfer_async(out, in, +[](void* flag) {
+                    *static_cast<volatile bool*>(flag) = true;
+                }, const_cast<bool*>(&g_spi_irq_fired));
+                if (!b.wait_transfer()) {
+                    uart.write("spi async: timeout\r\n");
+                    b.detach_transfer();
+                }
+                uart.write("spi async: 0x");
+                for (std::uint8_t byte : in) {
+                    write_hex_byte(uart, byte);
+                }
+                uart.write("\r\n");
+                uart.write(g_spi_irq_fired ? "spi irq: fired\r\n" : "spi irq: NOT fired\r\n");
+            } else {
+                uart.write("spi irq: not available on this board\r\n");
+            }
+        }(bus);
     } else {
         uart.write("spi: not available on this board\r\n");
     }

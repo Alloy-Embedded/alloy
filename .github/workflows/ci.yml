@@ -195,8 +195,14 @@ jobs:
           # attaches a DummySPISlave primed with 0x5A via EnqueueValue and spi_read
           # exchanges a byte, printing "spi: 0x5a" iff it read back exactly what the
           # slave shifted out on MISO (a different primed value prints a different
-          # byte — no coincidental pass). Green on the pinned Renode 1.16.1 in CI
-          # and locally — BLOCKING.
+          # byte — no coincidental pass). The leg then runs the SAME exchange
+          # INTERRUPT-DRIVEN: three more primed bytes come back as "spi async:
+          # 0xdeadbe" (bytes 2 and 3 are clocked from the SPI ISR, so the pattern
+          # only appears if the handler ran) and "spi irq: fired" is printed from
+          # the completion callback. SPI.STM32SPI honours the CR2 enable bits, so
+          # a driver that forgets RXNEIE prints "spi irq: NOT fired" and the leg
+          # fails — verified locally by deliberately not arming it. Green on the
+          # pinned Renode 1.16.1 in CI and locally — BLOCKING.
           - board: nucleo_g071rb
             example: spi_read
             robot: spi_read.robot

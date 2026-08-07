@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
 
@@ -54,7 +55,70 @@ public:
         }
     }
 
+    // --- Interrupt-driven transfer ---------------------------------------
+    //
+    // xfer/write/transfer above are byte-at-a-time spins: an N-byte exchange
+    // burns the CPU for the whole of it. transfer_async starts the exchange and
+    // RETURNS; the driver's ISR clocks every remaining byte and calls fn(ctx)
+    // when the last one lands. `fn` runs in interrupt context — set a flag,
+    // wake a task, or start the next transfer, nothing more.
+    //
+    // Only exists where the backing driver implements it (ST spi_v1/spi_v2
+    // today). On a port without the hook the method is not declared at all,
+    // rather than silently degrading to a blocking loop.
+    //
+    // The two APIs must not overlap on one bus: the ISR consumes the RXNE that
+    // the blocking xfer() waits for. Ask busy() first.
+    void transfer_async(std::span<const std::uint8_t> tx, std::span<std::uint8_t> rx,
+                        void (*fn)(void*) = nullptr, void* ctx = nullptr) const
+        requires requires { hal::spi_impl<Inst>::start_transfer_irq(nullptr, nullptr, 1u, fn, ctx); }
+    {
+        if (!tx.empty() && !rx.empty() && tx.size() != rx.size()) {
+            __builtin_trap();  // ambiguous full-duplex length: honest runtime guard
+        }
+        const std::size_t n = tx.empty() ? rx.size() : tx.size();
+        hal::spi_impl<Inst>::start_transfer_irq(tx.empty() ? nullptr : tx.data(),
+                                                rx.empty() ? nullptr : rx.data(),
+                                                static_cast<std::uint16_t>(n), fn, ctx);
+    }
+
+    /// True while an interrupt-driven transfer is still in flight.
+    [[nodiscard]] bool busy() const
+        requires requires { hal::spi_impl<Inst>::transfer_busy(); }
+    {
+        return hal::spi_impl<Inst>::transfer_busy();
+    }
+
+    /// Spin until the in-flight transfer completes. BOUNDED — returns false if
+    /// the budget runs out, which is what an interrupt that never fires looks
+    /// like. An unbounded wait would turn that into a hang, and a hang is not a
+    /// test failure, it is a timeout that looks like anything at all.
+    [[nodiscard]] bool wait_transfer() const
+        requires requires { hal::spi_impl<Inst>::transfer_busy(); }
+    {
+        for (std::uint32_t spin = 0; spin < kWaitBudget; ++spin) {
+            if (!hal::spi_impl<Inst>::transfer_busy()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// Disarm the interrupt and forget any in-flight transfer — the escape
+    /// hatch after wait_transfer() returned false, so a wedged bus does not
+    /// leave the bus permanently busy().
+    void detach_transfer() const
+        requires requires { hal::spi_impl<Inst>::disable_transfer_irq(); }
+    {
+        hal::spi_impl<Inst>::disable_transfer_irq();
+    }
+
 private:
+    // Iteration cap for wait_transfer(), the same idiom (and reasoning) as the
+    // ST I2C driver's kPollBudget: far above any legal transfer's latency, so
+    // it only ever fires on a genuine fault.
+    static constexpr std::uint32_t kWaitBudget = 4'000'000u;
+
     template <class, class, class, class, class>
     friend struct bind;
     handle() = default;
