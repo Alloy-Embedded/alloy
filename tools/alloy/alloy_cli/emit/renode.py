@@ -79,6 +79,22 @@ RENODE_SPI = {
     "st/spi_v3": "SPI.STM32SPI",
 }
 
+# Renode PIN-INTERRUPT controller model per IP version — the block that turns a
+# GPIO edge into an NVIC interrupt. The model named here is NOT the one Renode's
+# own platforms/cpus/stm32g0.repl uses: that file instantiates
+# IRQControllers.STM32F4_EXTI at the G0's EXTI base under its own comment "This
+# model's registers are not compatible with the EXTI in this MCU", and it is
+# right — the F4 model is IMR/EMR/RTSR/FTSR/SWIER/PR at 0x00-0x14, while the G0
+# (alloy's st/exti_g0) is RTSR1 0x00 / FTSR1 0x04 / SWIER1 0x08 / RPR1 0x0C /
+# FPR1 0x10 / EXTICR 0x60 / IMR1 0x80. STM32WBA_EXTI's register map matches the
+# G0's byte for byte, so it is used here on register-map equivalence — the same
+# substitution the I2C/flash entries above make (I2C.STM32F4_I2C, MTD.
+# STM32F4_FlashController). Verified by RUNNING it, not by reading: see the
+# emission block below for what the emulation does and does not prove.
+RENODE_EXTI = {
+    "st/exti_g0": "IRQControllers.STM32WBA_EXTI",
+}
+
 # ADC is different. The F1/F4-style Analog.STM32_ADC has an SR/CR1/CR2 register
 # map INCOMPATIBLE with alloy's st/adc_v2 (STM32G0-style ISR/CR/CHSELR — a local
 # register trace showed the driver spinning on an ISR.ADRDY the F4 model never
@@ -269,6 +285,59 @@ def _resolve_dma(chip: dict[str, Any]):
     return None
 
 
+def _renode_lines(lo: int, hi: int) -> str:
+    """Renode's connection-index syntax for an inclusive range: a bare index, a
+    comma pair, or a dash range — the three forms Renode's own .repl files use."""
+    if lo == hi:
+        return str(lo)
+    if hi - lo == 1:
+        return f"[{lo}, {hi}]"
+    return f"[{lo}-{hi}]"
+
+
+def _resolve_exti(chip: dict[str, Any]):
+    """Optional gate for the pin-interrupt controller. Returns
+    (name, base, model, groups, ports, aperture) or None. Never raises — EXTI is
+    an ADDITION to the platform, so a chip without the data emits nothing extra.
+
+    Everything here is a chip fact:
+      * which peripheral      — the one whose `ip` has a Renode model;
+      * which NVIC vector each line raises — its `irq_lines` groups;
+      * which ports exist and what value routes them — every curated peripheral
+        carrying `port_index` (the EXTICR port code, which is NOT the port's
+        alphabetical position: a die with no port E leaves a hole at 4);
+      * how wide a port's register aperture is — the smallest gap between two
+        port bases, so no address-map constant is hand-written here.
+    A chip missing any of it simply gets no EXTI block, exactly like every other
+    optional peripheral above."""
+    exti = next(
+        ((n, p) for n, p in sorted(chip.get("peripherals", {}).items())
+         if not p.get("uncurated") and p.get("ip") in RENODE_EXTI),
+        None,
+    )
+    if exti is None:
+        return None
+    name, periph = exti
+    groups = periph.get("irq_lines")
+    if not groups:
+        return None
+    irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
+    if any(g["irq"] not in irqs for g in groups):
+        return None
+    ports = sorted(
+        (int(p["port_index"]), pname, int(p["base"], 16))
+        for pname, p in chip.get("peripherals", {}).items()
+        if not p.get("uncurated") and "port_index" in p
+    )
+    if len(ports) < 2:
+        return None
+    bases = sorted(b for _, _, b in ports)
+    aperture = min(b - a for a, b in zip(bases, bases[1:]) if b > a)
+    resolved = [(g["irq"], irqs[g["irq"]], int(g["first"]), int(g["last"]))
+                for g in sorted(groups, key=lambda g: g["first"])]
+    return name, int(periph["base"], 16), RENODE_EXTI[periph["ip"]], resolved, ports, aperture
+
+
 def renode_supported(chip: dict[str, Any], board: dict[str, Any]) -> bool:
     """True if this board can be emulated (used to gate the CI matrix)."""
     try:
@@ -391,6 +460,87 @@ nvicInput{line47}: Miscellaneous.CombinedInput @ none
     0 -> nvic@{line1}
     [1, 2] -> nvicInput{line23}@[0, 1]
     [3-{count - 1}] -> nvicInput{line47}@[0-{rest - 1}]
+"""
+    exti = _resolve_exti(chip)
+    if exti is not None:
+        exti_name, exti_base, exti_model, exti_groups, exti_ports, exti_ap = exti
+        # A pin edge only reaches the CPU if THREE things are modelled: the GPIO
+        # port that sources it, the EXTI that selects and latches it, and the OR
+        # gates that merge EXTI's per-line outputs onto the few NVIC vectors the
+        # die actually has. All three are emitted here, none of the numbers are
+        # written down: the vectors come from `irq_lines`, the port routing value
+        # from each port's `port_index`, the aperture from the port bases.
+        #
+        # Renode needs an explicit CombinedInput per SHARED vector for the same
+        # reason the DMA block above does — a peripheral cannot drive an NVIC
+        # input another line also drives.
+        #
+        # A port reaches EXTI through a CONNECTION GROUP, `exti#<port_index>`,
+        # and the model honours EXTICR: an edge on a port the firmware did not
+        # select is dropped. Indexing by port_index (not by a dense counter over
+        # the ports this die has) is what makes that correct on a die with a hole
+        # in its port numbering.
+        #
+        # WHAT THE EMULATION DOES AND DOES NOT PROVE. Every line below was
+        # MEASURED on Renode 1.16.1 with a throwaway G0 firmware and monitor
+        # register probes, each with a matched negative control. None of it is
+        # inferred from the model's source or its register names.
+        # PROVEN by emulation:
+        #  * EXTICR routing — an edge injected on a port the firmware did not
+        #    select in EXTICR does not fire (control: OnGPIO on gpioa while
+        #    EXTICR selects port C -> the firmware prints its NOT-fired line).
+        #  * RTSR1/FTSR1 trigger selection — arming only RTSR1 fires on a rising
+        #    input and not on a falling one, and vice versa.
+        #  * NVIC delivery through the GROUPED vector, hence `irq_lines` itself
+        #    (control: rewire lines 4-15 to vector 6 and the same firmware, still
+        #    listening on 7, never fires).
+        #  * That pending MUST be cleared — with no clear at all the EXTI output
+        #    stays asserted and the NVIC re-latches immediately (ISPR reads back
+        #    set right after ICPR clears it), and the firmware makes no further
+        #    progress. The trap this project has hit twice is real here.
+        # NOT proven — three model divergences a driver must not be validated on:
+        #  * IMR1 is unimplemented for the configurable lines. Writing bit n of
+        #    offset 0x80 logs "Unhandled write to offset 0x80", reads back 0, and
+        #    the interrupt fires anyway (EMR1 at 0x84 behaves the same). A driver
+        #    that never unmasks still passes here; only silicon can check that.
+        #  * The PENDING HALVES ARE NOT FAITHFUL. On a G0, a rising edge sets
+        #    RPR1 (0x0C) and a falling edge FPR1 (0x10). This model puts BOTH
+        #    into 0x10 — measured: rising-armed + rising input leaves 0x0C at 0
+        #    and 0x10 at the line bit — and it deasserts the output on a write to
+        #    EITHER register. So emulation cannot check that a handler clears the
+        #    right half, and a handler that reports edge DIRECTION from these two
+        #    registers will report "falling" for every edge under Renode.
+        #  * SWIER1 (0x08) throws a NullReferenceException inside the model and
+        #    takes Renode down — reproduced from a bare monitor write with no ELF
+        #    loaded. Nothing in emulation may software-trigger a line.
+        # No modeResetValue / pullUpPullDownResetValue / numberOfAFs is emitted:
+        # the model's defaults leave every pin an input, which is what an edge
+        # needs, and those values are per-die facts (Renode's own stm32g0.repl
+        # writes numberOfAFs: 8 and two 8-digit reset masks) that would be
+        # hand-written silicon in a generator. The AF-count default is the
+        # permissive one, so a real AF write still lands.
+        for _irq_name, irqn, first, last in exti_groups:
+            if last > first:
+                platform += f"""
+nvicInput{irqn}: Miscellaneous.CombinedInput @ none
+    numberOfInputs: {last - first + 1}
+    -> nvic@{irqn}
+"""
+        conns = "\n".join(
+            f"    {_renode_lines(first, last)} -> "
+            + (f"nvicInput{irqn}@{_renode_lines(0, last - first)}" if last > first
+               else f"nvic@{irqn}")
+            for _irq_name, irqn, first, last in exti_groups
+        )
+        platform += f"""
+{exti_name}: {exti_model} @ sysbus {exti_base:#010x}
+    numberOfOutputLines: {max(g[3] for g in exti_groups) + 1}
+{conns}
+"""
+        for port_index, port_name, port_base in exti_ports:
+            platform += f"""
+{port_name}: GPIOPort.STM32_GPIOPort @ sysbus <{port_base:#010x}, +{exti_ap:#x}>
+    [0-15] -> {exti_name}#{port_index}@[0-15]
 """
     # Flash controller: only for IPs Renode models faithfully. MTD's F4 model
     # covers the F7 (same CR/SR + sector map at each size) and services REAL
