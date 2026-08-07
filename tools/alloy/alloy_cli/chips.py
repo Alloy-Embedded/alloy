@@ -15,9 +15,13 @@ from pathlib import Path
 from typing import Any
 
 from .emit.common import EmitError
+from .roles import ROLES, routes_by_peripheral
 
 _FAMILY = re.compile(r"^family:\s*(\S+)", re.M)
 _CORE = re.compile(r"name:\s*(cm0plus|cm0|cm3|cm4|cm7|cm33|lx6|lx7)\b")
+# Timer route signals are named ch1/ch2/… — a PWM role picks a CHANNEL, and the
+# pins it can drive come from that channel's routes.
+_CHANNEL_SIGNAL = re.compile(r"^ch(\d+)$")
 
 
 def _chips_dir(devices_root: Path) -> Path:
@@ -61,18 +65,82 @@ def chip_clock(devices_root: Path, chip_id: str) -> tuple[list[str], str]:
     return profiles, profiles[0]
 
 
-def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
-    """Everything a visual board configurator needs for one chip: clock profiles
-    (name/description/frequency), the GPIO pins, and — derived from the pin-route
-    table — the peripheral instances with their signal pins (UART tx/rx, I2C
-    scl/sda, SPI sck/mosi/miso). Pure data; no board.json is written."""
-    import yaml  # noqa: PLC0415
+def _role_catalogue(data: dict[str, Any], classes: dict[str, str | None],
+                    routes: dict[str, dict[str, list[str]]]) -> dict[str, Any]:
+    """Every role the framework knows, with this chip's candidates for it."""
+    peripherals = data.get("peripherals") or {}
+    has_pins = bool(data.get("pins"))
+    catalogue: dict[str, Any] = {}
 
-    vendor, _, name = chip_id.partition("/")
-    f = _chips_dir(devices_root) / vendor / f"{name}.yaml"
-    if not f.exists():
-        raise EmitError(f"unknown chip '{chip_id}' — try `alloy chips`")
-    data = yaml.safe_load(f.read_text())
+    for role, spec in ROLES.items():
+        entry: dict[str, Any] = {
+            "kind": spec.kind,
+            "required": list(spec.required),
+            "optional": list(spec.optional),
+            "candidates": [],
+        }
+        if spec.requires_role:
+            entry["requires_role"] = spec.requires_role
+
+        if spec.kind in ("pin", "pins"):
+            entry["supported"] = has_pins
+            entry["reason"] = None if has_pins else "this chip's data lists no pins yet"
+        elif spec.kind == "external":
+            entry["supported"] = True
+            entry["reason"] = None
+        else:
+            for name in sorted(peripherals):
+                if classes.get(name) != spec.ip_class:
+                    continue
+                signals = routes.get(name, {})
+                candidate: dict[str, Any] = {
+                    "peripheral": name,
+                    "ip": peripherals[name].get("ip"),
+                    # An uncurated peripheral is admitted by the database but has
+                    # no register file yet: the emitter refuses it, so the UI must
+                    # show it as unavailable rather than let the user pick it.
+                    "curated": not peripherals[name].get("uncurated", False),
+                    "signals": {s: signals.get(s, []) for s in spec.signals},
+                }
+                channels = [
+                    {"channel": int(m.group(1)), "pins": pins}
+                    for sig, pins in sorted(signals.items())
+                    if (m := _CHANNEL_SIGNAL.match(sig))
+                ]
+                if channels:
+                    candidate["channels"] = channels
+                if adc_channels := peripherals[name].get("channels"):
+                    candidate["analog_channels"] = adc_channels
+                entry["candidates"].append(candidate)
+            usable = [c for c in entry["candidates"] if c["curated"]]
+            entry["supported"] = bool(usable)
+            entry["reason"] = None if usable else (
+                f"no curated {spec.ip_class} peripheral in this chip's data"
+                if not entry["candidates"] else
+                f"this chip's {spec.ip_class} peripheral is not curated yet"
+            )
+        catalogue[role] = entry
+    return catalogue
+
+
+def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
+    """Everything a visual board configurator needs for one chip: clock profiles,
+    memories, the pin map with each pin's alternate functions, every peripheral
+    with its IP class, and the ROLE CATALOGUE — which of the framework's 16 board
+    roles this silicon can fill, and with what. Pure data; no board.json written.
+
+    Additive by contract: the envelope stays alloy.chip_info.v1 and older fields
+    keep their shape, so an IDE built against an earlier CLI still works and a
+    newer one feature-detects by checking for a field.
+    """
+    from .devices import load_chip, load_registers  # noqa: PLC0415
+
+    data = load_chip(devices_root, chip_id)
+    registers = load_registers(devices_root)
+    classes = {
+        name: registers.get(spec.get("ip") or "", {}).get("class")
+        for name, spec in (data.get("peripherals") or {}).items()
+    }
 
     clk = data.get("clock") or {}
     profiles = [
@@ -121,19 +189,39 @@ def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
         for name, meta in sorted((data.get("pins") or {}).items())
     ]
 
+    routes = routes_by_peripheral(data)
     return {
         "schema": "alloy.chip_info.v1",
         "chip": chip_id,
         "family": data.get("family"),
+        "part": data.get("part"),
         "clock_profiles": profiles,
         "boot_profile": profiles[0]["name"] if profiles else None,
         "gpio_pins": sorted((data.get("pins") or {}).keys()),
         "pins": pins,
+        # Pins the DATA knows, which is not the package's pin count: a curated
+        # chip carries only its curated subset. Named honestly so the UI never
+        # draws a package it cannot back up (a real `package` fact is not in the
+        # chip schema yet).
+        "pin_count": len(pins),
+        "package": data.get("package"),
+        "memories": [
+            {"name": m.get("name"), "kind": m.get("kind"),
+             "base": m.get("base"), "size": m.get("size")}
+            for m in data.get("memories") or []
+        ],
+        "interrupt_count": len(data.get("interrupts") or []),
         "peripherals": {
             "debug_uart": instances(("usart", "uart", "lpuart"), ["tx", "rx"]),
             "i2c": instances(("i2c",), ["scl", "sda"]),
             "spi": instances(("spi",), ["sck", "mosi", "miso"]),
+            "all": [
+                {"name": name, "ip": spec.get("ip"), "class": classes.get(name),
+                 "curated": not spec.get("uncurated", False)}
+                for name, spec in sorted((data.get("peripherals") or {}).items())
+            ],
         },
+        "roles": _role_catalogue(data, classes, routes),
     }
 
 
