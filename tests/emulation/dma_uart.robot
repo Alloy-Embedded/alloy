@@ -20,3 +20,9 @@ DMA Moves A Buffer To The UART
     Start Emulation
     Wait For Line On Uart     alloy dma_uart    timeout=30
     Wait For Line On Uart     dma via DMA    timeout=30
+    # Completion delivered as an INTERRUPT, not polled: this line is only
+    # printed when the DMA NVIC line fired and the channel's handler ran.
+    # It needs Renode's own DMA model — the inline Python peripheral this
+    # platform used to emit had no NVIC connection, so it could not have
+    # failed this assertion or passed it.
+    Wait For Line On Uart     dma irq: fired    timeout=30

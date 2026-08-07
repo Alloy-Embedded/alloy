@@ -12,6 +12,11 @@
 using namespace alloy::literals;
 
 namespace {
+// Set from the DMA completion INTERRUPT. Seeing it true after the transfer is
+// proof the NVIC line fired and the handler ran — not merely that the transfer
+// finished, which wait() already tells us.
+volatile bool g_dma_irq_fired = false;
+
 template <class Dma>
 concept HasDma = requires { alloy::hal::dma_impl<Dma>::enable_controller(); };
 }  // namespace
@@ -30,10 +35,18 @@ int main() {
                           uart.write_dma(c, std::span<const std::uint8_t>{});
                       }) {
             auto chan = alloy::dma::channel<Dma, 1>::claim();
+            // Registered BEFORE the transfer on purpose: the channel config
+            // register may only be written while the channel is disabled, so
+            // the interrupt enables are folded in at setup.
+            chan.on_complete(+[](void* flag) {
+                *static_cast<volatile bool*>(flag) = true;
+            }, const_cast<bool*>(&g_dma_irq_fired));
             std::uint8_t msg[] = "dma via DMA\r\n";  // in RAM (stack) for the m2p read
             if (!uart.write_dma(chan, {msg, sizeof(msg) - 1})) {
                 uart.write("dma: FAIL\r\n");
             }
+            uart.write(g_dma_irq_fired ? "dma irq: fired\r\n"
+                                       : "dma irq: NOT fired\r\n");
         } else {
             uart.write("dma: not available on this board\r\n");
         }
