@@ -392,61 +392,6 @@ jobs:
             --variable RESC_EMPTY:/tmp/f7_empty.resc \
             --variable UART:sysbus.usart3 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
-      # SIGNED IMAGES (the update root of trust). A keypair is generated HERE —
-      # no signing key is ever committed — the bootloader is rebuilt with the
-      # public half baked in, and three machines prove the security claim:
-      # correctly-signed boots; a TAMPERED payload with BOTH CRCs repaired is
-      # refused (only the signature can catch it); an image signed by a DIFFERENT
-      # key is refused. Both refusals must land in update mode, not a jump.
-      - name: build a signed bootloader + signed/tampered/wrong-key images
-        working-directory: alloy/examples/bootloader_uart
-        run: |
-          uv run --project ../../tools/alloy alloy keygen -o /tmp/update_key --force
-          uv run --project ../../tools/alloy alloy keygen -o /tmp/attacker_key --force
-          cp /tmp/update_key.pub .
-          printf '\n[ota]\npublic_key = "update_key.pub"\n' >> alloy.toml
-          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot bl
-          uv run --project ../../tools/alloy alloy emulate --board nucleo_g071rb --emit-only
-          out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
-          echo "sg_repl=$out/nucleo_g071rb.repl" >> "$GITHUB_ENV"
-          echo "sg_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
-          slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
-            .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
-          echo "sg_slot_a=$slot_a" >> "$GITHUB_ENV"
-          # restore the committed example (no key, no [ota]) for later steps
-          git checkout alloy.toml && rm -f update_key.pub
-          cd ../uart_echo
-          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot a
-          elf=.alloy/build-tree/nucleo_g071rb/out/uart_echo.elf
-          uv run --project ../../tools/alloy alloy image "$elf" --set-version 1 \
-            --sign /tmp/update_key -o /tmp/sg_signed.img
-          uv run --project ../../tools/alloy alloy image "$elf" --set-version 9 \
-            --sign /tmp/attacker_key -o /tmp/sg_wrongkey.img
-          python3 - <<'PYEOF'
-          import pathlib, struct, zlib
-          d = bytearray(pathlib.Path("/tmp/sg_signed.img").read_bytes())
-          d[0x300] ^= 0x01                      # flip a byte of the app
-          struct.pack_into("<I", d, 16, zlib.crc32(bytes(d[32:len(d) - 64])))
-          struct.pack_into("<I", d, 28, zlib.crc32(bytes(d[:28])))   # repair BOTH CRCs
-          pathlib.Path("/tmp/sg_tampered.img").write_bytes(bytes(d))
-          PYEOF
-      - name: run the signed-image oracle
-        run: |
-          for k in signed tampered wrongkey; do
-            cat > /tmp/sg_$k.resc <<EOF
-          using sysbus
-          mach create "sg$k"
-          machine LoadPlatformDescription @$sg_repl
-          sysbus LoadELF @$sg_bl_elf
-          sysbus LoadBinary @/tmp/sg_$k.img $sg_slot_a
-          EOF
-          done
-          renode-test \
-            --variable RESC_SIGNED:/tmp/sg_signed.resc \
-            --variable RESC_TAMPERED:/tmp/sg_tampered.resc \
-            --variable RESC_WRONGKEY:/tmp/sg_wrongkey.resc \
-            --variable UART:sysbus.usart2 \
-            "$GITHUB_WORKSPACE/alloy/tests/emulation/signed_boot.robot"
       # THIRD FAMILY / SECOND VENDOR: Microchip SAME70's EEFC (page latch + WP
       # commits, 16-page EPA erase, ECC row-once — the page-buffered driver with
       # the flush() seam). The platform carries the purpose-written EFC model:
@@ -543,6 +488,65 @@ jobs:
           uv run --project tools/alloy python scripts/update_e2e.py /tmp/good.img /tmp/bad.img \
             || { tail -30 /tmp/renode_wire.log; exit 1; }
 
+      # LAST in this job ON PURPOSE: it rebuilds the bootloader IN PLACE with a
+      # key baked in, so any step that expects the unsigned artifact must run
+      # before it. (CI caught exactly that — the signed bootloader correctly
+      # refused the unsigned lifecycle images with ota_error 10.)
+      # SIGNED IMAGES (the update root of trust). A keypair is generated HERE —
+      # no signing key is ever committed — the bootloader is rebuilt with the
+      # public half baked in, and three machines prove the security claim:
+      # correctly-signed boots; a TAMPERED payload with BOTH CRCs repaired is
+      # refused (only the signature can catch it); an image signed by a DIFFERENT
+      # key is refused. Both refusals must land in update mode, not a jump.
+      - name: build a signed bootloader + signed/tampered/wrong-key images
+        working-directory: alloy/examples/bootloader_uart
+        run: |
+          uv run --project ../../tools/alloy alloy keygen -o /tmp/update_key --force
+          uv run --project ../../tools/alloy alloy keygen -o /tmp/attacker_key --force
+          cp /tmp/update_key.pub .
+          printf '\n[ota]\npublic_key = "update_key.pub"\n' >> alloy.toml
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot bl
+          uv run --project ../../tools/alloy alloy emulate --board nucleo_g071rb --emit-only
+          out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
+          echo "sg_repl=$out/nucleo_g071rb.repl" >> "$GITHUB_ENV"
+          echo "sg_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
+            .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
+          echo "sg_slot_a=$slot_a" >> "$GITHUB_ENV"
+          # restore the committed example (no key, no [ota]) for later steps
+          git checkout alloy.toml && rm -f update_key.pub
+          cd ../uart_echo
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot a
+          elf=.alloy/build-tree/nucleo_g071rb/out/uart_echo.elf
+          uv run --project ../../tools/alloy alloy image "$elf" --set-version 1 \
+            --sign /tmp/update_key -o /tmp/sg_signed.img
+          uv run --project ../../tools/alloy alloy image "$elf" --set-version 9 \
+            --sign /tmp/attacker_key -o /tmp/sg_wrongkey.img
+          python3 - <<'PYEOF'
+          import pathlib, struct, zlib
+          d = bytearray(pathlib.Path("/tmp/sg_signed.img").read_bytes())
+          d[0x300] ^= 0x01                      # flip a byte of the app
+          struct.pack_into("<I", d, 16, zlib.crc32(bytes(d[32:len(d) - 64])))
+          struct.pack_into("<I", d, 28, zlib.crc32(bytes(d[:28])))   # repair BOTH CRCs
+          pathlib.Path("/tmp/sg_tampered.img").write_bytes(bytes(d))
+          PYEOF
+      - name: run the signed-image oracle
+        run: |
+          for k in signed tampered wrongkey; do
+            cat > /tmp/sg_$k.resc <<EOF
+          using sysbus
+          mach create "sg$k"
+          machine LoadPlatformDescription @$sg_repl
+          sysbus LoadELF @$sg_bl_elf
+          sysbus LoadBinary @/tmp/sg_$k.img $sg_slot_a
+          EOF
+          done
+          renode-test \
+            --variable RESC_SIGNED:/tmp/sg_signed.resc \
+            --variable RESC_TAMPERED:/tmp/sg_tampered.resc \
+            --variable RESC_WRONGKEY:/tmp/sg_wrongkey.resc \
+            --variable UART:sysbus.usart2 \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/signed_boot.robot"
   build:
     runs-on: ubuntu-latest
     strategy:
