@@ -1,6 +1,6 @@
 [project]
 name = "alloy-embedded"
-version = "0.2.0"
+version = "0.3.0"
 description = "Alloy embedded framework CLI: one portable C++23 app, any supported MCU (STM32, SAM, RP2040, ESP32) — scaffold, generate, build, flash, monitor, debug"
 readme = "README.md"
 license = "MIT"
@@ -24,7 +24,7 @@ dependencies = [
     "cryptography>=42",
     "esptool>=4.7",
     "certifi>=2024.2",
-    "alloy-devices==0.1.0",
+    "alloy-devices==0.2.0",
 ]
 
 [project.urls]
