@@ -1,6 +1,6 @@
 [lib]
 name = "modbus"
-version = "0.3.0"
+version = "0.4.0"
 description = "Modbus RTU — sans-IO core, blocking client (master) and poll-driven server (slave) over any ByteStream uart"
 category = "protocol"
 license = "MIT"

@@ -20,16 +20,32 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "alloy/util/result.hpp"
+#include "modbus/error.hpp"
+
 namespace alloy::lib::modbus {
+
+namespace detail {
+// A write may answer two ways. bool is the honest-error default (false = the
+// address does not exist -> wire exception 0x02). Result<void, modbus_error>
+// is the RICH verdict for models that must distinguish WHY they refused —
+// the classic case being 0x02 (address not held) vs 0x03 (address held, value
+// illegal), which real register maps with clamped values need and a bool
+// physically cannot express. The server maps a non-exception error to 0x04
+// (server failure) rather than lying with a more specific code.
+template <class R>
+concept write_verdict =
+    std::same_as<R, bool> || std::same_as<R, Result<void, modbus_error>>;
+}  // namespace detail
 
 template <class M>
 concept DataModel = requires(M& m, const M& cm, std::uint16_t addr,
                              std::uint16_t& reg, bool& bit) {
     { cm.read_coil(addr, bit) } -> std::same_as<bool>;
-    { m.write_coil(addr, true) } -> std::same_as<bool>;
+    { m.write_coil(addr, true) } -> detail::write_verdict;
     { cm.read_discrete_input(addr, bit) } -> std::same_as<bool>;
     { cm.read_holding(addr, reg) } -> std::same_as<bool>;
-    { m.write_holding(addr, std::uint16_t{}) } -> std::same_as<bool>;
+    { m.write_holding(addr, std::uint16_t{}) } -> detail::write_verdict;
     { cm.read_input(addr, reg) } -> std::same_as<bool>;
 };
 

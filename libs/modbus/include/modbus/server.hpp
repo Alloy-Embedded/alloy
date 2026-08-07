@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <span>
@@ -40,13 +41,39 @@
 
 namespace alloy::lib::modbus {
 
+// The escape hatch for function codes the eight-FC core does not speak
+// (vendor FCs, diagnostics, file records): consulted ONLY when parse_request
+// refuses with illegal-function, i.e. the standard dispatch always wins for
+// the codes it owns. Contract: (request ADU-less PDU, response PDU buffer,
+// broadcast?) -> Result<bytes_written, modbus_error>:
+//   - value N>0: the server frames+sends out[0..N) (unless broadcast);
+//   - value 0: deliberate silence (the hook executed, nothing to say);
+//   - error unexpected_function: "not mine" — the server answers 0x01 as if
+//     no hook existed;
+//   - any other error: exception reply — wire codes pass through, local
+//     errors become 0x04 (server failure), the honest catch-all.
+// Writing more than the response buffer holds is a programmer error (trap).
+struct no_dispatch {
+    [[nodiscard]] Result<std::size_t, modbus_error> operator()(
+        std::span<const std::uint8_t>, std::span<std::uint8_t>, bool) const {
+        return modbus_error::unexpected_function;
+    }
+};
+
+template <class D>
+concept UserDispatch = requires(D& d, std::span<const std::uint8_t> req,
+                                std::span<std::uint8_t> resp) {
+    { d(req, resp, true) } -> std::same_as<Result<std::size_t, modbus_error>>;
+};
+
 struct server_config {
     std::uint8_t unit = 1;      // 1..247; 0 is the broadcast id, never a server's
     std::uint32_t baud = 19'200;
 };
 
 template <alloy::ByteStream Uart, DataModel Model, std::size_t MaxRegisters = 16,
-          class Clock = uptime_clock, alloy::OutputPin De = alloy::gpio::null_output>
+          class Clock = uptime_clock, alloy::OutputPin De = alloy::gpio::null_output,
+          UserDispatch Dispatch = no_dispatch>
 class rtu_server {
     static_assert(MaxRegisters >= 1 && MaxRegisters <= max_read_registers,
                   "MaxRegisters is the per-request register budget: 1..125");
@@ -55,9 +82,10 @@ public:
     using config = server_config;
 
     constexpr rtu_server(Uart& uart, Model& model, config c, Clock clock = {},
-                         De de = {})
+                         De de = {}, Dispatch dispatch = {})
         : uart_(uart),
           model_(model),
+          dispatch_(dispatch),
           framer_(direction::request, rtu_times_for(c.baud)),
           unit_(c.unit),
           clock_(clock),
@@ -66,7 +94,7 @@ public:
             __builtin_trap();  // claiming the broadcast id is a programmer error
         }
     }
-    rtu_server(Uart&&, Model&, config, Clock = {}, De = {}) = delete;
+    rtu_server(Uart&&, Model&, config, Clock = {}, De = {}, Dispatch = {}) = delete;
 
     // One bounded step: call from the superloop. Returns true when a request
     // addressed to this server (or a broadcast) was dispatched — a cheap
@@ -101,6 +129,30 @@ private:
     void dispatch(std::span<const std::uint8_t> pdu, bool broadcast) {
         const auto req = parse_request(pdu);
         if (!req) {
+            // Unknown function code: the hook speaks before the refusal does.
+            if (req.error() == modbus_error::exception_illegal_function &&
+                !pdu.empty()) {
+                std::uint8_t out[pdu_cap];
+                const auto handled = dispatch_(pdu, {out, sizeof out}, broadcast);
+                if (handled) {
+                    if (*handled > sizeof out) {
+                        __builtin_trap();  // hook overran its buffer: programmer error
+                    }
+                    if (*handled != 0u && !broadcast) {
+                        send({out, *handled});
+                    }
+                    return;
+                }
+                if (handled.error() != modbus_error::unexpected_function) {
+                    if (!broadcast) {
+                        const auto fc = static_cast<function>(pdu[0]);
+                        reply_exception(fc, is_exception(handled.error())
+                                                ? handled.error()
+                                                : modbus_error::exception_server_failure);
+                    }
+                    return;
+                }
+            }
             // Refusals still answer (that IS the protocol) — except for a
             // broadcast, where every refusal is silent by construction.
             if (!broadcast && !pdu.empty()) {
@@ -202,25 +254,42 @@ private:
         }
     }
 
+    // One write call, either verdict shape (data_model.hpp): bool folds to
+    // 0x02, a rich Result passes its wire exception through — and a LOCAL
+    // error becomes 0x04, the honest catch-all, never a fabricated 02/03.
+    template <class F>
+    [[nodiscard]] modbus_error one_write(F&& call) {
+        if constexpr (std::same_as<decltype(call()), bool>) {
+            return call() ? modbus_error{}
+                          : modbus_error::exception_illegal_data_address;
+        } else {
+            const auto r = call();
+            if (r) {
+                return modbus_error{};
+            }
+            return is_exception(r.error()) ? r.error()
+                                           : modbus_error::exception_server_failure;
+        }
+    }
+
     // Applies any of the four write shapes. Default-constructed modbus_error
     // (value 0) is "no error" here — a private sentinel, never on the wire.
     [[nodiscard]] modbus_error apply_write(const request_view& req) {
         switch (req.fc) {
         case function::write_single_coil:
-            return model_.write_coil(req.address, req.value == 0xFF00u)
-                       ? modbus_error{}
-                       : modbus_error::exception_illegal_data_address;
+            return one_write(
+                [&] { return model_.write_coil(req.address, req.value == 0xFF00u); });
         case function::write_single_register:
-            return model_.write_holding(req.address, req.value)
-                       ? modbus_error{}
-                       : modbus_error::exception_illegal_data_address;
+            return one_write(
+                [&] { return model_.write_holding(req.address, req.value); });
         case function::write_multiple_coils:
             for (std::uint16_t i = 0; i < req.count; ++i) {
                 const bool on =
                     (req.payload[i / 8u] >> (i % 8u) & 1u) != 0u;
-                if (!model_.write_coil(static_cast<std::uint16_t>(req.address + i),
-                                       on)) {
-                    return modbus_error::exception_illegal_data_address;
+                const auto a = static_cast<std::uint16_t>(req.address + i);
+                if (const auto e = one_write([&] { return model_.write_coil(a, on); });
+                    e != modbus_error{}) {
+                    return e;
                 }
             }
             return modbus_error{};
@@ -229,9 +298,10 @@ private:
                 const std::uint16_t v = static_cast<std::uint16_t>(
                     static_cast<std::uint16_t>(req.payload[2u * i]) << 8 |
                     req.payload[2u * i + 1u]);
-                if (!model_.write_holding(
-                        static_cast<std::uint16_t>(req.address + i), v)) {
-                    return modbus_error::exception_illegal_data_address;
+                const auto a = static_cast<std::uint16_t>(req.address + i);
+                if (const auto e = one_write([&] { return model_.write_holding(a, v); });
+                    e != modbus_error{}) {
+                    return e;
                 }
             }
             return modbus_error{};
@@ -266,6 +336,7 @@ private:
 
     Uart& uart_;
     Model& model_;
+    Dispatch dispatch_;
     rtu_framer<max_adu> framer_;
     std::uint8_t unit_;
     Clock clock_;
