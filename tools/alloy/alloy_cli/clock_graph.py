@@ -112,11 +112,26 @@ def clock_graph(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
         validated = True  # it is in the database because it was verified there
 
     hz = _node_hz(profile)
+    # Which oscillator actually feeds the PLL. A SOLVED clock knows (the solver
+    # reports it, and `--hse` makes it the board's crystal); a named profile does
+    # not say, so the chip's boot source is the best the data offers.
+    #
+    # Getting this from boot_source unconditionally drew a chain that contradicted
+    # its own arithmetic: HSI16 at 16 MHz into ÷4 ×180 ÷2 is 360 MHz, not the
+    # 180 the same graph reported as SYSCLK.
+    chosen = (solved or {}).get("source") or {}
+    boot = (chip.get("clock") or {}).get("boot_source")
+    declared = sorted(((chip.get("clock") or {}).get("sources") or {}).items())
     sources = [
         {"name": key, "hz": int(spec.get("hz", 0)),
-         "selected": key == (chip.get("clock") or {}).get("boot_source")}
-        for key, spec in sorted(((chip.get("clock") or {}).get("sources") or {}).items())
+         "selected": (int(spec.get("hz", 0)) == int(chosen["hz"])) if chosen.get("hz")
+                     else key == boot}
+        for key, spec in declared
     ]
+    # A crystal the board fits is not always one the chip data lists.
+    if chosen.get("hz") and not any(s["selected"] for s in sources):
+        sources.append({"name": str(chosen.get("name", "external")),
+                        "hz": int(chosen["hz"]), "selected": True})
 
     nodes = [{"name": "sysclk", "label": _NODE_LABEL["sysclk"], "hz": hz["sysclk"],
               "parent": None, "divider": None}]

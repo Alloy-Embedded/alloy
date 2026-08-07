@@ -157,3 +157,39 @@ def test_the_default_profile_is_the_boot_safe_one() -> None:
     graph = _graph("st/stm32g071rb")
     assert graph["profile"] == "hsi_16mhz"
     assert _node(graph, "sysclk")["hz"] == 16_000_000
+
+
+# ------------------------------------------------- the chain must add up
+
+@skip_no_devices
+@pytest.mark.parametrize("hse_hz", [None, 8_000_000])
+def test_the_drawn_chain_is_arithmetically_consistent(hse_hz: int | None) -> None:
+    """source / M x N / div MUST equal the SYSCLK the same graph reports.
+
+    This is the invariant a picture of a clock has to satisfy, and it is what
+    caught the graph marking the chip's boot source as selected while the solver
+    was feeding the PLL from the board's crystal: HSI16 at 16 MHz into ÷4 ×180 ÷2
+    is 360 MHz, next to a SYSCLK box reading 180.
+    """
+    from alloy_cli.clock_solver import solve
+
+    solved = solve("stm32f7", 180_000_000, external_hz=hse_hz)
+    graph = _graph("st/stm32f767", solved=solved)
+
+    selected = [s for s in graph["sources"] if s["selected"]]
+    assert len(selected) == 1, f"exactly one source drives the PLL, got {selected}"
+    pll = graph["pll"]
+    computed = selected[0]["hz"] / pll["m"] * pll["n"] / pll["div"]
+    assert computed == _node(graph, "sysclk")["hz"]
+
+
+@skip_no_devices
+def test_a_crystal_the_chip_data_does_not_list_still_appears() -> None:
+    """A board may fit an oscillator the chip file never mentions; leaving it out
+    would draw a PLL with nothing feeding it."""
+    from alloy_cli.clock_solver import solve
+
+    solved = solve("stm32g0", 48_000_000, external_hz=12_000_000)
+    graph = _graph("st/stm32g071rb", solved=solved)
+    selected = next(s for s in graph["sources"] if s["selected"])
+    assert selected["hz"] == 12_000_000
