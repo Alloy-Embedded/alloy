@@ -120,6 +120,35 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             lines.append(
                 f"    static constexpr alloy::irq_line irq{{{irq_numbers[periph['irq']]}}};"
             )
+        # A controller whose lines are GROUPED onto several vectors (STM32 EXTI)
+        # emits the grouping as a table, not an `irq`. Sorted by first line so
+        # the emitted order is deterministic regardless of the data's order.
+        groups = sorted(periph.get("irq_lines", []), key=lambda g: g["first"])
+        if groups:
+            for group in groups:
+                if group["irq"] not in irq_numbers:
+                    raise EmitError(
+                        f"{name}: irq_lines vector '{group['irq']}' is not in the "
+                        f"chip's interrupts table")
+                if group["first"] > group["last"]:
+                    raise EmitError(
+                        f"{name}: irq_lines range {group['irq']} inverts "
+                        f"({group['first']} > {group['last']})")
+            lines.append(
+                f"    static constexpr unsigned irq_line_count = {len(groups)}u;")
+            lines.append(
+                f"    static constexpr alloy::irq_line_range irq_lines[{len(groups)}] = {{")
+            for group in groups:
+                lines.append(
+                    f"        {{{group['first']}u, {group['last']}u, "
+                    f"alloy::irq_line{{{irq_numbers[group['irq']]}}}}},  // {group['irq']}")
+            lines.append("    };")
+        # An I/O port's number in the chip's port-select encoding (EXTICR). Not
+        # the peripheral name's alphabetical position — a die that omits a port
+        # leaves a hole (the G071RB has no port E, so gpiof is 5, not 4).
+        if "port_index" in periph:
+            lines.append(
+                f"    static constexpr unsigned port_index = {periph['port_index']}u;")
         if "kernel_clock" in periph:
             node = periph["kernel_clock"]
             if node not in CLOCK_NODES:

@@ -53,6 +53,18 @@ struct irq_line {
     std::uint16_t number;
 };
 
+// One inclusive range of a multi-line controller's lines, and the vector that
+// range raises. Some controllers do not have an `irq` — they have several, and
+// which one a line reaches is a per-die fact: an STM32G0's EXTI groups its 16
+// pin lines onto three vectors (0-1, 2-3, 4-15) while an F4 splits the same 16
+// across seven. Codegen emits the chip's `irq_lines` as an array of these, so a
+// driver LOOKS THE GROUPING UP instead of writing the split down.
+struct irq_line_range {
+    std::uint16_t first;  // inclusive
+    std::uint16_t last;   // inclusive
+    irq_line irq;
+};
+
 // Which clock a peripheral's kernel runs from. Codegen maps the chip data's
 // kernel_clock string onto this enum; drivers resolve it against the board's
 // clock profile.
