@@ -100,7 +100,8 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "{cpu_flags}")
 
 def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
                 runtime_sources: list[Path], vendor_sources: list[Path],
-                lwip: dict[str, list[Path]] | None = None) -> str:
+                lwip: dict[str, list[Path]] | None = None,
+                lfs_sources: list[Path] | None = None) -> str:
     gen = project.gen_dir
     lwip = lwip or {"c": [], "glue": [], "inc": []}
     gen_sources = [gen / "board.cpp"]
@@ -117,17 +118,32 @@ def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
     lib_includes = (
         "\n    " + "\n    ".join(f'"{p}"' for p in _lib_incs) if _lib_incs else ""
     )
-    # Vendored C packages (littlefs, ...) are framework-owned, not header-only:
-    # silence their warnings and, on firmware, strip malloc/asserts/logging —
-    # the alloy facade hands littlefs all its buffers statically, so no heap is
-    # touched. Scoped to the vendored TUs only.
+    # Vendored C packages (littlefs, monocypher, ...) are framework-owned, not
+    # header-only: silence their warnings, scoped to the vendored TUs only.
+    # Package-specific config is set PER PACKAGE — the LFS_* block below
+    # applies to littlefs alone (the facade hands it all buffers statically,
+    # so malloc/asserts/logging are stripped on firmware). It used to ride on
+    # every vendored TU, silently defining littlefs macros into monocypher —
+    # harmless by luck, and exactly the cross-package leak this split ends.
+    lfs_sources = lfs_sources or []
+    lfs_set = set(lfs_sources)
+    plain_vendor = [p for p in vendor_sources if p not in lfs_set]
     vendor_props = ""
-    if vendor_sources:
-        vendor_list = "\n    ".join(f'"{p}"' for p in vendor_sources)
-        vendor_props = f"""
+    if plain_vendor:
+        vendor_list = "\n    ".join(f'"{p}"' for p in plain_vendor)
+        vendor_props += f"""
 
 set_source_files_properties(
     {vendor_list}
+    PROPERTIES
+    COMPILE_OPTIONS "-w"
+)"""
+    if lfs_sources:
+        lfs_list = "\n    ".join(f'"{p}"' for p in lfs_sources)
+        vendor_props += f"""
+
+set_source_files_properties(
+    {lfs_list}
     PROPERTIES
     COMPILE_OPTIONS "-w"
     COMPILE_DEFINITIONS "LFS_NO_MALLOC;LFS_NO_ASSERT;LFS_NO_DEBUG;LFS_NO_WARN;LFS_NO_ERROR"
@@ -229,9 +245,11 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
 
     board_hpp = project.gen_dir / "alloy" / "board.hpp"
     board_text = board_hpp.read_text() if board_hpp.exists() else ""
+    lfs_sources: list[Path] = []
     if "bool fs = true;" in board_text:
         fs_vendor = project.alloy_root / "src" / "alloy" / "fs" / "vendor"
-        vendor_sources += sorted(fs_vendor.glob("*.c"))
+        lfs_sources = sorted(fs_vendor.glob("*.c"))
+        vendor_sources += lfs_sources
 
     # lwIP (net stack) is a heavier opt-in package: compiled only when an example
     # actually pulls in the facade (`#include <alloy/net/lwip...>`) AND the board
@@ -251,7 +269,8 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
     tree.mkdir(parents=True, exist_ok=True)
     (tree / "toolchain.cmake").write_text(_toolchain_cmake(chip, _cpu_flags(chip)))
     (tree / "CMakeLists.txt").write_text(
-        _cmakelists(project, chip, sources, runtime_sources, vendor_sources, lwip))
+        _cmakelists(project, chip, sources, runtime_sources, vendor_sources, lwip,
+                    lfs_sources=lfs_sources))
 
     env = None
     if _arch_ns(chip) == "xtensa":

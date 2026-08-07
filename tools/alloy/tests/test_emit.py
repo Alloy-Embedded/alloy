@@ -116,3 +116,31 @@ def test_partition_table_structure(tmp_path: Path) -> None:
 def test_partition_table_rejects_unknown_type(tmp_path: Path) -> None:
     with pytest.raises(EmitError, match="unknown type/subtype"):
         _generate_partition_table([["x", "bogus", "nvs", "0x9000", "0x1000"]], tmp_path / "p.bin")
+
+
+def test_cmake_lfs_defines_do_not_leak_onto_other_vendored_packages(tmp_path):
+    """The LFS_* strip-config used to ride on EVERY vendored TU — monocypher
+    included. Package config must be scoped to the package that owns it."""
+    from pathlib import Path
+
+    from alloy_cli.build import _cmakelists
+    from alloy_cli.project import Project
+
+    proj = Project(root=tmp_path, name="x", board_id="nucleo_g071rb",
+                   alloy_root=tmp_path, devices_root=tmp_path)
+    chip = {"cores": [{"arch": "armv6m"}]}
+    mono = [tmp_path / "monocypher.c", tmp_path / "monocypher-ed25519.c"]
+    lfs = [tmp_path / "lfs.c", tmp_path / "lfs_util.c"]
+    text = _cmakelists(proj, chip, sources=[tmp_path / "main.cpp"],
+                       runtime_sources=[], vendor_sources=[*mono, *lfs],
+                       lfs_sources=lfs)
+
+    blocks = [b for b in text.split("set_source_files_properties")[1:]]
+    lfs_blocks = [b for b in blocks if "LFS_NO_MALLOC" in b]
+    assert len(lfs_blocks) == 1
+    assert "lfs.c" in lfs_blocks[0]
+    assert "monocypher" not in lfs_blocks[0]
+    # monocypher still gets its warnings silenced, in its own block.
+    mono_blocks = [b for b in blocks if "monocypher.c" in b]
+    assert len(mono_blocks) == 1
+    assert "LFS_" not in mono_blocks[0]

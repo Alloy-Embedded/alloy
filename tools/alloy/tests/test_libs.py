@@ -160,3 +160,28 @@ def test_lib_includes_skips_entries_found_nowhere(
         '[libs]\nghost = "9.9.9"\n'
     )
     assert load_project(proj).lib_includes() == []
+
+
+def test_lib_includes_respects_the_manifest_headers_field(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """[headers].include in alloy.lib.toml decides the include dirs — it was
+    previously ignored ("include" hard-coded), so a manifest declaring any
+    other layout silently contributed nothing."""
+    from alloy_cli.project import load_project
+
+    monkeypatch.setenv("ALLOY_ROOT", str(ALLOY_ROOT))
+    proj = tmp_path / "p"
+    (proj / "libs" / "weird" / "inc").mkdir(parents=True)
+    (proj / "libs" / "weird" / "extra").mkdir()
+    (proj / "libs" / "weird" / "alloy.lib.toml").write_text(
+        '[lib]\nname = "weird"\nversion = "0.1.0"\n\n'
+        '[headers]\ninclude = ["inc", "extra", "missing"]\n'
+    )
+    (proj / "alloy.toml").write_text(
+        '[project]\nname = "p"\n\n[board]\nid = "nucleo_g071rb"\n\n'
+        '[libs]\nweird = "0.1.0"\n'
+    )
+    incs = load_project(proj).lib_includes()
+    # Declared dirs that exist, in order; "missing" silently skipped.
+    assert incs == [proj / "libs" / "weird" / "inc",
+                    proj / "libs" / "weird" / "extra"]

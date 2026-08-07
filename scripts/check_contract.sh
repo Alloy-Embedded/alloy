@@ -24,6 +24,18 @@ if grep -rnE "$addr_pattern" "$root/tools/alloy/alloy_cli" --include='*.py' \
     echo "FAIL: hardware address hardcoded in the code generator"
     fail=1
 fi
+# Guard #1 over the library ecosystem: libs/ drivers PROMISE chip-freedom
+# (concept-templated, "never name a chip") — without this gate the promise
+# was unenforced and libs/ was a permanent back door. Same contract-ok
+# escape as the generator for auditable device facts (a sensor's own wire
+# magic, not MCU silicon). */tests/ are host-only and exempt, like tests/.
+if grep -rnE "$addr_pattern" "$root/libs" --include='*.hpp' --include='*.cpp' \
+    | grep -v "/tests/" \
+    | grep -vE "0xFFFF'?FFFF" \
+    | grep -v "contract-ok:"; then
+    echo "FAIL: hardware address in a library (libs/ drivers must be chip-free)"
+    fail=1
+fi
 
 # Guard #3: zero preprocessor conditionals in example/user code.
 # (.alloy/ trees are generated/build output, not example code.)

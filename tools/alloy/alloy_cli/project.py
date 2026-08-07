@@ -65,13 +65,31 @@ class Project:
         data = tomllib.loads(toml_path.read_text())
         out: list[Path] = []
         for name in data.get("libs", {}):
-            local = self.root / "libs" / name / "include"
-            framework = self.alloy_root / "libs" / name / "include"
-            if local.is_dir():
-                out.append(local)
-            elif framework.is_dir():
-                out.append(framework)
+            for base in (self.root / "libs" / name, self.alloy_root / "libs" / name):
+                dirs = self._manifest_include_dirs(base)
+                if dirs:
+                    out += dirs
+                    break
         return out
+
+    @staticmethod
+    def _manifest_include_dirs(base: Path) -> list[Path]:
+        """The include dirs one library copy contributes: what its own
+        alloy.lib.toml [headers].include declares (the manifest field was
+        previously ignored — "include" was hard-coded), defaulting to
+        ["include"] when the manifest or the field is absent. Only dirs that
+        exist count, so a copy with no headers yields [] and the caller falls
+        through to the next candidate."""
+        if not base.is_dir():
+            return []
+        dirs = ["include"]
+        manifest = base / "alloy.lib.toml"
+        if manifest.exists():
+            headers = tomllib.loads(manifest.read_text()).get("headers", {})
+            declared = headers.get("include", dirs)
+            if isinstance(declared, list) and declared:
+                dirs = [str(d) for d in declared]
+        return [base / d for d in dirs if (base / d).is_dir()]
 
     def ota_options(self) -> dict[str, Any]:
         """The optional ``[ota]`` table from alloy.toml. `public_key` (a path to
