@@ -256,6 +256,39 @@ def cmd_board_clone(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_board_validate(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .board_info import resolve_board  # noqa: PLC0415
+    from .board_validate import validate_board_file  # noqa: PLC0415
+    from .project import _find_devices_root  # noqa: PLC0415
+
+    alloy_root, project_root = _roots(args)
+    if args.file:
+        path = Path(args.file)
+    else:
+        board_id = args.board_id
+        if not board_id:
+            if project_root is None:
+                print("error: no board given and no alloy.toml here", file=sys.stderr)
+                return 1
+            board_id = load_project(project_root).board_id
+        path, _ = resolve_board(alloy_root, project_root, board_id)
+    report = validate_board_file(_find_devices_root(alloy_root), path)
+
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        for issue in report["issues"]:
+            where = ".".join(p for p in (issue["role"], issue["field"]) if p)
+            hint = f"  (try: {', '.join(issue['suggestions'])})" if issue["suggestions"] else ""
+            print(f"{issue['level']}: {where or 'board'}: {issue['message']}{hint}",
+                  file=sys.stderr if issue["level"] == "error" else sys.stdout)
+        if report["ok"]:
+            print(f"{report['id'] or path}: ok")
+    return 0 if report["ok"] else 1
+
+
 def cmd_size(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -786,6 +819,18 @@ def main() -> None:
     p_bclone.add_argument("new_id", help="id for the copy (letters, digits, underscore)")
     p_bclone.add_argument("--project", default=".")
     p_bclone.set_defaults(func=cmd_board_clone)
+
+    p_bval = sub.add_parser(
+        "board-validate",
+        help="every problem in a board, located, with the pins that would work "
+             "(the route static_assert, moved to config time)")
+    p_bval.add_argument("board_id", nargs="?",
+                        help="board id (default: the one in alloy.toml)")
+    p_bval.add_argument("--file", help="validate this board.json instead ('-' = stdin, "
+                                       "so an editor can check before writing)")
+    p_bval.add_argument("--project", default=".")
+    p_bval.add_argument("--json", action="store_true")
+    p_bval.set_defaults(func=cmd_board_validate)
 
     p_size = sub.add_parser(
         "size", help="flash/RAM the LAST build uses, against the chip's memories "
