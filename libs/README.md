@@ -1,5 +1,8 @@
 # alloy libraries
 
+> User-facing guide: <https://alloy-embedded.github.io/alloy/guide/libraries/>. This file is the
+> in-tree reference for the format itself.
+
 Third-party drivers for sensors, displays, and other parts — **grown entirely outside the core**.
 A library never names a chip, a family, or a board. It templates on the horizontal
 [concepts](../src/alloy/concepts.hpp) (`I2cBus`, `SpiBus`, `OutputPin`, `DelayNs`, …), so the same

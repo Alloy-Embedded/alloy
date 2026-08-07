@@ -113,8 +113,14 @@ nav:
   - Guide:
       - guide/peripherals.md
       - guide/async.md
+      - guide/libraries.md
       - guide/adding-a-board.md
+  - Ship it:
+      - guide/emulation.md
+      - guide/firmware-update.md
+  - Tools:
       - guide/cli.md
+      - guide/vscode.md
   - Concepts:
       - reference/architecture.md
       - reference/error-handling.md

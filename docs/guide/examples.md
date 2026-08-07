@@ -15,9 +15,18 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | `irq_echo` | interrupt-driven UART RX |
 | `dma_probe` | ADC burst + PWM waveform streamed by DMA, zero CPU |
 | `pwm_fade`, `services` | the cooperative scheduler + control loop |
+| `async_blink`, `async_heartbeat` | two concurrent coroutine tasks, no heap, no RTOS |
+| `async_sensor` | a [vendored driver](libraries.md) read inside an async task |
 | `net_probe`, `net_echo` | Ethernet (SAM E70 GMAC + PHY) |
+| `tcp_echo`, `udp_echo`, `dhcp_echo`, `http_server` | the TCP/IP stack |
+| `fs` | a filesystem on on-chip or external storage |
 | `watchdog` | the independent watchdog |
 | `nvm`, `rtc`, `dac`, `can` | on-chip flash key/value, RTC, DAC, CAN |
+| `bootloader_uart` + `ota_app` | the [field-update](firmware-update.md) pair: update over UART, trial boot, confirm |
+
+The examples ending in `_read` (`i2c_read`, `spi_read`, `adc_read`, `dma_uart`) are the ones CI
+asserts on under [emulation](emulation.md) — they print a value that only a correct driver
+sequence can produce.
 
 ## Running an example
 

@@ -4,12 +4,20 @@ From nothing to a blinking LED in a few minutes.
 
 ## Install
 
-alloy ships as a Python CLI. The recommended install is [pipx](https://pipx.pypa.io/), which
-keeps it in its own isolated environment:
+alloy ships as a Python CLI, published as **`alloy-embedded`**. Install it into its own isolated
+environment with [uv](https://docs.astral.sh/uv/) or [pipx](https://pipx.pypa.io/):
 
 ```console
-$ pipx install alloy
+$ uv tool install alloy-embedded
 ```
+
+```console
+$ pipx install alloy-embedded
+```
+
+!!! warning "Mind the package name"
+    An unrelated project owns `alloy` on PyPI. `pipx install alloy` installs *that*, not this —
+    always install `alloy-embedded`. The command it gives you is still called `alloy`.
 
 Then let alloy fetch the cross-toolchains it needs (Arm GCC, and the Xtensa toolchain for
 ESP32). Toolchains install into `~/.alloy/tools` and never touch your system:
@@ -144,3 +152,13 @@ $ alloy emulate --board nucleo_f722ze
 ...
 alloy uart_echo ready
 ```
+
+The emulated machine is generated from the same chip data your firmware compiles against — see
+[Emulation](guide/emulation.md), which is also how alloy's own CI proves driver behaviour.
+
+## Next
+
+- Add a part: [driver libraries](guide/libraries.md) — `alloy lib add sht31`.
+- Prefer an IDE? The [VS Code extension](guide/vscode.md) has a visual pin and clock configurator.
+- Shipping a product? Set up [firmware update over UART](guide/firmware-update.md) before you
+  need it.

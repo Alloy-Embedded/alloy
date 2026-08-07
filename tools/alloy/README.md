@@ -12,8 +12,20 @@ cd blinky && alloy run               # build + flash + serial monitor
 ```
 
 The wheel embeds the framework (C++ runtime, board data) and depends on
-`alloy-devices` (the curated register/chip database). Verbs: `new`,
-`boards [--json]`, `gen`, `build`, `flash`, `monitor`, `run`, `clean`,
-`set-board`, `setup`, `debug-info [--json]`.
+`alloy-devices` (the curated register/chip database).
 
+Verbs, by task:
+
+- **start** — `new`, `boards`, `chips`, `set-board`, `setup`
+- **build & run** — `build`, `flash`, `monitor`, `run`, `gen`, `clean`, `test`
+- **inspect** — `size`, `matrix`, `frame-audit`, `svd`, `debug-info`
+- **configure** — `board-info`, `board-validate`, `board-clone`, `chip-info`, `clock`
+- **emulate** — `emulate` (headless Renode on a data-generated platform)
+- **field update** — `keygen`, `image`, `ports`, `update` (A/B slots, trial boot with
+  rollback, optional Ed25519-signed images)
+- **libraries** — `lib list | search | info | add`
+
+Most take `--json` for editor integration (versioned envelopes).
+
+Docs: <https://alloy-embedded.github.io/alloy/> ·
 VS Code extension: [alloy-vscode](https://github.com/Alloy-Embedded/alloy-vscode).

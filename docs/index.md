@@ -32,7 +32,7 @@ int main() {
 ```
 
 ```console
-$ pipx install alloy
+$ uv tool install alloy-embedded         # or: pipx install alloy-embedded
 $ alloy new hello --board esp32_devkit && cd hello
 $ alloy run                              # build + flash + serial monitor
 $ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
@@ -66,7 +66,7 @@ $ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
 
     ---
 
-    `pipx install alloy && alloy new && alloy run` → a blinking LED in minutes.
+    `uv tool install alloy-embedded && alloy new && alloy run` → a blinking LED in minutes.
     No IDE, no vendor code generator, no CMake to hand-write.
 
     [:octicons-arrow-right-24: Get started](getting-started.md)
@@ -79,6 +79,24 @@ $ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
     peripheral IP costs *data only* — no new C++, no new emitter branches.
 
     [:octicons-arrow-right-24: Adding a board](guide/adding-a-board.md)
+
+-   :material-update:{ .lg .middle } __Updatable in the field__
+
+    ---
+
+    A/B firmware slots computed from chip data, a trial boot that **rolls back on its own**, and
+    optional Ed25519-signed images — over a plain UART.
+
+    [:octicons-arrow-right-24: Firmware update](guide/firmware-update.md)
+
+-   :material-play-box-outline:{ .lg .middle } __Testable without hardware__
+
+    ---
+
+    Firmware boots on an emulated MCU generated from the same chip data, and CI **asserts on real
+    UART output** — drivers, coroutines and the whole update lifecycle.
+
+    [:octicons-arrow-right-24: Emulation](guide/emulation.md)
 
 </div>
 
@@ -102,6 +120,10 @@ The same 14-line `main.cpp` runs on all of these — validated on real silicon, 
 ## What you get
 
 - **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM.
-- **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `test` — [see all commands](guide/cli.md).
+- **Async without an RTOS**: C++20 coroutines with [no heap and no dynamic allocation](guide/async.md).
+- **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `image`, `update`, `test` — [see all commands](guide/cli.md).
+- **A driver ecosystem**: sensors, displays and clocks you [vendor with one command](guide/libraries.md) — grown outside the core, portable by construction.
+- **Field updates**: A/B slots, trial boot with automatic rollback, and [signed images](guide/firmware-update.md).
+- **An IDE, if you want one**: a [VS Code extension](guide/vscode.md) with a visual pin/clock configurator — driven entirely by the CLI.
 - **Host-testable app logic**: the scheduler and drivers run on your laptop against fakes, so you unit-test without hardware.
 - **CI that executes, not just compiles**: firmware is booted under [Renode](https://renode.io) and asserted on real UART output.
