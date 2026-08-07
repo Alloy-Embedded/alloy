@@ -701,18 +701,25 @@ jobs:
         working-directory: alloy/examples/${{ matrix.example }}
         run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}
 
-  # The PRODUCT dimension: one codebase, many products (examples/product_line).
-  # Not in the board×example matrix above — products multiply build time, so the
-  # sweep rides its own narrow job: two boards × every product of the family,
-  # gated by `alloy product-validate` (the mirror of board-validate), built with
-  # `--product` so each pair gets its own board+product-keyed tree.
+  # The PRODUCT dimension: one codebase, many products. Not in the
+  # board×example matrix above — products multiply build time, so the sweep
+  # rides its own narrow job: product_line (the inverter family, NVM +
+  # C-header surface) on two boards × both products, plus product_demo (the
+  # concept-checked strategies) on its default board × both products — each
+  # gated by `alloy product-validate` (the mirror of board-validate), built
+  # with `--product` so each pair gets its own board+product-keyed tree.
   build-products:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        board: [nucleo_g071rb, nucleo_f722ze]
-        product: [chiller_s, chiller_l]
+        include:
+          - { example: product_line, board: nucleo_g071rb, product: chiller_s }
+          - { example: product_line, board: nucleo_g071rb, product: chiller_l }
+          - { example: product_line, board: nucleo_f722ze, product: chiller_s }
+          - { example: product_line, board: nucleo_f722ze, product: chiller_l }
+          - { example: product_demo, board: nucleo_g071rb, product: fan_eco }
+          - { example: product_demo, board: nucleo_g071rb, product: pump_pro }
     steps:
       - uses: actions/checkout@v4
         with:
@@ -728,11 +735,78 @@ jobs:
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
       - name: validate ${{ matrix.product }}
-        working-directory: alloy/examples/product_line
+        working-directory: alloy/examples/${{ matrix.example }}
         run: uv run --project ../../tools/alloy alloy product-validate ${{ matrix.product }}
-      - name: build product_line as ${{ matrix.product }} for ${{ matrix.board }}
-        working-directory: alloy/examples/product_line
+      - name: build ${{ matrix.example }} as ${{ matrix.product }} for ${{ matrix.board }}
+        working-directory: alloy/examples/${{ matrix.example }}
         run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }} --product ${{ matrix.product }}
+
+  # The product dimension EXECUTED — one leg per product of the product_demo
+  # family, same robot, per-product --variable expectations. The step lines
+  # are the assertion that the right STRATEGY CODE ran (v/f is stateless and
+  # repeats 4140; the FOC mock carries observer state and prints 450 then
+  # 787 — one strategy cannot fake the other), so a stale or wrongly-keyed
+  # board+product tree fails here, not just a wrong banner. Both legs plus a
+  # negative control (pump_pro's ELF against fan_eco's expected lines fails
+  # in ~9 s) ran green/red as expected on a LOCAL arm64 Renode 1.16.1; this
+  # CI job mirrors the proven emulate-job steps but was authored without a
+  # CI run (pushing is not this change's call to make).
+  emulate-products:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - product: fan_eco
+            product_line: "product: fan_eco (family: fan_drive)"
+            control_line: "control: v/f scalar"
+            step1: "step: 4140"
+            step2: "step: 4140"
+          - product: pump_pro
+            product_line: "product: pump_pro (family: fan_drive)"
+            control_line: "control: sensorless foc"
+            step1: "step: 450"
+            step2: "step: 787"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: install renode (PINNED v1.16.1 portable)
+        run: |
+          RENODE_VER=1.16.1
+          url="https://github.com/renode/renode/releases/download/v${RENODE_VER}/renode-${RENODE_VER}.linux-portable.tar.gz"
+          wget -q "$url" -O renode.tar.gz
+          mkdir -p "$HOME/renode" && tar xf renode.tar.gz -C "$HOME/renode" --strip-components=1
+          echo "$HOME/renode" >> "$GITHUB_PATH"
+          pip3 install --quiet -r "$HOME/renode/tests/requirements.txt"
+      - name: build product_demo as ${{ matrix.product }} + emit Renode platform
+        id: emit
+        working-directory: alloy/examples/product_demo
+        run: |
+          out=$(uv run --project ../../tools/alloy alloy emulate --board nucleo_g071rb --product ${{ matrix.product }} --emit-only)
+          echo "$out"
+          echo "resc=$(echo "$out" | awk '/^script:/{print $2}')" >> "$GITHUB_OUTPUT"
+          echo "uart=$(echo "$out" | awk '/^uart:/{print $2}')" >> "$GITHUB_OUTPUT"
+      - name: boot ${{ matrix.product }} under Renode and assert product + strategy
+        run: |
+          renode-test \
+            --variable RESC:'${{ steps.emit.outputs.resc }}' \
+            --variable UART:${{ steps.emit.outputs.uart }} \
+            --variable 'PRODUCT_LINE:${{ matrix.product_line }}' \
+            --variable 'CONTROL_LINE:${{ matrix.control_line }}' \
+            --variable 'STEP1:${{ matrix.step1 }}' \
+            --variable 'STEP2:${{ matrix.step2 }}' \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/product_demo.robot"
 
   # NORTH_STAR guard #8: no feature ships unless CI compiles what it emits —
   # `alloy new` scaffolds must build, out-of-repo, exactly as a user would.

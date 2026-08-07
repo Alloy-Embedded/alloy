@@ -1,0 +1,12 @@
+[project]
+name = "product_demo"
+
+[board]
+id = "nucleo_g071rb"
+
+# The product dimension, demonstrated end to end: products/family.toml declares
+# the parameter space, products/<name>.toml is one product (one file, one clean
+# git diff), and the app's STRATEGIES are real types checked against a real
+# C++20 concept — see src/main.cpp. Switch with `alloy build --product pump_pro`.
+[product]
+name = "fan_eco"

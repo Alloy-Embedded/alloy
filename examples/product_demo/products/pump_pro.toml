@@ -1,0 +1,14 @@
+# The pro pump: PMSM on sensorless FOC, 48 V bus. The PWM frequency is NOT
+# stated — the family's rule derives 16 kHz from motor = "pmsm", so every
+# PMSM product in the family agrees without repeating the number.
+schema = "alloy.product.v1"
+name = "pump_pro"
+family = "fan_drive"
+
+[params]
+motor = "pmsm"
+rated_power_w = 1500
+bus_voltage_mv = 48000
+
+[strategies]
+control = "sensorless_foc"

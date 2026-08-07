@@ -1,0 +1,60 @@
+# The drive family: everything a fan_drive product CAN vary, in one file.
+# Products overlay THIS file, exactly one level deep — no product-extends-
+# product chains, ever (the validator rejects them).
+schema = "alloy.family.v1"
+name = "fan_drive"
+
+# ---- typed params (defaults here; a product states only what differs) ------
+
+[params.rated_power_w]
+type = "int"
+default = 750
+min = 50
+max = 15000
+
+[params.bus_voltage_mv]        # physical quantity in base units (mV);
+type = "int"                   # unit scaling stays in C++ constexpr, not here
+default = 24000
+min = 12000
+max = 400000
+
+[params.pwm]                   # emitted as alloy::frequency (u32 Hz)
+type = "frequency"
+default = 20000
+
+[params.motor]                 # wire values EXPLICIT — never auto-assigned,
+type = "enum"                  # so reordering this table can never silently
+values = { induction = 1, pmsm = 2 }  # renumber what's already in the field
+default = "induction"
+
+# ---- boolean capabilities (if constexpr in app code) -----------------------
+
+[caps]
+has_night_mode = false
+
+# ---- strategies: the app provides the types, the product picks one ---------
+# src/main.cpp defines both in namespace product_strategy and checks the
+# chosen one against the app::control_loop concept — a product naming an
+# option whose type doesn't satisfy it fails the compile, readably.
+
+[strategies.control]
+options = ["vf_scalar", "sensorless_foc"]
+default = "vf_scalar"
+
+# ---- derivations: data, not #ifdef -----------------------------------------
+# A PMSM drive switches slower here — derived ONCE, not repeated (and
+# eventually mistyped) in every product file. An explicit value in a product
+# file still wins over this rule.
+
+[[rules]]
+when = { motor = "pmsm" }
+set = "pwm"
+value = 16000
+
+# ---- combinations that must not ship ---------------------------------------
+# Sensorless FOC needs a motor with a rotor field to observe: an induction
+# machine with this observer is a product that must never leave the building.
+
+[constraints.foc_needs_pmsm]
+when = { control = "sensorless_foc" }
+require = { motor = "pmsm" }

@@ -114,6 +114,7 @@ nav:
       - guide/peripherals.md
       - guide/async.md
       - guide/libraries.md
+      - guide/products.md
       - guide/adding-a-board.md
   - Ship it:
       - guide/emulation.md
