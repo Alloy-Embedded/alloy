@@ -55,12 +55,20 @@ def size_tool(chip: dict[str, Any]) -> str | None:
     return shutil.which("arm-none-eabi-size")
 
 
-def _memory(chip: dict[str, Any], kind: str) -> dict[str, int] | None:
-    mem = next((m for m in chip.get("memories", []) if m.get("kind") == kind), None)
+def _memory(chip: dict[str, Any], which: str) -> dict[str, Any] | None:
+    """The region the app's code ("code") or data ("data") was linked into.
+
+    Asked of the linker emitter rather than guessed, so the percentage always
+    refers to the region the ELF actually occupies.
+    """
+    from .emit.linker import app_regions  # noqa: PLC0415
+
+    mem = app_regions(chip, _arch_ns(chip)).get(which)
     if mem is None:
         return None
     base = mem["base"]
     return {
+        "name": mem.get("name"),
         "base": int(base, 16) if isinstance(base, str) else int(base),
         "size": int(mem["size"]),
     }
@@ -68,7 +76,10 @@ def _memory(chip: dict[str, Any], kind: str) -> dict[str, int] | None:
 
 def _region(used: int | None, total: dict[str, int] | None) -> dict[str, Any]:
     out: dict[str, Any] = {"used": used, "total": total["size"] if total else None,
-                           "base": total["base"] if total else None}
+                           "base": total["base"] if total else None,
+                           # Which memory this is measured against — "flash" is
+                           # irom on a chip that has no flash of its own.
+                           "region": total["name"] if total else None}
     if used is not None and total and total["size"]:
         out["percent"] = round(100.0 * used / total["size"], 1)
     else:
@@ -133,7 +144,7 @@ def size_report(project: Project, chip: dict[str, Any],
         "available": sections is not None,
         "reason": reason,
         "sections": sections,
-        "flash": _region(sections["flash"] if sections else None, _memory(chip, "flash")),
-        "ram": _region(sections["ram"] if sections else None, _memory(chip, "ram")),
+        "flash": _region(sections["flash"] if sections else None, _memory(chip, "code")),
+        "ram": _region(sections["ram"] if sections else None, _memory(chip, "data")),
         "slots": _slots(chip, sections["flash"] if sections else None),
     }

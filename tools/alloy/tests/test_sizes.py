@@ -88,3 +88,32 @@ def test_chip_without_slot_support_reports_no_slots(tmp_path: Path) -> None:
     report = sizes.size_report(_FakeProject(tmp_path),
                                _chip(DEVICES_ROOT, "raspberrypi/rp2040"))
     assert report["slots"] is None
+
+
+# ------------------------------------------- which memory the numbers refer to
+
+@skip_no_devices
+def test_regions_are_the_ones_the_linker_used() -> None:
+    """A percentage is meaningless unless it names the right region. The Xtensa
+    script puts .text in IROM and .data/.bss in DRAM; taking "the first ram"
+    would report the 2 KiB vector window as the whole of RAM (it did, until
+    `alloy matrix` put nine boards side by side and made it obvious).
+    """
+    esp32 = _chip(DEVICES_ROOT, "espressif/esp32")
+    assert sizes._memory(esp32, "data") == {
+        "name": "dram", "base": 0x3FFB0000, "size": 278528}
+    assert (sizes._memory(esp32, "code") or {})["name"] == "irom"
+
+    # Cortex-M: first flash / first ram, exactly as emit/linker.py does it.
+    g071 = _chip(DEVICES_ROOT, "st/stm32g071rb")
+    assert (sizes._memory(g071, "code") or {})["name"] == "flash"
+    assert (sizes._memory(g071, "data") or {})["name"] == "sram"
+
+
+@skip_no_devices
+def test_the_report_names_its_region(tmp_path: Path) -> None:
+    """So a reader can tell "1984K of flash" from "1984K of IROM"."""
+    report = sizes.size_report(_FakeProject(tmp_path),
+                               _chip(DEVICES_ROOT, "st/stm32g071rb"))
+    assert report["flash"]["region"] == "flash"
+    assert report["ram"]["region"] == "sram"
