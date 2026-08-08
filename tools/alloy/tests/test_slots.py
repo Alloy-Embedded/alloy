@@ -139,3 +139,52 @@ def test_same70_efc_uniform_layout() -> None:
     assert (lay.bootloader.base, lay.bootloader.size) == (0x00400000, 32 * 1024)
     assert lay.store_page_b == lay.store.base + 8192
     assert lay.slot_a.base % 8192 == 0 and lay.slot_a.size % 8192 == 0
+
+
+# ---------------------------------------------------- the architecture gate
+
+
+def test_an_unknown_architecture_is_refused_not_approximated() -> None:
+    """The emitter used to treat "not xtensa" as "Cortex-M".
+
+    So `emit_linker_script(chip, "rl78")` returned a full ARM script —
+    ENTRY(Reset_Handler), an ARM exception-index discard, an ARM vector table —
+    and it would have LINKED. The image just could not boot. A framework whose
+    rule is that facts are generated cannot silently generate the wrong ones.
+    """
+    with pytest.raises(EmitError) as caught:
+        emit_linker_script(_g0_chip(), "rl78")
+
+    message = str(caught.value)
+    assert "rl78" in message, "the error must name the architecture asked for"
+    assert "cortex_m" in message and "xtensa" in message, \
+        "and the ones that do exist, so the reader knows the shape of the fix"
+
+
+def test_the_two_real_backends_still_emit() -> None:
+    """The gate must not become the thing that breaks the working paths."""
+    arm = emit_linker_script(_g0_chip(), "cortex_m")
+    assert "ENTRY(Reset_Handler)" in arm
+
+    # The real chip, not a hand-built stub: the xtensa backend reads more of the
+    # memory map than a plausible-looking fake carries, and a fake that drifts
+    # from the database would make this test pass on something nobody ships.
+    from pathlib import Path
+
+    from alloy_cli.devices import load_chip
+
+    devices = Path(__file__).resolve().parents[3].parent / "alloy-devices"
+    if (devices / "chips").is_dir():
+        esp = load_chip(devices, "espressif/esp32")
+        assert emit_linker_script(esp, "xtensa"), "xtensa must still emit"
+
+
+def test_the_default_argument_is_one_of_the_backends() -> None:
+    """`arch_ns` defaults to cortex_m. If a rename ever left the default outside
+    _BACKENDS, every caller that omits it would start raising."""
+    import inspect
+
+    from alloy_cli.emit.linker import _BACKENDS
+
+    default = inspect.signature(emit_linker_script).parameters["arch_ns"].default
+    assert default in _BACKENDS

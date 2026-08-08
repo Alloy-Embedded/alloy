@@ -34,9 +34,25 @@ def app_regions(chip: dict[str, Any],
     }
 
 
+#: The linker backends this module actually has. The dispatch below must refuse
+#: anything else BY NAME: an unknown architecture used to fall through to the
+#: Cortex-M template, which is not a small mistake. That script carries
+#: ENTRY(Reset_Handler), an ARM exception-index discard, and a vector table laid
+#: out for the ARM boot protocol — on another architecture it LINKS, produces an
+#: image, and the image cannot boot. In a framework whose rule is that facts are
+#: generated, silently generating the wrong facts is the worst failure it has.
+_BACKENDS = ("cortex_m", "xtensa")
+
+
 def emit_linker_script(chip: dict[str, Any], arch_ns: str = "cortex_m",
                        layout: str = "flash", flash_reserved: int = 0,
                        flash_window: tuple[int, int] | None = None) -> str:
+    if arch_ns not in _BACKENDS:
+        raise EmitError(
+            f"no linker script for architecture '{arch_ns}' — this emitter has "
+            f"{', '.join(_BACKENDS)}. Adding one means a memory layout, an entry "
+            f"symbol and a vector-table placement for that architecture; it is "
+            f"not something to approximate with another's script.")
     if arch_ns == "xtensa":
         if layout == "ram":
             raise EmitError("run-from-RAM (--ram) is not supported on xtensa (the "
