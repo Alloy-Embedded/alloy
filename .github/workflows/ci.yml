@@ -661,12 +661,19 @@ jobs:
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/signed_boot.robot"
   build:
+    # One job per BOARD, looping the examples, instead of a board x example
+    # matrix. Not style: 8 boards x 35 examples = 280 matrix jobs, and GitHub
+    # Actions silently materializes ZERO jobs past its 256-per-matrix limit —
+    # the run goes red with every visible job green, and the entire build
+    # coverage vanishes without a single failing job to read. (Exactly that
+    # happened on the first push past the limit.) The loop scales with the
+    # example list forever, pays toolchain setup 8x instead of 280x, and still
+    # names every failing example — all of them, not just the first.
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         board: [nucleo_g071rb, nucleo_g0b1re, nucleo_f722ze, same70_xplained, rp2040_zero, raspberry_pi_pico, esp_wrover_kit, esp32_devkit]
-        example: [blink, async_blink, async_heartbeat, async_sensor, async_io, uart_echo, hello, pwm_fade, analog_probe, i2c_scan, i2c_read, spi_loopback, spi_read, adc_read, dma_uart, memory_probe, time_probe, modbus_rtu_client, modbus_rtu_server, irq_echo, pin_irq, dma_probe, net_probe, net_echo, services, watchdog, nvm, rtc, dac, can, gpio_bus, fastcode, filter, secure, fs]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -694,9 +701,21 @@ jobs:
           tar xf x.tar.xz && rm x.tar.xz
       - name: install ninja
         run: sudo apt-get update && sudo apt-get install -y ninja-build
-      - name: build ${{ matrix.example }} for ${{ matrix.board }}
-        working-directory: alloy/examples/${{ matrix.example }}
-        run: uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}
+      - name: build every example for ${{ matrix.board }}
+        run: |
+          set -u
+          failed=()
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade analog_probe i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs; do
+            echo "::group::$ex"
+            if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
+              failed+=("$ex")
+            fi
+            echo "::endgroup::"
+          done
+          if [ ${#failed[@]} -gt 0 ]; then
+            echo "FAILED examples for ${{ matrix.board }}: ${failed[*]}"
+            exit 1
+          fi
 
   # The net examples pull in vendored lwIP, whose build seam only compiles for a
   # board with an Ethernet MAC — so they CANNOT ride the board×example matrix above
