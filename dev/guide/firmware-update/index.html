@@ -1079,14 +1079,36 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Signing">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anti-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-rollback
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-rotation-and-revocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key rotation and revocation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key rotation and revocation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#what-signing-does-and-does-not-buy-you" class="md-nav__link">
+  <a href="#what-signing-versioning-and-rotation-do-and-do-not-buy-you" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What signing does and does not buy you
+        What signing, versioning and rotation do and do not buy you
       
     </span>
   </a>
@@ -1543,14 +1565,36 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Signing">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anti-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-rollback
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-rotation-and-revocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key rotation and revocation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key rotation and revocation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#what-signing-does-and-does-not-buy-you" class="md-nav__link">
+  <a href="#what-signing-versioning-and-rotation-do-and-do-not-buy-you" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What signing does and does not buy you
+        What signing, versioning and rotation do and do not buy you
       
     </span>
   </a>
@@ -1724,7 +1768,7 @@ or a raw <code>.bin</code>, and wraps it in a 32-byte header:</p>
 <tr>
 <td>8</td>
 <td><code>image_version</code></td>
-<td>monotonic — <code>--set-version</code>, reported back by the device</td>
+<td>monotonic — <code>--set-version</code>; <strong>enforced</strong>, see <a href="#anti-rollback">anti-rollback</a></td>
 </tr>
 <tr>
 <td>12</td>
@@ -1738,8 +1782,13 @@ or a raw <code>.bin</code>, and wraps it in a 32-byte header:</p>
 </tr>
 <tr>
 <td>20</td>
-<td>flags, reserved</td>
-<td></td>
+<td><code>flags</code></td>
+<td>reserved</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>key_id</code></td>
+<td>which key of the device's ring signed this — <code>--key-id</code>, default 0</td>
 </tr>
 <tr>
 <td>28</td>
@@ -1839,7 +1888,69 @@ going to run.</p>
 <p><code>alloy keygen</code> writes the private key with a <code>.pub</code> sibling; commit only the <code>.pub</code>. Anyone
 holding the private key can update every device that trusts it.</p>
 </div>
-<h3 id="what-signing-does-and-does-not-buy-you">What signing does and does not buy you<a class="headerlink" href="#what-signing-does-and-does-not-buy-you" title="Permanent link">&para;</a></h3>
+<h2 id="anti-rollback">Anti-rollback<a class="headerlink" href="#anti-rollback" title="Permanent link">&para;</a></h2>
+<p>A signature cannot catch a <strong>downgrade</strong>. A replayed old image is one the vendor really did
+sign, so every crypto check passes; the attacker's move is to push last year's firmware to
+reopen a bug you fixed. Only a version policy stops that, and alloy enforces one.</p>
+<p><strong>The rule.</strong> At the moment it would <em>accept</em> an image, the device refuses anything whose
+<code>image_version</code> is below the highest version it can prove it already holds — the floor is the
+running firmware's version, raised by whatever verifies in the slot about to be overwritten.
+The refusal is a NAK carrying <code>ota_error::rollback</code>, which <code>alloy update</code> prints in words.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>update<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0<span class="w"> </span>old_v1.img
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">error: device rejected update (ota_error 11: rollback — the device already holds a version at</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="go">or above this image&#39;s, and refuses the downgrade. Re-issue with a higher --set-version. The</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="go">target slot was rewritten and is now garbage; the running firmware is untouched)</span>
+</span></code></pre></div>
+<p><strong>Why it survives power loss.</strong> There is no new persistent record to tear: the floor is derived
+from the <em>slots themselves</em>, which is the same flash the boot-state's guarantees already rest
+on. After an automatic rollback moves the device back to the older slot, the newer image is
+still sitting in the other slot, so the floor does not drop.</p>
+<div class="admonition warning">
+<p class="admonition-title">Read these three limits before you rely on it</p>
+<ul>
+<li><strong>It is an accept-time rule, never a boot-time one.</strong> A confirmed <em>older</em> slot stays
+  bootable forever — deliberately. The anti-brick fallback is "if the planned slot does not
+  verify, boot the other one", and after any update the other one is by definition older. A
+  boot-time floor would refuse exactly the fallback that keeps devices alive.</li>
+<li><strong>A device on which neither slot verifies has a floor of 0</strong> and accepts anything. That is
+  required: a blank or bricked board must always be recoverable. So the claim is <em>a working
+  device refuses a downgrade</em>, not <em>a device refuses a downgrade</em>.</li>
+<li><strong>The refusal happens at FINISH</strong>, after the image has already been streamed and the
+  inactive slot erased. The running firmware is untouched and nothing is armed, but the
+  operator is left with a garbage inactive slot. The NAK text says so.</li>
+</ul>
+</div>
+<h2 id="key-rotation-and-revocation">Key rotation and revocation<a class="headerlink" href="#key-rotation-and-revocation" title="Permanent link">&para;</a></h2>
+<p>One baked-in public key is a single point of failure for the whole fleet: the day it leaks,
+every device trusts the attacker. A device can instead trust a small <strong>ring</strong> of keys, and the
+image header's <code>key_id</code> says which one signed it.</p>
+<div class="language-toml highlight"><span class="filename">alloy.toml</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">[ota]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">public_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;retired&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;keys/rotate.pub&quot;</span><span class="p">]</span><span class="w">   </span><span class="c1"># key_id 0 retired, key_id 1 live</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">4</span><span class="w"> </span>--sign<span class="w"> </span>keys/rotate.key<span class="w"> </span>--key-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span>app_b.img
+</span></code></pre></div>
+<p>The ring is <strong>positional</strong>: entry <em>i</em> is what <code>--key-id i</code> selects. A key is retired by
+replacing its entry with <code>"retired"</code>, never by deleting it — deleting entry 0 would silently
+re-point every image that names key 0 at what used to be key 1. A retired entry is emitted as 32
+zero bytes and is refused before Ed25519 is ever called. Codegen refuses a ring that is empty,
+entirely retired, or contains the same key twice (retiring one of a duplicate pair would quietly
+do nothing).</p>
+<p>Exactly <strong>one</strong> signature check runs regardless of ring size — <code>key_id</code> selects a key, it never
+triggers a try-every-key sweep, and it is inside both the header CRC and the signed bytes, so it
+cannot be re-pointed by an attacker.</p>
+<p>Backward compatibility is by construction: <code>key_id</code> occupies the <code>reserved</code> u16 that every image
+ever produced wrote as zero, so old images select ring entry 0 and <code>header_version</code> stays 1.
+<code>public_key = "..."</code> still works and means a ring of one.</p>
+<div class="admonition danger">
+<p class="admonition-title">Revocation requires shipping a new bootloader — say it plainly</p>
+<p>The ring is <code>.rodata</code>, baked in at build time. Retiring a key takes effect only on devices
+that <em>receive the bootloader containing the new ring</em>, which must itself be signed by a key
+they already trust. There is no over-the-air revocation message, because a revocation floor
+would need persistent state <code>ota::boot_store</code> cannot hold (it stores exactly one <code>u32</code>).
+Until the new bootloader lands, a device keeps trusting the leaked key. Plan the rotation
+<em>before</em> you need it: ship a second key in the ring while the first is still healthy.</p>
+</div>
+<h3 id="what-signing-versioning-and-rotation-do-and-do-not-buy-you">What signing, versioning and rotation do and do not buy you<a class="headerlink" href="#what-signing-versioning-and-rotation-do-and-do-not-buy-you" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1862,25 +1973,29 @@ holding the private key can update every device that trusts it.</p>
 </tr>
 <tr>
 <td>Replaying an <strong>older, genuinely signed</strong> image</td>
-<td><strong>No</strong> — <code>image_version</code> is carried and reported, but the device does not yet refuse a downgrade</td>
+<td>Yes — refused with <code>ota_error::rollback</code>, on a device that has a working slot to derive a floor from (<a href="#anti-rollback">limits</a>)</td>
 </tr>
 <tr>
 <td>Key compromise</td>
-<td><strong>No</strong> — one public key is baked in; there is no rotation or revocation yet</td>
+<td>Partly — a ring lets a leaked key be retired without bricking the fleet, but retiring it requires shipping a new <strong>bootloader</strong>; there is no field revocation</td>
+</tr>
+<tr>
+<td>Per-device keys (one compromised unit ≠ the fleet)</td>
+<td>No — alloy has no RNG/TRNG HAL, so a per-device keypair would have to be generated on the host, which means the host held the private half</td>
 </tr>
 <tr>
 <td>Reading firmware off the device</td>
-<td>No — signing is authenticity, not confidentiality</td>
+<td>No — signing is authenticity, not confidentiality (see <code>alloy secure</code> for RDP)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="the-wire-protocol">The wire protocol<a class="headerlink" href="#the-wire-protocol" title="Permanent link">&para;</a></h2>
 <p>Stop-and-wait, every frame CRC-32 guarded, and deliberately dull:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>SOF 0x7E | type u8 | seq u8 | len u16 | payload[len] | crc32 u32
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>                     └────── crc32 covers type..payload ──────┘
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>host → device:  HELLO · DATA · FINISH
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>device → host:  INFO  · ACK  · NAK
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>SOF 0x7E | type u8 | seq u8 | len u16 | payload[len] | crc32 u32
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>                     └────── crc32 covers type..payload ──────┘
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>host → device:  HELLO · DATA · FINISH
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>device → host:  INFO  · ACK  · NAK
 </span></code></pre></div>
 <p>The device is a pure responder — <strong>all</strong> retransmission policy lives in the host. A duplicate
 <code>DATA</code> sequence number (a retransmit after a lost ACK) is re-ACKed without rewriting flash;
@@ -1899,11 +2014,19 @@ no reset button gets updated.)</p>
 </div>
 <h2 id="what-this-is-proven-against">What this is proven against<a class="headerlink" href="#what-this-is-proven-against" title="Permanent link">&para;</a></h2>
 <p>The whole lifecycle runs in CI, on emulated hardware, as a <strong>blocking gate</strong> — install → trial
-boot → confirm → survive a power cycle → install a bad app → three watchdog self-resets →
-autonomous rollback, driven by the real <code>alloy update</code> client over a real serial link, on all
-three flash families. The signing gate adds three cases: a correctly signed image boots, a
-tampered image with both CRCs repaired is rejected, and an image signed by the wrong key is
-rejected. Both rejections land the device back in update mode.</p>
+boot → confirm → survive a power cycle → <strong>a replayed older image is refused</strong> → install a bad
+app → three watchdog self-resets → autonomous rollback, driven by the real <code>alloy update</code> client
+over a real serial link, on all three flash families.</p>
+<p>The downgrade leg and the bad-update leg are each other's control: in one run the same device
+must refuse version 0 and, minutes later, accept version 2. A floor that refused everything
+would look identical if you only ran the first half.</p>
+<p>The signing gate adds six cases across two bootloaders. On a single-key bootloader: a correctly
+signed image boots, a tampered image with both CRCs repaired is rejected, and an image signed by
+the wrong key is rejected. On a bootloader whose ring is <code>["retired", key B]</code> — the state a fleet
+is in the day after its signing key leaked: an image signed by B with <code>--key-id 1</code> boots; the
+<em>very same file</em> that boots on the single-key bootloader is refused, which is the revocation
+claim; and an image signed by the retired key but stamped <code>--key-id 1</code> is refused, because
+<code>key_id</code> selects and never bypasses. Every rejection lands the device back in update mode.</p>
 <p>See <a href="../emulation/">Emulation</a> for how that harness works.</p>
 <div class="admonition warning">
 <p class="admonition-title">Honest status</p>
@@ -1918,8 +2041,14 @@ emulation either:</p>
   <em>not</em> exercised — only the layer above them is. (The G0 driver has, separately, been reported
   working on silicon through the NVM key/value store, whose boot counter survives resets.)</li>
 </ul>
-<p>The full lifecycle — bad image, exhausted trials, automatic rollback — and the signed-image
-oracle run on <code>nucleo_g071rb</code> only; SAME70 runs the install/trial/confirm half.</p>
+<p>The full lifecycle — bad image, exhausted trials, automatic rollback, the refused downgrade —
+and the signed-image / key-rotation oracle run on <code>nucleo_g071rb</code> only; SAME70 runs the
+install/trial/confirm half.</p>
+<p>The anti-rollback and key-rotation gates are <strong>emulation and host-test claims only</strong>. No
+board has run them. In particular, "a retired key can never authenticate again" is proven
+against Renode and against a native host test using the same vendored Monocypher the
+firmware links — not against silicon, and not against a device whose flash an attacker can
+write directly.</p>
 <p>Chips whose flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout
 at all rather than a guessed one, so <code>--slot</code> is simply not offered for them.</p>
 </div>
