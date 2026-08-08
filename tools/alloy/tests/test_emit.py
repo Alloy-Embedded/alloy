@@ -144,3 +144,87 @@ def test_cmake_lfs_defines_do_not_leak_onto_other_vendored_packages(tmp_path):
     mono_blocks = [b for b in blocks if "monocypher.c" in b]
     assert len(mono_blocks) == 1
     assert "LFS_" not in mono_blocks[0]
+
+
+# ------------------------------------------------ registers in two windows
+
+
+def _rl78_adc() -> dict:
+    """The RL78/G14 ADC as it really is: ADM0/ADS in the SFR area, ADM2 in the
+    2nd SFR area about 64 KB below. One peripheral, two address windows."""
+    return {
+        "vendor": "renesas", "ip": "adc_g14", "class": "adc",
+        "registers": [
+            {"name": "ADM0", "offset": "0x00", "size": 8, "access": "rw",
+             "fields": [{"name": "adcs", "bit": 7, "width": 1}]},
+            {"name": "ADS", "offset": "0x01", "size": 8, "access": "rw", "fields": []},
+            {"name": "ADM2", "offset": "0x00", "size": 8, "access": "rw",
+             "window": "sfr2", "fields": [{"name": "adtyp", "bit": 0, "width": 1}]},
+        ],
+    }
+
+
+def test_a_window_gets_its_own_struct() -> None:
+    """Laid out as one struct these would span ~64 KB, on a part with 4 KB of
+    RAM. Each window is its own overlay and the chip data binds a base to it."""
+    from alloy_cli.emit.ip import emit_ip_header
+
+    out = emit_ip_header(_rl78_adc())
+    assert "struct regs {" in out
+    assert "struct regs_sfr2 {" in out
+    # Offsets are relative to the window's OWN base, so both start at zero.
+    assert "static_assert(offsetof(regs, ADM0) == 0x00);" in out
+    assert "static_assert(offsetof(regs_sfr2, ADM2) == 0x00);" in out
+
+
+def test_a_field_names_the_struct_its_register_landed_in() -> None:
+    """The accessor is the only thing tying a field to its window; pointing it
+    at `regs` for a register in `regs_sfr2` would not compile, which is the
+    good case — but it would be an emitter bug either way."""
+    from alloy_cli.emit.ip import emit_ip_header
+
+    out = emit_ip_header(_rl78_adc())
+    assert "alloy::field<&regs::ADM0, 7u, 1>" in out
+    assert "alloy::field<&regs_sfr2::ADM2, 0u, 1>" in out
+
+
+def test_a_window_name_must_be_usable_as_a_struct_name() -> None:
+    from alloy_cli.emit.common import EmitError
+    from alloy_cli.emit.ip import emit_ip_header
+
+    doc = _rl78_adc()
+    doc["registers"][2]["window"] = "2nd SFR"
+    with pytest.raises(EmitError, match="lowercase identifier"):
+        emit_ip_header(doc)
+
+
+def test_eight_and_sixteen_bit_registers_emit_their_own_width() -> None:
+    from alloy_cli.emit.ip import emit_ip_header
+
+    doc = {
+        "vendor": "renesas", "ip": "mixed", "class": "gpio",
+        "registers": [
+            {"name": "P", "offset": "0x00", "size": 8, "access": "rw", "fields": []},
+            {"name": "CNT", "offset": "0x02", "size": 16, "access": "rw", "fields": []},
+            {"name": "W", "offset": "0x04", "size": 32, "access": "ro", "fields": []},
+        ],
+    }
+    out = emit_ip_header(doc)
+    assert "rw8 P;" in out and "rw16 CNT;" in out and "ro32 W;" in out
+    # A one-byte gap: the old word-granular padding rejected this outright.
+    assert "std::uint8_t _reserved0[1];" in out
+
+
+def test_a_register_must_be_aligned_to_its_own_width() -> None:
+    from alloy_cli.emit.common import EmitError
+    from alloy_cli.emit.ip import emit_ip_header
+
+    doc = {
+        "vendor": "renesas", "ip": "bad", "class": "gpio",
+        "registers": [
+            {"name": "A", "offset": "0x00", "size": 8, "access": "rw", "fields": []},
+            {"name": "B", "offset": "0x01", "size": 16, "access": "rw", "fields": []},
+        ],
+    }
+    with pytest.raises(EmitError, match="2-byte aligned"):
+        emit_ip_header(doc)

@@ -16,6 +16,8 @@ never silently ship a wrong overlay.
 
 from __future__ import annotations
 
+import re
+
 from typing import Any
 
 from .common import BANNER, EmitError
@@ -29,6 +31,41 @@ _ACCESS_TYPE = {
     ("rw", 16): "rw16", ("ro", 16): "ro16", ("wo", 16): "wo16",
     ("rw", 8): "rw8", ("ro", 8): "ro8", ("wo", 8): "wo8",
 }
+
+
+def _layout(vendor: str, ip: str, regs: list[dict[str, Any]],
+            sname: str) -> tuple[list[str], list[str]]:
+    """The member list and offsetof asserts for one address window."""
+    members: list[str] = []
+    asserts: list[str] = []
+    cursor = 0
+    pad = 0
+    # Offsets are relative to the window's OWN base, always — the struct starts
+    # where the chip data says the window starts, not at its first register.
+    # Rebasing to the first register looked tidier and moved every address: a
+    # block whose first register is at 0xC0 lost the 192 bytes of padding that
+    # put it there.
+    for reg in regs:
+        offset = int(reg["offset"], 16)
+        size = int(reg.get("size", 32))
+        if (reg["access"], size) not in _ACCESS_TYPE:
+            raise EmitError(f"{vendor}/{ip}: {reg['name']} is {size}-bit {reg['access']}; "
+                            f"registers may be 8, 16 or 32 bits")
+        width = size // 8
+        if offset % width:
+            raise EmitError(f"{vendor}/{ip}: {reg['name']} at {reg['offset']} is not "
+                            f"{width}-byte aligned, which its width requires")
+        if offset < cursor:
+            raise EmitError(f"{vendor}/{ip}: register {reg['name']} overlaps previous register")
+        if offset > cursor:
+            members.append(f"        std::uint8_t _reserved{pad}[{offset - cursor}];")
+            pad += 1
+        members.append(f"        {_ACCESS_TYPE[(reg['access'], size)]} {reg['name']};")
+        asserts.append(
+            f"    static_assert(offsetof({sname}, {reg['name']}) == {reg['offset']});"
+        )
+        cursor = offset + width
+    return members, asserts
 
 
 def emit_ip_header(doc: dict[str, Any]) -> str:
@@ -50,34 +87,35 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                 f"    static constexpr unsigned {reg['name']}_count = {arr['count']}u;"
             )
 
-    cursor = 0
-    pad = 0
+    # A peripheral is not always one contiguous block. RL78 splits several of
+    # them across the SFR area and the 2nd SFR area, ~64 KB apart: one ADC has
+    # ADM0 at 0xFFF30 and ADM2 at 0xF0010. Laid out as a single struct that is a
+    # 65 KB object on a part with 4 KB of RAM, so each WINDOW gets its own
+    # struct and the chip data binds a base to each. Registers with no window
+    # named land in `regs`, exactly as before.
+    windows: dict[str, list[dict[str, Any]]] = {}
     for reg in regs:
         if reg.get("array"):
             continue
-        offset = int(reg["offset"], 16)
-        size = int(reg.get("size", 32))
-        if (reg["access"], size) not in _ACCESS_TYPE:
-            raise EmitError(f"{vendor}/{ip}: {reg['name']} is {size}-bit {reg['access']}; "
-                            f"registers may be 8, 16 or 32 bits")
-        width = size // 8
-        if offset % width:
-            raise EmitError(f"{vendor}/{ip}: {reg['name']} at {reg['offset']} is not "
-                            f"{width}-byte aligned, which its width requires")
-        if offset < cursor:
-            raise EmitError(f"{vendor}/{ip}: register {reg['name']} overlaps previous register")
-        if offset > cursor:
-            # Padding is bytes now, not words: a gap before an 8-bit register
-            # need not be a multiple of four, and rounding it up would move
-            # every register after it.
-            gap = offset - cursor
-            members.append(f"        std::uint8_t _reserved{pad}[{gap}];")
-            pad += 1
-        members.append(f"        {_ACCESS_TYPE[(reg['access'], size)]} {reg['name']};")
-        asserts.append(
-            f"    static_assert(offsetof(regs, {reg['name']}) == {reg['offset']});"
-        )
-        cursor = offset + width
+        windows.setdefault(reg.get("window") or "", []).append(reg)
+
+    struct_of: dict[str, str] = {}
+    structs: list[str] = []
+    assert_groups: list[str] = []
+    if not windows:
+        # An IP that is entirely register ARRAYS still declares the type: it is
+        # named by drivers and by sizeof, and dropping it is a silent API break.
+        structs.append("    struct regs {\n\n    };")
+    for window, wregs in sorted(windows.items()):
+        sname = "regs" if not window else f"regs_{window}"
+        if window and not re.fullmatch(r"[a-z][a-z0-9_]*", window):
+            raise EmitError(f"{vendor}/{ip}: window name '{window}' must be a "
+                            f"lowercase identifier — it becomes a struct name")
+        members, asserts = _layout(vendor, ip, wregs, sname)
+        for reg in wregs:
+            struct_of[reg["name"]] = sname
+        structs.append("    struct " + sname + " {\n" + "\n".join(members) + "\n    };")
+        assert_groups.extend(asserts)
 
     accessors: list[str] = []
     seen: dict[str, str] = {}
@@ -105,12 +143,14 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                     f"    template <unsigned I>\n"
                     f"        requires (I < {rep['count']}u)\n"
                     f"    static constexpr auto {name} =\n"
-                    f"        alloy::field<&regs::{reg['name']}, {f['bit']}u + I * {rep['stride']}u, {width}>;"
+                    f"        alloy::field<&{struct_of[reg['name']]}::{reg['name']}, "
+                    f"{f['bit']}u + I * {rep['stride']}u, {width}>;"
                 )
             else:
                 accessors.append(
                     f"    static constexpr auto {name} = "
-                    f"alloy::field<&regs::{reg['name']}, {f['bit']}u, {width}>;"
+                    f"alloy::field<&{struct_of[reg['name']]}::{reg['name']}, "
+                    f"{f['bit']}u, {width}>;"
                 )
 
     # Typed register-flags enums: one scoped enum per register, single-bit
@@ -144,8 +184,8 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
             f"template <>\ninline constexpr bool "
             f"reg_flags_enabled<ip::{vendor}::{ip}::{ename}> = true;")
 
-    body = "\n".join(members)
-    assert_block = "\n".join(asserts)
+    body = "\n\n".join(structs)
+    assert_block = "\n".join(assert_groups)
     accessor_block = "\n\n".join(array_consts + accessors)
     enum_block = ("\n\n" + "\n\n".join(enum_blocks)) if enum_blocks else ""
     flags_block = (
@@ -162,9 +202,7 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
 namespace alloy::ip::{vendor} {{
 
 struct {ip} {{
-    struct regs {{
 {body}
-    }};
 
 {assert_block}
 
