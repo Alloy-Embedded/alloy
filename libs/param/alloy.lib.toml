@@ -1,0 +1,15 @@
+[lib]
+name = "param"
+version = "0.1.0"
+description = "Runtime parameter registry — descriptor table, O(1) tick reads, strict/clamped writes, torn-write-safe ping-pong persistence with deferred commit"
+category = "service"
+license = "MIT"
+homepage = "https://github.com/Alloy-Embedded/alloy"
+
+[requires]
+concepts = ["FlashController"]
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

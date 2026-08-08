@@ -49,6 +49,13 @@ summary = "NTC thermistor conversion — divider to resistance, beta (fixed or l
 concepts = []
 source = "path:libs/ntc"
 
+[param]
+version = "0.1.0"
+category = "service"
+summary = "Runtime parameter registry — descriptor table, O(1) tick reads, strict/clamped writes, torn-write-safe ping-pong persistence with deferred commit"
+concepts = ["FlashController"]
+source = "path:libs/param"
+
 [sht31]
 version = "0.1.0"
 category = "sensor"
