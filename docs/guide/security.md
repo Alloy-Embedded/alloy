@@ -88,6 +88,16 @@ Everything is a read-modify-write under field masks from the device database: op
 this tool does not manage (brown-out level, watchdog mode, reset behaviour, boot addresses)
 are read back exactly as they were.
 
+!!! danger "On the G0, this range also contains the factory identity page"
+    The slot layout carves per-device identity out of the **last page of the bootloader region**
+    on uniform-page flash — page 15 on the G0. `--wrp-bootloader` therefore freezes it too, so
+    `alloy provision write` must run **before** `alloy secure apply`, not after. Get it backwards
+    and the write silently does nothing; the provisioning verb's readback is what catches it.
+
+    On the F722 the identity page is its own sector, outside the WRP range, so it stays writable
+    — but RDP level 1 locks the probe out either way. The line order is the same on both:
+    provision, then secure. See [Firmware update](firmware-update.md#mass-programming-the-production-line).
+
 A note on scope: `apply` supports STM32G0 and STM32F72x/F73x. On STM32F76x/F77x, `status`
 works but `apply` refuses — those parts carry a wider `nWRP` field and an `nDBANK` bit that
 changes the whole sector map, and alloy does not model that yet. The refusal says so.

@@ -12,6 +12,26 @@ model maps: an IP absent from _FLASH_PAGE_SIZE simply has no slot layout, it is
 never guessed). Everything is page-aligned so erase operations never straddle a
 region boundary.
 
+There is a fifth region, and it is deliberately NOT a fifth partition: the
+PROVISIONING page (per-device identity — serial, MAC, hw revision — written once
+at the factory). Adding a region would have moved slot_b_base, and a slot base
+is the one number a fielded device can never be told about: the update it would
+need in order to learn the new layout is written using the old one. So identity
+is carved out of a region that already exists —
+
+  * uniform-page flash: the LAST erase page of the bootloader region. Every
+    published address (bootloader_base/size, both slot bases, the store) stays
+    byte-identical to what shipped; only the bootloader's LINK WINDOW shrinks by
+    a page, so a bootloader that grows into the identity page fails the LINK
+    instead of erasing a customer's serial number on the next reflash.
+  * F7 sector flash: the medium sector the layout already marked "reserved"
+    (_sector_layout_f7). Nothing moves there at all, not even the link window —
+    the F7 bootloader needs its full 32 KB for Ed25519.
+
+Identity is therefore OUTSIDE both slots, and outside the image the updater
+writes — which is the entire point: `alloy update` can replace the firmware a
+thousand times and the serial number is still the serial number.
+
 The app is linked INSIDE its slot at a fixed offset: the updater streams
 [image_header(32) | payload] into the slot, and the payload's first bytes are
 padding up to APP_OFFSET so the vector table lands at slot_base + APP_OFFSET —
@@ -53,6 +73,14 @@ _BOOTLOADER_BYTES = 32 * 1024
 # alloy/ota/boot_store.hpp needs exactly two independently-erasable pages).
 _STORE_PAGES = 2
 
+# Per-device identity on UNIFORM-PAGE flash: ONE erase page, taken from the tail
+# of the bootloader region (see the module docstring for why it is not its own
+# partition; the F7 sector layout places it differently and ignores this). One
+# page is enough by a wide margin — the record is 64 bytes and the smallest page
+# in the matrix is 2 KB — and every extra page is a page of bootloader budget:
+# on SAME70, where a page is 8 KB, it is a quarter of the whole region.
+_PROVISION_PAGES = 1
+
 
 @dataclass(frozen=True)
 class Region:
@@ -71,6 +99,21 @@ class SlotLayout:
     slot_b: Region
     store: Region
     store_page_b: int  # base of the store's second independently-erasable page
+    #: Factory-written per-device identity. Independently erasable, never part
+    #: of an update image. May sit INSIDE `bootloader` (uniform-page flash) —
+    #: use `bootloader_code` for anything that links or loads code.
+    provision: Region
+
+    @property
+    def bootloader_code(self) -> Region:
+        """The bootloader's LINK window: the bootloader region minus the
+        identity page when the identity was carved out of its tail. Everything
+        that places code must use this; everything that describes the flash
+        PARTITION (WRP ranges, `secure status`) uses `bootloader`."""
+        b, p = self.bootloader, self.provision
+        if b.base <= p.base < b.base + b.size:
+            return Region(b.base, p.base - b.base)
+        return b
 
 
 # Every flash-controller IP the slot layout understands (uniform pages or the
@@ -140,8 +183,18 @@ def slot_layout(chip: dict[str, Any]) -> SlotLayout:
     slot_a = Region(base + bl_size, slot_size)
     slot_b = Region(slot_a.base + slot_size, slot_size)
     store = Region(base + total - store_size, store_size)
+    prov_size = _PROVISION_PAGES * page
+    # A bootloader region that is all identity and no bootloader is not a
+    # layout; refuse rather than emit one (unreachable at _BOOTLOADER_BYTES =
+    # 32 KB for every page size in _FLASH_PAGE_SIZE, and asserted in the tests).
+    if prov_size >= bl_size:
+        raise EmitError(
+            f"chip {chip['part']}: erase page {page} B leaves no bootloader "
+            f"once the {prov_size} B identity page is carved out of the "
+            f"{bl_size} B bootloader region")
+    provision = Region(base + bl_size - prov_size, prov_size)
     return SlotLayout(page, Region(base, bl_size), slot_a, slot_b, store,
-                      store.base + page)
+                      store.base + page, provision)
 
 
 def f7_sector_spans(total: int) -> list[int]:
@@ -164,14 +217,21 @@ def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout
     4 small sectors, one medium (4x small), then big sectors (8x small); small is
     16K on 512K parts and 32K on 1M/2M. The layout uses the natural boundaries —
 
-        s0+s1: bootloader | s2+s3: boot-state store | s4 (medium): reserved
+        s0+s1: bootloader | s2+s3: boot-state store | s4 (medium): identity
         first big sector: slot A | second big sector: slot B | rest: reserved
 
     Two small sectors for the bootloader because one (16 K on 512 K parts) can't
     hold the UART bootloader PLUS Ed25519 verification — see _BOOTLOADER_BYTES.
     The store gets two whole sectors so its ping-pong pages are independently
     erasable, and the updater's erase stride (page_size = one big sector) hits
-    each slot sector exactly once."""
+    each slot sector exactly once.
+
+    The medium sector s4 was already reserved, so the factory identity page goes
+    THERE rather than eating into the bootloader as it does on uniform-page
+    flash — the F7 bootloader has no spare 32 KB to give. The region is a whole
+    medium sector (4x small) and the identity record uses its first 64 bytes;
+    the rest stays reserved. It is the smallest independently erasable unit the
+    F7 map offers outside the parts already spoken for."""
     small = 32 * 1024 if total >= 1024 * 1024 else 16 * 1024
     big = small * 8
     bigs_base = base + 4 * small + 4 * small  # 4 small + 1 medium (4x small)
@@ -185,6 +245,7 @@ def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout
         slot_b=Region(bigs_base + big, big),
         store=Region(base + 2 * small, 2 * small),
         store_page_b=base + 3 * small,
+        provision=Region(base + 4 * small, 4 * small),  # the medium sector
     )
 
 
@@ -216,6 +277,17 @@ inline constexpr std::uint32_t app_offset = {APP_OFFSET:#x}u;
 
 inline constexpr std::uintptr_t bootloader_base = {lay.bootloader.base:#010x}u;
 inline constexpr std::uint32_t bootloader_size = {lay.bootloader.size}u;
+// How much of that region the bootloader's CODE may occupy — the rest is the
+// factory identity page below. `alloy build --slot bl` links into exactly this
+// window, so a bootloader that outgrows it fails the LINK.
+inline constexpr std::uint32_t bootloader_code_size = {lay.bootloader_code.size}u;
+
+// Per-device identity, written at the FACTORY through the debug probe and never
+// by an update (see alloy/provision.hpp). Outside both slots on purpose: it
+// survives every `alloy update` and every rollback. One independently-erasable
+// page/sector; the record occupies its first bytes.
+inline constexpr std::uintptr_t provision_base = {lay.provision.base:#010x}u;
+inline constexpr std::uint32_t provision_size = {lay.provision.size}u;
 
 inline constexpr std::uintptr_t slot_a_base = {lay.slot_a.base:#010x}u;
 inline constexpr std::uint32_t slot_a_size = {lay.slot_a.size}u;

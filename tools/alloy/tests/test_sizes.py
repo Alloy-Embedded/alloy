@@ -76,7 +76,7 @@ def test_slot_regions_come_from_the_slot_emitter(tmp_path: Path) -> None:
     report = sizes.size_report(_FakeProject(tmp_path),
                                _chip(DEVICES_ROOT, "st/stm32g071rb"))
     names = [r["name"] for r in report["slots"]["regions"]]
-    assert names == ["bootloader", "slot_a", "slot_b", "store"]
+    assert names == ["bootloader", "slot_a", "slot_b", "store", "provision"]
     # Nothing built yet, so fitting is unknown rather than falsely true.
     assert all(r["fits"] is None for r in report["slots"]["regions"])
 

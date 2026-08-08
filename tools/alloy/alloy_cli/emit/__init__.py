@@ -133,7 +133,11 @@ def _slot_window(chip: dict[str, Any], slot: str | None) -> tuple[int, int] | No
 
     lay = slot_layout(chip)  # raises EmitError when the chip can't do A/B
     if slot == "bl":
-        return lay.bootloader.base, lay.bootloader.size
+        # bootloader_CODE, not the whole bootloader region: on uniform-page
+        # flash its last page is the factory identity page. Linking into the
+        # full region would let a growing bootloader overwrite a device's serial
+        # number at the next reflash, silently. Here it fails the link instead.
+        return lay.bootloader_code.base, lay.bootloader_code.size
     region = lay.slot_a if slot == "a" else lay.slot_b
     return region.base + APP_OFFSET, region.size - APP_OFFSET
 

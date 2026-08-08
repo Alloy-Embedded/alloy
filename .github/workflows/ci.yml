@@ -471,6 +471,58 @@ jobs:
             --variable RESC_EMPTY:/tmp/empty.resc \
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/bootloader_boots.robot"
+      # PER-DEVICE FACTORY IDENTITY. `alloy provision write -o` encodes the same
+      # 64-byte record the probe would program; the machines below place it at
+      # the layout's provision_base and boot examples/factory out of slot A
+      # through the REAL bootloader, so the identity read happens inside a
+      # product firmware after an A/B boot rather than in a test harness.
+      # The three refusals are the claim: erased page, foreign bytes and a
+      # one-bit corruption each get their OWN verdict.
+      - name: build the line-test app + its identity fixtures
+        working-directory: alloy/examples/factory
+        run: |
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot a
+          arm-none-eabi-objcopy -O binary \
+            .alloy/build-tree/nucleo_g071rb/out/factory.elf /tmp/factory.bin
+          uv run --project ../../tools/alloy alloy image /tmp/factory.bin \
+            --set-version 1 -o /tmp/factory.img
+          uv run --project ../../tools/alloy alloy provision write \
+            --serial ALY-0001-A7 --mac 02:1a:2b:3c:4d:5e --hw-rev 3 --batch 42 \
+            -o /tmp/id.bin
+          # ONE BIT flipped inside the serial, everything else identical: only
+          # the record's CRC can tell these two apart.
+          python3 -c "import pathlib;b=bytearray(pathlib.Path('/tmp/id.bin').read_bytes());b[8]^=1;pathlib.Path('/tmp/id_corrupt.bin').write_bytes(bytes(b))"
+          # Erased flash reads all-ones. Renode ZERO-fills memory nobody loaded,
+          # so the blank case must load 0xFF explicitly or it would silently
+          # exercise the foreign-bytes path instead (observed, not theorised).
+          python3 -c "import pathlib;pathlib.Path('/tmp/erased.bin').write_bytes(b'\xff'*64)"
+          # the address comes from the GENERATED layout, never hardcoded here
+          prov=$(grep -oE 'provision_base = 0x[0-9a-f]+' \
+            .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
+          echo "provision_base=$prov" >> "$GITHUB_ENV"
+      - name: run the provisioning oracle
+        run: |
+          for k in provisioned blank corrupt foreign; do
+            cat > /tmp/prov_$k.resc <<EOF
+          using sysbus
+          mach create "prov$k"
+          machine LoadPlatformDescription @$repl
+          sysbus LoadELF @$bl_elf
+          sysbus LoadBinary @/tmp/factory.img $slot_a
+          EOF
+          done
+          echo "sysbus LoadBinary @/tmp/id.bin $provision_base" >> /tmp/prov_provisioned.resc
+          echo "sysbus LoadBinary @/tmp/erased.bin $provision_base" >> /tmp/prov_blank.resc
+          echo "sysbus LoadBinary @/tmp/id_corrupt.bin $provision_base" >> /tmp/prov_corrupt.resc
+          # prov_foreign.resc deliberately loads NOTHING at provision_base
+          renode-test \
+            --variable RESC_PROVISIONED:/tmp/prov_provisioned.resc \
+            --variable RESC_BLANK:/tmp/prov_blank.resc \
+            --variable RESC_CORRUPT:/tmp/prov_corrupt.resc \
+            --variable RESC_FOREIGN:/tmp/prov_foreign.resc \
+            --variable UART:sysbus.usart2 \
+            --variable PROVISION_BASE:$provision_base \
+            "$GITHUB_WORKSPACE/alloy/tests/emulation/provision.robot"
       # SECOND FAMILY: the SAME bootloader source on the STM32F7's sector-based
       # flash (st_flash_f7: mixed 16K/64K/128K sectors; slots on natural sector
       # boundaries). The platform carries MTD.STM32F4_FlashController, so slot

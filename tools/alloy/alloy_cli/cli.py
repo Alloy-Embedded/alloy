@@ -778,6 +778,74 @@ def cmd_secure_apply(args: argparse.Namespace) -> int:
     return 0
 
 
+def _provision_context(args: argparse.Namespace):
+    """(board, chip, layout) for `alloy provision`. Unlike `alloy secure`, a
+    missing slot layout is FATAL here: the identity page's address comes from
+    the layout, and there is no honest fallback address to guess."""
+    from .devices import load_chip  # noqa: PLC0415
+    from .emit.slots import slot_layout  # noqa: PLC0415
+
+    project = _project(args)
+    board = project.load_board()
+    chip = load_chip(project.devices_root, board["chip"])
+    try:
+        layout = slot_layout(chip)
+    except EmitError as exc:
+        raise EmitError(
+            f"chip {chip['part']} has no A/B slot layout, so it has no "
+            f"provisioning page either — identity lives in a region the layout "
+            f"carves out. ({exc})") from exc
+    return board, chip, layout
+
+
+def cmd_provision_write(args: argparse.Namespace) -> int:
+    import tempfile  # noqa: PLC0415
+
+    from . import provision  # noqa: PLC0415
+
+    identity = provision.make_identity(args.serial, args.mac, args.hw_rev,
+                                       args.batch)
+    if args.output:  # offline: encode to a file, no probe, no board needed
+        Path(args.output).write_bytes(provision.encode(identity))
+        print(f"wrote {provision.RECORD_SIZE}-byte identity record to "
+              f"{args.output} — {identity.describe()}")
+        return 0
+
+    board, chip, layout = _provision_context(args)
+    base, size = provision.provision_region(layout)
+    print(f"{board['id']} ({chip['vendor']}/{chip['part']})")
+    print(f"  identity page: {base:#010x} +{size} B (from the slot layout)")
+    print(f"  writing: {identity.describe()}")
+    if args.dry_run:
+        print("dry run — openocd would execute:")
+        for cmd in provision.write_commands(base, Path("<record>.bin"),
+                                            Path("<readback>.bin")):
+            print(f"  {cmd}")
+        return 0
+    with tempfile.TemporaryDirectory(prefix="alloy-provision-") as tmp:
+        on_device = provision.run_write(board, chip, layout, identity, Path(tmp))
+    print(f"verified by readback: {on_device.describe()}")
+    print("this device is provisioned. `alloy secure apply` LAST — on "
+          "uniform-page flash it write-protects this very page.")
+    return 0
+
+
+def cmd_provision_read(args: argparse.Namespace) -> int:
+    import tempfile  # noqa: PLC0415
+
+    from . import provision  # noqa: PLC0415
+
+    if args.file:  # offline: decode a record someone already dumped
+        print(provision.decode(Path(args.file).read_bytes()).describe())
+        return 0
+    board, chip, layout = _provision_context(args)
+    base, _ = provision.provision_region(layout)
+    with tempfile.TemporaryDirectory(prefix="alloy-provision-") as tmp:
+        identity = provision.run_read(board, chip, layout, Path(tmp))
+    print(f"{board['id']} @ {base:#010x}: {identity.describe()}")
+    return 0
+
+
 def cmd_ports(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -1373,6 +1441,40 @@ def main() -> None:
                             "touching the device")
     p_sap.set_defaults(func=cmd_secure_apply)
     for p in (p_sst, p_sap):
+        p.add_argument("--project", default=".")
+        p.add_argument("--board", help="override the board declared in alloy.toml")
+
+    p_prov = sub.add_parser(
+        "provision", help="write/read a board's per-device factory identity "
+                          "(serial, MAC) in the layout's provisioning page — "
+                          "outside both slots, so updates never touch it")
+    prov_sub = p_prov.add_subparsers(dest="provision_cmd", required=True)
+    p_pw = prov_sub.add_parser(
+        "write", help="program this device's identity through the probe and "
+                      "verify it by reading it back")
+    p_pw.add_argument("--serial", required=True,
+                      help="device serial number, at most 16 ASCII bytes")
+    p_pw.add_argument("--mac", help="EUI-48, aa:bb:cc:dd:ee:ff (multicast and "
+                                    "broadcast addresses are refused)")
+    p_pw.add_argument("--hw-rev", type=int, default=0, metavar="N",
+                      help="board/PCB revision (0..65535, default 0)")
+    p_pw.add_argument("--batch", type=int, default=0, metavar="N",
+                      help="factory lot id (0..4294967295, default 0)")
+    p_pw.add_argument("-o", "--output", metavar="FILE",
+                      help="OFFLINE: write the encoded record to a file "
+                           "instead of a device (no probe, no board needed) — "
+                           "for mass pre-programming and test fixtures")
+    p_pw.add_argument("--dry-run", action="store_true",
+                      help="print the openocd commands and exit without "
+                           "touching the device")
+    p_pw.set_defaults(func=cmd_provision_write)
+    p_pr = prov_sub.add_parser(
+        "read", help="read this device's identity back — always safe, never writes")
+    p_pr.add_argument("--file", metavar="FILE",
+                      help="OFFLINE: decode a previously dumped record instead "
+                           "of reading a device")
+    p_pr.set_defaults(func=cmd_provision_read)
+    for p in (p_pw, p_pr):
         p.add_argument("--project", default=".")
         p.add_argument("--board", help="override the board declared in alloy.toml")
 

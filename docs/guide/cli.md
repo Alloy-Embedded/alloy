@@ -145,6 +145,24 @@ $ alloy update --image-b app_b.img --port /dev/ttyUSB0
 The full story — slots, trial boots, rollback, signing — is in
 [Firmware update](firmware-update.md).
 
+## Give a board its identity
+
+| Command | What it does |
+| --- | --- |
+| `alloy provision write --serial <sn> [--mac <m>] [--hw-rev N] [--batch N]` | program this board's factory identity through the probe and verify it by reading it back |
+| `alloy provision write … -o <file>` | **offline**: encode the record to a file (no probe, no board) — mass pre-programming and test fixtures |
+| `alloy provision read [--file <dump>]` | read the identity back — always safe, never writes |
+
+```console
+$ alloy provision write --serial ALY-0001-A7 --mac 02:1a:2b:3c:4d:5e
+  identity page: 0x08007800 +2048 B (from the slot layout)
+verified by readback: serial 'ALY-0001-A7'  mac 02:1a:2b:3c:4d:5e  hw_rev 0  batch 0
+```
+
+Identity lives outside both firmware slots, so updates never touch it. **Provision before
+`alloy secure apply`** — locking the part first makes this impossible. The whole production
+line order, and a worked script for it, is in [Firmware update](firmware-update.md).
+
 ## Lock a production unit
 
 | Command | What it does |

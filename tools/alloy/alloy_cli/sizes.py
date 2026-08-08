@@ -110,7 +110,11 @@ def _slots(chip: dict[str, Any], flash_used: int | None) -> dict[str, Any] | Non
                      else image <= region.size}
             for name, region in (
                 ("bootloader", layout.bootloader), ("slot_a", layout.slot_a),
-                ("slot_b", layout.slot_b), ("store", layout.store))
+                ("slot_b", layout.slot_b), ("store", layout.store),
+                # Factory identity — inside the bootloader region on uniform-page
+                # flash, its own sector on the F7. Listed so `alloy size` shows
+                # the page a bootloader must not grow into.
+                ("provision", layout.provision))
         ],
     }
 

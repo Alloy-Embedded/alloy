@@ -8,6 +8,8 @@ that can't support A/B.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from alloy_cli.emit.common import EmitError
@@ -18,6 +20,11 @@ from alloy_cli.emit.slots import (
     has_slot_layout,
     slot_layout,
 )
+
+DEVICES_ROOT = Path(__file__).resolve().parents[3].parent / "alloy-devices"
+skip_no_devices = pytest.mark.skipif(
+    not (DEVICES_ROOT / "chips").is_dir(),
+    reason="alloy-devices checkout not present next to alloy/")
 
 
 def _g0_chip(flash_size: int = 128 * 1024) -> dict:
@@ -188,3 +195,82 @@ def test_the_default_argument_is_one_of_the_backends() -> None:
 
     default = inspect.signature(emit_linker_script).parameters["arch_ns"].default
     assert default in _BACKENDS
+
+
+# ------------------------------------------- the factory provisioning page
+#
+# Identity has to be readable by firmware WITHOUT being part of the updatable
+# image. That is one address claim and one non-overlap claim, and both are
+# checked here rather than trusted.
+
+
+def test_provision_page_is_the_last_page_of_the_bootloader_region() -> None:
+    lay = slot_layout(_g0_chip())
+    assert lay.provision.size == lay.page_size
+    assert lay.provision.base == lay.bootloader.base + lay.bootloader.size - lay.page_size
+    assert lay.provision.base % lay.page_size == 0
+
+
+def test_carving_identity_out_moves_no_published_address() -> None:
+    """The reason identity is not its own partition. A fielded device learns a
+    new layout only through an update, and that update is written using the OLD
+    layout — so a moved slot base can never be shipped. Every address below is
+    what alloy emitted before the provisioning page existed."""
+    lay = slot_layout(_g0_chip())
+    assert (lay.bootloader.base, lay.bootloader.size) == (0x08000000, 32 * 1024)
+    assert lay.slot_a.base == 0x08008000
+    assert lay.slot_b.base == lay.slot_a.base + lay.slot_a.size
+    assert lay.store.base == 0x08000000 + 128 * 1024 - 2 * 2048
+
+
+def test_the_bootloader_link_window_shrinks_by_exactly_the_identity_page() -> None:
+    """What DOES change: the link window. A bootloader that grows into the
+    identity page must fail the LINK, not silently erase a customer's serial
+    number on the next reflash."""
+    lay = slot_layout(_g0_chip())
+    assert lay.bootloader_code.base == lay.bootloader.base
+    assert lay.bootloader_code.size == lay.bootloader.size - lay.page_size
+    assert lay.bootloader_code.base + lay.bootloader_code.size == lay.provision.base
+
+
+def test_f7_puts_identity_in_the_reserved_medium_sector_not_the_bootloader() -> None:
+    """The F7 bootloader needs its whole 32 KB for Ed25519, and the F7's erase
+    unit is a sector, so there is no 'last page' to give. The sector map already
+    left the medium sector unused — that is where identity goes, and the
+    bootloader's link window is untouched."""
+    lay = slot_layout(_f7_chip())
+    assert lay.provision.base == 0x08010000          # sector 4 (medium)
+    assert lay.provision.size == 4 * 16 * 1024   # medium = 4x small(16K)
+    assert lay.bootloader_code.size == lay.bootloader.size  # nothing taken
+    assert lay.provision.base + lay.provision.size <= lay.slot_a.base
+
+
+@skip_no_devices
+def test_identity_never_overlaps_anything_an_update_writes() -> None:
+    """The load-bearing claim of the whole feature, over EVERY chip in the
+    database rather than the two hand-written fixtures: the provisioning page
+    intersects neither slot nor the boot-state store, so `alloy update` and an
+    automatic rollback cannot reach it."""
+    from alloy_devices.loader import load_database
+
+    checked = 0
+    for chip in load_database(DEVICES_ROOT).chips.values():
+        if not has_slot_layout(chip):
+            continue
+        lay = slot_layout(chip)
+        prov = (lay.provision.base, lay.provision.base + lay.provision.size)
+        for name in ("slot_a", "slot_b", "store"):
+            region = getattr(lay, name)
+            other = (region.base, region.base + region.size)
+            assert prov[1] <= other[0] or other[1] <= prov[0], (
+                f"{chip['part']}: provisioning page {prov} overlaps {name} {other}")
+        assert lay.provision.size % lay.page_size == 0 or lay.page_size % lay.provision.size == 0
+        checked += 1
+    assert checked > 10, "the sweep found almost no chips — the fixture is wrong"
+
+
+def test_the_emitted_header_carries_the_provisioning_page() -> None:
+    src = emit_slots_header(_g0_chip())
+    assert "provision_base = 0x08007800u" in src
+    assert "provision_size = 2048u" in src
+    assert "bootloader_code_size = 30720u" in src
