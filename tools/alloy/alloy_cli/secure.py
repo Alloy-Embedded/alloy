@@ -316,7 +316,9 @@ class ApplyPlan:
     """Everything `secure apply` will do, computed before any device write.
 
     ``pokes`` (F7) is the raw (address, value) list — the SAME list the Renode
-    witness drives, so what CI proves is what the tool does. ``openocd`` is
+    witness drives, so what the witness proves is what the tool does (the
+    witness runs wherever Renode is installed — locally, not in CI's pytest
+    job, which has no Renode and skips it). ``openocd`` is
     the command list handed to the probe; on G0 it uses openocd's stm32l4x
     option driver (masked read-modify-write in the driver) instead of raw
     pokes, because that path is community-proven on G0 silicon.

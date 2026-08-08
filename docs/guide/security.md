@@ -123,7 +123,9 @@ Honesty section, per alloy's usual rule: claims carry their evidence.
 * **Community-proven tooling**: the G0 path uses openocd's `stm32l4x option_write` /
   `option_load` driver, which is what the openocd project ships for G0 silicon.
 * **Not witnessed by alloy on silicon**: actual readout blocking, the 1 → 0 mass erase, RDP2
-  permanence, WRP refusing an erase, persistence across power cycles. These rest on
+  permanence, WRP refusing an erase, persistence across power cycles — and the claim that
+  option registers stay *readable* under level 1 (what makes `status` "always safe" there)
+  is likewise RM-only. These rest on
   RM0444/RM0431 and ST's own tooling behaviour. No board was sacrificed to verify them —
   RDP is exactly the thing you do not test casually on your only board. Renode's G0 has no
   flash-controller model at all, and its F7 model has no protection *semantics* (RDP has no
