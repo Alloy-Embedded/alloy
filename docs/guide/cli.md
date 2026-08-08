@@ -145,6 +145,16 @@ $ alloy update --image-b app_b.img --port /dev/ttyUSB0
 The full story — slots, trial boots, rollback, signing — is in
 [Firmware update](firmware-update.md).
 
+## Lock a production unit
+
+| Command | What it does |
+| --- | --- |
+| `alloy secure status` | read + decode the RDP level and WRP ranges over the probe — always safe |
+| `alloy secure apply [--rdp N] [--wrp-bootloader]` | program option bytes — destructive transitions refuse without explicit flags and a typed phrase |
+
+Signed images mean nothing if the flash can be read or replaced over SWD. The guards are the
+point: read [Security](security.md) before using `apply` — especially what `--rdp 2` means.
+
 ## Give the project its own CI
 
 | Command | What it does |

@@ -119,6 +119,7 @@ nav:
   - Ship it:
       - guide/emulation.md
       - guide/firmware-update.md
+      - guide/security.md
       - guide/crash-reports.md
   - Tools:
       - guide/cli.md

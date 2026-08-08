@@ -670,6 +670,101 @@ def cmd_keygen(args: argparse.Namespace) -> int:
     return 0
 
 
+def _secure_context(args: argparse.Namespace):
+    """(board, chip, option map, slot layout|None) for `alloy secure`."""
+    from . import secure  # noqa: PLC0415
+    from .devices import load_chip, load_registers  # noqa: PLC0415
+    from .emit.slots import slot_layout  # noqa: PLC0415
+
+    project = _project(args)
+    board = project.load_board()
+    chip = load_chip(project.devices_root, board["chip"])
+    omap = secure.option_map(chip, load_registers(project.devices_root))
+    try:
+        layout = slot_layout(chip)
+    except EmitError:
+        layout = None  # honest: status will say there is nothing to derive
+    return board, chip, omap, layout
+
+
+def cmd_secure_status(args: argparse.Namespace) -> int:
+    from . import secure  # noqa: PLC0415
+
+    board, chip, omap, layout = _secure_context(args)
+    status = secure.read_status(board, chip, omap, layout)
+    print(secure.format_status(board["id"], chip, omap, layout, status))
+    if status.rdp_level == 0:
+        print("hint: `alloy secure apply --rdp 1 --wrp-bootloader` locks a "
+              "production unit (guarded — it explains itself first)")
+    return 0
+
+
+def cmd_secure_apply(args: argparse.Namespace) -> int:
+    from . import secure  # noqa: PLC0415
+
+    board, chip, omap, layout = _secure_context(args)
+    if args.wrp_bootloader and layout is None:
+        print(f"error: chip {chip['part']} has no A/B slot layout — the "
+              f"bootloader WRP range derives from it, so there is nothing to "
+              f"protect yet", file=sys.stderr)
+        return 1
+
+    status = secure.read_status(board, chip, omap, layout)
+    print(secure.format_status(board["id"], chip, omap, layout, status))
+    print()
+
+    wrp_needed = bool(args.wrp_bootloader) and not status.bootloader_protected
+    if args.wrp_bootloader and status.bootloader_protected:
+        print("bootloader already write-protected — WRP unchanged")
+
+    guards = secure.apply_guards(
+        chip["part"], status.rdp_level, args.rdp, wrp_needed,
+        accept_mass_erase=args.accept_mass_erase, permanent=args.permanent)
+    for warning in guards.warnings:
+        print(f"WARNING: {warning}\n")
+    if guards.noop:
+        print(guards.noop)
+        return 0
+    if guards.refusal:
+        print(f"error: {guards.refusal}", file=sys.stderr)
+        return 1
+
+    plan = secure.plan_apply(omap, chip, layout, status, args.rdp, wrp_needed)
+    if args.dry_run:
+        print("dry run — openocd would execute:")
+        for cmd in plan.openocd:
+            print(f"  {cmd}")
+        return 0
+
+    # The typed phrase is the confirmation for the destructive/permanent paths;
+    # --yes never bypasses it (it only stands in for the y/N of routine steps).
+    # Both read stdin, so a factory line can pipe them — the warnings above
+    # printed regardless.
+    if guards.phrase:
+        try:
+            typed = input(f"type exactly `{guards.phrase}` to continue: ")
+        except EOFError:
+            typed = ""
+        if typed.strip() != guards.phrase:
+            print("error: confirmation phrase did not match — nothing was "
+                  "written", file=sys.stderr)
+            return 1
+    elif guards.confirm and not args.yes:
+        try:
+            answer = input("proceed? [y/N] ")
+        except EOFError:
+            answer = ""
+        if answer.strip().lower() not in ("y", "yes"):
+            print("aborted — nothing was written")
+            return 1
+
+    verified, message = secure.run_apply(board, chip, plan)
+    print(message)
+    if verified:
+        print("run `alloy secure status` any time — it is always safe")
+    return 0
+
+
 def cmd_ports(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -1225,6 +1320,42 @@ def main() -> None:
     p_key.add_argument("--force", action="store_true",
                        help="overwrite an existing private key")
     p_key.set_defaults(func=cmd_keygen)
+
+    p_sec = sub.add_parser(
+        "secure", help="flash readout/write protection (RDP/WRP) via the "
+                       "debug probe — production locking, heavily guarded")
+    sec_sub = p_sec.add_subparsers(dest="secure_cmd", required=True)
+    p_sst = sec_sub.add_parser(
+        "status", help="read + decode the current RDP level and WRP ranges — "
+                       "always safe, never writes")
+    p_sst.set_defaults(func=cmd_secure_status)
+    p_sap = sec_sub.add_parser(
+        "apply", help="program option bytes (RDP level, bootloader WRP). "
+                      "Destructive transitions refuse without explicit flags "
+                      "AND a typed confirmation phrase")
+    p_sap.add_argument("--rdp", type=int, choices=(0, 1, 2),
+                       help="target readout-protection level. 1 -> 0 "
+                            "MASS-ERASES the chip; 2 is PERMANENT")
+    p_sap.add_argument("--wrp-bootloader", action="store_true",
+                       help="write-protect the bootloader region (range "
+                            "derived from the A/B slot layout, never typed)")
+    p_sap.add_argument("--yes", action="store_true",
+                       help="answer y to the routine confirmation (mass-erase "
+                            "and permanent paths still demand their typed "
+                            "phrase)")
+    p_sap.add_argument("--accept-mass-erase", action="store_true",
+                       help="required to regress RDP 1 -> 0: the hardware "
+                            "erases ALL flash before dropping protection")
+    p_sap.add_argument("--permanent", action="store_true",
+                       help="required for --rdp 2: disables the debug port "
+                            "FOREVER — a manufacturing decision")
+    p_sap.add_argument("--dry-run", action="store_true",
+                       help="print the openocd commands and exit without "
+                            "touching the device")
+    p_sap.set_defaults(func=cmd_secure_apply)
+    for p in (p_sst, p_sap):
+        p.add_argument("--project", default=".")
+        p.add_argument("--board", help="override the board declared in alloy.toml")
 
     p_ports = sub.add_parser("ports", help="list serial ports")
     p_ports.add_argument("--json", action="store_true")

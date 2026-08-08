@@ -144,6 +144,21 @@ def slot_layout(chip: dict[str, Any]) -> SlotLayout:
                       store.base + page)
 
 
+def f7_sector_spans(total: int) -> list[int]:
+    """Sector sizes of the F7 single-bank flash (RM0431/RM0385): 4 small, one
+    medium (4x small), then 8x-small big sectors to the end; small is 32 K on
+    1 M+ parts and 16 K below. This is the SAME geometry _sector_layout_f7
+    partitions — `alloy secure` walks it to map a region (the bootloader) to
+    the nWRP sector bits that cover it, so a WRP range can never be hand-typed."""
+    small = 32 * 1024 if total >= 1024 * 1024 else 16 * 1024
+    sizes = [small] * 4 + [4 * small]
+    covered = 8 * small
+    while covered < total:
+        sizes.append(8 * small)
+        covered += 8 * small
+    return sizes
+
+
 def _sector_layout_f7(chip: dict[str, Any], base: int, total: int) -> SlotLayout:
     """F7 flash is SECTOR-based with mixed sizes (RM0431/RM0385, single bank):
     4 small sectors, one medium (4x small), then big sectors (8x small); small is
