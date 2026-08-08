@@ -27,6 +27,10 @@ _ARCH_NS = {
     "armv8m_base": "cortex_m",
     "armv8m_main": "cortex_m",
     "xtensa_lx6": "xtensa",
+    # 16-bit Renesas CISC. Its backend lives in src/alloy/arch/rl78/ and is a
+    # bring-up subset: no tick (the part has no core timer — a board has to
+    # spend one of its TAU channels), and no image hand-off (no VTOR).
+    "rl78_s3": "rl78",
 }
 
 

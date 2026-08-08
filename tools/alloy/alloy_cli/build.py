@@ -39,6 +39,8 @@ def _arch_ns(chip: dict[str, Any]) -> str:
         return "cortex_m"
     if arch.startswith("xtensa"):
         return "xtensa"
+    if arch.startswith("rl78"):
+        return "rl78"
     raise EmitError(f"unsupported architecture {arch}")
 
 
@@ -53,7 +55,39 @@ def _xtensa_prefix() -> str:
     )
 
 
+def _rl78_prefix() -> str:
+    """Where rl78-elf-gcc is.
+
+    Unlike arm-gnu-toolchain and xtensa-esp-elf there is no vendor binary
+    release alloy can fetch: Renesas' own GNU distribution lags, and mainline
+    GCC's rl78 backend has to be built. So this looks and then says exactly
+    what to do, rather than offering a download that does not exist.
+
+    NOTE the C++ requirement: alloy needs a HOSTED libstdc++, not the
+    freestanding one — 13 headers include <chrono>, which is outside the C++23
+    freestanding subset. A toolchain configured --disable-hosted-libstdcxx
+    compiles the arch backend and then fails on the framework.
+    """
+    if found := shutil.which("rl78-elf-gcc"):
+        return str(Path(found).with_name("rl78-elf-"))
+    candidate = Path.home() / ".alloy/tools/rl78-elf/bin/rl78-elf-gcc"
+    if candidate.exists():
+        return str(candidate.with_name("rl78-elf-"))
+    raise EmitError(
+        "rl78-elf toolchain not found — looked on PATH and ~/.alloy/tools/rl78-elf.\n"
+        "There is no binary release to fetch; build one from mainline GCC:\n"
+        "  binutils --target=rl78-elf, then GCC --target=rl78-elf --with-newlib\n"
+        "  --enable-languages=c,c++  (do NOT pass --disable-hosted-libstdcxx:\n"
+        "  alloy needs <chrono>, which freestanding libstdc++ does not ship)"
+    )
+
+
 def _cpu_flags(chip: dict[str, Any]) -> str:
+    if _arch_ns(chip) == "rl78":
+        # -mmul=g13 is the hardware multiplier/divider this family carries;
+        # without it GCC calls into libgcc for every multiply. The core is an
+        # S3, which is the default, so it is not spelled again here.
+        return "-mmul=g13"
     if _arch_ns(chip) == "xtensa":
         # The unified xtensa-esp-elf toolchain is multi-core: -mdynconfig
         # selects the concrete core (ESP32 = LX6 little-endian); without it
@@ -76,6 +110,11 @@ def _toolchain_cmake(chip: dict[str, Any], cpu_flags: str) -> str:
     if _arch_ns(chip) == "xtensa":
         prefix = _xtensa_prefix()
         processor = "xtensa"
+        cc, cxx = f"{prefix}gcc", f"{prefix}g++"
+        objcopy, size = f"{prefix}objcopy", f"{prefix}size"
+    elif _arch_ns(chip) == "rl78":
+        prefix = _rl78_prefix()
+        processor = "rl78"
         cc, cxx = f"{prefix}gcc", f"{prefix}g++"
         objcopy, size = f"{prefix}objcopy", f"{prefix}size"
     else:
