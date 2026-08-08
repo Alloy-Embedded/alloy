@@ -641,6 +641,8 @@
       
         
       
+        
+      
     
     
     
@@ -757,6 +759,34 @@
     
   
     Driver libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
   
 
     
@@ -1470,6 +1500,14 @@ prints a different number.</p>
 contradict a misreading of the reference manual. The ADC, DMA and SAME70-flash legs run against
 models <em>this project wrote</em> — a self-authored model cannot falsify a mistake it shares with the
 driver. Treat those as consistency checks, not independent proof.</p>
+<p>The <strong>pin-interrupt</strong> leg sits between the two: it runs against Renode's own
+<code>STM32WBA_EXTI</code>, standing in for the G0's identically-laid-out block — so the port select,
+the trigger selection and the delivery to the right NVIC vector are all genuinely
+falsifiable (verified by breaking each in turn). Two things it <em>cannot</em> check: this model
+leaves <code>IMR1</code> unimplemented and delivers the interrupt whether or not the driver unmasks
+the line, and it latches <strong>both</strong> edge directions in <code>FPR1</code> where the G0 splits them across
+<code>RPR1</code>/<code>FPR1</code>. So "the driver unmasks correctly" and "the driver clears the right pending
+half" are open until silicon.</p>
 </div>
 <h2 id="writing-a-test">Writing a test<a class="headerlink" href="#writing-a-test" title="Permanent link">&para;</a></h2>
 <p>Tests are <a href="https://robotframework.org">Robot Framework</a> files under <code>tests/emulation/</code>. The
