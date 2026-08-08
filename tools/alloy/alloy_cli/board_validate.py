@@ -148,11 +148,54 @@ def _check_overrides(settings: dict[str, Any],
     return out
 
 
+def _check_image_config(board: dict[str, Any], chip: dict[str, Any]) -> list[dict[str, Any]]:
+    """Configuration the CPU reads at reset, before any code runs.
+
+    A chip declares the region; the board fills it, because the values are the
+    board's decisions — the watchdog interval, the brown-out level, and on RL78
+    the HOCO frequency the whole clock tree derives from. Leaving it blank is
+    legal and almost never intended: the part boots on the erased value, which
+    generally means no watchdog and no brown-out detection. So it is a WARNING
+    that names what was left to chance, not an error.
+
+    Wrong-length or over-wide values ARE errors: those write past the region or
+    silently truncate, and the CPU reads them before anything can complain.
+    """
+    out: list[dict[str, Any]] = []
+    supplied = board.get("image_config") or {}
+    for region in chip.get("image_config") or []:
+        name, size = region["name"], int(region["size"])
+        value = supplied.get(name)
+        if value is None:
+            out.append(_issue(
+                "warning",
+                f"{name} is not set — the CPU reads this at reset and will get "
+                f"{region.get('erased_value', 'the erased value')}: "
+                f"{region['description'].splitlines()[0].strip()}",
+                field=name))
+            continue
+        if not isinstance(value, list) or len(value) != size:
+            out.append(_issue(
+                "error",
+                f"{name} must be exactly {size} byte(s); got "
+                f"{len(value) if isinstance(value, list) else type(value).__name__}",
+                field=name))
+            continue
+        for i, byte in enumerate(value):
+            raw = int(byte, 16) if isinstance(byte, str) else int(byte)
+            if not 0 <= raw <= 0xFF:
+                out.append(_issue("error",
+                                  f"{name}[{i}] = {byte} does not fit a byte",
+                                  field=name))
+    return out
+
+
 def validate_board(board: dict[str, Any], chip: dict[str, Any],
                    registers: dict[str, dict[str, Any]],
                    settings: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Every problem in a board, as located, fixable issues."""
     issues: list[dict[str, Any]] = _check_overrides(settings or {}, board)
+    issues += _check_image_config(board, chip)
     roles = board.get("roles") or {}
     pins = chip.get("pins") or {}
     classes = ip_classes(chip, registers)

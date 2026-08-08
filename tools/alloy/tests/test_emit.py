@@ -228,3 +228,69 @@ def test_a_register_must_be_aligned_to_its_own_width() -> None:
     }
     with pytest.raises(EmitError, match="2-byte aligned"):
         emit_ip_header(doc)
+
+
+# ------------------------------------------- configuration inside the image
+
+
+def _chip_with_option_bytes() -> dict:
+    return {
+        "vendor": "renesas", "part": "R5F104BD", "family": "rl78_g14",
+        "cores": [{"name": "rl78s3", "arch": "rl78_s3"}],
+        "memories": [], "peripherals": {},
+        "image_config": [
+            {"name": "option_bytes", "base": "0x000C0", "size": 4,
+             "erased_value": "0xFF",
+             "description": "watchdog, LVD level, HOCO frequency, debug enable"},
+        ],
+    }
+
+
+def test_unset_image_config_warns_rather_than_passing_quietly() -> None:
+    """The CPU reads these before any code runs. Booting on the erased value is
+    legal and almost never what someone meant, so it must be said out loud —
+    but it is not an error, because a part with no watchdog still runs."""
+    from alloy_cli.board_validate import _check_image_config
+
+    issues = _check_image_config({"id": "x"}, _chip_with_option_bytes())
+    assert len(issues) == 1
+    assert issues[0]["level"] == "warning"
+    assert "option_bytes" in issues[0]["message"]
+    # And it must say what was left to chance, not just that something is unset.
+    assert "watchdog" in issues[0]["message"]
+
+
+def test_a_wrong_length_image_config_is_an_error() -> None:
+    """Too few bytes leaves the rest erased; too many writes past the region.
+    Either way the CPU has already read it by the time anything could complain."""
+    from alloy_cli.board_validate import _check_image_config
+
+    board = {"id": "x", "image_config": {"option_bytes": ["0xEF", "0xFF"]}}
+    issues = _check_image_config(board, _chip_with_option_bytes())
+    assert [i["level"] for i in issues] == ["error"]
+    assert "exactly 4 byte" in issues[0]["message"]
+
+
+def test_a_byte_that_is_not_a_byte_is_an_error() -> None:
+    from alloy_cli.board_validate import _check_image_config
+
+    board = {"id": "x",
+             "image_config": {"option_bytes": ["0xEF", "0x100", "0xFF", "0x85"]}}
+    issues = _check_image_config(board, _chip_with_option_bytes())
+    assert [i["level"] for i in issues] == ["error"]
+    assert "does not fit a byte" in issues[0]["message"]
+
+
+def test_a_complete_image_config_passes() -> None:
+    from alloy_cli.board_validate import _check_image_config
+
+    board = {"id": "x",
+             "image_config": {"option_bytes": ["0xEF", "0xFF", "0xE8", "0x85"]}}
+    assert _check_image_config(board, _chip_with_option_bytes()) == []
+
+
+def test_a_chip_with_no_image_config_is_unaffected() -> None:
+    """Every existing chip: the check must be invisible to them."""
+    from alloy_cli.board_validate import _check_image_config
+
+    assert _check_image_config({"id": "x"}, {"vendor": "st"}) == []
