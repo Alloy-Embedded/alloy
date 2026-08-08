@@ -26,6 +26,7 @@ plus a `macro reset` that re-LoadELF's the bootloader, and -P <monitor_port>.
 
 from __future__ import annotations
 
+import os
 import socket
 import sys
 import time
@@ -44,6 +45,20 @@ from alloy_cli.ota_host import update  # noqa: E402
 # tuned on local timings and expired mid-boot in CI on a device that was working
 # perfectly. A genuinely stuck device still fails; it just fails later.
 PHASE_TIMEOUT_S = 150
+
+#: The watchdog legs get their own budget, and it is the largest in this file.
+#:
+#: They are the only phases whose wall time is set by EMULATION SPEED rather
+#: than by the firmware. The bootloader arms the IWDG for 2 s and jumps into an
+#: app that hangs in a read poll; Renode's IWDG counts VIRTUAL time, so the
+#: reset costs ~2 s of emulated execution — on the order of 10^8 instructions of
+#: an idle loop — and a slow runner turns that into three or four minutes of
+#: real time. At 240 s a GitHub runner having a bad day landed the reset at
+#: t+235.5 s and the run went red with the firmware working perfectly.
+#:
+#: Raise it rather than shrink the test: the leg proves the one thing no unit
+#: test can — that a hung trial recovers with nobody pressing anything.
+WATCHDOG_TIMEOUT_S = int(os.environ.get("ALLOY_E2E_WATCHDOG_TIMEOUT_S", "600"))
 
 
 def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
@@ -135,12 +150,13 @@ def main() -> None:
                     b"trial boot slot A", b"alloy uart_echo ready"], PHASE_TIMEOUT_S, "trial 1/3")
     for n in (2, 3):
         wait_for(link, [b"alloy bootloader", b"trial boot slot A",
-                        b"alloy uart_echo ready"], 240,
+                        b"alloy uart_echo ready"], WATCHDOG_TIMEOUT_S,
                  f"trial {n}/3 (watchdog self-reset, no power button)")
 
     # 6. attempts exhausted -> automatic rollback, again via the watchdog alone
     wait_for(link, [b"alloy bootloader", b"reverted, boot slot B",
-                    b"alloy ota_app ready"], 240, "AUTOMATIC ROLLBACK (autonomous)")
+                    b"alloy ota_app ready"], WATCHDOG_TIMEOUT_S,
+             "AUTOMATIC ROLLBACK (autonomous)")
 
     print("PASS: install -> trial -> confirm -> bad update -> "
           "3 watchdog-reset trials -> autonomous rollback")
