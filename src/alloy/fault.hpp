@@ -66,8 +66,9 @@ struct record {
 void healthy() noexcept;
 
 /// Deliberately crash, through the exact capture/persist/reset path a real
-/// fault takes. The mechanism is a software-pended NMI (an architectural
-/// Cortex-M feature), so it behaves identically on silicon and in emulation —
+/// fault takes. The mechanism is a software-pended NMI — an architectural
+/// Cortex-M feature, so the same trigger SHOULD behave identically on silicon
+/// (witnessed under emulation only; no hardware run has exercised it yet) —
 /// which is what makes the crash plumbing PROVABLE in CI instead of trusted.
 /// Use it once during bring-up or in a test build to confirm the next boot's
 /// take() reports a record with `what == cause::nmi`; never ship a call to it

@@ -124,7 +124,8 @@ status  0x00008200
 
 Honesty over reassurance — the claims above are not all equal:
 
-**Witnessed in CI, every push** (Renode 1.16.1, Cortex-M0 and M7): handler entry through
+**Witnessed under emulation** (a blocking CI leg from the next push on; Renode 1.16.1,
+Cortex-M0 and M7): handler entry through
 both trampolines (NMI pended by firmware, HardFault pended through the NVIC), the capture,
 the `.noinit` record surviving real `SYSRESETREQ` reboots, the consecutive counter counting
 1-2-3-4 across four resets, and the safe-mode park. The deliberate crash in the example is
