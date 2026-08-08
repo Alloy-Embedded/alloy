@@ -42,7 +42,9 @@ def _g071() -> tuple[dict, dict]:
 def test_the_g0_platform_carries_an_exti_and_its_ports() -> None:
     chip, board = _g071()
     repl = emit_renode_platform(chip, board)
-    assert "exti: IRQControllers.STM32WBA_EXTI @ sysbus 0x40021800" in repl
+    # Bounded, not bare: see test_the_exti_window_stops_before_its_neighbour.
+    assert ("exti: IRQControllers.STM32WBA_EXTI @ sysbus "
+            "<0x40021800, +0x800>") in repl
     # Every curated port is present, and each reaches EXTI through the
     # connection group named by its port_index.
     for name, index in (("gpioa", 0), ("gpiob", 1), ("gpioc", 2),
@@ -116,3 +118,68 @@ def test_a_chip_with_no_curated_exti_is_unaffected() -> None:
     repl = emit_renode_platform(chip, _board("nucleo_f722ze"))
     assert "STM32WBA_EXTI" not in repl
     assert "GPIOPort.STM32_GPIOPort" not in repl
+
+
+@skip_no_devices
+def test_the_exti_window_stops_before_its_neighbour() -> None:
+    """A peripheral line with no window takes its size from the MODEL, and a
+    model written for another die can claim far more than the real block.
+
+    STM32WBA_EXTI claims at least 4K. Unbounded at the G0's 0x40021800 it
+    swallowed the flash controller at 0x40022000, so every FLASH_SR/FLASH_CR
+    access landed inside EXTI and was logged as an unhandled offset 0x810/0x814
+    — the emulation looked noisy rather than wrong, which is the worse failure.
+    """
+    chip, board = _g071()
+    platform = emit_renode_platform(chip, board)
+
+    line = next(ln for ln in platform.splitlines() if ln.startswith("exti:"))
+    assert "<" in line, f"exti must carry an explicit window, got: {line}"
+
+    base, size = _window_of(line)
+    flash = int(chip["peripherals"]["flash"]["base"], 16)
+    assert base + size <= flash, (
+        f"exti reaches {base + size:#x}, into the flash controller at {flash:#x}")
+    # And it is the gap, not a constant: 0x40022000 - 0x40021800.
+    assert size == flash - base
+
+
+@skip_no_devices
+def test_the_window_is_the_gap_not_a_hardcoded_number() -> None:
+    """Move the neighbour and the window must move with it — the check that a
+    constant would survive."""
+    chip, board = _g071()
+    moved = copy.deepcopy(chip)
+    moved["peripherals"]["flash"]["base"] = "0x40021c00"   # 0x400 above exti
+
+    line = next(ln for ln in emit_renode_platform(moved, board).splitlines()
+                if ln.startswith("exti:"))
+    _, size = _window_of(line)
+    assert size == 0x400, f"window did not follow the neighbour: {size:#x}"
+
+
+@skip_no_devices
+def test_no_emitted_window_contains_another_peripherals_base() -> None:
+    """The general invariant. Only windows can be checked — a bare line's size
+    lives inside Renode — so this is a floor, not a proof, and every peripheral
+    alloy bounds itself has to clear it."""
+    chip, board = _g071()
+    bases = {n: int(p["base"], 16)
+             for n, p in chip["peripherals"].items() if p.get("base")}
+
+    for line in emit_renode_platform(chip, board).splitlines():
+        if "@ sysbus <" not in line:
+            continue
+        name = line.split(":", 1)[0].strip()
+        base, size = _window_of(line)
+        for other, addr in bases.items():
+            if other != name and base < addr < base + size:
+                pytest.fail(f"{name} <{base:#x}, +{size:#x}> contains "
+                            f"{other} at {addr:#x}")
+
+
+def _window_of(line: str) -> tuple[int, int]:
+    """(base, size) from `name: Model @ sysbus <0xBASE, +0xSIZE>`."""
+    inside = line.split("<", 1)[1].split(">", 1)[0]
+    base, size = (part.strip().lstrip("+") for part in inside.split(","))
+    return int(base, 16), int(size, 16)

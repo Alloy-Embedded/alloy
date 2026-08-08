@@ -335,7 +335,32 @@ def _resolve_exti(chip: dict[str, Any]):
     aperture = min(b - a for a, b in zip(bases, bases[1:]) if b > a)
     resolved = [(g["irq"], irqs[g["irq"]], int(g["first"]), int(g["last"]))
                 for g in sorted(groups, key=lambda g: g["first"])]
-    return name, int(periph["base"], 16), RENODE_EXTI[periph["ip"]], resolved, ports, aperture
+    base = int(periph["base"], 16)
+    return (name, base, RENODE_EXTI[periph["ip"]], resolved, ports, aperture,
+            _window(chip, base))
+
+
+def _window(chip: dict[str, Any], base: int) -> int:
+    """How far a peripheral placed at `base` may reach: up to its next
+    neighbour, never into it.
+
+    Renode takes the size from the MODEL when a line gives none, and a model
+    written for another die can claim far more than the real block. That is not
+    hypothetical: STM32WBA_EXTI claims at least 4K, so an unbounded `exti` at
+    the G0's 0x40021800 swallowed the flash controller at 0x40022000 — every
+    FLASH_SR/FLASH_CR access landed inside EXTI and was logged as an unhandled
+    offset 0x810/0x814 instead of reaching (or visibly missing) its own block.
+
+    The bound is a fact, not a constant: the gap to the next peripheral this
+    chip declares. Same technique as the GPIO aperture above, and it adapts to a
+    die that packs its blocks differently.
+    """
+    higher = sorted(
+        int(p["base"], 16) for p in (chip.get("peripherals") or {}).values()
+        if p.get("base") and int(p["base"], 16) > base
+    )
+    # No neighbour above: the architectural 4K page is the conservative answer.
+    return (higher[0] - base) if higher else 0x1000
 
 
 def renode_supported(chip: dict[str, Any], board: dict[str, Any]) -> bool:
@@ -463,7 +488,8 @@ nvicInput{line47}: Miscellaneous.CombinedInput @ none
 """
     exti = _resolve_exti(chip)
     if exti is not None:
-        exti_name, exti_base, exti_model, exti_groups, exti_ports, exti_ap = exti
+        (exti_name, exti_base, exti_model, exti_groups, exti_ports, exti_ap,
+         exti_win) = exti
         # A pin edge only reaches the CPU if THREE things are modelled: the GPIO
         # port that sources it, the EXTI that selects and latches it, and the OR
         # gates that merge EXTI's per-line outputs onto the few NVIC vectors the
@@ -533,7 +559,7 @@ nvicInput{irqn}: Miscellaneous.CombinedInput @ none
             for _irq_name, irqn, first, last in exti_groups
         )
         platform += f"""
-{exti_name}: {exti_model} @ sysbus {exti_base:#010x}
+{exti_name}: {exti_model} @ sysbus <{exti_base:#010x}, +{exti_win:#x}>
     numberOfOutputLines: {max(g[3] for g in exti_groups) + 1}
 {conns}
 """
