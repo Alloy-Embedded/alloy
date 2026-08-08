@@ -116,6 +116,7 @@ nav:
       - guide/libraries.md
       - guide/products.md
       - guide/adding-a-board.md
+      - guide/testing.md
       - guide/escape-hatch.md
   - Ship it:
       - guide/emulation.md

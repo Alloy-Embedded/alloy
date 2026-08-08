@@ -1037,6 +1037,38 @@ jobs:
           ALLOY_ROOT="$GITHUB_WORKSPACE/alloy" uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy new demo --board nucleo_g071rb
           cd demo
           uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy build
+      # The APPLICATION TEST STORY, end to end and out-of-repo: `alloy build`
+      # above proves the firmware compiles; this proves a company can unit-test
+      # its logic without hardware. It scaffolds --with-tests, runs the suite,
+      # measures coverage of the app header, and then BREAKS one expectation to
+      # prove the suite can go red — a test scaffold that cannot fail is a
+      # decoration, and this is the cheapest place to prove it can.
+      - name: install gcovr (for the coverage leg)
+        run: pip install gcovr
+      - name: scaffold with tests, run them, cover them, then break them
+        run: |
+          set -o pipefail
+          alloy="uv run --project $GITHUB_WORKSPACE/alloy/tools/alloy alloy"
+          cd "$RUNNER_TEMP"
+          ALLOY_ROOT="$GITHUB_WORKSPACE/alloy" $alloy new tested --board nucleo_g071rb --with-tests
+          cd tested
+          $alloy build
+          $alloy test | tee test.log
+          grep -q "100% tests passed" test.log
+          # Coverage of the app's OWN header, not the framework's runner.
+          rm -rf .alloy/host-tests
+          $alloy test --coverage | tee cov.log
+          grep -q "app.hpp" cov.log
+          # The scaffold's tests are meant to cover everything they ship with;
+          # an untested branch added to the template should be noticed here.
+          grep -q "lines: 100" cov.log
+          # NEGATIVE CONTROL — invert one expectation, demand a red run.
+          sed -i 's/ALLOY_CHECK(!t.heating());/ALLOY_CHECK(t.heating());/' tests/test_app.cpp
+          if $alloy test; then
+            echo "NEGATIVE CONTROL FAILED: an inverted expectation still passed"
+            exit 1
+          fi
+          echo "negative control fired: the scaffolded suite can go red"
 
   # SUPPLY CHAIN. Two claims a buyer checks, each with a gate so it cannot rot.
   #

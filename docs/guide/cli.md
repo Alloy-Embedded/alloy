@@ -13,6 +13,7 @@ marked **JSON** emit a versioned envelope on stdout for editors and scripts.
 | --- | --- |
 | `alloy new <name> --board <id>` | scaffold from a curated board (the scaffold *is* the CI-built blink) |
 | `alloy new <name> --chip <id> [--clock <profile>]` | scaffold a **clean, editable board** for any MCU in the database |
+| `alloy new <name> ... --with-tests` | also scaffold a host test suite wired to the concept fakes ([guide](testing.md)) |
 | `alloy boards` — **JSON** | list curated boards |
 | `alloy chips [--vendor st]` — **JSON** | list every MCU you can scaffold for |
 | `alloy set-board <id>` | change the board in `alloy.toml` |
@@ -37,7 +38,9 @@ $ alloy run                 # build → flash → open the monitor
 | `alloy run` | flash + monitor |
 | `alloy gen` | regenerate `.alloy/generated` from the device database |
 | `alloy clean [--all]` | remove per-board build trees |
-| `alloy test [--no-sanitize]` | build + run the host unit tests (ASan/UBSan on by default) |
+| `alloy test [--no-sanitize]` | build + run the host unit tests — the PROJECT's if it has a `tests/`, else the framework's (ASan/UBSan on by default) |
+| `alloy test --coverage` | the same, instrumented, plus a line/branch report over the project's `src/` (needs gcovr) |
+| `alloy test --framework` | run the framework's own suite even from inside a project |
 
 `build`, `flash`, `run` and `gen` share two placement flags:
 

@@ -127,6 +127,15 @@ def _new_from_chip(args: argparse.Namespace, target: Path, alloy_root: Path) -> 
     print(f"created {target}/ — clean board for {args.chip} (clock: {clock})")
     print(f"  edit boards/{board_id}/board.json to add pins/roles for your hardware")
     print(f"  clock profiles for {args.chip}: {', '.join(profiles)}")
+    if getattr(args, "with_tests", False):
+        from . import apptests  # noqa: PLC0415
+
+        # with_main=False: this board has no roles yet, so the test-wired main.cpp
+        # (which opens board::debug_uart) would not compile. src/app.hpp and its
+        # tests name no peripheral and go in as they are.
+        for path in apptests.scaffold(target, target.name, with_main=False):
+            print(f"  + {path.relative_to(target)}")
+        print(f"next:  cd {target} && alloy test     # runs on your laptop, no board")
     print(f"next:  cd {target} && alloy build")
     return 0
 
@@ -165,6 +174,14 @@ def cmd_new(args: argparse.Namespace) -> int:
     (target / "src" / "main.cpp").write_text(_MAIN_CPP)
     (target / ".gitignore").write_text(_GITIGNORE)
     print(f"created {target}/ (board: {args.board}, framework: {alloy_root})")
+    if getattr(args, "with_tests", False):
+        from . import apptests  # noqa: PLC0415
+
+        for path in apptests.scaffold(target, target.name):
+            print(f"  + {path.relative_to(target)}")
+        print(f"next:  cd {target} && alloy test     # runs on your laptop, no board")
+        print(f"       cd {target} && alloy run      # and on the target")
+        return 0
     print(f"next:  cd {target} && alloy run")
     return 0
 
@@ -1189,10 +1206,59 @@ def cmd_emulate(args: argparse.Namespace) -> int:
     )
 
 
+def _cmd_test_project(args: argparse.Namespace, project_tests: Path) -> int:
+    """Run the PROJECT's own host suite (`alloy new --with-tests` scaffolds one).
+    Separate from the framework suite below because it shares almost nothing with
+    it: no lwipopts, no vendored C, and the framework root comes in as a variable
+    rather than being the source dir."""
+    import shutil  # noqa: PLC0415
+
+    from . import apptests  # noqa: PLC0415
+
+    if shutil.which("cmake") is None:
+        print("cmake not found on PATH (needed for the host test build)", file=sys.stderr)
+        return 1
+    project_root = project_tests.parent
+    # load_project() (not _find_alloy_root) so [alloy] root and the [devices] pin
+    # are honoured: a project's tests must compile against the framework the
+    # project declares, not whichever checkout happens to be above the cwd.
+    project = load_project(project_root)
+    build_dir = project_root / ".alloy" / "host-tests"
+    configure = ["cmake", "-S", str(project_tests), "-B", str(build_dir),
+                 f"-DALLOY_ROOT={project.alloy_root}"]
+    if shutil.which("ninja") is not None:
+        configure += ["-G", "Ninja"]
+    if args.no_sanitize:
+        configure += ["-DALLOY_TEST_SANITIZE=OFF"]
+    if getattr(args, "coverage", False):
+        configure += ["-DALLOY_TEST_COVERAGE=ON"]
+    subprocess.run(configure, check=True)
+    subprocess.run(["cmake", "--build", str(build_dir)], check=True)
+    rc = subprocess.run(
+        ["ctest", "--test-dir", str(build_dir), "--output-on-failure"]
+    ).returncode
+    if getattr(args, "coverage", False):
+        # Report even when the tests failed: coverage of a red run is still the
+        # answer to "which line did it not reach?".
+        cov = apptests.coverage_report(build_dir, project_root / "src")
+        rc = rc or cov
+    return rc
+
+
 def cmd_test(args: argparse.Namespace) -> int:
     import shutil  # noqa: PLC0415
 
+    from . import apptests  # noqa: PLC0415
     from .project import _find_alloy_root  # noqa: PLC0415
+
+    # Standing in a project that has its own tests/? Run THOSE. `alloy test` used
+    # to be framework-only, which meant an application's tests had no first-class
+    # way to run and the whole host-testing story was undiscoverable. --framework
+    # forces the old behaviour from inside a project.
+    if not getattr(args, "framework", False):
+        project_tests = apptests.project_suite(Path(getattr(args, "project", ".") or "."))
+        if project_tests is not None:
+            return _cmd_test_project(args, project_tests)
 
     alloy_root = _find_alloy_root(Path.cwd())
     tests_dir = alloy_root / "tests"
@@ -1295,6 +1361,9 @@ def main() -> None:
     p_new_src.add_argument("--chip", help="any MCU id (see `alloy chips`) — makes a clean, "
                                           "editable board you fill in yourself")
     p_new.add_argument("--clock", help="clock profile for --chip (default: the chip's safe profile)")
+    p_new.add_argument("--with-tests", action="store_true",
+                       help="also scaffold a host test suite (src/app.hpp + tests/) "
+                            "wired to the concept fakes — run it with `alloy test`")
     p_new.set_defaults(func=cmd_new)
 
     p_boards = sub.add_parser("boards", help="list known boards")
@@ -1508,9 +1577,16 @@ def main() -> None:
                        help="write the .repl/.resc but do not launch Renode")
     p_emu.set_defaults(func=cmd_emulate)
 
-    p_test = sub.add_parser("test", help="build + run the host unit tests")
+    p_test = sub.add_parser("test", help="build + run the host unit tests "
+                                         "(the project's own, or the framework's)")
+    p_test.add_argument("--project", default=".")
     p_test.add_argument("--no-sanitize", action="store_true",
                         help="disable AddressSanitizer/UBSan")
+    p_test.add_argument("--framework", action="store_true",
+                        help="run the FRAMEWORK suite even from inside a project")
+    p_test.add_argument("--coverage", action="store_true",
+                        help="instrument the project suite and report line coverage "
+                             "(needs gcovr on PATH)")
     p_test.set_defaults(func=cmd_test)
 
     p_fa = sub.add_parser("frame-audit",
