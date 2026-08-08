@@ -27,6 +27,7 @@ from alloy_devices.loader import load_database
 from . import __version__
 from .build import build
 from .emit import generate
+from .devicedb import PinError
 from .emit.common import EmitError
 from .project import Project, ProjectError, load_project
 
@@ -500,6 +501,71 @@ def cmd_chips(args: argparse.Namespace) -> int:
         return 0
     for r in rows:
         print(f"{r['id']:28} {r.get('family', ''):14} {r.get('core') or ''}")
+    return 0
+
+
+def cmd_devices(args: argparse.Namespace) -> int:
+    """Report — and optionally pin — the chip database this project resolves."""
+    import json  # noqa: PLC0415
+
+    from .devicedb import (  # noqa: PLC0415
+        content_digest,
+        declared_version,
+        digest_files,
+        read_pin,
+        write_pin,
+    )
+    from .project import _find_alloy_root, _find_devices_root  # noqa: PLC0415
+
+    root = Path(getattr(args, "project", ".") or ".").resolve()
+    is_project = (root / "alloy.toml").exists()
+    if is_project:
+        # load_project enforces the pin, so `alloy devices` in a pinned project
+        # fails the same way `alloy build` would — the report is never a
+        # friendlier view of a database the build would refuse.
+        project = load_project(root)
+        alloy_root, devices_root = project.alloy_root, project.devices_root
+    else:
+        alloy_root = _find_alloy_root(Path.cwd())
+        devices_root = _find_devices_root(alloy_root)
+
+    if args.pin:
+        if not is_project:
+            print(f"error: {root} is not an alloy project (no alloy.toml)",
+                  file=sys.stderr)
+            return 1
+        section = write_pin(root, devices_root,
+                            version=not args.digest_only,
+                            digest=not args.version_only)
+        print(f"pinned in {root / 'alloy.toml'}:")
+        print("".join(f"  {line}\n" for line in section.splitlines()), end="")
+        return 0
+
+    version = declared_version(devices_root)
+    digest = content_digest(devices_root)
+    pin = read_pin(root) if is_project else {}
+    if getattr(args, "json", False):
+        print(json.dumps({
+            "schema": "alloy.devices.v1",
+            "root": str(devices_root),
+            "version": version,
+            "digest": digest,
+            "files": len(digest_files(devices_root)),
+            "pin": pin or None,
+        }, indent=2))
+        return 0
+    print(f"database  {devices_root}")
+    print(f"version   {version or '(undeclared)'}")
+    print(f"digest    {digest}  ({len(digest_files(devices_root))} files)")
+    if not is_project:
+        print("\n(not in a project — run inside one to see or set its pin)")
+    elif pin:
+        for key in ("path", "version", "digest"):
+            if key in pin:
+                print(f"pinned {key:<8} {pin[key]}")
+    else:
+        print("\nthis project pins nothing — its facts follow whatever database "
+              "is\nresolved at build time. `alloy devices --pin` freezes them.")
     return 0
 
 
@@ -1350,6 +1416,22 @@ def main() -> None:
     p_chips.add_argument("--json", action="store_true", help="machine-readable (IDE integration)")
     p_chips.set_defaults(func=cmd_chips)
 
+    p_devices = sub.add_parser(
+        "devices",
+        help="show — or pin — the chip database this project builds against")
+    p_devices.add_argument("--project", default=".")
+    p_devices.add_argument("--json", action="store_true", help="machine-readable")
+    p_devices.add_argument("--pin", action="store_true",
+                           help="write the resolved version + content digest into "
+                                "alloy.toml [devices], so this project's facts "
+                                "cannot move under a shipped product")
+    p_devices.add_argument("--version-only", action="store_true",
+                           help="with --pin: record only the version (weaker: a "
+                                "checkout can move without changing its version)")
+    p_devices.add_argument("--digest-only", action="store_true",
+                           help="with --pin: record only the content digest")
+    p_devices.set_defaults(func=cmd_devices)
+
     p_chipinfo = sub.add_parser("chip-info",
                                 help="clock profiles + pins + peripherals for one chip (JSON)")
     p_chipinfo.add_argument("chip", help="an MCU id (see `alloy chips`)")
@@ -1616,7 +1698,7 @@ def main() -> None:
     args = parser.parse_args()
     try:
         sys.exit(args.func(args))
-    except (ProjectError, EmitError) as exc:
+    except (ProjectError, EmitError, PinError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as exc:

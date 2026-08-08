@@ -329,6 +329,12 @@ target_include_directories({project.name}.elf PRIVATE
 target_compile_options({project.name}.elf PRIVATE
     -Os -g3
     -ffunction-sections -fdata-sections
+    # Every compiled function writes its own frame size to a .su file beside
+    # its object. Costs nothing in the image (GCC emits a side file; the code
+    # is byte-identical, and scripts/check_reproducible.sh keeps that honest)
+    # and it is the raw material for a whole-program stack bound —
+    # scripts/check_static_limits.sh walks the call graph over these.
+    -fstack-usage
     -Wall -Wextra{repro}
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>

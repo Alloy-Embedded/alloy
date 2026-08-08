@@ -1087,3 +1087,70 @@ jobs:
           assert "lwIP" in notice and "BSD-3-Clause" in notice
           print("sbom: seam-following and all four formats well-formed")
           PY
+
+  # The claims on docs/reference/safety.md, re-derived from linked images on
+  # every push — no heap, no exceptions/RTTI, no recursion, a computed stack
+  # bound — together with the negative controls that make those checks worth
+  # reading (a project that DOES recurse and DOES allocate must be caught, and
+  # -fno-exceptions/-fno-rtti must actually refuse `throw`/`typeid`).
+  #
+  # The second half is the escape hatch (docs/guide/escape-hatch.md): a vendor
+  # CMSIS-shaped header included ABOVE alloy's must still compile, and a vendor
+  # startup file must still fail the link loudly rather than half-working.
+  static-limits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: no heap, no exceptions, no recursion, bounded stack (+ controls)
+        working-directory: alloy
+        run: |
+          bash scripts/check_static_limits.sh \
+            blink nucleo_g071rb \
+            async_blink nucleo_g071rb \
+            escape_hatch nucleo_g071rb \
+            fs nucleo_g0b1re \
+            http_server nucleo_f767zi
+      - name: escape hatch — a vendor startup file must FAIL the link, loudly
+        working-directory: alloy
+        run: |
+          cp -r examples/escape_hatch /tmp/collide
+          rm -rf /tmp/collide/.alloy
+          cat > /tmp/collide/src/startup_vendor.c <<'EOF'
+          extern int main(void);
+          void Reset_Handler(void) { main(); }
+          void Default_Handler(void) { for (;;) {} }
+          EOF
+          cat >> /tmp/collide/alloy.toml <<EOF
+
+          [alloy]
+          root = "$PWD"
+          EOF
+          cd /tmp/collide
+          if uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy build > /tmp/collide.log 2>&1; then
+            echo "FAIL: a vendor startup file linked cleanly next to alloy's"
+            exit 1
+          fi
+          grep -q "multiple definition of \`Reset_Handler'" /tmp/collide.log || {
+            echo "FAIL: the link failed, but not with the documented message"; cat /tmp/collide.log; exit 1; }
+          echo "ok: vendor startup collides at link time, as documented"
+      - name: escape hatch — the app's strong IRQ handler wins over alloy's weak thunk
+        working-directory: alloy/examples/escape_hatch
+        run: |
+          nm .alloy/build-tree/nucleo_g071rb/out/escape_hatch.elf > /tmp/syms.txt
+          grep -qE '^[0-9a-f]+ T TIM2_IRQHandler$' /tmp/syms.txt || {
+            echo "FAIL: TIM2_IRQHandler is not the app's strong definition"; exit 1; }
+          grep -qE '^[0-9a-f]+ W TIM3_IRQHandler$' /tmp/syms.txt || {
+            echo "FAIL: TIM3_IRQHandler is no longer a weak thunk"; exit 1; }
+          echo "ok: strong app handler wins, untouched lines stay weak"

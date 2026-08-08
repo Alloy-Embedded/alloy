@@ -16,6 +16,8 @@ marked **JSON** emit a versioned envelope on stdout for editors and scripts.
 | `alloy boards` — **JSON** | list curated boards |
 | `alloy chips [--vendor st]` — **JSON** | list every MCU you can scaffold for |
 | `alloy set-board <id>` | change the board in `alloy.toml` |
+| `alloy devices` — **JSON** | which chip database this project resolves: root, declared version, content digest |
+| `alloy devices --pin [--version-only\|--digest-only]` | freeze that database into `alloy.toml` `[devices]`, so a shipped product's facts cannot move — see [API stability](../reference/stability.md#pinning-the-chip-database) |
 | `alloy setup [--check] [--family <f>]` | verify / install cross-toolchains into `~/.alloy/tools` |
 | `alloy setup --fetch <dir> [--platform <key>]` | populate a local mirror of the pinned archives, for an air-gapped host — see [Supply chain](supply-chain.md) |
 | `alloy setup --from <dir> [--offline]` | install from that mirror, same sha256 verification, no network |

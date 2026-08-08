@@ -249,7 +249,25 @@ def _find_alloy_root(start: Path) -> Path:
     )
 
 
-def _find_devices_root(alloy_root: Path) -> Path:
+def _find_devices_root(alloy_root: Path, project_root: Path | None = None) -> Path:
+    # A project's [devices] path wins over the environment, exactly as its
+    # [alloy] root does: a shipped product says where its facts come from, and
+    # an operator's shell does not get to move them silently. What DOES catch
+    # such a move is the version/digest pin, which is checked against whatever
+    # this returns — see devicedb.check_pin.
+    if project_root is not None:
+        from .devicedb import PinError, read_pin  # noqa: PLC0415
+
+        if pinned := read_pin(project_root).get("path"):
+            root = Path(pinned).expanduser()
+            if not root.is_absolute():
+                root = (project_root / root).resolve()
+            if not (root / "chips").is_dir():
+                raise PinError(
+                    f"{project_root / 'alloy.toml'}: [devices] path = {pinned} "
+                    f"is not a chip database ({root} has no chips/ dir)"
+                )
+            return root
     if env := os.environ.get("ALLOY_DEVICES_ROOT"):
         return Path(env).resolve()
     sibling = alloy_root.parent / "alloy-devices"
@@ -300,11 +318,24 @@ def load_project(project_dir: Path, board_override: str | None = None,
             )
     else:
         alloy_root = _find_alloy_root(root)
+    devices_root = _find_devices_root(alloy_root, root)
+    # Every verb that loads a project checks the pin, so there is no route that
+    # builds, sizes, flashes or signs against a database the project did not
+    # agree to. A project with no [devices] table pays nothing.
+    #
+    # PinError is deliberately NOT a ProjectError: two callers (cmd_boards and
+    # _roots) catch ProjectError to mean "not inside a project, carry on with
+    # the framework defaults". Wrapping the pin failure in one would let those
+    # two verbs degrade into working against exactly the database the project
+    # refused — the failure this pin exists to prevent, quietly reintroduced.
+    from .devicedb import check_pin  # noqa: PLC0415
+
+    check_pin(root, devices_root)
     return Project(
         root=root,
         name=name,
         board_id=board_id,
         alloy_root=alloy_root,
-        devices_root=_find_devices_root(alloy_root),
+        devices_root=devices_root,
         product_id=product_id,
     )

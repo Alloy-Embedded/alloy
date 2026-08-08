@@ -116,6 +116,7 @@ nav:
       - guide/libraries.md
       - guide/products.md
       - guide/adding-a-board.md
+      - guide/escape-hatch.md
   - Ship it:
       - guide/emulation.md
       - guide/firmware-update.md
@@ -128,3 +129,5 @@ nav:
   - Concepts:
       - reference/architecture.md
       - reference/error-handling.md
+      - reference/stability.md
+      - reference/safety.md

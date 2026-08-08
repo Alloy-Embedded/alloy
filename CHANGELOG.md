@@ -1,5 +1,46 @@
 # Changelog
 
+Versions are `MAJOR.MINOR.PATCH`. What each number is allowed to break, which
+headers and commands are covered, and how much notice a removal gets are
+written down in [docs/reference/stability.md](docs/reference/stability.md).
+Read that before planning a product around a version — in particular the part
+about pinning `alloy-devices`, which carries the register facts and lives in
+its own repo on its own tags.
+
+Entries marked **Deprecated** keep working for at least one MINOR release and
+are removed no earlier than the next MAJOR; each one names its replacement.
+
+## Unreleased
+
+### New
+
+- **`alloy devices`** — report the chip database this project resolves: root,
+  declared version, and a content digest over every schema/register/chip file.
+  `--pin` writes both into `alloy.toml` under `[devices]`, and from then on any
+  verb that loads the project refuses a database that does not match. A
+  `[devices] path` also redirects discovery, ahead of `ALLOY_DEVICES_ROOT`.
+  This closes the hole where a shipped product rebuilt against a moved sibling
+  checkout silently compiled different register offsets.
+- **`docs/reference/stability.md`** — what is public API, what may break in
+  which release, the deprecation window, and how to pin both repos.
+- **`docs/reference/safety.md`** — the properties that hold by construction
+  (no heap, no exceptions/RTTI, no recursion, bounded stack), each with the
+  command that checks it, plus the ones that do **not** hold today.
+- **`docs/guide/escape-hatch.md`** + **`examples/escape_hatch/`** — calling a
+  vendor HAL, poking a register through `alloy::dev::`, and what does and does
+  not collide with CMSIS (nothing at include time; `Reset_Handler` and
+  `SysTick_Handler` at link time; peripheral IRQ handlers silently).
+- **`scripts/check_static_limits.sh`** + **`scripts/static_limits.py`** —
+  recursion, heap, exception/RTTI machinery and a worst-case stack bound read
+  out of a linked ELF, each with a negative control. Firmware is now compiled
+  with `-fstack-usage`, which changes no code bytes.
+- A `static-limits` CI job runs all of the above, plus the two escape-hatch
+  link experiments, on every push.
+
+### Deprecated
+
+- Nothing.
+
 ## 0.3.0 — 2026-08-07
 
 Everything an editor needs to describe a board without reimplementing any of

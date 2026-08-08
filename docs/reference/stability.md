@@ -1,0 +1,239 @@
+# API stability and support
+
+What a company can plan against: which parts of alloy are promised, what a
+version number is allowed to break, how much notice a removal gets, and — the
+sharp one — how a shipped product stops its *chip facts* from moving.
+
+| Question | Answer |
+|---|---|
+| What is public API? | The `alloy::` and `board::` headers, the CLI verbs, the `--json` envelopes, and `alloy.toml`. Enumerated below. |
+| What is internal? | `alloy::arch::`, `alloy::hal::`, any `detail` namespace, `src/alloy/*/vendor/`. |
+| What may break in a MINOR? | Nothing public, except by deprecation-then-removal across two releases. |
+| How long is the deprecation window? | At least one MINOR release, removal no earlier than the next MAJOR. |
+| Can we pin the chip database? | Yes — `[devices]` in `alloy.toml`, by version **and** by content digest. |
+| Is any of this enforced? | The surface is recorded in `tools/alloy/tests/test_stability.py`; deleting a public name fails CI. |
+
+Alloy is `0.x`. That is a real statement, not modesty: until `1.0` a MINOR
+release **may** make a breaking change, and the promise below is that it will
+be announced and given a window, not that it will never happen. Everything on
+this page is what the project holds itself to today; nothing here is a
+contractual support agreement.
+
+---
+
+## The public surface
+
+### Tier 1 — application headers
+
+Headers under `src/alloy/` that application code includes directly. These are
+the ones the in-repo examples use, which is also how the list was built:
+
+```
+alloy/board.hpp     alloy/time.hpp      alloy/delay.hpp     alloy/gpio.hpp
+alloy/uart.hpp      alloy/i2c.hpp       alloy/spi.hpp       alloy/adc.hpp
+alloy/dac.hpp       alloy/pwm.hpp       alloy/can.hpp       alloy/rtc.hpp
+alloy/dma.hpp       alloy/irq.hpp       alloy/wdt.hpp       alloy/flash.hpp
+alloy/log.hpp       alloy/sched.hpp     alloy/fault.hpp     alloy/secure.hpp
+alloy/ota.hpp       alloy/provision.hpp alloy/concepts.hpp  alloy/fastcode.hpp
+alloy/async/{task,executor,delay,i2c,spi,dma}.hpp
+alloy/net/{socket,http,lwip}.hpp        alloy/ota/{signed,uart_transport}.hpp
+alloy/drivers/…     alloy/dsp/…         alloy/util/…
+```
+
+`alloy/board.hpp`, `alloy/device.hpp`, `alloy/product.hpp`,
+`alloy/product_nvm.hpp`, `alloy/slots.hpp` and `alloy/ota_key.hpp` have no file
+in `src/alloy` at all — codegen writes them per board into `.alloy/generated/`.
+Their **names** are public; their **contents** are the chip database's promise,
+which is what `[devices]` below pins.
+
+### Tier 1 — the CLI
+
+Every verb `alloy --help` lists, and every `--json` envelope. Envelopes carry
+their own version in the payload:
+
+```json
+{"schema": "alloy.board_info.v1", …}
+```
+
+A breaking change to an envelope bumps `.v1` to `.v2` and both are emitted for
+the window. A tool that checks the `schema` field will never be silently handed
+a different shape.
+
+### Tier 1 — `alloy.toml`
+
+The tables a project may write: `[project]`, `[board]`, `[alloy]`,
+`[devices]`, `[product]`, `[libs]`, `[ota]`, `[roles.*]`, `[clock]`. Unknown
+keys inside `[devices]` are refused rather than ignored — a typo in a pin is
+the last thing that should fail open.
+
+### Not public
+
+| Surface | Why |
+|---|---|
+| `alloy::arch::` (`src/alloy/arch/…`) | the per-ISA backend; portable code never names it, and a new backend reshapes it |
+| `alloy::hal::` (`src/alloy/hal/…`) | the per-IP peripheral drivers the generated `board.hpp` instantiates; they move whenever the data does |
+| any `detail` namespace | implementation of the header it sits in |
+| `src/alloy/net/vendor/`, `src/alloy/fs/vendor/`, `third_party/` | upstream trees, on upstream's terms — see the [NOTICE](https://github.com/Alloy-Embedded/alloy/blob/main/NOTICE) |
+| `alloy::dev::` | generated register facts — stable in *shape*, but its content is the chip database's version, not alloy's |
+
+A test asserts that `alloy::arch` is not declared outside `arch/`, so the
+boundary cannot erode quietly.
+
+---
+
+## What each number means
+
+| Change | Bumps |
+|---|---|
+| new board, new chip, new peripheral, new verb, new `--flag` | MINOR |
+| bug fix that does not change a documented behaviour | PATCH |
+| removing or renaming a Tier-1 name; changing an envelope's shape without a new `.vN`; making a previously accepted `alloy.toml` invalid | MAJOR |
+| anything under "Not public" | any release, no notice |
+| a new chip fact, a corrected register offset | **alloy-devices**, not alloy — see below |
+
+### The deprecation window
+
+1. The release that deprecates a name keeps it working, marks it
+   **Deprecated** in `CHANGELOG.md`, and names the replacement.
+2. It keeps working for at least one further MINOR release.
+3. It is removed no earlier than the next MAJOR.
+
+`CHANGELOG.md` carries a `### Deprecated` section in every release, even when
+the answer is "nothing" — an empty section is a claim; a missing one is a
+question.
+
+### The docs are versioned too
+
+`mkdocs` publishes with `mike`: a tag becomes `/<version>/` and `latest`, and
+`main` becomes `/dev/`. Documentation for the version you pinned does not
+disappear when the next one ships.
+
+---
+
+## Pinning the chip database
+
+This is the part that matters most and is easiest to miss.
+
+The register offsets, memory maps, IRQ numbers and clock trees a build compiles
+do **not** live in this repo. They live in `alloy-devices`, which is resolved at
+build time — from `ALLOY_DEVICES_ROOT`, from a sibling checkout, or from an
+installed wheel, in that order. A product built from a repo checkout therefore
+gets *whatever that checkout is today*.
+
+That is not hypothetical. `alloy-devices` `0.3.0` is tagged, and its main branch
+has already changed schema since the tag while still calling itself `0.3.0`.
+
+### The failure it causes
+
+Move one register offset in the database and rebuild:
+
+```console
+$ sed -i 's/offset: "0x14"/offset: "0x40"/' registers/st/gpio_v2.yaml   # ODR
+$ cd my-project && alloy gen
+generated 20 file(s) -> .alloy/generated/nucleo_g071rb
+```
+
+Nothing complained. The generated header now says:
+
+```cpp
+static_assert(offsetof(regs, ODR) == 0x40);
+```
+
+Every write to that pin now lands on a different register. The firmware builds,
+flashes, and behaves differently on the bench with no version, no warning and
+no diff in your own repository.
+
+### The pin
+
+```console
+$ alloy devices
+database  /opt/alloy-devices
+version   0.3.0
+digest    sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551  (477 files)
+
+this project pins nothing — its facts follow whatever database is
+resolved at build time. `alloy devices --pin` freezes them.
+
+$ alloy devices --pin
+pinned in /home/me/my-project/alloy.toml:
+  [devices]
+  version = "0.3.0"
+  digest = "sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551"
+```
+
+Now the same edit is caught before a single file is generated:
+
+```console
+$ alloy gen
+error: chip database CONTENT mismatch: alloy.toml pins
+  [devices] digest = "sha256:77e851f7…"
+but /opt/alloy-devices hashes to
+  sha256:5d6007db…
+The facts this project would compile are not the facts it was pinned to.
+Check out the pinned database, or re-pin with `alloy devices --pin` if the
+move was intended.
+```
+
+### The three keys
+
+```toml
+[devices]
+path    = "/opt/alloy-devices"   # optional: WHERE. Wins over ALLOY_DEVICES_ROOT.
+version = "0.3.0"                # optional: what it calls itself. Also ">=0.3.0".
+digest  = "sha256:…"             # optional: what it actually IS.
+```
+
+* `path` only redirects discovery. It takes precedence over the environment,
+  exactly as `[alloy] root` does — a shipped product says where its facts come
+  from, and a shell variable does not get to move them.
+* `version` and `digest` are **assertions**, checked against whatever was
+  resolved, by any route. An operator who points `ALLOY_DEVICES_ROOT` at a
+  different database still trips the pin. That is what makes it load-bearing
+  rather than advisory.
+* `version` compares release numbers (`0.3.0`, `>=0.3.0`) — it is not PEP 440,
+  and anything else is refused rather than guessed.
+* `digest` covers every file under `schema/`, `registers/` and `chips/`, path
+  and content both, so a rename is caught even when no byte changed. It ignores
+  READMEs, changelogs and editor droppings, so a prose commit does not
+  invalidate a shipped product's pin.
+
+The check runs in `load_project`, so **every** verb that opens a project —
+`gen`, `build`, `flash`, `size`, `image`, `sbom` — refuses together. There is no
+route that quietly builds against the wrong facts.
+
+### Which pin to use
+
+| Situation | Pin |
+|---|---|
+| a released product, a certification package, a build you must reproduce | `digest` (with `version` for readability) |
+| a library or example that should track the database | `version = ">=0.3.0"` |
+| a corporate build server with the database at a fixed path | `path` + `digest` |
+| day-to-day development against a moving sibling checkout | none |
+
+### And the framework itself
+
+The Python side pins the database the ordinary way — `tools/alloy/pyproject.toml`
+depends on `alloy-devices==0.3.0`, an exact `==`. Be aware of one development
+wart: `[tool.uv.sources]` overrides that dependency with the sibling checkout
+in editable mode, so **a development checkout is never version-checked by pip
+resolution**. The `[devices]` pin is what covers that case, which is why it
+asserts against the resolved root rather than against installed metadata.
+
+To pin the framework too, `[alloy] root` records the checkout `alloy new`
+scaffolded against; an installed wheel embeds framework and boards as package
+data, so pinning the wheel version pins both.
+
+---
+
+## What this page does not promise
+
+* **No LTS branch and no security-fix backports.** Fixes land on `main` and
+  ship in the next release. If you need a supported old line, that is a
+  conversation, not a policy.
+* **No ABI stability.** Everything is headers and templates; there is no
+  pre-built alloy library to link against, so "ABI" has no meaning here yet.
+* **No promise about `alloy-devices` schema.** It has its own repo, its own
+  tags and its own changelog, and it changes more often than alloy does. Pin
+  it; do not assume it.
+* **Nothing about certification.** See [Safety posture](safety.md) for what is
+  and is not true today.
