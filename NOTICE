@@ -1,0 +1,72 @@
+NOTICE — third-party software distributed with alloy
+====================================================
+
+alloy itself is MIT licensed; see LICENSE.
+
+This file covers the REPOSITORY as distributed: every third-party tree that
+ships in this source checkout, whether or not a given firmware image compiles
+it. That distinction matters, because most of these are opt-in — littlefs is
+only compiled for a board with an fs role, Monocypher only when a project
+configures an OTA signing key, lwIP only when an image uses the network facade.
+
+For the per-image answer — what a SPECIFIC firmware binary actually contains,
+with the file list and the linked toolchain runtime — run:
+
+    alloy sbom                      # human attribution text
+    alloy sbom --format spdx        # SPDX 2.3 JSON
+    alloy sbom --format cyclonedx   # CycloneDX 1.5 JSON
+
+which derives its answer from the build itself rather than from this file.
+Scope note for both: this describes the firmware image. alloy's Python build
+tooling (pyyaml, jsonschema, cryptography, …) runs on the build host, ships in
+no device, and is out of scope here.
+
+
+lwIP
+----
+  Version   2.2.1 (see src/alloy/net/vendor/lwip/src/include/lwip/init.h)
+  Licence   BSD-3-Clause
+  Text      src/alloy/net/vendor/lwip/COPYING
+  Upstream  https://savannah.nongnu.org/projects/lwip/
+  Copyright (c) 2001, 2002 Swedish Institute of Computer Science.
+
+littlefs
+--------
+  Version   2.11 (LFS_VERSION in src/alloy/fs/vendor/lfs.h)
+  Licence   BSD-3-Clause
+  Text      src/alloy/fs/vendor/LICENSE.md
+  Upstream  https://github.com/littlefs-project/littlefs
+  Copyright (c) 2022, The littlefs authors.
+  Copyright (c) 2017, Arm Limited. All rights reserved.
+
+Monocypher
+----------
+  Version   4.0.2 (see third_party/monocypher/README.md — the vendored headers
+            carry no version string of their own)
+  Licence   BSD-2-Clause OR CC0-1.0 (dual; take either)
+  Text      third_party/monocypher/LICENCE.md
+  Upstream  https://monocypher.org/
+  Copyright (c) 2017-2023 Loup Vaillant, Michael Savage, Fabio Scotoni.
+
+
+Not in this repository, but in images built from it
+---------------------------------------------------
+
+RP2040 second-stage bootloader
+  A 256-byte precompiled blob, carried as data in the alloy-devices database
+  (chips/raspberrypi/rp2040.yaml, `boot.license`) and emitted verbatim into the
+  image for RP2040 targets.
+  Licence   BSD-3-Clause — pico-sdk boot_stage2 (boot2_w25q080), taken
+            precompiled and checksummed via rp-rs/rp2040-boot2.
+
+Toolchain runtime (libgcc, newlib, libstdc++)
+  Every image links parts of the cross toolchain's runtime. Which parts is a
+  property of the build, not of this repository, so it is reported per image by
+  `alloy sbom` from the linker's own map file. libgcc and libstdc++ are
+  GPL-3.0-or-later WITH GCC-exception-3.1; newlib is a collection of
+  permissive licences whose text ships with the toolchain (alloy points at the
+  path rather than asserting a single identifier).
+
+alloy-devices
+  The device database is a separate MIT-licensed repository. The register, pin
+  and clock facts it holds are emitted into every generated source file.

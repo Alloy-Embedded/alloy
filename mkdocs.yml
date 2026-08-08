@@ -121,6 +121,7 @@ nav:
       - guide/firmware-update.md
       - guide/security.md
       - guide/crash-reports.md
+      - guide/supply-chain.md
   - Tools:
       - guide/cli.md
       - guide/vscode.md

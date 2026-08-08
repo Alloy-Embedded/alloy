@@ -17,6 +17,8 @@ marked **JSON** emit a versioned envelope on stdout for editors and scripts.
 | `alloy chips [--vendor st]` — **JSON** | list every MCU you can scaffold for |
 | `alloy set-board <id>` | change the board in `alloy.toml` |
 | `alloy setup [--check] [--family <f>]` | verify / install cross-toolchains into `~/.alloy/tools` |
+| `alloy setup --fetch <dir> [--platform <key>]` | populate a local mirror of the pinned archives, for an air-gapped host — see [Supply chain](supply-chain.md) |
+| `alloy setup --from <dir> [--offline]` | install from that mirror, same sha256 verification, no network |
 
 ```console
 $ alloy new blinky --board rp2040_zero && cd blinky
@@ -59,6 +61,7 @@ $ alloy build --board esp32_devkit
 | `alloy crash [--line "…"] [--pc 0x…] [--elf app.elf]` — **JSON** | decode a device's crash report: pc/lr to file:line via addr2line, CFSR bits into words — see [Crash reports](crash-reports.md) |
 | `alloy svd [--chip <id>] [-o out]` | write a CMSIS-SVD file so a debugger can show peripheral registers |
 | `alloy debug-info` — **JSON** | debug-server facts for an IDE launch config |
+| `alloy sbom [--format notice\|spdx\|cyclonedx\|json] [--out f] [--strict]` | what the built image actually contains, derived from what it compiles and links — see [Supply chain](supply-chain.md) |
 
 ```console
 $ alloy size

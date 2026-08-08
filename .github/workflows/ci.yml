@@ -1020,3 +1020,70 @@ jobs:
           ALLOY_ROOT="$GITHUB_WORKSPACE/alloy" uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy new demo --board nucleo_g071rb
           cd demo
           uv run --project "$GITHUB_WORKSPACE/alloy/tools/alloy" alloy build
+
+  # SUPPLY CHAIN. Two claims a buyer checks, each with a gate so it cannot rot.
+  #
+  # (1) Reproducible: the same source produces the same bytes. The gate builds
+  #     an example from TWO different absolute paths and compares sha256 of the
+  #     .elf/.bin/.hex — plus a negative control (a mutated .bin must compare
+  #     unequal) and a scan proving no absolute host path is embedded at all.
+  #     Before -ffile-prefix-map the .bin already matched and the .elf did not;
+  #     this leg is what keeps that fixed.
+  # (2) `alloy sbom` reports what the build ACTUALLY compiles and links, so the
+  #     answer must change with the build seam: the fs example must name
+  #     littlefs, the http_server example must name lwIP, and neither may claim
+  #     the other. A hand-kept inventory cannot pass this.
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: install ninja + rsync
+        run: sudo apt-get update && sudo apt-get install -y ninja-build rsync
+      - name: reproducible — blink built from two different absolute paths
+        working-directory: alloy
+        run: bash scripts/check_reproducible.sh blink nucleo_g071rb
+      - name: reproducible — a littlefs image too (vendored C, not just alloy)
+        working-directory: alloy
+        run: bash scripts/check_reproducible.sh fs nucleo_g0b1re
+      - name: build the two images the SBOM is asserted against
+        run: |
+          cd alloy/examples/fs
+          uv run --project ../../tools/alloy alloy build --board nucleo_g0b1re
+          cd ../http_server
+          uv run --project ../../tools/alloy alloy build --board nucleo_f767zi
+      - name: sbom follows the build seam, and every format parses
+        run: |
+          cd alloy/examples/fs
+          uv run --project ../../tools/alloy alloy sbom --board nucleo_g0b1re --format json > /tmp/fs.json
+          cd ../http_server
+          uv run --project ../../tools/alloy alloy sbom --board nucleo_f767zi --format json > /tmp/http.json
+          uv run --project ../../tools/alloy alloy sbom --board nucleo_f767zi --format spdx > /tmp/http.spdx.json
+          uv run --project ../../tools/alloy alloy sbom --board nucleo_f767zi --format cyclonedx > /tmp/http.cdx.json
+          uv run --project ../../tools/alloy alloy sbom --board nucleo_f767zi --format notice > /tmp/http.notice
+          python3 - <<'PY'
+          import json
+          fs = {c["name"] for c in json.load(open("/tmp/fs.json"))["components"]}
+          http = {c["name"] for c in json.load(open("/tmp/http.json"))["components"]}
+          assert "littlefs" in fs, f"fs image does not report littlefs: {fs}"
+          assert "lwIP" not in fs, f"fs image wrongly reports lwIP: {fs}"
+          assert "lwIP" in http, f"http_server does not report lwIP: {http}"
+          assert "littlefs" not in http, f"http_server wrongly reports littlefs: {http}"
+          spdx = json.load(open("/tmp/http.spdx.json"))
+          assert spdx["spdxVersion"] == "SPDX-2.3"
+          assert len({p["SPDXID"] for p in spdx["packages"]}) == len(spdx["packages"])
+          cdx = json.load(open("/tmp/http.cdx.json"))
+          assert cdx["bomFormat"] == "CycloneDX"
+          notice = open("/tmp/http.notice").read()
+          assert "lwIP" in notice and "BSD-3-Clause" in notice
+          print("sbom: seam-following and all four formats well-formed")
+          PY

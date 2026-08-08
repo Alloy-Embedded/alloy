@@ -11,6 +11,7 @@ Commands:
     clean      remove per-board build trees
     set-board  change the board in alloy.toml
     setup      verify/install toolchains into ~/.alloy/tools
+    sbom       what the built image actually contains (SPDX/CycloneDX/NOTICE)
     debug-info debug-server facts for a board (--json)
 """
 
@@ -1011,11 +1012,18 @@ def cmd_set_board(args: argparse.Namespace) -> int:
 
 
 def cmd_setup(args: argparse.Namespace) -> int:
-    from .toolchains import setup  # noqa: PLC0415
+    from .toolchains import _platform_key, fetch, mirror_dir, platform_keys, setup  # noqa: PLC0415
 
     families = set(args.family) if args.family else None
+    if args.fetch:
+        plats = args.platform or [_platform_key()]
+        if "all" in plats:
+            plats = platform_keys()
+        return fetch(Path(args.fetch).expanduser(), plats, families,
+                     json_progress=args.json_progress)
     return setup(families, check_only=args.check,
-                 json_out=args.json, json_progress=args.json_progress)
+                 json_out=args.json, json_progress=args.json_progress,
+                 mirror=mirror_dir(args.mirror), offline=args.offline)
 
 
 def cmd_debug_info(args: argparse.Namespace) -> int:
@@ -1030,6 +1038,14 @@ def cmd_debug_info(args: argparse.Namespace) -> int:
     elf = project.build_dir / "out" / f"{project.name}.elf"
     info = debug_info(board, chip, elf if elf.exists() else None)
     info["schema"] = "alloy.debug_info.v1"
+    # Reproducible builds rewrite every source path to a virtual root
+    # (-ffile-prefix-map), so the DWARF says /alloy/framework/src/... and a
+    # debugger looking for that on disk finds nothing. Hand the inverse map to
+    # whoever is launching gdb — Cortex-Debug wants it as a sourceFileMap, plain
+    # gdb as `set substitute-path <from> <to>`.
+    from .build import prefix_maps  # noqa: PLC0415
+
+    info["source_map"] = {virtual: str(real) for real, virtual in prefix_maps(project, chip)}
     if getattr(args, "json", False):
         print(json.dumps(info, indent=2))
     else:
@@ -1173,6 +1189,32 @@ def cmd_frame_audit(args: argparse.Namespace) -> int:
     from .frame_audit import cmd_frame_audit as _audit  # noqa: PLC0415
 
     return _audit(Path(args.project), args.board, args.elf, args.objdump)
+
+
+def cmd_sbom(args: argparse.Namespace) -> int:
+    from .sbom import RENDERERS, components, image_digest, require_built  # noqa: PLC0415
+
+    project = _project(args)
+    board = project.load_board()
+    db = load_database(project.devices_root)
+    chip = db.chips[board["chip"]]
+    require_built(project)  # the link map is the evidence; refuse to guess without it
+    items = components(project, chip)
+    text = RENDERERS[args.format](project, board["id"], items, image_digest(project))
+    if args.out:
+        Path(args.out).write_text(text)
+        print(f"wrote {args.out} ({args.format}, {len(items)} components)")
+    else:
+        print(text, end="")
+    undeclared = [c.name for c in items if not c.declared]
+    if undeclared and args.strict:
+        print("error: undeclared licence for " + ", ".join(sorted(undeclared)),
+              file=sys.stderr)
+        return 1
+    if undeclared and args.out:
+        print("warning: undeclared licence for " + ", ".join(sorted(undeclared)),
+              file=sys.stderr)
+    return 0
 
 
 def main() -> None:
@@ -1351,6 +1393,19 @@ def main() -> None:
     p_setup.add_argument("--check", action="store_true", help="report only")
     p_setup.add_argument("--json", action="store_true")
     p_setup.add_argument("--json-progress", action="store_true")
+    p_setup.add_argument("--from", dest="mirror", metavar="DIR",
+                         help="install from a local mirror of the pinned archives "
+                              "instead of the network (or set ALLOY_TOOLS_MIRROR); "
+                              "the same sha256 verification applies")
+    p_setup.add_argument("--offline", action="store_true",
+                         help="never touch the network — fail with the mirror "
+                              "instructions instead")
+    p_setup.add_argument("--fetch", metavar="DIR",
+                         help="populate a mirror at DIR for later --from use "
+                              "(run this on a machine that HAS network)")
+    p_setup.add_argument("--platform", action="append", metavar="KEY",
+                         help="with --fetch: which platform to mirror for "
+                              "(repeatable, 'all' for every one); defaults to this host")
     p_setup.set_defaults(func=cmd_setup)
 
     p_dbg = sub.add_parser("debug-info", help="debug-server facts for a board")
@@ -1385,6 +1440,19 @@ def main() -> None:
     p_fa.add_argument("--elf", help="audit this ELF directly (skip project lookup)")
     p_fa.add_argument("--objdump", help="objdump binary to use (default: auto on PATH)")
     p_fa.set_defaults(func=cmd_frame_audit)
+
+    p_sbom = sub.add_parser(
+        "sbom", help="what is actually in this firmware image (SPDX/CycloneDX/NOTICE)")
+    p_sbom.add_argument("--project", default=".")
+    p_sbom.add_argument("--board", help="override the board declared in alloy.toml")
+    p_sbom.add_argument("--product", help="the product whose build tree to describe")
+    p_sbom.add_argument("--format", default="notice",
+                        choices=["notice", "spdx", "cyclonedx", "json"],
+                        help="notice = human attribution text (default)")
+    p_sbom.add_argument("--out", help="write here instead of stdout")
+    p_sbom.add_argument("--strict", action="store_true",
+                        help="exit non-zero if any component's licence is undeclared")
+    p_sbom.set_defaults(func=cmd_sbom)
 
     p_lib = sub.add_parser("lib", help="discover and vendor ecosystem libraries")
     lib_sub = p_lib.add_subparsers(dest="lib_command", required=True)
