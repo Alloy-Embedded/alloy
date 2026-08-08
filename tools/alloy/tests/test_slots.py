@@ -154,17 +154,22 @@ def test_same70_efc_uniform_layout() -> None:
 def test_an_unknown_architecture_is_refused_not_approximated() -> None:
     """The emitter used to treat "not xtensa" as "Cortex-M".
 
-    So `emit_linker_script(chip, "rl78")` returned a full ARM script —
+    So asking for an architecture it did not have returned a full ARM script —
     ENTRY(Reset_Handler), an ARM exception-index discard, an ARM vector table —
     and it would have LINKED. The image just could not boot. A framework whose
     rule is that facts are generated cannot silently generate the wrong ones.
+
+    The example used to be "rl78"; that is a REAL backend now, so the gate is
+    probed with an architecture nobody has implemented. The assertion below
+    deliberately does not enumerate the supported list — it only demands that
+    the error names them, so adding the next backend does not fail this test.
     """
     with pytest.raises(EmitError) as caught:
-        emit_linker_script(_g0_chip(), "rl78")
+        emit_linker_script(_g0_chip(), "pdp11")
 
     message = str(caught.value)
-    assert "rl78" in message, "the error must name the architecture asked for"
-    assert "cortex_m" in message and "xtensa" in message, \
+    assert "pdp11" in message, "the error must name the architecture asked for"
+    assert "cortex_m" in message, \
         "and the ones that do exist, so the reader knows the shape of the fix"
 
 
