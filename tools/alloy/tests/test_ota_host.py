@@ -230,3 +230,44 @@ def test_elf_to_bin_excludes_segment_prefix_like_objcopy() -> None:
 
     elf = _mini_elf([(0x08004200, b"VECTORS!")], seg_prefix=0x200)
     assert elf_to_bin(elf) == b"VECTORS!"
+
+
+def test_key_id_rides_at_offset_22_and_defaults_to_zero() -> None:
+    """The old `reserved` u16. Zero by default, which is what every image
+    produced before the field existed carries — so a key-ring device reads
+    those as "signed by ring entry 0" and header_version can stay 1."""
+    plain = make_image(b"\x00" * 4, version=1)
+    assert struct.unpack_from("<H", plain, 22)[0] == 0
+    assert struct.unpack_from("<H", plain, 20)[0] == 0  # flags untouched
+
+    rotated = make_image(b"\x00" * 4, version=1, key_id=1)
+    assert struct.unpack_from("<H", rotated, 22)[0] == 1
+    # ...and it is inside the header CRC span [0, 28), so it cannot be
+    # re-pointed without invalidating the header.
+    assert struct.unpack_from("<I", rotated, 28)[0] == zlib.crc32(rotated[:28])
+    # nothing else moved: only bytes 22..24 and the header CRC differ.
+    assert rotated[:22] == plain[:22]
+    assert rotated[24:28] == plain[24:28]
+    assert rotated[32:] == plain[32:]
+    assert rotated[28:32] != plain[28:32]
+
+
+def test_make_image_rejects_out_of_range_fields() -> None:
+    with pytest.raises(ValueError, match="key_id"):
+        make_image(b"x", version=1, key_id=0x10000)
+    with pytest.raises(ValueError, match="u32"):
+        make_image(b"x", version=-1)
+
+
+def test_nak_codes_are_explained_not_just_numbered() -> None:
+    """An operator reading "ota_error 11" learns nothing. The number stays (CI
+    and scripts assert on it); the sentence is what a field tech needs."""
+    from alloy_cli.ota_host import OTA_ERRORS
+
+    dev = FakeDevice(finish_error=11)
+    with pytest.raises(UpdateError, match=r"ota_error 11: rollback"):
+        update(dev, make_image(b"E" * 10, version=1))
+    # every code the device can emit is covered — a NAK the host cannot name is
+    # a silent drift between error.hpp and this table.
+    assert set(OTA_ERRORS) == set(range(1, 13))
+    assert "garbage" in OTA_ERRORS[11]  # the surprise an operator must be told

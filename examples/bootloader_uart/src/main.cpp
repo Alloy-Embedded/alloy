@@ -12,6 +12,12 @@
 // here — a failing trial is reject_pending()ed and the confirmed slot boots; if
 // NOTHING verifies the bootloader stays in update mode, so a blank or fully
 // corrupt board is always recoverable over the same wire.
+//
+// v3 adds the two things a fielded fleet needs and a signature alone cannot
+// give: an ANTI-ROLLBACK floor (a genuinely signed OLDER image is refused at
+// accept time — see arming_sink) and a trusted KEY RING (a leaked signing key is
+// retired by shipping a bootloader whose ring zeroes it). Both are policy on top
+// of the same verify_slot gate; neither changes the boot path.
 #include <alloy/arch/cpu.hpp>
 #include <alloy/board.hpp>
 #include <alloy/ota.hpp>
@@ -37,13 +43,16 @@ constexpr alloy::ota::slot kSlots[2] = {
 };
 
 // The project's root of trust, in ONE place: Ed25519 authenticity when
-// alloy.toml declares an [ota] public_key, integrity-only otherwise. Same policy
-// for the boot decision AND the install, so an unsigned image is refused ON THE
-// WIRE (a NAK the operator sees) instead of silently wasting a trial boot.
+// alloy.toml declares an [ota] key, integrity-only otherwise. The key RING and
+// its size come from generated data, so rotating a key is an alloy.toml edit and
+// a rebuild — never a source change here. Same policy for the boot decision AND
+// the install, so an unsigned image is refused ON THE WIRE (a NAK the operator
+// sees) instead of silently wasting a trial boot.
 [[nodiscard]] auto verify(const alloy::ota::slot& s) {
     if constexpr (alloy::ota_key::configured) {
         return alloy::ota::verify_slot(
-            s, alloy::ota::signed_verifier{s, alloy::ota_key::public_key});
+            s, alloy::ota::signed_verifier{s, &alloy::ota_key::public_keys[0][0],
+                                           alloy::ota_key::key_count});
     } else {
         return alloy::ota::verify_slot(s);
     }
@@ -52,22 +61,50 @@ constexpr alloy::ota::slot kSlots[2] = {
 // The transport's sink: stream into the updater, and on FINISH run the
 // verify-then-arm tie (ota::install) so a crash in between leaves pending==none
 // and the confirmed firmware still boots.
+//
+// ANTI-ROLLBACK. `floor` is the highest image_version this device can PROVE it
+// already holds, and ota::install refuses anything below it. It starts at the
+// running firmware's version and is raised, at HELLO, by whatever verifies in
+// the slot about to be overwritten — so a version the device once accepted is
+// still a floor after an automatic rollback has moved it back to the older slot.
+// The floor lives in the SLOTS, so it survives power loss for the same reason
+// the boot-state does, with no new persistent record to tear.
+//
+// Reading the target slot here (not at boot) is deliberate: the cost is one
+// extra full verify, signature included, and it is paid only when an update is
+// actually being attempted — never on the boot path.
+//
+// The honest limit: a device on which NEITHER slot verifies (blank, or bricked)
+// has a floor of 0 and accepts anything. That is required — recovery must always
+// be possible — so the claim is "a WORKING device refuses a downgrade", not "a
+// device refuses a downgrade".
 struct arming_sink {
     alloy::ota::updater<flash_hal>& up;
     manager_t& mgr;
     std::uint8_t target;
+    std::uint32_t floor;
     using rvoid = alloy::Result<void, alloy::ota::ota_error>;
-    [[nodiscard]] rvoid begin() { return up.begin(); }
+    [[nodiscard]] rvoid begin() {
+        // BEFORE the erase: the outgoing image's version is a floor too.
+        if (const auto h = verify(kSlots[target]); h && h->image_version > floor) {
+            floor = h->image_version;
+        }
+        return up.begin();
+    }
     [[nodiscard]] rvoid write(std::span<const std::uint8_t> c) { return up.write(c); }
     [[nodiscard]] rvoid finish() {
         const alloy::ota::slot& s = kSlots[target];
         if constexpr (alloy::ota_key::configured) {
-            if (auto h = alloy::ota::install(up, mgr, target,
-                                             alloy::ota::signed_verifier{s, alloy::ota_key::public_key});
+            if (auto h = alloy::ota::install(
+                    up, mgr, target,
+                    alloy::ota::signed_verifier{s, &alloy::ota_key::public_keys[0][0],
+                                                alloy::ota_key::key_count},
+                    floor);
                 !h) {
                 return h.error();
             }
-        } else if (auto h = alloy::ota::install(up, mgr, target); !h) {
+        } else if (auto h = alloy::ota::install(up, mgr, target, alloy::ota::no_auth{}, floor);
+                   !h) {
             return h.error();
         }
         return {};
@@ -108,7 +145,7 @@ int main() {
     // Erase stride = the layout's page_size: the chip's erase page on uniform
     // flash, one big sector on sector flash (F7) — never the driver's business.
     alloy::ota::updater<flash_hal> up{flash_hal{}, kSlots[target], alloy::slots::page_size};
-    arming_sink sink{up, mgr, target};
+    arming_sink sink{up, mgr, target, running_version};
     auto tx = [&uart](std::span<const std::uint8_t> frame) {
         for (auto b : frame) {
             uart.write(b);

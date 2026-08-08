@@ -573,3 +573,140 @@ ALLOY_TEST(ota_updater_fenced_after_error) {
     ALLOY_CHECK(r1.error() == ota_error::slot_overflow);
     ALLOY_CHECK(up.write({data, sizeof(data)}).error() == ota_error::not_open);  // fenced
 }
+
+// ── anti-rollback (accept-time version floor) ────────────────────────────────
+
+// A genuinely-well-formed OLDER image is refused by install(), and — the part
+// that matters — the boot state is left exactly as it was: nothing is armed, the
+// confirmed slot is untouched, so the device keeps running what it was running.
+ALLOY_TEST(ota_install_refuses_an_older_image) {
+    wipe_slots();
+    auto store = fresh_bootstore();
+    boot_manager boot{store};
+    ALLOY_CHECK(static_cast<bool>(boot.mark_updated(1)));
+    ALLOY_CHECK(static_cast<bool>(boot.confirm()));  // running slot 1, "version 5"
+    ALLOY_CHECK_EQ(boot.active(), 1u);
+
+    std::uint8_t payload[128];
+    fill_pattern(payload, 4);
+    std::uint8_t img[image_header::byte_size + sizeof(payload)];
+    const std::uint32_t n = make_image(img, 4u, payload, sizeof(payload));  // older
+
+    const std::uint8_t tgt = boot.update_target();
+    ALLOY_CHECK_EQ(tgt, 0u);
+    updater<fake_flash> up{fake_flash{}, slot_of(tgt), fake_flash::page_size};
+    ALLOY_CHECK(static_cast<bool>(up.begin()));
+    ALLOY_CHECK(static_cast<bool>(up.write({img, n})));
+    auto r = install(up, boot, tgt, no_auth{}, 5u);  // floor = the running version
+    ALLOY_CHECK(!r);
+    ALLOY_CHECK(r.error() == ota_error::rollback);
+    ALLOY_CHECK(!boot.update_in_progress());  // nothing armed
+    ALLOY_CHECK_EQ(boot.active(), 1u);        // confirmed slot untouched
+}
+
+// The negative control for the gate above: the SAME machinery must still accept
+// an equal or newer version. A floor that refuses everything is not anti-rollback,
+// it is a brick.
+ALLOY_TEST(ota_install_accepts_equal_and_newer) {
+    for (std::uint32_t v : {5u, 6u}) {
+        wipe_slots();
+        auto store = fresh_bootstore();
+        boot_manager boot{store};
+        std::uint8_t payload[128];
+        fill_pattern(payload, 4);
+        std::uint8_t img[image_header::byte_size + sizeof(payload)];
+        const std::uint32_t n = make_image(img, v, payload, sizeof(payload));
+        const std::uint8_t tgt = boot.update_target();
+        updater<fake_flash> up{fake_flash{}, slot_of(tgt), fake_flash::page_size};
+        ALLOY_CHECK(static_cast<bool>(up.begin()));
+        ALLOY_CHECK(static_cast<bool>(up.write({img, n})));
+        auto r = install(up, boot, tgt, no_auth{}, 5u);
+        ALLOY_CHECK(static_cast<bool>(r));
+        ALLOY_CHECK_EQ(r->image_version, v);
+        ALLOY_CHECK(boot.update_in_progress());
+    }
+}
+
+// THE TRAP. Anti-rollback is an ACCEPT-time rule, never a boot-time one: an
+// older CONFIRMED slot must stay bootable forever, because that is exactly the
+// slot the anti-brick fallback reverts to after a failed trial. Here the newer
+// trial (v9, slot 1) never confirms; the machine reverts to the OLDER confirmed
+// slot 0 (v4) and it still verifies and boots.
+ALLOY_TEST(ota_rollback_to_an_older_confirmed_slot_still_boots) {
+    wipe_slots();
+    std::uint8_t payload[128];
+    fill_pattern(payload, 6);
+    std::uint8_t old_img[image_header::byte_size + sizeof(payload)];
+    std::uint8_t new_img[image_header::byte_size + sizeof(payload)];
+    const std::uint32_t no = make_image(old_img, 4u, payload, sizeof(payload));
+    const std::uint32_t nn = make_image(new_img, 9u, payload, sizeof(payload));
+
+    auto store = fresh_bootstore();
+    {  // slot 0 holds the older CONFIRMED firmware
+        updater<fake_flash> up{fake_flash{}, slot_of(0), fake_flash::page_size};
+        ALLOY_CHECK(static_cast<bool>(up.begin()));
+        ALLOY_CHECK(static_cast<bool>(up.write({old_img, no})));
+        ALLOY_CHECK(static_cast<bool>(up.finish()));
+    }
+    {  // install the newer image as a trial in slot 1, floor = 4
+        boot_manager boot{store};
+        updater<fake_flash> up{fake_flash{}, slot_of(1), fake_flash::page_size};
+        ALLOY_CHECK(static_cast<bool>(up.begin()));
+        ALLOY_CHECK(static_cast<bool>(up.write({new_img, nn})));
+        ALLOY_CHECK(static_cast<bool>(install(up, boot, 1u, no_auth{}, 4u)));
+    }
+    // Never confirm: exhaust the trials and revert.
+    boot_kind last = boot_kind::normal;
+    for (int i = 0; i < 5; ++i) {
+        boot_manager boot{reopen_bootstore(), 3u};
+        const boot_decision d = boot.plan_boot();
+        last = d.kind;
+        if (last == boot_kind::reverted) {
+            ALLOY_CHECK_EQ(d.slot, 0u);
+            // The OLDER slot verifies and is bootable — no version gate here.
+            auto h = verify_slot(slot_of(d.slot));
+            ALLOY_CHECK(static_cast<bool>(h));
+            ALLOY_CHECK_EQ(h->image_version, 4u);
+            break;
+        }
+    }
+    ALLOY_CHECK(last == boot_kind::reverted);
+    // ...and the newer image is still sitting in slot 1, so a device that
+    // recomputes its floor from BOTH slots still knows v9 was once accepted.
+    auto other = verify_slot(slot_of(1));
+    ALLOY_CHECK(static_cast<bool>(other));
+    ALLOY_CHECK_EQ(other->image_version, 9u);
+}
+
+// key_id rides at header offset 22 (the old `reserved`) and is covered by the
+// header CRC, so it cannot be re-pointed without invalidating the header.
+ALLOY_TEST(ota_header_key_id_roundtrip_and_is_crc_covered) {
+    std::uint8_t buf[image_header::byte_size];
+    image_header h;
+    h.image_version = 3u;
+    h.key_id = 1u;
+    h.payload_length = 0u;
+    h.payload_crc32 = crc::crc32_of({});
+    h.serialize(buf);
+    ALLOY_CHECK_EQ(buf[22], 1u);
+    ALLOY_CHECK_EQ(buf[23], 0u);
+    auto p = image_header::parse(buf);
+    ALLOY_CHECK(static_cast<bool>(p));
+    ALLOY_CHECK_EQ(p->key_id, 1u);
+    buf[22] = 2u;  // re-point the key without re-signing the header
+    ALLOY_CHECK(image_header::parse(buf).error() == ota_error::bad_header_crc);
+}
+
+// A pre-key_id image (offset 22 == 0, which every image ever produced carries)
+// parses as key_id 0 — the first ring entry. Backward compatibility by
+// construction, which is why header_version stays 1.
+ALLOY_TEST(ota_header_legacy_reserved_zero_reads_as_key_zero) {
+    std::uint8_t payload[16];
+    fill_pattern(payload, 2);
+    std::uint8_t img[image_header::byte_size + sizeof(payload)];
+    (void)make_image(img, 1u, payload, sizeof(payload));  // helper never sets key_id
+    ALLOY_CHECK_EQ(img[22], 0u);
+    auto p = image_header::parse(img);
+    ALLOY_CHECK(static_cast<bool>(p));
+    ALLOY_CHECK_EQ(p->key_id, 0u);
+}

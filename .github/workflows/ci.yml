@@ -433,6 +433,11 @@ jobs:
           # v2 of the same app doubles as the "bad" update in the lifecycle test:
           # uart_echo never calls confirm(), so its trial must exhaust and revert.
           uv run --project ../../tools/alloy alloy image /tmp/app.bin --set-version 2 -o /tmp/bad.img
+          # ANTI-ROLLBACK: version 0 of the very same bytes. The device confirms
+          # version 1 first, so this is a genuine, well-formed DOWNGRADE and must
+          # be refused (ota_error 11) — while /tmp/bad.img at version 2 must still
+          # be accepted minutes later in the same run. That pair is the control.
+          uv run --project ../../tools/alloy alloy image /tmp/app.bin --set-version 0 -o /tmp/old.img
           # the slot base comes from the GENERATED layout, never hardcoded here
           slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
             .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
@@ -575,8 +580,11 @@ jobs:
       # flash) with its UART on a TCP socket and its monitor as the "power
       # button". scripts/update_e2e.py then drives, through the REAL `alloy
       # update` client: install good app -> trial boot -> the app confirm()s ->
-      # confirm persists across a power cycle -> bad update (never confirms) ->
-      # three exhausted trial boots -> AUTOMATIC ROLLBACK to the good app.
+      # confirm persists across a power cycle -> a REPLAYED OLDER image is
+      # refused (ota_error 11) and the device keeps running -> bad update (never
+      # confirms) -> three exhausted trial boots -> AUTOMATIC ROLLBACK.
+      # The downgrade leg and the bad-update leg are each other's control: the
+      # same device refuses version 0 and accepts version 2 in one run.
       # Transport, updater, flash driver, verify, the power-atomic boot_store,
       # the trial/confirm machine and the Cortex-M reset/jump — all production.
       - name: full-wire update lifecycle (trial/confirm/rollback)
@@ -599,6 +607,7 @@ jobs:
             > /tmp/renode_wire.log 2>&1 < /dev/null &
           sleep 8
           uv run --project tools/alloy python scripts/update_e2e.py /tmp/good.img /tmp/bad.img \
+            --replay=/tmp/old.img \
             || { tail -30 /tmp/renode_wire.log; exit 1; }
 
       # LAST in this job ON PURPOSE: it rebuilds the bootloader IN PLACE with a
@@ -621,8 +630,13 @@ jobs:
           uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot bl
           uv run --project ../../tools/alloy alloy emulate --board nucleo_g071rb --emit-only
           out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
-          echo "sg_repl=$out/nucleo_g071rb.repl" >> "$GITHUB_ENV"
-          echo "sg_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          # COPY the artifacts out: the rotation step below rebuilds the same
+          # example in the same tree, so the in-tree ELF would be overwritten and
+          # both oracles would silently run the same bootloader.
+          cp "$out/nucleo_g071rb.repl" /tmp/sg.repl
+          cp "$out/bootloader_uart.elf" /tmp/sg_bl.elf
+          echo "sg_repl=/tmp/sg.repl" >> "$GITHUB_ENV"
+          echo "sg_bl_elf=/tmp/sg_bl.elf" >> "$GITHUB_ENV"
           slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
             .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
           echo "sg_slot_a=$slot_a" >> "$GITHUB_ENV"
@@ -643,7 +657,38 @@ jobs:
           struct.pack_into("<I", d, 28, zlib.crc32(bytes(d[:28])))   # repair BOTH CRCs
           pathlib.Path("/tmp/sg_tampered.img").write_bytes(bytes(d))
           PYEOF
-      - name: run the signed-image oracle
+      # KEY ROTATION / REVOCATION. Same bootloader source, a different trusted
+      # RING: ["retired", rotate_key.pub] — the state a fleet is in the day after
+      # update_key leaks. The ring is positional, so retiring key 0 by zeroing it
+      # (never by deleting the entry) keeps every image's --key-id meaning what it
+      # meant. Note /tmp/sg_signed.img is REUSED as the retired-key case: the
+      # exact same file that boots on the single-key bootloader above must be
+      # refused here, which is the whole revocation claim.
+      - name: build a ROTATED-ring bootloader + rotation images
+        working-directory: alloy/examples/bootloader_uart
+        run: |
+          uv run --project ../../tools/alloy alloy keygen -o /tmp/rotate_key --force
+          cp /tmp/rotate_key.pub .
+          printf '\n[ota]\npublic_keys = ["retired", "rotate_key.pub"]\n' >> alloy.toml
+          uv run --project ../../tools/alloy alloy build --board nucleo_g071rb --slot bl
+          out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
+          cp "$out/bootloader_uart.elf" /tmp/rot_bl.elf
+          echo "rot_bl_elf=/tmp/rot_bl.elf" >> "$GITHUB_ENV"
+          # the ring really is what we said it is — a generated header that
+          # quietly fell back to one key would make cases 5/6 pass for free
+          grep -q 'key_count = 2' .alloy/generated/nucleo_g071rb/alloy/ota_key.hpp
+          grep -q 'RETIRED' .alloy/generated/nucleo_g071rb/alloy/ota_key.hpp
+          # restore the committed example (no key, no [ota])
+          git checkout alloy.toml && rm -f rotate_key.pub
+          cd ../uart_echo
+          elf=.alloy/build-tree/nucleo_g071rb/out/uart_echo.elf
+          uv run --project ../../tools/alloy alloy image "$elf" --set-version 1 \
+            --sign /tmp/rotate_key --key-id 1 -o /tmp/sg_rotated.img
+          # signed by the RETIRED key but naming the LIVE one: key_id selects,
+          # it must never bypass
+          uv run --project ../../tools/alloy alloy image "$elf" --set-version 1 \
+            --sign /tmp/update_key --key-id 1 -o /tmp/sg_keyidlie.img
+      - name: run the signed-image + key-rotation oracle
         run: |
           for k in signed tampered wrongkey; do
             cat > /tmp/sg_$k.resc <<EOF
@@ -654,10 +699,26 @@ jobs:
           sysbus LoadBinary @/tmp/sg_$k.img $sg_slot_a
           EOF
           done
+          # the ROTATED-ring bootloader, three images: the new key boots, the
+          # retired key (the very file that boots above) does not, and a lie
+          # about key_id does not either.
+          for k in rotated:sg_rotated retired:sg_signed keyidlie:sg_keyidlie; do
+            name="${k%%:*}"; img="${k##*:}"
+            cat > /tmp/rot_$name.resc <<EOF
+          using sysbus
+          mach create "rot$name"
+          machine LoadPlatformDescription @$sg_repl
+          sysbus LoadELF @$rot_bl_elf
+          sysbus LoadBinary @/tmp/$img.img $sg_slot_a
+          EOF
+          done
           renode-test \
             --variable RESC_SIGNED:/tmp/sg_signed.resc \
             --variable RESC_TAMPERED:/tmp/sg_tampered.resc \
             --variable RESC_WRONGKEY:/tmp/sg_wrongkey.resc \
+            --variable RESC_ROTATED:/tmp/rot_rotated.resc \
+            --variable RESC_RETIRED:/tmp/rot_retired.resc \
+            --variable RESC_KEYIDLIE:/tmp/rot_keyidlie.resc \
             --variable UART:sysbus.usart2 \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/signed_boot.robot"
   build:

@@ -16,7 +16,11 @@ enum class ota_error : std::uint8_t {
     invalid_slot,         // bad slot index (must be 0/1, and != active)
     flash_io,             // erase/program returned false
     not_open,             // write()/finish() before begin()
-    not_authentic,        // reserved for the signature seam (v2)
+    not_authentic,        // signature missing/invalid for the key the image names
+    rollback,             // image_version below this device's anti-rollback floor
+    unknown_key,          // header key_id names no LIVE key in the trusted ring
+                          // (past the end of the ring, or a retired entry) —
+                          // indistinguishable on-device, and deliberately so
 };
 
 }  // namespace alloy::ota

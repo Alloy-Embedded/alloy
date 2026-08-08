@@ -24,7 +24,13 @@ namespace alloy::ota {
 //   12 u32 payload_length    exact payload bytes to CRC (never CRC the whole slot)
 //   16 u32 payload_crc32     CRC-32/ISO-HDLC over exactly payload_length bytes
 //   20 u16 flags             reserved; bit0 = "signed" (crypto seam); 0 in v1
-//   22 u16 reserved          = 0
+//   22 u16 key_id            which key of the device's trusted RING signed this
+//                            image (0 = the first/original key). Was `reserved`,
+//                            always written as 0, so every fielded image already
+//                            names key 0 and header_version stays 1: a v1 device
+//                            ignores the field, a key-ring device reads it.
+//                            Inside the header CRC AND inside the Ed25519-covered
+//                            bytes, so it cannot be re-pointed by an attacker.
 //   24 u32 reserved2         = 0 (future: load/entry address)
 //   28 u32 header_crc32      CRC-32 over bytes [0, 28)
 //   32 payload begins
@@ -42,6 +48,7 @@ struct image_header {
     std::uint16_t header_version{format_version};
     std::uint16_t header_size{byte_size};
     std::uint16_t flags{};
+    std::uint16_t key_id{};
 
     // Write exactly byte_size bytes to `out`, computing header_crc32 itself.
     void serialize(std::uint8_t* out) const {
@@ -53,7 +60,7 @@ struct image_header {
         store_le32(out + 12, payload_length);
         store_le32(out + 16, payload_crc32);
         store_le16(out + 20, flags);
-        store_le16(out + 22, 0u);  // reserved
+        store_le16(out + 22, key_id);
         store_le32(out + 24, 0u);  // reserved2
         store_le32(out + 28, crc::crc32_of({out, 28u}));
     }
@@ -73,6 +80,7 @@ struct image_header {
         h.payload_length = load_le32(p + 12);
         h.payload_crc32 = load_le32(p + 16);
         h.flags = load_le16(p + 20);
+        h.key_id = load_le16(p + 22);
         if (h.header_version != format_version) return ota_error::unsupported_version;
         return h;
     }

@@ -112,14 +112,41 @@ public:
     }
 };
 
-// Tie updater + boot_manager: verify the freshly-written slot, THEN atomically arm
-// the trial. A crash between finish() and mark_updated leaves pending==none, so the
-// old (confirmed) firmware still boots — the confirmed slot is never perturbed.
+// Tie updater + boot_manager: verify the freshly-written slot, apply the
+// ANTI-ROLLBACK floor, THEN atomically arm the trial. A crash between finish()
+// and mark_updated leaves pending==none, so the old (confirmed) firmware still
+// boots — the confirmed slot is never perturbed.
+//
+// `min_version` is the floor: an image whose image_version is BELOW it is
+// refused with ota_error::rollback and never armed. A replayed older image is
+// genuinely signed, so no signature check can catch it — only a version policy
+// can, and this is where alloy puts it.
+//
+// WHY AT ACCEPT TIME AND NOT AT BOOT. The bootloader's anti-brick rule is "if
+// the slot you planned to boot doesn't verify, boot the other one" — and after
+// any successful update the other one is, by definition, older. A boot-time
+// version floor would therefore refuse exactly the fallback that keeps a device
+// alive, turning "silently survives a corrupt slot" into "needs a field tech".
+// So: a confirmed older slot stays bootable forever; what is refused is
+// *writing* an older image over the wire.
+//
+// The floor is the CALLER's to compute, because only the caller knows what this
+// device can prove it already has (the bootloader uses the highest verified
+// image_version across the running slot and the target slot — see
+// examples/bootloader_uart). Default 0 = no floor, so v1/v2 callers are
+// unchanged.
+//
+// The refusal lands AFTER the whole image was streamed and the target slot was
+// already erased. That is safe (the confirmed slot is untouched and pending
+// stays none) but it does leave a garbage inactive slot, which will surprise an
+// operator — the NAK an operator sees must say so.
 template <alloy::FlashController Flash, BootStore Store, Verifier V = no_auth>
 [[nodiscard]] Result<image_header, ota_error>
-install(updater<Flash>& up, boot_manager<Store>& boot, std::uint8_t target, V v = {}) {
+install(updater<Flash>& up, boot_manager<Store>& boot, std::uint8_t target, V v = {},
+        std::uint32_t min_version = 0u) {
     auto h = up.finish(v);
     if (!h) return h.error();
+    if (h->image_version < min_version) return ota_error::rollback;
     if (auto r = boot.mark_updated(target); !r) return r.error();
     return h;
 }

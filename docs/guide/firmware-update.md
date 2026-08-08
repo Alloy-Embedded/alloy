@@ -88,10 +88,11 @@ or a raw `.bin`, and wraps it in a 32-byte header:
 | --- | --- | --- |
 | 0 | magic `"ALOY"` | fast-rejects erased (`0xFF`) flash |
 | 4 | header version / size | lets the header grow without breaking old devices |
-| 8 | `image_version` | monotonic — `--set-version`, reported back by the device |
+| 8 | `image_version` | monotonic — `--set-version`; **enforced**, see [anti-rollback](#anti-rollback) |
 | 12 | `payload_length` | exact bytes to CRC; never CRC a whole slot |
 | 16 | `payload_crc32` | integrity of the firmware itself |
-| 20 | flags, reserved | |
+| 20 | `flags` | reserved |
+| 22 | `key_id` | which key of the device's ring signed this — `--key-id`, default 0 |
 | 28 | `header_crc32` | so a corrupt header is rejected *before* its length is trusted |
 
 Two independent CRCs is not belt-and-braces: the header CRC is what makes `payload_length`
@@ -206,16 +207,90 @@ going to run.
     `alloy keygen` writes the private key with a `.pub` sibling; commit only the `.pub`. Anyone
     holding the private key can update every device that trusts it.
 
-### What signing does and does not buy you
+## Anti-rollback
+
+A signature cannot catch a **downgrade**. A replayed old image is one the vendor really did
+sign, so every crypto check passes; the attacker's move is to push last year's firmware to
+reopen a bug you fixed. Only a version policy stops that, and alloy enforces one.
+
+**The rule.** At the moment it would *accept* an image, the device refuses anything whose
+`image_version` is below the highest version it can prove it already holds — the floor is the
+running firmware's version, raised by whatever verifies in the slot about to be overwritten.
+The refusal is a NAK carrying `ota_error::rollback`, which `alloy update` prints in words.
+
+```console
+$ alloy update --port /dev/ttyUSB0 old_v1.img
+error: device rejected update (ota_error 11: rollback — the device already holds a version at
+or above this image's, and refuses the downgrade. Re-issue with a higher --set-version. The
+target slot was rewritten and is now garbage; the running firmware is untouched)
+```
+
+**Why it survives power loss.** There is no new persistent record to tear: the floor is derived
+from the *slots themselves*, which is the same flash the boot-state's guarantees already rest
+on. After an automatic rollback moves the device back to the older slot, the newer image is
+still sitting in the other slot, so the floor does not drop.
+
+!!! warning "Read these three limits before you rely on it"
+    - **It is an accept-time rule, never a boot-time one.** A confirmed *older* slot stays
+      bootable forever — deliberately. The anti-brick fallback is "if the planned slot does not
+      verify, boot the other one", and after any update the other one is by definition older. A
+      boot-time floor would refuse exactly the fallback that keeps devices alive.
+    - **A device on which neither slot verifies has a floor of 0** and accepts anything. That is
+      required: a blank or bricked board must always be recoverable. So the claim is *a working
+      device refuses a downgrade*, not *a device refuses a downgrade*.
+    - **The refusal happens at FINISH**, after the image has already been streamed and the
+      inactive slot erased. The running firmware is untouched and nothing is armed, but the
+      operator is left with a garbage inactive slot. The NAK text says so.
+
+## Key rotation and revocation
+
+One baked-in public key is a single point of failure for the whole fleet: the day it leaks,
+every device trusts the attacker. A device can instead trust a small **ring** of keys, and the
+image header's `key_id` says which one signed it.
+
+```toml title="alloy.toml"
+[ota]
+public_keys = ["retired", "keys/rotate.pub"]   # key_id 0 retired, key_id 1 live
+```
+
+```console
+$ alloy image build/app.elf --set-version 4 --sign keys/rotate.key --key-id 1 -o app_b.img
+```
+
+The ring is **positional**: entry *i* is what `--key-id i` selects. A key is retired by
+replacing its entry with `"retired"`, never by deleting it — deleting entry 0 would silently
+re-point every image that names key 0 at what used to be key 1. A retired entry is emitted as 32
+zero bytes and is refused before Ed25519 is ever called. Codegen refuses a ring that is empty,
+entirely retired, or contains the same key twice (retiring one of a duplicate pair would quietly
+do nothing).
+
+Exactly **one** signature check runs regardless of ring size — `key_id` selects a key, it never
+triggers a try-every-key sweep, and it is inside both the header CRC and the signed bytes, so it
+cannot be re-pointed by an attacker.
+
+Backward compatibility is by construction: `key_id` occupies the `reserved` u16 that every image
+ever produced wrote as zero, so old images select ring entry 0 and `header_version` stays 1.
+`public_key = "..."` still works and means a ring of one.
+
+!!! danger "Revocation requires shipping a new bootloader — say it plainly"
+    The ring is `.rodata`, baked in at build time. Retiring a key takes effect only on devices
+    that *receive the bootloader containing the new ring*, which must itself be signed by a key
+    they already trust. There is no over-the-air revocation message, because a revocation floor
+    would need persistent state `ota::boot_store` cannot hold (it stores exactly one `u32`).
+    Until the new bootloader lands, a device keeps trusting the leaked key. Plan the rotation
+    *before* you need it: ship a second key in the ring while the first is still healthy.
+
+### What signing, versioning and rotation do and do not buy you
 
 | Threat | Covered? |
 | --- | --- |
 | Corrupted transfer | Yes — CRC, before any signature work |
 | Attacker-authored firmware | Yes — they cannot produce a valid signature |
 | Tampering with an image in transit, CRCs repaired | Yes — this is a CI test case |
-| Replaying an **older, genuinely signed** image | **No** — `image_version` is carried and reported, but the device does not yet refuse a downgrade |
-| Key compromise | **No** — one public key is baked in; there is no rotation or revocation yet |
-| Reading firmware off the device | No — signing is authenticity, not confidentiality |
+| Replaying an **older, genuinely signed** image | Yes — refused with `ota_error::rollback`, on a device that has a working slot to derive a floor from ([limits](#anti-rollback)) |
+| Key compromise | Partly — a ring lets a leaked key be retired without bricking the fleet, but retiring it requires shipping a new **bootloader**; there is no field revocation |
+| Per-device keys (one compromised unit ≠ the fleet) | No — alloy has no RNG/TRNG HAL, so a per-device keypair would have to be generated on the host, which means the host held the private half |
+| Reading firmware off the device | No — signing is authenticity, not confidentiality (see `alloy secure` for RDP) |
 
 ## The wire protocol
 
@@ -248,11 +323,21 @@ works from a bootloader or from a running application.
 ## What this is proven against
 
 The whole lifecycle runs in CI, on emulated hardware, as a **blocking gate** — install → trial
-boot → confirm → survive a power cycle → install a bad app → three watchdog self-resets →
-autonomous rollback, driven by the real `alloy update` client over a real serial link, on all
-three flash families. The signing gate adds three cases: a correctly signed image boots, a
-tampered image with both CRCs repaired is rejected, and an image signed by the wrong key is
-rejected. Both rejections land the device back in update mode.
+boot → confirm → survive a power cycle → **a replayed older image is refused** → install a bad
+app → three watchdog self-resets → autonomous rollback, driven by the real `alloy update` client
+over a real serial link, on all three flash families.
+
+The downgrade leg and the bad-update leg are each other's control: in one run the same device
+must refuse version 0 and, minutes later, accept version 2. A floor that refused everything
+would look identical if you only ran the first half.
+
+The signing gate adds six cases across two bootloaders. On a single-key bootloader: a correctly
+signed image boots, a tampered image with both CRCs repaired is rejected, and an image signed by
+the wrong key is rejected. On a bootloader whose ring is `["retired", key B]` — the state a fleet
+is in the day after its signing key leaked: an image signed by B with `--key-id 1` boots; the
+*very same file* that boots on the single-key bootloader is refused, which is the revocation
+claim; and an image signed by the retired key but stamped `--key-id 1` is refused, because
+`key_id` selects and never bypasses. Every rejection lands the device back in update mode.
 
 See [Emulation](emulation.md) for how that harness works.
 
@@ -268,8 +353,15 @@ See [Emulation](emulation.md) for how that harness works.
       *not* exercised — only the layer above them is. (The G0 driver has, separately, been reported
       working on silicon through the NVM key/value store, whose boot counter survives resets.)
 
-    The full lifecycle — bad image, exhausted trials, automatic rollback — and the signed-image
-    oracle run on `nucleo_g071rb` only; SAME70 runs the install/trial/confirm half.
+    The full lifecycle — bad image, exhausted trials, automatic rollback, the refused downgrade —
+    and the signed-image / key-rotation oracle run on `nucleo_g071rb` only; SAME70 runs the
+    install/trial/confirm half.
+
+    The anti-rollback and key-rotation gates are **emulation and host-test claims only**. No
+    board has run them. In particular, "a retired key can never authenticate again" is proven
+    against Renode and against a native host test using the same vendored Monocypher the
+    firmware links — not against silicon, and not against a device whose flash an attacker can
+    write directly.
 
     Chips whose flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout
     at all rather than a guessed one, so `--slot` is simply not offered for them.

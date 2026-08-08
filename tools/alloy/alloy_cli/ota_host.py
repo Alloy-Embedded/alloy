@@ -113,17 +113,27 @@ def elf_to_bin(elf: bytes) -> bytes:
     return bytes(out)
 
 
-def make_image(app: bytes, version: int, app_offset: int = APP_OFFSET_DEFAULT) -> bytes:
+def make_image(app: bytes, version: int, app_offset: int = APP_OFFSET_DEFAULT,
+               key_id: int = 0) -> bytes:
     """[image_header | 0xFF pad | app] — the payload starts at slot offset 32 and
     pads up to app_offset so the app's vector table lands where it was linked
-    (slot_base + app_offset; see emit/slots.py)."""
+    (slot_base + app_offset; see emit/slots.py).
+
+    `key_id` (header offset 22, the old `reserved`) names which entry of the
+    device's trusted key ring signed this image. 0 — the value every image
+    carried before the field existed — is the first/original key, which is why
+    header_version stays 1 and old devices are unaffected."""
     if app_offset < HEADER_SIZE:
         raise ValueError(f"app_offset must be >= {HEADER_SIZE}")
+    if not 0 <= version <= 0xFFFFFFFF:
+        raise ValueError("image version must fit a u32")
+    if not 0 <= key_id <= 0xFFFF:
+        raise ValueError("key_id must fit a u16 (it indexes the device's key ring)")
     payload = b"\xff" * (app_offset - HEADER_SIZE) + app
     head = struct.pack(
         "<IHHIII H H I",
         MAGIC, 1, HEADER_SIZE, version, len(payload), zlib.crc32(payload),
-        0, 0, 0)
+        0, key_id, 0)
     assert len(head) == 28
     return head + struct.pack("<I", zlib.crc32(head)) + payload
 
@@ -149,6 +159,34 @@ class Frame:
 
 class UpdateError(RuntimeError):
     pass
+
+
+#: alloy/ota/error.hpp, mirrored — a NAK carries the raw enum value and an
+#: operator staring at "ota_error 11" learns nothing. The number stays in the
+#: message (scripts and CI assert on it); the sentence is what a field tech
+#: needs, and for the two refusals that leave the target slot rewritten it says
+#: so, because "your device now has a garbage inactive slot" is exactly the
+#: surprise that generates a support call.
+OTA_ERRORS = {
+    1: "bad_magic — not an alloy image (or the slot is erased)",
+    2: "bad_header_crc — the 32-byte header failed its own CRC",
+    3: "unsupported_version — header_version this device cannot parse",
+    4: "bad_payload_crc — the firmware bytes did not survive the transfer",
+    5: "truncated — the image is shorter than its header declares",
+    6: "slot_overflow — the image does not fit the target slot",
+    7: "invalid_slot — bad slot index",
+    8: "flash_io — an erase or program failed",
+    9: "not_open — protocol error (FINISH/DATA before HELLO)",
+    10: "not_authentic — signature missing or invalid for the key this image "
+        "names. The target slot was rewritten and is now garbage; the running "
+        "firmware is untouched",
+    11: "rollback — the device already holds a version at or above this image's, "
+        "and refuses the downgrade. Re-issue with a higher --set-version. The "
+        "target slot was rewritten and is now garbage; the running firmware is "
+        "untouched",
+    12: "unknown_key — this image's --key-id names no live key in the device's "
+        "trusted ring (past the end of it, or retired)",
+}
 
 
 def read_frame(link: Link) -> Frame | None:
@@ -185,7 +223,9 @@ def _exchange(link: Link, out: bytes, retries: int) -> Frame:
         if reply.ftype == T_NAK:
             err = reply.payload[0] if reply.payload else 0
             if err:
-                raise UpdateError(f"device rejected update (ota_error {err})")
+                detail = OTA_ERRORS.get(err, "unknown code — host and device "
+                                             "disagree on alloy/ota/error.hpp")
+                raise UpdateError(f"device rejected update (ota_error {err}: {detail})")
             continue  # framing/sequence noise: resend
         return reply
     raise UpdateError("device not responding (retries exhausted)")

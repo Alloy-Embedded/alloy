@@ -9,15 +9,22 @@ client and asserts every transition on the UART:
   1. install GOOD app (ota_app, links slot B on a blank board)  -> update ok
   2. reboot: TRIAL boot slot B -> app health-checks -> "ota_app confirmed"
   3. power-cycle: normal "boot slot B" (the confirm stuck across reset)
+  3b. (--replay=IMG) push an OLDER version of that same firmware -> REFUSED with
+      ota_error 11, and the device still boots what it was running
   4. update BAD app (uart_echo v2, links slot A, never confirms) -> update ok
   5. trial boot slot A x3 (each consumes one attempt; app never confirms)
   6. next boot: "reverted, boot slot B" -> the GOOD app is back
+
+Step 3b and step 4 are each other's control: the same device, minutes apart,
+must REFUSE version 0 and ACCEPT version 2. A floor that refused both would look
+identical in step 3b alone.
 
 Every layer is production: host client, wire protocol, transport receiver,
 updater, flash driver, verify, the power-atomic boot_store, the trial/confirm
 machine, and the Cortex-M reset/jump. Zero hardware.
 
 Usage: update_e2e.py <good_slot_b.img> <bad_slot_a.img> [uart_port] [monitor_port]
+                     [--good-only] [--replay=<older.img>]
 Renode side (before this script):
   emulation CreateServerSocketTerminal <uart_port> "term" false
   connector Connect sysbus.<uart> term
@@ -35,7 +42,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools" / "alloy"))
 import serial  # noqa: E402
 
-from alloy_cli.ota_host import update  # noqa: E402
+from alloy_cli.ota_host import UpdateError, update  # noqa: E402
 
 
 # Wall-clock budget for a phase that includes an emulated slot ERASE plus a
@@ -136,6 +143,33 @@ def main() -> None:
     wait_for(link, [b"alloy bootloader", b"boot slot B", b"alloy ota_app ready"],
              PHASE_TIMEOUT_S, "confirm persisted across power cycle")
 
+    # 3b. ANTI-ROLLBACK. The device is running a CONFIRMED version 1. The replay
+    # image is the SAME firmware repacked at version 0 — every CRC correct, and
+    # on a signing build it would carry a genuine signature, because a downgrade
+    # attack replays an image the vendor really did sign. Nothing but a version
+    # policy can refuse it, which is why this leg is the whole proof.
+    replay = next((a.split("=", 1)[1] for a in sys.argv[1:]
+                   if a.startswith("--replay=")), None)
+    if replay is not None:
+        mon.power_cycle()  # reopen the update window
+        try:
+            update(link, Path(replay).read_bytes(), retries=10)
+        except UpdateError as exc:
+            # Insist on the SPECIFIC error: a device that refused for any other
+            # reason (bad CRC, wrong slot, dead flash) would pass a bare
+            # "it was refused" assertion while proving nothing about rollback.
+            if "ota_error 11" not in str(exc):
+                raise SystemExit(
+                    f"FAIL [anti-rollback]: refused, but not as a rollback: {exc}") from exc
+            print(f"  ok: replayed OLDER image REFUSED -> {exc}", flush=True)
+        else:
+            raise SystemExit(
+                "FAIL [anti-rollback]: the device ACCEPTED a replayed older image")
+        # ...and the refusal is not a brick: the confirmed firmware is untouched
+        # and boots when the update window closes.
+        wait_for(link, [b"boot slot B", b"alloy ota_app ready"], PHASE_TIMEOUT_S,
+                 "still running its own firmware after refusing the downgrade")
+
     if "--good-only" in sys.argv:
         # Families whose watchdog isn't modeled in Renode yet stop here: the
         # install/trial/confirm/persist phases still prove the whole flash path
@@ -165,8 +199,10 @@ def main() -> None:
                     b"alloy ota_app ready"], WATCHDOG_TIMEOUT_S,
              "AUTOMATIC ROLLBACK (autonomous)")
 
-    print("PASS: install -> trial -> confirm -> bad update -> "
-          "3 watchdog-reset trials -> autonomous rollback", flush=True)
+    print("PASS: install -> trial -> confirm"
+          f"{' -> DOWNGRADE REFUSED' if replay is not None else ''}"
+          " -> bad update -> 3 watchdog-reset trials -> autonomous rollback",
+          flush=True)
 
 
 if __name__ == "__main__":

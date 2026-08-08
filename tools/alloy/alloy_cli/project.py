@@ -110,7 +110,11 @@ class Project:
         """The optional ``[ota]`` table from alloy.toml. `public_key` (a path to
         an `alloy keygen` .pub, or 64 hex chars inline) turns on signed-image
         verification: codegen bakes the key into alloy/ota_key.hpp and the build
-        pulls in the Ed25519 verifier. Absent -> integrity-only v1 behaviour."""
+        pulls in the Ed25519 verifier. Absent -> integrity-only v1 behaviour.
+
+        `public_keys = [...]` is the rotation form: a positional ring the image
+        header's key_id indexes, with ``"retired"`` marking a slot whose key must
+        never authenticate anything again. See emit/ota_key.py."""
         toml_path = self.root / "alloy.toml"
         if not toml_path.exists():
             return {}

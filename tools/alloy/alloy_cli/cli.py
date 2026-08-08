@@ -636,16 +636,24 @@ def cmd_image(args: argparse.Namespace) -> int:
     if app[:4] == b"\x7fELF":  # accept the build's .elf directly — no objcopy needed
         app = elf_to_bin(app)
     out = Path(args.out) if args.out else Path(args.app).with_suffix(".img")
-    image = make_image(app, args.set_version, app_offset=int(args.app_offset, 0))
+    image = make_image(app, args.set_version, app_offset=int(args.app_offset, 0),
+                       key_id=args.key_id)
     if args.sign:
         from .ota_host import sign_image  # noqa: PLC0415
 
         key = Path(args.sign).read_text().strip()
         image = sign_image(image, bytes.fromhex(key))
+    elif args.key_id:
+        # A key_id on an UNSIGNED image is almost certainly a mistake: the field
+        # only ever means anything to a device that checks signatures.
+        print(f"warning: --key-id {args.key_id} on an image with no --sign — the "
+              f"field is only read by devices that verify signatures",
+              file=sys.stderr)
     out.write_bytes(image)
     print(f"image: {out}  ({len(image)} B = 32 B header + "
           f"{len(image) - 32} B payload, version {args.set_version}"
-          f"{', SIGNED' if args.sign else ''})")
+          f"{', SIGNED' if args.sign else ''}"
+          f"{f', key_id {args.key_id}' if args.key_id else ''})")
     return 0
 
 
@@ -666,7 +674,12 @@ def cmd_keygen(args: argparse.Namespace) -> int:
           f"and fielded devices can never be updated again)\n"
           f"public key:  {pub_path}\n\n"
           f"Add to the project's alloy.toml to require signed updates:\n"
-          f"  [ota]\n  public_key = \"{pub_path.name}\"")
+          f"  [ota]\n  public_key = \"{pub_path.name}\"\n\n"
+          f"To ROTATE later, use the ring form instead — it is positional, so a\n"
+          f"retired key keeps its slot and images keep naming the right key:\n"
+          f"  [ota]\n  public_keys = [\"retired\", \"{pub_path.name}\"]\n"
+          f"then sign with `alloy image --sign {out} --key-id 1`. Retiring a key\n"
+          f"only takes effect on devices that receive the new BOOTLOADER.")
     return 0
 
 
@@ -1304,10 +1317,16 @@ def main() -> None:
     p_img.add_argument("app", help="raw app binary (objcopy -O binary of a --slot build)")
     p_img.add_argument("-o", "--out", help="output path (default: <app>.img)")
     p_img.add_argument("--set-version", type=int, required=True,
-                       help="monotonic image version (higher = newer)")
+                       help="monotonic image version (higher = newer). A device "
+                            "REFUSES an image below the highest version it can "
+                            "prove it already holds (anti-rollback)")
     p_img.add_argument("--sign", metavar="KEYFILE",
                        help="Ed25519 private key from `alloy keygen` — appends a "
                             "signature trailer so signing-enabled devices accept it")
+    p_img.add_argument("--key-id", type=int, default=0,
+                       help="which entry of the device's trusted key ring "
+                            "([ota] public_keys) signed this image; default 0 = "
+                            "the first/original key")
     p_img.add_argument("--app-offset", default="0x200",
                        help="vector-table offset inside the slot (must match "
                             "the --slot link; default 0x200)")

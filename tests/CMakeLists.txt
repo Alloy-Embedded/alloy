@@ -71,6 +71,16 @@ if(NOT DEFINED ALLOY_LWIPOPTS_DIR)
         "generates lwipopts.h from data before configuring this build.")
 endif()
 
+# Vendored Monocypher (C) — compiled in so the SIGNED image path and the key
+# rotation ring are host-testable with real Ed25519 keys and real signatures.
+# Without this the only proof of the update root of trust was the emulation leg,
+# which cannot run the negative cases cheaply. Warnings off on vendored code.
+set(ALLOY_MONOCYPHER
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/monocypher/monocypher.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/monocypher/monocypher-ed25519.c)
+set_source_files_properties(${ALLOY_MONOCYPHER} PROPERTIES COMPILE_OPTIONS "-w")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../third_party/monocypher)
+
 # Vendored lwIP (C) — the M2 net stack facade is exercised over the loopback.
 # The generated lwipopts.h leads; arch/cc.h is ours; the vendored lwIP headers
 # are SYSTEM (no -Werror on vendored code) and its .c get -w.
@@ -101,11 +111,13 @@ add_executable(alloy_unit_tests
     test_secure.cpp
     test_fs.cpp
     test_ota.cpp
+    test_ota_signed.cpp
     test_ota_transport.cpp
     test_net.cpp
     ${ALLOY_LIB_TESTS}
     ${ALLOY_LFS}
-    ${ALLOY_LWIP})
+    ${ALLOY_LWIP}
+    ${ALLOY_MONOCYPHER})
 
 # The runner's exit code is the number of failing tests (0 = pass).
 add_test(NAME alloy_unit_tests COMMAND alloy_unit_tests)
