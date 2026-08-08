@@ -218,23 +218,30 @@ jobs:
             example: spi_read
             robot: spi_read.robot
             banner: alloy spi_read
-          # ADC DRIVER CONFORMANCE — BLOCKING — against a PURPOSE-WRITTEN STM32G0
-          # ADC model. Renode ships only the incompatible F1/F4-style
-          # Analog.STM32_ADC, so emit/renode.py emits a ~30-line inline Python
-          # peripheral implementing the st/adc_v2 handshakes (ADCAL/ADEN/CHSELR/
-          # CCRDY/ADSTART/EOC). adc_read converts channel 3; the model returns
-          # 1000+channel, so "adc: 1003" proves the right channel was selected +
-          # converted. Green in CI + locally (pinned Renode 1.16.1).
+          # ADC DRIVER CONFORMANCE — BLOCKING — against Renode's OWN
+          # Analog.STM32G0_ADC (the inline Python model this project used to
+          # write is gone). The robot feeds distinct voltages to distinct
+          # channels (SetDefaultValue: 1650 mV ch3, 3300 mV ch4); adc_read
+          # converts both, so "adc ch3: 2048" + "adc ch4: 4095" (= round(mV/
+          # 3300*4095) at the platform's 3.3 V reference) prove channel routing
+          # AND the conversion math — the wrong channel prints 0 (verified) and
+          # the old "adc: 1003" never appears (verified). Two vacuous spots,
+          # stated: the model lacks ISR.CCRDY (bit 13 reserved in the 1.16.1
+          # source), so the generated .resc hooks it into every ISR read and the
+          # driver's RM0444 CCRDY poll passes unconditionally; ADCAL is a tagged
+          # no-op. Without the hook the firmware hangs in that poll (register-
+          # trace witnessed — see emit/renode.py). Green locally (pinned Renode
+          # 1.16.1).
           - board: nucleo_g071rb
             example: adc_read
             robot: adc_read.robot
             banner: alloy adc_read
-          # DMA DRIVER CONFORMANCE — BLOCKING — against a PURPOSE-WRITTEN STM32G0
-          # (channel-style) DMA model; Renode ships only the F4 stream-style
-          # DMA.STM32DMA. The inline Python peripheral copies CMAR->CPAR through the
-          # system bus on a CCR/EN write and sets TCIF. dma_uart sends a line to the
-          # UART BY DMA (m2p), so "dma via DMA" on the UART proves the channel config
-          # + transfer + completion moved the bytes. Green in CI + locally.
+          # DMA DRIVER CONFORMANCE — BLOCKING — against Renode's OWN
+          # DMA.STM32G0DMA, NVIC-wired (the purpose-written inline model was
+          # replaced in commit 52c2642, which this comment used to predate).
+          # dma_uart sends a line to the UART BY DMA (m2p), so "dma via DMA" on
+          # the UART proves the channel config + transfer + completion moved the
+          # bytes. Green in CI + locally.
           - board: nucleo_g071rb
             example: dma_uart
             robot: dma_uart.robot

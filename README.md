@@ -59,8 +59,10 @@ declared storage fails the build. CI has acceptance tests asserting these errors
 legs must pass on every commit, on platforms generated from the *same* chip data the firmware
 compiles against — so the model and the driver cannot drift. They assert real UART output: an I²C
 driver ACKing a bus slave (with a no-slave negative control), a SPI driver reading back what a
-slave shifted out, two coroutines interleaving on two different vendors' cores, and the entire
-firmware-update lifecycle through the real `alloy update` client.
+slave shifted out, an ADC converting distinct per-channel voltages into exactly the right counts
+(against Renode's own model — the wrong channel prints the wrong number), two coroutines
+interleaving on two different vendors' cores, and the entire firmware-update lifecycle through
+the real `alloy update` client.
 
 **The maturity ladder is written down, not implied.** Every table below distinguishes *a driver
 exists*, *CI compiles it*, *emulation asserts its behaviour*, and *someone ran it on the board* —

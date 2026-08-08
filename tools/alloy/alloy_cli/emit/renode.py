@@ -95,23 +95,44 @@ RENODE_EXTI = {
     "st/exti_g0": "IRQControllers.STM32WBA_EXTI",
 }
 
-# ADC is different. The F1/F4-style Analog.STM32_ADC has an SR/CR1/CR2 register
-# map INCOMPATIBLE with alloy's st/adc_v2 (STM32G0-style ISR/CR/CHSELR — a local
-# register trace showed the driver spinning on an ISR.ADRDY the F4 model never
-# sets). Renode 1.16.1 DOES also ship Analog.STM32G0_ADC, and its own
-# platforms/cpus/stm32g0.repl instantiates it at the G0's ADC base — an earlier
-# version of this comment claimed no G0 model existed, which is wrong. Swapping
-# was tried and the firmware did not complete its handshake against it (the run
-# hung rather than failing cleanly), so the diagnosis is unfinished and the
-# purpose-written model below stays for now. Adopting the native model would
-# make this leg an INDEPENDENT check instead of a consistency one, and is worth
-# finishing. Until then, emit a tiny
-# purpose-written model as an inline Python peripheral (IronPython 2.7). It
-# implements just the handshakes st_adc_v2 performs — ADCAL self-clears; ADEN
-# sets ISR.ADRDY; CHSELR (1<<ch) sets ISR.CCRDY and latches the channel; ADSTART
-# sets ISR.EOC and loads DR with a channel-ENCODED value (1000 + channel) so a
-# read of channel N returns 1000+N (a wrong channel would return a wrong number,
-# so a conformance test can't pass by coincidence); reading DR clears EOC.
+# ADC uses Renode's OWN Analog.STM32G0_ADC — the model Renode's stm32g0.repl
+# instantiates — wired to the NVIC from the chip's irq fact. This file used to
+# carry a ~30-line inline Python model returning 1000+channel; like the DMA
+# model below it is gone, for the same reason: a model this project wrote
+# cannot falsify a misreading of the reference manual that it shares with the
+# driver, and the inline one never modelled the conversion arithmetic at all.
+#
+# An earlier swap attempt hung and this comment used to say the diagnosis was
+# unfinished. It is finished, with a register trace: after the CHSELR write the
+# driver polls ISR.CCRDY (RM0444 — real silicon raises it when the channel-
+# selection update completes), and the native model NEVER sets it. In the exact
+# 1.16.1 source (renode-infrastructure, STM32_ADC_Common.cs) ISR bit 13 falls
+# inside `.WithReservedBits(13, 19)` and the ChannelSelection write callback
+# only latches the channel — no flag. The trace shows the firmware parked
+# reading ISR forever, always getting ADRDY alone. The driver is right per
+# RM0444 and stays unchanged; instead, the .resc emitted below installs a
+# one-line read hook that ORs CCRDY (bit 13, 0x2000) into every ISR read.
+#
+# What that shim costs in honesty, stated where the leg is defined too: the
+# CCRDY handshake is VACUOUS under emulation (the hook satisfies the poll
+# unconditionally), and ADCAL is a tagged no-op in the model that never reads
+# back 1, so the calibration self-clear poll also passes vacuously. Everything
+# else the adc_read leg asserts now comes from Renode's model, not ours:
+# ADEN -> ADRDY, ADSTART -> EOC, DR read clearing EOC, per-channel ROUTING
+# (the test feeds distinct millivolts per channel via SetDefaultValue; the
+# wrong channel converts a different voltage and prints different counts —
+# witnessed), and the 12-bit conversion math itself, DR = round(mV/3300*4095)
+# at the 3.3 V reference the platform declares.
+#
+# Two measured model quirks, so nobody re-diagnoses them: a w1c write to
+# ISR.EOC also schedules an extra (harmless) conversion, and CFGR1's RES field
+# sits at bits 2-3 where RM0444 has 3-4 — immaterial while the driver leaves
+# CFGR1 at reset (12-bit either way), but a RES-writing driver must not be
+# validated on this model.
+RENODE_ADC = {
+    "st/adc_v2": "Analog.STM32G0_ADC",
+}
+
 # Independent watchdog: Renode models the ST IWDG faithfully (down-counter off
 # LSI; timeout resets the machine). frequency must match the LSI the HAL's tick
 # math assumes (st_iwdg_detail: iwdg_lsi_hz = 32000). Inert until the firmware
@@ -120,41 +141,6 @@ RENODE_EXTI = {
 RENODE_WDG = {
     "st/iwdg_v2": "Timers.STM32_IndependentWatchdog",
 }
-
-_ADC_G0_MODEL = {"st/adc_v2"}
-_ADC_G0_SCRIPT = """if request.IsInit:
-    regs = [0] * (size / 4)
-    sel = 0
-elif request.IsWrite:
-    o = request.Offset
-    v = request.Value
-    if o == 0x08:
-        if v & (1 << 31): v = v & ~(1 << 31)
-        if v & 0x1: regs[0] = regs[0] | 0x1
-        if v & 0x4:
-            regs[0] = regs[0] | 0x4
-            regs[0x40 >> 2] = 1000 + sel
-            v = v & ~0x4
-        regs[2] = v
-    elif o == 0x28:
-        regs[0x28 >> 2] = v
-        sel = 0
-        m = v
-        while m > 1:
-            m = m >> 1
-            sel = sel + 1
-        regs[0] = regs[0] | (1 << 13)
-    elif o == 0x00:
-        regs[0] = regs[0] & ~v
-    else:
-        regs[o >> 2] = v
-elif request.IsRead:
-    o = request.Offset
-    if o == 0x40:
-        request.Value = regs[0x40 >> 2]
-        regs[0] = regs[0] & ~0x4
-    else:
-        request.Value = regs[o >> 2]"""
 
 # DMA uses Renode's OWN DMA.STM32G0DMA (see the block that emits it). This
 # file used to carry a ~40-line inline Python model of the channel-style
@@ -248,8 +234,11 @@ def _resolve_spi(chip: dict[str, Any], board: dict[str, Any]):
 
 
 def _resolve_adc(chip: dict[str, Any], board: dict[str, Any]):
-    """Optional gate for the ADC. Returns (name, base) if the board has a curated
-    adc role whose IP has a Renode model (the inline G0 Python model), else None."""
+    """Optional gate for the ADC: returns (name, base, model, irq) if the chip
+    has a curated ADC whose IP Renode models, else None. Like _resolve_spi,
+    never raises — the ADC is an addition to the platform. The NVIC line comes
+    from the chip's irq fact (ADC_COMP on the G0), same pattern as every other
+    wired peripheral here."""
     roles = board.get("roles") or board
     role = roles.get("adc")
     name = role.get("peripheral") if isinstance(role, dict) else None
@@ -258,9 +247,14 @@ def _resolve_adc(chip: dict[str, Any], board: dict[str, Any]):
     periph = chip["peripherals"].get(name)
     if periph is None or periph.get("uncurated"):
         return None
-    if periph.get("ip") not in _ADC_G0_MODEL:
+    model = RENODE_ADC.get(periph.get("ip"))
+    if model is None:
         return None
-    return name, int(periph["base"], 16)
+    irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
+    irqn = irqs.get(periph.get("irq"))
+    if irqn is None:
+        return None
+    return name, int(periph["base"], 16), model, irqn
 
 
 def _resolve_wdg(chip: dict[str, Any]):
@@ -449,17 +443,22 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
     adc = _resolve_adc(chip, board)
     if adc is not None:
-        adc_name, adc_base = adc
-        # Renode has no STM32G0 ADC model, so emit a tiny purpose-written one as an
-        # inline Python peripheral (see _ADC_G0_SCRIPT). The script sits inside a
-        # `'''…'''` block at column 0, exactly like Renode's own vegaboard.repl.
+        adc_name, adc_base, adc_model, adc_irq = adc
+        # Renode's own STM32G0 ADC model (see RENODE_ADC for what it does and
+        # does not prove, and for the CCRDY shim the .resc adds). The values
+        # here are emulation fixtures, not chip facts: referenceVoltage is the
+        # emulated VDDA in volts (the Nucleo's 3.3 V rail — asserted counts
+        # derive from it: DR = round(mV/3300*4095)), and externalEventFrequency
+        # paces only EXTEN-triggered/continuous conversions, which the driver's
+        # manual single conversions never consult (the value is the one Renode's
+        # own stm32g0.repl uses). Emitted bare, like Renode's stm32g0.repl: the
+        # model coexists with the next declared peripheral (spi1, 0xC00 above)
+        # without a registration conflict, witnessed by every green g071rb leg.
         platform += f"""
-{adc_name}: Python.PythonPeripheral @ sysbus {adc_base:#010x}
-    size: 0x400
-    initable: true
-    script: '''
-{_ADC_G0_SCRIPT}
-'''
+{adc_name}: {adc_model} @ sysbus {adc_base:#010x}
+    referenceVoltage: 3.3
+    externalEventFrequency: 1000
+    -> nvic@{adc_irq}
 """
     dma = _resolve_dma(chip)
     if dma is not None:
@@ -666,6 +665,19 @@ def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
     space_free = " " not in repl_path and " " not in elf_path
     repl_ref = repl_path if space_free else Path(repl_path).name
     elf_ref = elf_path if space_free else Path(elf_path).name
+    # CCRDY shim for the native ADC model — see the RENODE_ADC comment for the
+    # full diagnosis. Renode's STM32G0_ADC leaves ISR bit 13 reserved, but the
+    # RM0444-correct driver polls CCRDY after every CHSELR write, so without
+    # this hook any firmware that touches the ADC hangs in that poll (register-
+    # trace witnessed). The hook ORs bit 13 (0x2000) into every ISR read, which
+    # means the CCRDY handshake passes VACUOUSLY under emulation — the one
+    # dishonesty the swap to the native model costs, bought openly here.
+    adc = _resolve_adc(chip, board)
+    adc_shim = "" if adc is None else (
+        f'\n# CCRDY shim: the native ADC model leaves ISR bit 13 reserved; the driver\n'
+        f'# polls it per RM0444. Vacuous under emulation — see emit/renode.py.\n'
+        f'sysbus.{adc[0]} AddAfterReadDoubleWordHook 0x0 "value = value | 0x2000"\n'
+    )
     # The ELF is loaded through a registered `macro reset`, not a bare LoadELF:
     # when the firmware resets itself (SYSRESETREQ from the fault handler, or a
     # watchdog), Renode pauses the machine and runs the machine's `reset` macro
@@ -680,7 +692,7 @@ def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
 using sysbus
 mach create "{board['id']}"
 machine LoadPlatformDescription @{repl_ref}
-macro reset
+{adc_shim}macro reset
 \"\"\"
     sysbus LoadELF @{elf_ref}
 \"\"\"

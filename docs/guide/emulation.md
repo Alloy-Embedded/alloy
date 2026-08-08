@@ -58,15 +58,27 @@ and every one of them is a *blocking* CI gate.
 
 Two of those deserve a note. The async legs cover **two vendors**, which is what turns "the
 coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
-driver-conformance legs are designed so they cannot pass by coincidence: the ADC model returns
-`1000 + channel`, so printing `adc: 1003` proves the driver selected channel 3 — a wrong channel
-prints a different number.
+driver-conformance legs are designed so they cannot pass by coincidence: the ADC leg feeds
+*distinct voltages to distinct channels* (1650 mV on ch3, 3300 mV on ch4) and asserts the
+converted counts (`adc ch3: 2048`, `adc ch4: 4095` at the 3.3 V reference) — converting the
+wrong channel prints the wrong counts (an unfed channel prints 0, verified), and so does wrong
+conversion math.
 
 !!! warning "Not every leg is equally strong"
-    The I²C and SPI legs run against **Renode's own** slave models, so they can genuinely
-    contradict a misreading of the reference manual. The ADC, DMA and SAME70-flash legs run against
-    models *this project wrote* — a self-authored model cannot falsify a mistake it shares with the
-    driver. Treat those as consistency checks, not independent proof.
+    The I²C, SPI, ADC and DMA legs run against **Renode's own** models, so they can genuinely
+    contradict a misreading of the reference manual. (The ADC and DMA legs originally ran against
+    models this project wrote; both were replaced by Renode's native models.) The SAME70-flash leg
+    still runs against a model *this project wrote* — a self-authored model cannot falsify a
+    mistake it shares with the driver. Treat that one as a consistency check, not independent
+    proof.
+
+    The ADC leg carries two vacuous spots, stated so nobody over-reads it: Renode's `STM32G0_ADC`
+    does not implement `ISR.CCRDY` (the flag real silicon raises after a `CHSELR` update — in the
+    1.16.1 source, bit 13 is reserved), so the generated `.resc` hooks the bit into every ISR
+    read and the driver's CCRDY poll passes **unconditionally**; and `ADCAL` is a tagged no-op
+    that never reads back 1, so the calibration self-clear poll also passes vacuously. Everything
+    else the leg asserts — `ADEN`→`ADRDY`, `ADSTART`→`EOC`, the DR read clearing `EOC`, channel
+    routing, and the 12-bit conversion arithmetic — is the native model's behaviour.
 
     The **pin-interrupt** leg sits between the two: it runs against Renode's own
     `STM32WBA_EXTI`, standing in for the G0's identically-laid-out block — so the port select,
@@ -85,12 +97,15 @@ run, and assert on lines.
 
 ```robotframework title="tests/emulation/adc_read.robot"
 *** Test Cases ***
-ADC Driver Converts A Channel
+ADC Driver Converts The Right Channels
     Execute Command           include @${RESC}
+    Execute Command           sysbus.adc SetDefaultValue 1650 3
+    Execute Command           sysbus.adc SetDefaultValue 3300 4
     Create Terminal Tester    ${UART}
     Start Emulation
     Wait For Line On Uart     alloy adc_read    timeout=30
-    Wait For Line On Uart     adc: 1003    timeout=30
+    Wait For Line On Uart     adc ch3: 2048    timeout=30
+    Wait For Line On Uart     adc ch4: 4095    timeout=30
 ```
 
 `${RESC}` and `${UART}` are passed in by the caller — they come straight from what `alloy
@@ -116,9 +131,11 @@ The emitter follows the same honesty rule as the rest of the framework: **an unm
 peripheral gets no mapping, never a guessed one.** `alloy emulate` refuses a board it cannot map
 rather than producing a platform that boots into fiction.
 
-Where a model was genuinely missing but the behaviour was worth proving, alloy ships its own —
-the STM32G0 ADC and DMA controllers, and the SAME70 EEFC flash controller, are inline Python
-peripherals emitted into the platform file, written against the reference manuals.
+Where a model is genuinely missing but the behaviour is worth proving, alloy ships its own —
+today only the SAME70 EEFC flash controller, an inline Python peripheral emitted into the
+platform file, written against the reference manual. (The STM32G0 ADC and DMA controllers used
+to be in that list; both now use Renode's native models, which is strictly better — a model this
+project wrote cannot falsify a mistake it shares with the driver.)
 
 Known gaps, so you do not go looking:
 
