@@ -28,7 +28,7 @@ struct pin_impl<Pin> {
     using Sio = typename Bank::sio_t;
     using Pads = typename Bank::pads_t;
     static constexpr unsigned index = Pin::index;
-    static constexpr std::uint32_t bit = 1u << index;
+    static constexpr std::uint32_t bit = std::uint32_t{1} << index;
     static_assert(index < IP::GPIO_CTRL_count, "RP2040 bank0 has 30 GPIOs");
 
     static constexpr std::uint8_t kFuncselSio = 5;  // datasheet §2.19.2 F5 = SIO

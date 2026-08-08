@@ -69,7 +69,7 @@ public:
         r().MACMIIAR = (static_cast<std::uint32_t>(phy) << IP::pa.pos) |
                        (static_cast<std::uint32_t>(reg) << IP::mr.pos) |
                        (kMdcCr << IP::cr.pos) |
-                       (1u << IP::mb.pos);  // MW=0 (read), MB=1 (start)
+                       (std::uint32_t{1} << IP::mb.pos);  // MW=0 (read), MB=1 (start)
         while (IP::mb.read(r()) != 0u) {
         }
         return static_cast<std::uint16_t>(r().MACMIIDR & 0xFFFFu);
@@ -79,7 +79,7 @@ public:
         r().MACMIIAR = (static_cast<std::uint32_t>(phy) << IP::pa.pos) |
                        (static_cast<std::uint32_t>(reg) << IP::mr.pos) |
                        (kMdcCr << IP::cr.pos) |
-                       (1u << IP::mw.pos) | (1u << IP::mb.pos);  // MW=1 (write), MB=1
+                       (std::uint32_t{1} << IP::mw.pos) | (std::uint32_t{1} << IP::mb.pos);  // MW=1 (write), MB=1
         while (IP::mb.read(r()) != 0u) {
         }
     }
@@ -147,7 +147,7 @@ public:
 
         // DMA bus mode: 32-beat burst, address-aligned, fixed burst; EDFE stays
         // 0 (normal 4-word descriptors). Program before the descriptor bases.
-        r().DMABMR = (0b100000u << IP::pbl.pos) | (1u << IP::fb.pos) | (1u << IP::aab.pos);
+        r().DMABMR = (0b100000u << IP::pbl.pos) | (std::uint32_t{1} << IP::fb.pos) | (std::uint32_t{1} << IP::aab.pos);
 
         // Descriptor list bases (DMA is stopped here).
         r().DMARDLAR = reinterpret_cast<std::uint32_t>(&rx_desc_[0]);
@@ -223,11 +223,11 @@ public:
 
 private:
     // Descriptor bits (RM0410 normal descriptors).
-    static constexpr std::uint32_t kOwn = 1u << 31;    // DES0.OWN (1 = DMA owns)
-    static constexpr std::uint32_t kRxRch = 1u << 14;  // RDES1.RCH (chained)
-    static constexpr std::uint32_t kTxLs = 1u << 29;   // TDES0.LS (last segment)
-    static constexpr std::uint32_t kTxFs = 1u << 28;   // TDES0.FS (first segment)
-    static constexpr std::uint32_t kTxTch = 1u << 20;  // TDES0.TCH (chained)
+    static constexpr std::uint32_t kOwn = std::uint32_t{1} << 31;    // DES0.OWN (1 = DMA owns)
+    static constexpr std::uint32_t kRxRch = std::uint32_t{1} << 14;  // RDES1.RCH (chained)
+    static constexpr std::uint32_t kTxLs = std::uint32_t{1} << 29;   // TDES0.LS (last segment)
+    static constexpr std::uint32_t kTxFs = std::uint32_t{1} << 28;   // TDES0.FS (first segment)
+    static constexpr std::uint32_t kTxTch = std::uint32_t{1} << 20;  // TDES0.TCH (chained)
 
     // MACMIIAR.CR clock range for the MDC divider (see RISK note above).
     static constexpr std::uint32_t kMdcCr = 0b100u;  // HCLK/102 (150-216 MHz)
@@ -236,8 +236,8 @@ private:
     // Inst::gate.reg, a data address). Bit positions are IP facts this HAL owns —
     // no silicon address here. RMII selection (SYSCFG, outside this block) is a
     // chip fact done by the generated board::eth_configure_pins().
-    static constexpr std::uint32_t kEthMacTxEn = 1u << 26;  // AHB1ENR.ETHMACTXEN
-    static constexpr std::uint32_t kEthMacRxEn = 1u << 27;  // AHB1ENR.ETHMACRXEN
+    static constexpr std::uint32_t kEthMacTxEn = std::uint32_t{1} << 26;  // AHB1ENR.ETHMACTXEN
+    static constexpr std::uint32_t kEthMacRxEn = std::uint32_t{1} << 27;  // AHB1ENR.ETHMACRXEN
 
     inline static desc rx_desc_[RxN]{};
     inline static desc tx_desc_[TxN]{};

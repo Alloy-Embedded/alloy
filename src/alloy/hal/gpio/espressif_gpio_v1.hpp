@@ -28,7 +28,7 @@ struct pin_impl<Pin> {
     static constexpr unsigned index = Pin::index;
     static_assert(index < 40, "ESP32 has GPIO0-39");
     static constexpr bool bank1 = index >= 32;
-    static constexpr std::uint32_t bit = 1u << (bank1 ? index - 32 : index);
+    static constexpr std::uint32_t bit = std::uint32_t{1} << (bank1 ? index - 32 : index);
 
     static constexpr std::uint32_t kSimpleGpioOut = 0x100;  // matrix bypass signal
 

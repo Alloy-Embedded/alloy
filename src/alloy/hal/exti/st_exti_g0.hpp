@@ -123,7 +123,7 @@ struct exti_impl<Inst> {
     // same reason the DMA channels can share theirs.
     template <unsigned Line>
     static void edge_isr(void*) {
-        constexpr std::uint32_t bit = 1u << Line;
+        constexpr std::uint32_t bit = std::uint32_t{1} << Line;
         auto& regs = r();
         const std::uint32_t rising = regs.RPR1 & bit;
         const std::uint32_t falling = regs.FPR1 & bit;
@@ -163,7 +163,7 @@ struct exti_impl<Inst> {
     static void arm(pin_edge e, void (*fn)(void*), void* ctx) {
         static_assert(Line < line_count,
                       "st/exti_g0 routes GPIO pins on lines 0..15 only");
-        constexpr std::uint32_t bit = 1u << Line;
+        constexpr std::uint32_t bit = std::uint32_t{1} << Line;
         auto& regs = r();
 
         // Mask and disarm both triggers first: nothing may be delivered while
@@ -199,7 +199,7 @@ struct exti_impl<Inst> {
 
     template <unsigned Line>
     static void disarm() {
-        constexpr std::uint32_t bit = 1u << Line;
+        constexpr std::uint32_t bit = std::uint32_t{1} << Line;
         auto& regs = r();
         regs.IMR1 = regs.IMR1 & ~bit;
         regs.RTSR1 = regs.RTSR1 & ~bit;

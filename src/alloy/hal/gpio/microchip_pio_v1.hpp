@@ -21,7 +21,7 @@ template <class Pin>
 struct pin_impl<Pin> {
     using Port = typename Pin::port_t;
     using IP = typename Port::ip;
-    static constexpr std::uint32_t bit = 1u << Pin::index;
+    static constexpr std::uint32_t bit = std::uint32_t{1} << Pin::index;
 
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Port::base);

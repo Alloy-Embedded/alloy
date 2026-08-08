@@ -23,7 +23,7 @@ struct field_t {
 
     static constexpr unsigned pos = Pos;
     static constexpr std::uint32_t raw_mask =
-        (Width == 32) ? 0xFFFF'FFFFu : ((1u << Width) - 1u);
+        (Width == 32) ? 0xFFFF'FFFFu : ((std::uint32_t{1} << Width) - 1u);
     static constexpr std::uint32_t mask = raw_mask << Pos;
 
     template <class Regs>
@@ -121,7 +121,7 @@ struct raw_field {
     unsigned width;
 
     [[nodiscard]] constexpr std::uint32_t raw_mask() const {
-        return (width == 32u) ? 0xFFFF'FFFFu : ((1u << width) - 1u);
+        return (width == 32u) ? 0xFFFF'FFFFu : ((std::uint32_t{1} << width) - 1u);
     }
     [[nodiscard]] constexpr std::uint32_t mask() const { return raw_mask() << pos; }
 

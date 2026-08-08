@@ -16,6 +16,17 @@ if grep -rnE "$addr_pattern" "$root/src/alloy" --include='*.hpp' --include='*.cp
     echo "FAIL: hardware address in hand-written C++ (facts must come from alloy-devices)"
     fail=1
 fi
+# A 32-bit mask needs a 32-bit literal. `1u` is `unsigned int`, which is 16 bits
+# wherever the target says so (AVR, MSP430, RL78) — `1u << 20` is then undefined
+# behaviour, and the compilers that would tell you are the ones alloy does not
+# build for yet. Every mask in src/ is 32 bits wide, so spell the literal that
+# way: `std::uint32_t{1} << n`. arch/ is exempt: that code already knows its ISA.
+if grep -rnE "\b1u\s*<<" "$root/src/alloy" --include='*.hpp' --include='*.cpp' \
+    | grep -v "/src/alloy/arch/"; then
+    echo "FAIL: 1u << n builds a 32-bit mask from a 16-bit literal (use std::uint32_t{1})"
+    fail=1
+fi
+
 # Explicit, auditable exceptions carry a `contract-ok: <reason>` line comment
 # (file-format magics like UF2). Grep for contract-ok to review them all.
 if grep -rnE "$addr_pattern" "$root/tools/alloy/alloy_cli" --include='*.py' \

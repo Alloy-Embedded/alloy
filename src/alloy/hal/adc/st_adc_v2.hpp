@@ -52,7 +52,7 @@ struct adc_impl<Inst> {
 
     [[nodiscard]] static std::uint16_t read(std::uint8_t channel) {
         using isr = typename IP::isr;
-        r().CHSELR = 1u << channel;
+        r().CHSELR = std::uint32_t{1} << channel;
         while ((r().ISR & isr::ccrdy) == 0u) {
         }
         r().ISR = isr::eoc | isr::ccrdy;  // clear stale flags
@@ -67,7 +67,7 @@ struct adc_impl<Inst> {
     // the DMA channel first, then kick() starts conversions. ---
     static void dma_burst_begin(std::uint8_t channel) {
         using isr = typename IP::isr;
-        r().CHSELR = 1u << channel;
+        r().CHSELR = std::uint32_t{1} << channel;
         while ((r().ISR & isr::ccrdy) == 0u) {
         }
         // Flag hygiene (w1c): stale CCRDY breaks the NEXT channel-select

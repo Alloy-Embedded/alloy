@@ -37,7 +37,7 @@ class ws2812 {
 
     static void send_grb(std::uint32_t grb) {
         const arch::irq_state saved = arch::irq_save();
-        for (std::uint32_t mask = 1u << 23; mask != 0u; mask >>= 1) {
+        for (std::uint32_t mask = std::uint32_t{1} << 23; mask != 0u; mask >>= 1) {
             if (grb & mask) {
                 impl::set_high();
                 delay_cycles(ns_to_cycles(800u));

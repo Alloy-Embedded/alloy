@@ -39,7 +39,7 @@ struct jedec_id_t {
         if (capacity_code < 0x11 || capacity_code > 0x1A) {
             return 0;
         }
-        return 1u << capacity_code;
+        return std::uint32_t{1} << capacity_code;
     }
 };
 
@@ -121,7 +121,7 @@ private:
     // + fast SPI clock); at slow clocks they just mean a longer timeout.
     static constexpr std::uint32_t kProgramSpins = 20'000;
     static constexpr std::uint32_t kEraseSpins = 2'000'000;
-    static constexpr std::uint32_t kAddrLimit = 1u << 24;  // 3-byte reach
+    static constexpr std::uint32_t kAddrLimit = std::uint32_t{1} << 24;  // 3-byte reach
     static constexpr std::uint8_t kWip = 0x01;  // status bit 0
 
     void select() const { cs_.set_low(); }

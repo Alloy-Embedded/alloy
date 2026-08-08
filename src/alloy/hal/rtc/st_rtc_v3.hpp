@@ -66,7 +66,7 @@ struct rtc_impl<Inst> {
         r().PRER = (127u << IP::prediv_a.pos) | (249u << IP::prediv_s.pos);
         r().TR = to_bcd(dt.second) | (to_bcd(dt.minute) << 8u) | (to_bcd(dt.hour) << 16u);
         r().DR = to_bcd(dt.day) | (to_bcd(dt.month) << 8u) | (to_bcd(dt.year) << 16u) |
-                 (1u << 13u);  // weekday=1 (Monday); the calendar rejects 0
+                 (std::uint32_t{1} << 13u);  // weekday=1 (Monday); the calendar rejects 0
         IP::init.clear(r());   // exit init -> the clock starts counting
         lock();
     }

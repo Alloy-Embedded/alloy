@@ -62,8 +62,8 @@ struct pin_impl<Pin> {
         IP::template pupdr<index>.write(r(), 0b01);
     }
 
-    static void set_high() { r().BSRR = 1u << index; }
-    static void set_low() { r().BSRR = 1u << (index + 16u); }
+    static void set_high() { r().BSRR = std::uint32_t{1} << index; }
+    static void set_low() { r().BSRR = std::uint32_t{1} << (index + 16u); }
 
     static void toggle() {
         if ((r().ODR >> index) & 1u) {

@@ -181,11 +181,11 @@ public:
     [[nodiscard]] std::uint32_t mtu() const { return 1500; }
 
 private:
-    static constexpr std::uint32_t kTxUsed = 1u << 31;
-    static constexpr std::uint32_t kTxWrap = 1u << 30;
-    static constexpr std::uint32_t kTxLast = 1u << 15;
+    static constexpr std::uint32_t kTxUsed = std::uint32_t{1} << 31;
+    static constexpr std::uint32_t kTxWrap = std::uint32_t{1} << 30;
+    static constexpr std::uint32_t kTxLast = std::uint32_t{1} << 15;
     // MAN CLTTO(30)=1 + WTN(17:16)=0b10 (clause-22 write-then-numeric).
-    static constexpr std::uint32_t kManClttoWtn = (1u << 30) | (0b10u << 16);
+    static constexpr std::uint32_t kManClttoWtn = (std::uint32_t{1} << 30) | (0b10u << 16);
 
     inline static desc rx_desc_[RxN]{};
     inline static desc tx_desc_[TxN]{};

@@ -33,7 +33,7 @@ struct adc_impl<Inst> {
         r().MR = (prescal << IP::prescal.pos) | (4u << IP::startup.pos) |
                  IP::one.mask | (2u << IP::tracktim.pos) | (2u << IP::transfer.pos);
         r().EMR = IP::tag.mask;
-        r().ACR = 1u << IP::ibctl.pos;
+        r().ACR = std::uint32_t{1} << IP::ibctl.pos;
         r().CGR = 0;      // gain 1 on all channels
         r().DIFFR = 0;    // single-ended
         r().TEMPMR = 0;   // temp sensor sampled like any channel
@@ -43,13 +43,13 @@ struct adc_impl<Inst> {
         // Mid-scale offset compensation for this channel (required).
         r().CSELR = channel;
         r().COCR = 0x200u;
-        r().CHER = 1u << channel;
+        r().CHER = std::uint32_t{1} << channel;
         r().CR = IP::start.mask;
-        while ((r().ISR & (1u << channel)) == 0u) {
+        while ((r().ISR & (std::uint32_t{1} << channel)) == 0u) {
         }
         r().CSELR = channel;
         const auto data = static_cast<std::uint16_t>(r().CDR & 0xFFFu);
-        r().CHDR = 1u << channel;
+        r().CHDR = std::uint32_t{1} << channel;
         return data;
     }
 
@@ -62,7 +62,7 @@ struct adc_impl<Inst> {
     static void dma_burst_begin(std::uint8_t channel) {
         r().CSELR = channel;
         r().COCR = 0x200u;
-        r().CHER = 1u << channel;
+        r().CHER = std::uint32_t{1} << channel;
         (void)r().LCDR;  // clear stale DRDY so the first request is fresh
     }
 

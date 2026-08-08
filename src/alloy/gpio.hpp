@@ -166,9 +166,9 @@ template <std::size_t N>
     bus_masks_t m{0u, 0u};
     for (std::size_t i = 0; i < N; ++i) {
         if (((value >> i) & 1u) != 0u) {
-            m.set |= 1u << bits[i];
+            m.set |= std::uint32_t{1} << bits[i];
         } else {
-            m.clear |= 1u << bits[i];
+            m.clear |= std::uint32_t{1} << bits[i];
         }
     }
     return m;
