@@ -824,6 +824,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Awaiting drivers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spi-i2c-and-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI, I²C and DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-actually-been-observed-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What has actually been observed running
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1337,6 +1365,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Awaiting drivers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spi-i2c-and-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI, I²C and DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-actually-been-observed-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What has actually been observed running
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1433,6 +1489,60 @@ in <strong>thread context</strong> (never inside the ISR), so your task body is 
 </span></code></pre></div>
 <p><code>uart_reader</code> buffers received bytes in a lock-free SPSC ring, so a burst that lands while your task
 is busy is queued, not dropped. One task reads one UART at a time.</p>
+<h3 id="spi-i2c-and-dma">SPI, I²C and DMA<a class="headerlink" href="#spi-i2c-and-dma" title="Permanent link">&para;</a></h3>
+<p>The bus awaitables suspend for a whole <strong>transfer</strong>, not a byte — the driver's ISR moves every byte
+and the task resumes once, in thread context, when the last one lands. Compare <code>bus.write(...)</code>,
+which spins per byte.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/spi.hpp&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/i2c.hpp&gt;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/dma.hpp&gt;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">alloy</span><span class="o">::</span><span class="n">async</span><span class="o">::</span><span class="n">spi_master</span><span class="w">  </span><span class="n">spi</span><span class="p">{</span><span class="n">bus</span><span class="p">};</span><span class="w">        </span><span class="c1">// long-lived, outlives the tasks</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">alloy</span><span class="o">::</span><span class="n">async</span><span class="o">::</span><span class="n">i2c_master</span><span class="w">  </span><span class="n">i2c</span><span class="p">{</span><span class="n">i2c_bus</span><span class="p">};</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">alloy</span><span class="o">::</span><span class="n">async</span><span class="o">::</span><span class="n">dma_waiter</span><span class="w">  </span><span class="n">dma</span><span class="p">{</span><span class="n">chan</span><span class="p">};</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">co_await</span><span class="w"> </span><span class="n">spi</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">);</span><span class="w">            </span><span class="c1">// one suspend, N bytes exchanged</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="kt">bool</span><span class="w"> </span><span class="n">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">co_await</span><span class="w"> </span><span class="n">i2c</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mh">0x08</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span><span class="w">   </span><span class="c1">// false on NACK / bus error</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">ok</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">co_await</span><span class="w"> </span><span class="n">i2c</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="mh">0x08</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">);</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="k">co_await</span><span class="w"> </span><span class="n">dma</span><span class="p">.</span><span class="n">run</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_begin</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_end</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Three things are worth knowing before you use them:</p>
+<ul>
+<li><strong>The transfer starts inside the <code>co_await</code></strong>, after the task is parked. That closes the
+  lost-wakeup race by construction — the completion interrupt has no window to fire into — but it
+  means you cannot kick a transfer off, do other work, and await it later. Use the callback API
+  (<code>transfer_async</code> + <code>busy()</code>) for that shape.</li>
+<li><strong><code>dma_waiter</code> must be constructed before the first transfer.</strong> The channel's config register can
+  only be written while the channel is disabled, so the driver folds the interrupt enable in at
+  setup based on whether a callback is registered. A waiter created inside the coroutine would arm
+  nothing and park forever.</li>
+<li><strong>One task per bus.</strong> A second task awaiting the same object traps in <code>waiter_slot</code>. A shared bus
+  needs one owning task that fans out.</li>
+</ul>
+<p>Do not mix an awaited transfer with the blocking calls on the same bus: the ISR consumes the very
+flags the blocking loop waits for.</p>
+<h2 id="what-has-actually-been-observed-running">What has actually been observed running<a class="headerlink" href="#what-has-actually-been-observed-running" title="Permanent link">&para;</a></h2>
+<p>The honest split, because "it compiles" and "it ran" are different claims:</p>
+<table>
+<thead>
+<tr>
+<th>Awaitable</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spi_master</code>, <code>i2c_master</code>, <code>dma_waiter</code></td>
+<td><strong>Ran on the ISA.</strong> The <code>async_io</code> example + <code>async_io.robot</code> assert, on an emulated STM32G071RB, that each task <em>suspended and was resumed by the peripheral interrupt</em> — the leg prints how many times the executor resumed it, and the same I/O done without suspending prints a different number and fails the test.</td>
+</tr>
+<tr>
+<td><code>uart_reader</code></td>
+<td><strong>Host unit tests only</strong>, against a <code>mock_uart</code> double. No example uses it and no emulation leg exercises it; it has never been observed running on a real ISA.</td>
+</tr>
+</tbody>
+</table>
+<p>None of it has run on physical silicon — see the README's list of what is not done.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1459,8 +1569,24 @@ is busy is queued, not dropped. One task reads one UART at a time.</p>
 <td>suspend on the executor's timer list over <code>uptime_ms()</code></td>
 </tr>
 <tr>
+<td><code>waiter_slot</code></td>
+<td>the one park/wake primitive every driver awaitable composes — never re-derived</td>
+</tr>
+<tr>
 <td><code>uart_reader</code></td>
 <td><code>co_await read()</code> over a driver's RX interrupt</td>
+</tr>
+<tr>
+<td><code>spi_master</code></td>
+<td><code>co_await transfer(out, in)</code> — one suspend per exchange</td>
+</tr>
+<tr>
+<td><code>i2c_master</code></td>
+<td><code>co_await write(addr, buf)</code> / <code>read(...)</code> — resumes with the ACK result</td>
+</tr>
+<tr>
+<td><code>dma_waiter</code></td>
+<td><code>co_await run(start)</code> over a channel's completion interrupt</td>
 </tr>
 </tbody>
 </table>

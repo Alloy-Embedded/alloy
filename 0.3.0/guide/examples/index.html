@@ -1374,6 +1374,10 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <td>a <a href="../libraries/">vendored driver</a> read inside an async task</td>
 </tr>
 <tr>
+<td><code>async_io</code></td>
+<td><code>co_await</code> over SPI, I²C and DMA interrupts — the <a href="../async/">driver awaitables</a></td>
+</tr>
+<tr>
 <td><code>net_probe</code>, <code>net_echo</code></td>
 <td>Ethernet (SAM E70 GMAC + PHY)</td>
 </tr>
@@ -1401,7 +1405,8 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 </table>
 <p>The examples ending in <code>_read</code> (<code>i2c_read</code>, <code>spi_read</code>, <code>adc_read</code>, <code>dma_uart</code>) are the ones CI
 asserts on under <a href="../emulation/">emulation</a> — they print a value that only a correct driver
-sequence can produce.</p>
+sequence can produce. <code>async_io</code> is asserted the same way, on a number only a coroutine that
+actually suspended and was woken by an interrupt can print.</p>
 <h2 id="running-an-example">Running an example<a class="headerlink" href="#running-an-example" title="Permanent link">&para;</a></h2>
 <p>The examples live in the framework tree under <code>examples/</code>. Build one for any board:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/dma_probe
