@@ -850,6 +850,8 @@
       
         
       
+        
+      
     
     
     
@@ -938,6 +940,34 @@
     
   
     Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locking a production unit
   
 
     
@@ -1194,6 +1224,17 @@
     <span class="md-ellipsis">
       
         Update a device in the field
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lock-a-production-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lock a production unit
       
     </span>
   </a>
@@ -1510,6 +1551,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#lock-a-production-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lock a production unit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#give-the-project-its-own-ci" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1809,6 +1861,27 @@ memory map and UART cannot drift from the real target. See <a href="../emulation
 </span></code></pre></div>
 <p>The full story — slots, trial boots, rollback, signing — is in
 <a href="../firmware-update/">Firmware update</a>.</p>
+<h2 id="lock-a-production-unit">Lock a production unit<a class="headerlink" href="#lock-a-production-unit" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alloy secure status</code></td>
+<td>read + decode the RDP level and WRP ranges over the probe — always safe</td>
+</tr>
+<tr>
+<td><code>alloy secure apply [--rdp N] [--wrp-bootloader]</code></td>
+<td>program option bytes — destructive transitions refuse without explicit flags and a typed phrase</td>
+</tr>
+</tbody>
+</table>
+<p>Signed images mean nothing if the flash can be read or replaced over SWD. The guards are the
+point: read <a href="../security/">Security</a> before using <code>apply</code> — especially what <code>--rdp 2</code> means.</p>
 <h2 id="give-the-project-its-own-ci">Give the project its own CI<a class="headerlink" href="#give-the-project-its-own-ci" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

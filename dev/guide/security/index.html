@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/emulation/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/security/">
       
       
-        <link rel="prev" href="../adding-a-board/">
+        <link rel="prev" href="../firmware-update/">
       
       
-        <link rel="next" href="../firmware-update/">
+        <link rel="next" href="../crash-reports/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Emulation - alloy</title>
+        <title>Locking a production unit - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#emulation" class="md-skip">
+        <a href="#locking-a-production-unit" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Emulation
+              Locking a production unit
             
           </span>
         </div>
@@ -313,7 +313,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../emulation/" class="md-tabs__link">
           
   
   
@@ -906,37 +906,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Emulation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../emulation/" class="md-nav__link">
         
   
   
@@ -952,83 +925,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setting-it-up" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Setting it up
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-emulation-is-used-for-here" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What emulation is used for here
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#writing-a-test" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Writing a test
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#when-renode-does-not-model-the-part" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        When Renode does not model the part
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-limit-of-the-claim" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The limit of the claim
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1066,10 +962,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../security/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locking a production unit
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1085,6 +1008,72 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-rdp-levels-mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the RDP levels mean
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-bootloader-write-protect-derives-from-the-slot-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The bootloader write-protect derives from the slot layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-alloy-secure-refuses-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What alloy secure refuses, and why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-proven-and-what-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is proven, and what is not
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1396,10 +1385,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setting-it-up" class="md-nav__link">
+  <a href="#what-the-rdp-levels-mean" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting it up
+        What the RDP levels mean
       
     </span>
   </a>
@@ -1407,10 +1396,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-emulation-is-used-for-here" class="md-nav__link">
+  <a href="#the-bootloader-write-protect-derives-from-the-slot-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What emulation is used for here
+        The bootloader write-protect derives from the slot layout
       
     </span>
   </a>
@@ -1418,10 +1407,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#writing-a-test" class="md-nav__link">
+  <a href="#what-alloy-secure-refuses-and-why" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Writing a test
+        What alloy secure refuses, and why
       
     </span>
   </a>
@@ -1429,21 +1418,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-renode-does-not-model-the-part" class="md-nav__link">
+  <a href="#what-is-proven-and-what-is-not" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When Renode does not model the part
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-limit-of-the-claim" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The limit of the claim
+        What is proven, and what is not
       
     </span>
   </a>
@@ -1470,174 +1448,179 @@
   
 
 
-<h1 id="emulation">Emulation<a class="headerlink" href="#emulation" title="Permanent link">&para;</a></h1>
-<p>alloy can run your firmware on an emulated MCU, with no board attached:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>emulate<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">platform: /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.repl</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">script:   /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.resc</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">uart:     sysbus.usart2</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">alloy uart_echo ready</span>
+<h1 id="locking-a-production-unit">Locking a production unit<a class="headerlink" href="#locking-a-production-unit" title="Permanent link">&para;</a></h1>
+<p><a href="../firmware-update/">Firmware update</a> gives you signed images: a fielded device refuses an
+update that was not signed with your key. That is only half a story. If the flash is readable
+over SWD, an attacker with physical access reads your firmware (and any secrets in it) straight
+out; if the bootloader is writable, they replace the code that <em>does the verifying</em>. A product
+leaves the factory with two more locks:</p>
+<ul>
+<li><strong>RDP — readout protection.</strong> The debug port loses access to flash. On ST parts this is a
+  byte in the option bytes with three levels (below).</li>
+<li><strong>WRP — write protection.</strong> Chosen flash ranges refuse erase/program. alloy protects the
+  bootloader region, and derives the range from the <a href="../firmware-update/">A/B slot layout</a> —
+  the same one the linker and bootloader trust — never from a typed address.</li>
+</ul>
+<p>Both are applied <strong>host-side, through the debug probe, at production-flash time</strong> — <code>alloy
+secure</code> drives openocd. Firmware never self-protects in v1: a factory step you can see, log
+and re-check beats a code path that runs on every unit forever.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>secure<span class="w"> </span>status
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">nucleo_g071rb (st/STM32G071RB)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">  RDP: level 0 (byte 0xaa) — flash readable over the debug port — NOT production-safe</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">  WRP: no ranges write-protected</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">  bootloader 0x08000000 +32 KB (pages 0-15): NOT write-protected</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">hint: `alloy secure apply --rdp 1 --wrp-bootloader` locks a production unit (guarded — it explains itself first)</span>
 </span></code></pre></div>
-<p>This is not a simulator of alloy's own making — it is <a href="https://renode.io">Renode</a> driving the
-real instruction set and real peripheral models. What alloy contributes is that <strong>the emulated
-machine is generated from the same chip data the firmware is compiled against</strong>, so the memory
-map, the clock tree inputs and the UART instance cannot drift from the target.</p>
-<h2 id="setting-it-up">Setting it up<a class="headerlink" href="#setting-it-up" title="Permanent link">&para;</a></h2>
-<p>Put <code>renode</code> on your <code>PATH</code>, or drop an install under <code>~/.alloy/tools/</code> — the same place <code>alloy
-setup</code> keeps cross-toolchains — and the CLI finds it:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>~/.alloy/tools/renode-1.16.1/Renode.app        # macOS
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>~/.alloy/tools/renode-1.16.1/renode            # Linux / portable
-</span></code></pre></div>
-<p><code>--emit-only</code> writes the <code>.repl</code> platform and <code>.resc</code> script and stops, which is what you want
-when you are driving Renode yourself or debugging a platform:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>emulate<span class="w"> </span>--emit-only<span class="w"> </span>--board<span class="w"> </span>same70_xplained
-</span></code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Pin your Renode</p>
-<p>alloy's CI pins <strong>v1.16.1</strong> rather than tracking the nightly build. A nightly once changed a
-peripheral model's constructor signature and broke a working platform; a pinned version means
-a green run locally still means something in CI, and a Renode upgrade is a deliberate,
-reviewable change.</p>
-</div>
-<h2 id="what-emulation-is-used-for-here">What emulation is used for here<a class="headerlink" href="#what-emulation-is-used-for-here" title="Permanent link">&para;</a></h2>
-<p>An emulator that only answers "did it boot" is a compile check with extra steps. alloy uses it as
-a <strong>behaviour oracle</strong>: every leg below asserts on real UART output produced by real driver code,
-and every one of them is a <em>blocking</em> CI gate.</p>
+<p><code>status</code> is always safe: it reads option registers (readable even at RDP level 1) and never
+writes. Every <code>apply</code> starts by printing the same status, so you always see the current level
+before anything happens.</p>
+<h2 id="what-the-rdp-levels-mean">What the RDP levels mean<a class="headerlink" href="#what-the-rdp-levels-mean" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>What is proven</th>
-<th>Boards</th>
+<th>Level</th>
+<th>Byte</th>
+<th>Meaning</th>
+<th>Way back</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Boot to a banner</td>
-<td><code>nucleo_g071rb</code>, <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
+<td>0</td>
+<td><code>0xAA</code></td>
+<td>fresh from the fab — flash fully readable over SWD</td>
+<td>—</td>
 </tr>
 <tr>
-<td>UART echo round-trip (RX path → loop → TX path)</td>
-<td><code>nucleo_g071rb</code></td>
+<td>1</td>
+<td>any other</td>
+<td>debugger flash access blocked; option bytes still writable</td>
+<td>to level 0: the hardware <strong>mass-erases the entire flash first</strong></td>
 </tr>
 <tr>
-<td>Two concurrent coroutines on the heap-less executor</td>
-<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
-</tr>
-<tr>
-<td>I²C driver conformance against a slave on the bus</td>
-<td><code>nucleo_g071rb</code></td>
-</tr>
-<tr>
-<td>SPI driver conformance</td>
-<td><code>nucleo_g071rb</code></td>
-</tr>
-<tr>
-<td>ADC conversion of the <em>right</em> channel</td>
-<td><code>nucleo_g071rb</code></td>
-</tr>
-<tr>
-<td>UART transmit driven by DMA</td>
-<td><code>nucleo_g071rb</code></td>
-</tr>
-<tr>
-<td>Bootloader verify → jump → recover</td>
-<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
-</tr>
-<tr>
-<td>The full <a href="../firmware-update/">update lifecycle</a> + signed-image oracle</td>
-<td><code>nucleo_g071rb</code> (SAME70 runs the install/confirm half)</td>
+<td>2</td>
+<td><code>0xCC</code></td>
+<td>debug port <strong>permanently disabled</strong></td>
+<td><strong>none — ever</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Two of those deserve a note. The async legs cover <strong>two vendors</strong>, which is what turns "the
-coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
-driver-conformance legs are designed so they cannot pass by coincidence: the ADC leg feeds
-<em>distinct voltages to distinct channels</em> (1650 mV on ch3, 3300 mV on ch4) and asserts the
-converted counts (<code>adc ch3: 2048</code>, <code>adc ch4: 4095</code> at the 3.3 V reference) — converting the
-wrong channel prints the wrong counts (an unfed channel prints 0, verified), and so does wrong
-conversion math.</p>
-<div class="admonition warning">
-<p class="admonition-title">Not every leg is equally strong</p>
-<p>The I²C, SPI, ADC and DMA legs run against <strong>Renode's own</strong> models, so they can genuinely
-contradict a misreading of the reference manual. (The ADC and DMA legs originally ran against
-models this project wrote; both were replaced by Renode's native models.) The SAME70-flash leg
-still runs against a model <em>this project wrote</em> — a self-authored model cannot falsify a
-mistake it shares with the driver. Treat that one as a consistency check, not independent
-proof.</p>
-<p>The ADC leg carries two vacuous spots, stated so nobody over-reads it: Renode's <code>STM32G0_ADC</code>
-does not implement <code>ISR.CCRDY</code> (the flag real silicon raises after a <code>CHSELR</code> update — in the
-1.16.1 source, bit 13 is reserved), so the generated <code>.resc</code> hooks the bit into every ISR
-read and the driver's CCRDY poll passes <strong>unconditionally</strong>; and <code>ADCAL</code> is a tagged no-op
-that never reads back 1, so the calibration self-clear poll also passes vacuously. Everything
-else the leg asserts — <code>ADEN</code>→<code>ADRDY</code>, <code>ADSTART</code>→<code>EOC</code>, the DR read clearing <code>EOC</code>, channel
-routing, and the 12-bit conversion arithmetic — is the native model's behaviour.</p>
-<p>The <strong>pin-interrupt</strong> leg sits between the two: it runs against Renode's own
-<code>STM32WBA_EXTI</code>, standing in for the G0's identically-laid-out block — so the port select,
-the trigger selection and the delivery to the right NVIC vector are all genuinely
-falsifiable (verified by breaking each in turn). Two things it <em>cannot</em> check: this model
-leaves <code>IMR1</code> unimplemented and delivers the interrupt whether or not the driver unmasks
-the line, and it latches <strong>both</strong> edge directions in <code>FPR1</code> where the G0 splits them across
-<code>RPR1</code>/<code>FPR1</code>. So "the driver unmasks correctly" and "the driver clears the right pending
-half" are open until silicon.</p>
+<p>Two traps live in that table, and they are why <code>alloy secure apply</code> is deliberately loud:</p>
+<div class="admonition danger">
+<p class="admonition-title">Level 1 → 0 mass-erases the chip</p>
+<p>Dropping readout protection erases <strong>all</strong> flash — bootloader, both firmware slots, the
+boot-state store — before protection releases. That is the feature (protected firmware
+can never be exposed by unlocking), but it means "just unlock it to debug this returned
+unit" destroys the unit's firmware. <code>alloy secure apply --rdp 0</code> on a level-1 part
+refuses unless you pass <code>--accept-mass-erase</code> <strong>and</strong> type <code>erase &lt;part&gt;</code> when prompted,
+and it prints what will be lost before touching the device.</p>
 </div>
-<h2 id="writing-a-test">Writing a test<a class="headerlink" href="#writing-a-test" title="Permanent link">&para;</a></h2>
-<p>Tests are <a href="https://robotframework.org">Robot Framework</a> files under <code>tests/emulation/</code>. The
-pattern is always the same: include the generated script, attach a terminal tester to the UART,
-run, and assert on lines.</p>
-<div class="language-robotframework highlight"><span class="filename">tests/emulation/adc_read.robot</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gh">*** Test Cases ***</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gu">ADC Driver Converts The Right Channels</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">include @</span><span class="p">${</span><span class="nv">RESC</span><span class="p">}</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">sysbus.adc SetDefaultValue 1650 3</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">sysbus.adc SetDefaultValue 3300 4</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">    </span><span class="nf">Create Terminal Tester</span><span class="p">    ${</span><span class="nv">UART</span><span class="p">}</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">    </span><span class="nf">Start Emulation</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">alloy adc_read</span><span class="p">    </span><span class="s">timeout=30</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">adc ch3: 2048</span><span class="p">    </span><span class="s">timeout=30</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">adc ch4: 4095</span><span class="p">    </span><span class="s">timeout=30</span>
-</span></code></pre></div>
-<p><code>${RESC}</code> and <code>${UART}</code> are passed in by the caller — they come straight from what <code>alloy
-emulate</code> printed, so a test never re-derives a fact the board data already carries.</p>
-<p>Run one locally — the three values are the three lines <code>alloy emulate --emit-only</code> printed:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>renode-test<span class="w"> </span>--variable<span class="w"> </span>RESC:/abs/path/nucleo_g071rb.resc<span class="w"> </span>--variable<span class="w"> </span>UART:sysbus.usart2<span class="w"> </span>tests/emulation/adc_read.robot
-</span></code></pre></div>
-<p><code>RESC</code> must be <strong>absolute</strong>: <code>renode-test</code> resolves <code>include @…</code> relative to the <code>.robot</code> file,
-not to your working directory.</p>
-<div class="admonition warning">
-<p class="admonition-title"><code>renode-test</code> and paths with spaces</p>
-<p>Its wrapper expands the working directory unquoted, so it fails in a directory whose path
-contains a space. Run it from a space-free directory (CI does; a checkout under
-<code>~/My Projects/</code> will not).</p>
+<div class="admonition danger">
+<p class="admonition-title">Level 2 is a manufacturing decision, not a setting</p>
+<p>Level 2 burns the debug port off. No probe will ever connect again — not yours, not
+ST's. Failure analysis, factory reflash, <code>alloy secure status</code> itself: all gone, forever.
+The only remaining way into the device is your own UART bootloader. Choose it for
+products where the threat model demands it, as an explicit manufacturing step. The CLI
+refuses <code>--rdp 2</code> unless you pass <code>--permanent</code> <strong>and</strong> type
+<code>permanently disable debug on &lt;part&gt;</code>. It is never a default and no other flag implies it.</p>
 </div>
-<h2 id="when-renode-does-not-model-the-part">When Renode does not model the part<a class="headerlink" href="#when-renode-does-not-model-the-part" title="Permanent link">&para;</a></h2>
-<p>The emitter follows the same honesty rule as the rest of the framework: <strong>an unmodelled
-peripheral gets no mapping, never a guessed one.</strong> <code>alloy emulate</code> refuses a board it cannot map
-rather than producing a platform that boots into fiction.</p>
-<p>Where a model is genuinely missing but the behaviour is worth proving, alloy ships its own —
-today only the SAME70 EEFC flash controller, an inline Python peripheral emitted into the
-platform file, written against the reference manual. (The STM32G0 ADC and DMA controllers used
-to be in that list; both now use Renode's native models, which is strictly better — a model this
-project wrote cannot falsify a mistake it shares with the driver.)</p>
-<p>Known gaps, so you do not go looking:</p>
+<p>Level 1 is the production baseline: field updates over UART still work (the bootloader runs
+from flash, unaffected), and returned units can still be inspected at the cost of an erase.</p>
+<h2 id="the-bootloader-write-protect-derives-from-the-slot-layout">The bootloader write-protect derives from the slot layout<a class="headerlink" href="#the-bootloader-write-protect-derives-from-the-slot-layout" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>secure<span class="w"> </span>apply<span class="w"> </span>--rdp<span class="w"> </span><span class="m">1</span><span class="w"> </span>--wrp-bootloader
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">nucleo_f722ze (st/STM32F722ZE)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">  RDP: level 0 (byte 0xaa) — flash readable over the debug port — NOT production-safe</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">  ...</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">WARNING: RDP level 1 blocks debugger access to flash. Returning to level 0 later</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">MASS-ERASES the chip — every byte of every slot. Field updates still work (the UART</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">bootloader is unaffected).</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">WARNING: write-protecting the bootloader region — the bootloader can then only be</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">replaced by first clearing WRP over the probe.</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">proceed? [y/N] y</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">option bytes programmed and verified by readback</span>
+</span></code></pre></div>
+<p><code>--wrp-bootloader</code> never takes an address. The range comes from <code>emit/slots.py</code> — the same
+computation that links the bootloader and partitions the slots — so the protected range and
+the real bootloader cannot disagree:</p>
 <ul>
-<li><strong>RP2040</strong> — this Renode ships no RP2040 peripheral models at all, so those boards are not
-  emulated. Not an alloy gap; it needs a newer Renode.</li>
-<li><strong>STM32G0 flash</strong> — there is no G0 flash-controller model, and the emitter deliberately does not
-  invent one. The G0 bootloader legs therefore exercise everything <em>above</em> the flash driver while
-  its own register sequences go unchecked. (The F7 legs use Renode's controller; the SAME70 legs
-  use a model written here.)</li>
-<li><strong>PWM</strong> — nothing observable comes out over a UART, so there is no meaningful assertion to
-  make. Verified on silicon instead.</li>
-<li><strong>I²C bus scan</strong> — a zero-length write (a valid probe on real silicon) is not implemented by
-  Renode's I²C model, so the conformance test does a one-byte write plus read instead.</li>
+<li><strong>STM32G0</strong>: the bootloader is 2 KB pages 0–15; <code>WRP1AR</code> gets <code>STRT=0, END=15</code>.</li>
+<li><strong>STM32F722</strong>: the bootloader is the first two 16 KB sectors; <code>nWRP</code> bits 0 and 1 are
+  cleared (the field is active-low).</li>
 </ul>
-<h2 id="the-limit-of-the-claim">The limit of the claim<a class="headerlink" href="#the-limit-of-the-claim" title="Permanent link">&para;</a></h2>
-<p>Emulation proves that driver logic drives a <em>faithful model</em> of the peripheral. It does not prove
-timing against real silicon, analog behaviour, or anything a datasheet erratum covers. The
-framework's hardware-validated families are marked as such in <a href="../boards/">Boards</a>; everything
-proven only in emulation says so where it is documented — including the three flash drivers
-behind <a href="../firmware-update/">firmware update</a>.</p>
-<p>That boundary is the point. Emulation makes the <em>logic</em> a gate that runs on every commit, so the
-scarce resource — time with real hardware — is spent on the things only real hardware can answer.</p>
+<p>Everything is a read-modify-write under field masks from the device database: option bits
+this tool does not manage (brown-out level, watchdog mode, reset behaviour, boot addresses)
+are read back exactly as they were.</p>
+<p>A note on scope: <code>apply</code> supports STM32G0 and STM32F72x/F73x. On STM32F76x/F77x, <code>status</code>
+works but <code>apply</code> refuses — those parts carry a wider <code>nWRP</code> field and an <code>nDBANK</code> bit that
+changes the whole sector map, and alloy does not model that yet. The refusal says so.</p>
+<h2 id="what-alloy-secure-refuses-and-why">What <code>alloy secure</code> refuses, and why<a class="headerlink" href="#what-alloy-secure-refuses-and-why" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>You ask</th>
+<th>It does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apply</code> with no flags</td>
+<td>prints status + advice; <strong>never</strong> acts</td>
+</tr>
+<tr>
+<td><code>apply --rdp 1</code> (from 0)</td>
+<td>warns (regression = mass erase), then y/N or <code>--yes</code></td>
+</tr>
+<tr>
+<td><code>apply --rdp 0</code> (from 1)</td>
+<td><strong>refuses</strong> without <code>--accept-mass-erase</code> + typed <code>erase &lt;part&gt;</code></td>
+</tr>
+<tr>
+<td><code>apply --rdp 2</code></td>
+<td><strong>refuses</strong> without <code>--permanent</code> + typed <code>permanently disable debug on &lt;part&gt;</code></td>
+</tr>
+<tr>
+<td>anything on a level-2 part</td>
+<td>refuses — nothing can change a level-2 part (the probe cannot even connect)</td>
+</tr>
+<tr>
+<td><code>--wrp-bootloader</code> on a chip without a slot layout</td>
+<td>refuses — there is nothing to derive the range from</td>
+</tr>
+<tr>
+<td>unsupported family or probe</td>
+<td>refuses, naming the missing data or mapping</td>
+</tr>
+</tbody>
+</table>
+<p>The typed phrases are read from stdin, so a factory line can pipe them — the warnings print
+regardless, into the factory log. <code>--yes</code> only answers the routine y/N; it never stands in
+for a typed phrase. <code>--dry-run</code> prints the exact openocd commands and exits.</p>
+<p>One quirk worth knowing: on STM32G0 the final step (<code>OBL_LAUNCH</code>) <strong>resets the chip</strong>, which
+kills the debug session mid-run. The CLI expects that, says so, and tells you to re-run
+<code>alloy secure status</code> to see the new state.</p>
+<h2 id="what-is-proven-and-what-is-not">What is proven, and what is not<a class="headerlink" href="#what-is-proven-and-what-is-not" title="Permanent link">&para;</a></h2>
+<p>Honesty section, per alloy's usual rule: claims carry their evidence.</p>
+<ul>
+<li><strong>Witnessed in emulation (Renode 1.16.1, F7 model)</strong>: the option-byte register interface —
+  a locked <code>OPTCR</code> ignores writes, the <code>OPTKEYR</code> key sequence unlocks it, the planner's own
+  poke list programs the expected value, relocking holds. The test drives the <em>same</em> write
+  list <code>apply</code> sends to openocd (<code>tools/alloy/tests/test_secure.py</code>).</li>
+<li><strong>Community-proven tooling</strong>: the G0 path uses openocd's <code>stm32l4x option_write</code> /
+  <code>option_load</code> driver, which is what the openocd project ships for G0 silicon.</li>
+<li><strong>Not witnessed by alloy on silicon</strong>: actual readout blocking, the 1 → 0 mass erase, RDP2
+  permanence, WRP refusing an erase, persistence across power cycles — and the claim that
+  option registers stay <em>readable</em> under level 1 (what makes <code>status</code> "always safe" there)
+  is likewise RM-only. These rest on
+  RM0444/RM0431 and ST's own tooling behaviour. No board was sacrificed to verify them —
+  RDP is exactly the thing you do not test casually on your only board. Renode's G0 has no
+  flash-controller model at all, and its F7 model has no protection <em>semantics</em> (RDP has no
+  behavioural effect there), so emulation cannot close this gap. If you have a unit to
+  spare, <code>alloy secure apply --rdp 1</code> followed by a failed flash read, and <code>--rdp 0
+  --accept-mass-erase</code> followed by <code>alloy secure status</code> showing a blank level-0 part, is
+  the full silicon witness — we would love the report.</li>
+</ul>
 
 
 
@@ -1675,7 +1658,7 @@ scarce resource — time with real hardware — is spent on the things only real
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../adding-a-board/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Adding a board">
+          <a href="../firmware-update/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Firmware update over UART">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1685,20 +1668,20 @@ scarce resource — time with real hardware — is spent on the things only real
                 Previous
               </span>
               <div class="md-ellipsis">
-                Adding a board
+                Firmware update over UART
               </div>
             </div>
           </a>
         
         
           
-          <a href="../firmware-update/" class="md-footer__link md-footer__link--next" aria-label="Next: Firmware update over UART">
+          <a href="../crash-reports/" class="md-footer__link md-footer__link--next" aria-label="Next: Crash reports">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Firmware update over UART
+                Crash reports
               </div>
             </div>
             <div class="md-footer__button md-icon">
