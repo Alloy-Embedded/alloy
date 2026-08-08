@@ -97,6 +97,7 @@ add_executable(alloy_unit_tests
     test_nvm.cpp
     test_gpio_bus.cpp
     test_dsp.cpp
+    test_fsm.cpp
     test_secure.cpp
     test_fs.cpp
     test_ota.cpp
