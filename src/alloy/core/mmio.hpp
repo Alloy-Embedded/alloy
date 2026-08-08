@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 namespace alloy {
 
@@ -14,36 +15,78 @@ using rw32 = volatile std::uint32_t;
 using ro32 = volatile const std::uint32_t;
 using wo32 = volatile std::uint32_t;
 
+// Not every register is a word. Renesas RL78, AVR and MSP430 declare 8- and
+// 16-bit SFRs, several of them explicitly single-width — a 32-bit read-modify-
+// write on an 8-bit register does not merely waste a cycle, it touches the
+// three registers next to it.
+using rw16 = volatile std::uint16_t;
+using ro16 = volatile const std::uint16_t;
+using wo16 = volatile std::uint16_t;
+using rw8 = volatile std::uint8_t;
+using ro8 = volatile const std::uint8_t;
+using wo8 = volatile std::uint8_t;
+
+// The width of the register a pointer-to-member points at. Deduced rather than
+// declared: the generated struct already says whether a register is rw8 or
+// rw32, and asking the member pointer means a field can never disagree with
+// the register it belongs to.
+namespace detail {
+template <class T>
+struct member_word;
+template <class Regs, class Word>
+struct member_word<Word Regs::*> {
+    using type = std::remove_cv_t<Word>;
+};
+}  // namespace detail
+
+template <auto Member>
+using reg_word_t = typename detail::member_word<decltype(Member)>::type;
+
 // A bitfield inside a register, addressed by pointer-to-member so the field
 // is bound to its register at compile time and cannot be applied to the
 // wrong one.
 template <auto Member, unsigned Pos, unsigned Width = 1>
 struct field_t {
-    static_assert(Pos < 32 && Width >= 1 && Width <= 32 && Pos + Width <= 32);
+    //: The register's own width, from its declaration.
+    using word = reg_word_t<Member>;
+    static constexpr unsigned bits = sizeof(word) * 8u;
+
+    static_assert(Width >= 1 && Pos + Width <= bits,
+                  "field does not fit the register it names");
 
     static constexpr unsigned pos = Pos;
-    static constexpr std::uint32_t raw_mask =
-        (Width == 32) ? 0xFFFF'FFFFu : ((std::uint32_t{1} << Width) - 1u);
-    static constexpr std::uint32_t mask = raw_mask << Pos;
+
+    // All mask arithmetic happens in std::uint32_t and is narrowed at the end.
+    // Doing it in `word` would be wrong twice over: `uint16_t{1} << 15` promotes
+    // to a SIGNED int, and on a 16-bit-int target that shift is undefined — the
+    // exact target this width support exists for.
+    static constexpr std::uint32_t wide_raw_mask =
+        (Width >= 32) ? 0xFFFF'FFFFu : ((std::uint32_t{1} << Width) - 1u);
+    static constexpr std::uint32_t wide_mask = wide_raw_mask << Pos;
+
+    static constexpr word raw_mask = static_cast<word>(wide_raw_mask);
+    static constexpr word mask = static_cast<word>(wide_mask);
 
     template <class Regs>
     static void write(Regs& r, std::uint32_t value) {
-        r.*Member = (r.*Member & ~mask) | ((value & raw_mask) << Pos);
+        const std::uint32_t cur = static_cast<std::uint32_t>(r.*Member);
+        r.*Member = static_cast<word>((cur & ~wide_mask) |
+                                      ((value & wide_raw_mask) << Pos));
     }
 
     template <class Regs>
     [[nodiscard]] static std::uint32_t read(Regs& r) {
-        return (r.*Member & mask) >> Pos;
+        return (static_cast<std::uint32_t>(r.*Member) & wide_mask) >> Pos;
     }
 
     template <class Regs>
     static void set(Regs& r) requires (Width == 1) {
-        r.*Member = r.*Member | mask;
+        r.*Member = static_cast<word>(static_cast<std::uint32_t>(r.*Member) | wide_mask);
     }
 
     template <class Regs>
     static void clear(Regs& r) {
-        r.*Member = r.*Member & ~mask;
+        r.*Member = static_cast<word>(static_cast<std::uint32_t>(r.*Member) & ~wide_mask);
     }
 };
 

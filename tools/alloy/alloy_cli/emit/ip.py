@@ -20,7 +20,15 @@ from typing import Any
 
 from .common import BANNER, EmitError
 
-_ACCESS_TYPE = {"rw": "rw32", "ro": "ro32", "wo": "wo32"}
+#: (access, width in bits) -> the volatile alias in alloy/core/mmio.hpp.
+#: Width is a silicon fact: RL78, AVR and MSP430 declare 8- and 16-bit SFRs,
+#: several of them explicitly refusing wider access, and a 32-bit read-modify-
+#: write on an 8-bit register carries its three neighbours with it.
+_ACCESS_TYPE = {
+    ("rw", 32): "rw32", ("ro", 32): "ro32", ("wo", 32): "wo32",
+    ("rw", 16): "rw16", ("ro", 16): "ro16", ("wo", 16): "wo16",
+    ("rw", 8): "rw8", ("ro", 8): "ro8", ("wo", 8): "wo8",
+}
 
 
 def emit_ip_header(doc: dict[str, Any]) -> str:
@@ -48,21 +56,28 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
         if reg.get("array"):
             continue
         offset = int(reg["offset"], 16)
-        if reg.get("size", 32) != 32:
-            raise EmitError(f"{vendor}/{ip}: only 32-bit registers supported yet ({reg['name']})")
+        size = int(reg.get("size", 32))
+        if (reg["access"], size) not in _ACCESS_TYPE:
+            raise EmitError(f"{vendor}/{ip}: {reg['name']} is {size}-bit {reg['access']}; "
+                            f"registers may be 8, 16 or 32 bits")
+        width = size // 8
+        if offset % width:
+            raise EmitError(f"{vendor}/{ip}: {reg['name']} at {reg['offset']} is not "
+                            f"{width}-byte aligned, which its width requires")
         if offset < cursor:
             raise EmitError(f"{vendor}/{ip}: register {reg['name']} overlaps previous register")
         if offset > cursor:
+            # Padding is bytes now, not words: a gap before an 8-bit register
+            # need not be a multiple of four, and rounding it up would move
+            # every register after it.
             gap = offset - cursor
-            if gap % 4 != 0:
-                raise EmitError(f"{vendor}/{ip}: unaligned gap before {reg['name']}")
-            members.append(f"        std::uint32_t _reserved{pad}[{gap // 4}];")
+            members.append(f"        std::uint8_t _reserved{pad}[{gap}];")
             pad += 1
-        members.append(f"        {_ACCESS_TYPE[reg['access']]} {reg['name']};")
+        members.append(f"        {_ACCESS_TYPE[(reg['access'], size)]} {reg['name']};")
         asserts.append(
             f"    static_assert(offsetof(regs, {reg['name']}) == {reg['offset']});"
         )
-        cursor = offset + 4
+        cursor = offset + width
 
     accessors: list[str] = []
     seen: dict[str, str] = {}
@@ -111,7 +126,7 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
             fname = f["name"].lower()
             bit = f["bit"]
             if f.get("width", 1) == 1:
-                enum_members.append(f"        {fname} = 1u << {bit}u,")
+                enum_members.append(f"        {fname} = std::uint32_t{{1}} << {bit}u,")
             for vname, val in (f.get("values") or {}).items():
                 enum_members.append(f"        {fname}_{vname.lower()} = {val}u << {bit}u,")
         if not enum_members:

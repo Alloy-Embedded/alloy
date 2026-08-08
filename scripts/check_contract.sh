@@ -26,6 +26,12 @@ if grep -rnE "\b1u\s*<<" "$root/src/alloy" --include='*.hpp' --include='*.cpp' \
     echo "FAIL: 1u << n builds a 32-bit mask from a 16-bit literal (use std::uint32_t{1})"
     fail=1
 fi
+# And the same in what the GENERATOR emits — a mask it writes into a header is
+# no less undefined than one we type by hand, and harder to notice.
+if grep -rnE "1u <<" "$root/tools/alloy/alloy_cli/emit" --include='*.py'; then
+    echo "FAIL: the generator emits 1u << n (use std::uint32_t{1} in the emitted text)"
+    fail=1
+fi
 
 # Explicit, auditable exceptions carry a `contract-ok: <reason>` line comment
 # (file-format magics like UF2). Grep for contract-ok to review them all.

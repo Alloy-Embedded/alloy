@@ -97,6 +97,7 @@ set_source_files_properties(${ALLOY_LWIP} PROPERTIES COMPILE_OPTIONS "-w")
 add_executable(alloy_unit_tests
     main.cpp
     host_support.cpp
+    test_mmio.cpp
     test_util.cpp
     test_uptime_us.cpp
     test_control.cpp

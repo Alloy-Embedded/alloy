@@ -39,7 +39,7 @@ def _gate_args(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
     ip_doc = registers[owner["ip"]]
     reg = register_by_name(ip_doc, gate["register"])
     addr = int(owner["base"], 16) + int(reg["offset"], 16)
-    args = f"{hex32(addr)}, 1u << {gate['bit']}u"
+    args = f"{hex32(addr)}, std::uint32_t{{1}} << {gate['bit']}u"
     style = gate.get("style", "rmw")
     if style == "write_set":
         args += ", alloy::clock_gate::style::write_set"
@@ -114,7 +114,7 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             addr = int(owner["base"], 16) + int(reg["offset"], 16)
             lines.append(
                 f"    static constexpr alloy::clock_gate reset_clear{{{hex32(addr)}, "
-                f"1u << {reset_clear['bit']}u}};"
+                f"std::uint32_t{{1}} << {reset_clear['bit']}u}};"
             )
         if "irq" in periph:
             lines.append(
@@ -190,7 +190,7 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             reg = register_by_name(registers[owner["ip"]], unlock["register"])
             addr = int(owner["base"], 16) + int(reg["offset"], 16)
             lines.append(
-                f"    static constexpr alloy::clock_gate mux_unlock{{{hex32(addr)}, 1u << {unlock['bit']}u}};"
+                f"    static constexpr alloy::clock_gate mux_unlock{{{hex32(addr)}, std::uint32_t{{1}} << {unlock['bit']}u}};"
             )
         iomux = pin.get("iomux")
         if iomux:

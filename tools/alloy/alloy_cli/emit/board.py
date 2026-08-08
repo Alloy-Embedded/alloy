@@ -596,9 +596,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             sel_cfg = (
                 "    // Enable the select register's clock, then choose RMII (chip data).\n"
                 f"    *reinterpret_cast<volatile std::uint32_t*>({clk['addr']}u) |= "
-                f"(1u << {clk['bit']}u);\n"
+                f"(std::uint32_t{{1}} << {clk['bit']}u);\n"
                 f"    *reinterpret_cast<volatile std::uint32_t*>({sel['addr']}u) |= "
-                f"(1u << {sel['bit']}u);\n"
+                f"(std::uint32_t{{1}} << {sel['bit']}u);\n"
             )
         # The MAC HAL is selected by IP version, exactly like every other
         # peripheral (facts generated, behavior per-IP): the include is
