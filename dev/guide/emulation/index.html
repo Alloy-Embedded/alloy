@@ -1521,15 +1521,26 @@ and every one of them is a <em>blocking</em> CI gate.</p>
 </table>
 <p>Two of those deserve a note. The async legs cover <strong>two vendors</strong>, which is what turns "the
 coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
-driver-conformance legs are designed so they cannot pass by coincidence: the ADC model returns
-<code>1000 + channel</code>, so printing <code>adc: 1003</code> proves the driver selected channel 3 — a wrong channel
-prints a different number.</p>
+driver-conformance legs are designed so they cannot pass by coincidence: the ADC leg feeds
+<em>distinct voltages to distinct channels</em> (1650 mV on ch3, 3300 mV on ch4) and asserts the
+converted counts (<code>adc ch3: 2048</code>, <code>adc ch4: 4095</code> at the 3.3 V reference) — converting the
+wrong channel prints the wrong counts (an unfed channel prints 0, verified), and so does wrong
+conversion math.</p>
 <div class="admonition warning">
 <p class="admonition-title">Not every leg is equally strong</p>
-<p>The I²C and SPI legs run against <strong>Renode's own</strong> slave models, so they can genuinely
-contradict a misreading of the reference manual. The ADC, DMA and SAME70-flash legs run against
-models <em>this project wrote</em> — a self-authored model cannot falsify a mistake it shares with the
-driver. Treat those as consistency checks, not independent proof.</p>
+<p>The I²C, SPI, ADC and DMA legs run against <strong>Renode's own</strong> models, so they can genuinely
+contradict a misreading of the reference manual. (The ADC and DMA legs originally ran against
+models this project wrote; both were replaced by Renode's native models.) The SAME70-flash leg
+still runs against a model <em>this project wrote</em> — a self-authored model cannot falsify a
+mistake it shares with the driver. Treat that one as a consistency check, not independent
+proof.</p>
+<p>The ADC leg carries two vacuous spots, stated so nobody over-reads it: Renode's <code>STM32G0_ADC</code>
+does not implement <code>ISR.CCRDY</code> (the flag real silicon raises after a <code>CHSELR</code> update — in the
+1.16.1 source, bit 13 is reserved), so the generated <code>.resc</code> hooks the bit into every ISR
+read and the driver's CCRDY poll passes <strong>unconditionally</strong>; and <code>ADCAL</code> is a tagged no-op
+that never reads back 1, so the calibration self-clear poll also passes vacuously. Everything
+else the leg asserts — <code>ADEN</code>→<code>ADRDY</code>, <code>ADSTART</code>→<code>EOC</code>, the DR read clearing <code>EOC</code>, channel
+routing, and the 12-bit conversion arithmetic — is the native model's behaviour.</p>
 <p>The <strong>pin-interrupt</strong> leg sits between the two: it runs against Renode's own
 <code>STM32WBA_EXTI</code>, standing in for the G0's identically-laid-out block — so the port select,
 the trigger selection and the delivery to the right NVIC vector are all genuinely
@@ -1544,12 +1555,15 @@ half" are open until silicon.</p>
 pattern is always the same: include the generated script, attach a terminal tester to the UART,
 run, and assert on lines.</p>
 <div class="language-robotframework highlight"><span class="filename">tests/emulation/adc_read.robot</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gh">*** Test Cases ***</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gu">ADC Driver Converts A Channel</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gu">ADC Driver Converts The Right Channels</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">include @</span><span class="p">${</span><span class="nv">RESC</span><span class="p">}</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">    </span><span class="nf">Create Terminal Tester</span><span class="p">    ${</span><span class="nv">UART</span><span class="p">}</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">    </span><span class="nf">Start Emulation</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">alloy adc_read</span><span class="p">    </span><span class="s">timeout=30</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">adc: 1003</span><span class="p">    </span><span class="s">timeout=30</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">sysbus.adc SetDefaultValue 1650 3</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">    </span><span class="nf">Execute Command</span><span class="p">           </span><span class="s">sysbus.adc SetDefaultValue 3300 4</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">    </span><span class="nf">Create Terminal Tester</span><span class="p">    ${</span><span class="nv">UART</span><span class="p">}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">    </span><span class="nf">Start Emulation</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">alloy adc_read</span><span class="p">    </span><span class="s">timeout=30</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">adc ch3: 2048</span><span class="p">    </span><span class="s">timeout=30</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">    </span><span class="nf">Wait For Line On Uart</span><span class="p">     </span><span class="s">adc ch4: 4095</span><span class="p">    </span><span class="s">timeout=30</span>
 </span></code></pre></div>
 <p><code>${RESC}</code> and <code>${UART}</code> are passed in by the caller — they come straight from what <code>alloy
 emulate</code> printed, so a test never re-derives a fact the board data already carries.</p>
@@ -1568,9 +1582,11 @@ contains a space. Run it from a space-free directory (CI does; a checkout under
 <p>The emitter follows the same honesty rule as the rest of the framework: <strong>an unmodelled
 peripheral gets no mapping, never a guessed one.</strong> <code>alloy emulate</code> refuses a board it cannot map
 rather than producing a platform that boots into fiction.</p>
-<p>Where a model was genuinely missing but the behaviour was worth proving, alloy ships its own —
-the STM32G0 ADC and DMA controllers, and the SAME70 EEFC flash controller, are inline Python
-peripherals emitted into the platform file, written against the reference manuals.</p>
+<p>Where a model is genuinely missing but the behaviour is worth proving, alloy ships its own —
+today only the SAME70 EEFC flash controller, an inline Python peripheral emitted into the
+platform file, written against the reference manual. (The STM32G0 ADC and DMA controllers used
+to be in that list; both now use Renode's native models, which is strictly better — a model this
+project wrote cannot falsify a mistake it shares with the driver.)</p>
 <p>Known gaps, so you do not go looking:</p>
 <ul>
 <li><strong>RP2040</strong> — this Renode ships no RP2040 peripheral models at all, so those boards are not
