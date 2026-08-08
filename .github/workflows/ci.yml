@@ -662,6 +662,32 @@ jobs:
             --replay=/tmp/old.img \
             || { tail -30 /tmp/renode_wire.log; exit 1; }
 
+      # The anti-rollback floor after an AUTOMATIC ROLLBACK. Its own leg because
+      # it is the one path the lifecycle above cannot reach: after a failed trial
+      # the device is running the OLD version again, so running_version alone
+      # would drop the floor and re-accept a replayed middle version. What keeps
+      # it up is the bootloader raising the floor from the slot it is about to
+      # overwrite — a single line that the adversarial review of #47 found had no
+      # test at all, and which this leg fails within seconds if it is removed.
+      - name: anti-rollback floor survives a rollback
+        working-directory: alloy
+        run: |
+          # /tmp/app.bin = uart_echo linked for slot A (it never confirms — the
+          # "bad" app); /tmp/good.bin = ota_app linked for slot B. Both were built
+          # by earlier steps in this job; only the versions are new here.
+          uv run --project tools/alloy alloy image /tmp/app.bin \
+            --set-version 5 -o /tmp/v5_a.img
+          uv run --project tools/alloy alloy image /tmp/good.bin \
+            --set-version 3 -o /tmp/v3_b.img
+          pkill -f "renode.*12349" || true
+          sleep 2
+          nohup renode --disable-xwt -P 12349 -e "include @/tmp/wire.resc" \
+            > /tmp/renode_floor.log 2>&1 < /dev/null &
+          sleep 8
+          uv run --project tools/alloy python scripts/rollback_floor_e2e.py \
+            /tmp/good.img /tmp/v5_a.img /tmp/v3_b.img \
+            || { tail -30 /tmp/renode_floor.log; exit 1; }
+
       # LAST in this job ON PURPOSE: it rebuilds the bootloader IN PLACE with a
       # key baked in, so any step that expects the unsigned artifact must run
       # before it. (CI caught exactly that — the signed bootloader correctly

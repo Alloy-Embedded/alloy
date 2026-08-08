@@ -629,8 +629,32 @@ def cmd_monitor(args: argparse.Namespace) -> int:
     return 0
 
 
+# image_version is a u32 and anti-rollback treats it as a one-way ratchet. The
+# ceiling is deliberately far below the maximum: no product needs a billion
+# versions, and leaving headroom means a mistake near the top is still
+# recoverable by shipping something higher.
+_VERSION_MAX = (1 << 32) - 1
+_VERSION_CEILING = 1 << 31
+
+
 def cmd_image(args: argparse.Namespace) -> int:
     from .ota_host import elf_to_bin, make_image  # noqa: PLC0415
+
+    # Anti-rollback makes the version a one-way ratchet: once a device confirms
+    # version N it refuses anything below N, forever. Ship the maximum and the
+    # device can never be updated again — no image can be higher, and there is no
+    # way to lower a floor from the wire. That is a permanent, silent brick, so
+    # it is refused here rather than discovered in the field.
+    if args.set_version >= _VERSION_CEILING:
+        print(f"error: --set-version {args.set_version} would permanently brick the "
+              f"device: anti-rollback refuses anything BELOW the highest confirmed "
+              f"version, and nothing can be above {_VERSION_MAX}. Keep versions well "
+              f"under {_VERSION_CEILING} — a product ships a few hundred, not billions.",
+              file=sys.stderr)
+        return 1
+    if args.set_version < 0:
+        print("error: --set-version must be >= 0", file=sys.stderr)
+        return 1
 
     app = Path(args.app).read_bytes()
     if app[:4] == b"\x7fELF":  # accept the build's .elf directly — no objcopy needed
