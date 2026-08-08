@@ -70,10 +70,12 @@ def declared_version(devices_root: Path) -> str | None:
     """The version the database declares about itself, or None if it cannot say.
 
     A checkout answers from its pyproject.toml; an installed wheel answers from
-    its distribution metadata. Deliberately NOT ``alloy_devices.__version__`` —
-    that constant is maintained by hand and is, at the time of writing, wrong
-    (it says 0.1.0 for a 0.3.0 release). A pin must read the number the release
-    process actually asserts.
+    its distribution metadata. Deliberately NOT ``alloy_devices.__version__``:
+    that constant was maintained by hand and said 0.1.0 through the 0.3.0
+    release — the bug this reader found and alloy-devices has since fixed by
+    deriving it. Reading pyproject/metadata keeps the pin honest against an
+    older database whose constant is still wrong, and against any future one
+    that drifts again. A pin must read the number the release process asserts.
     """
     pyproject = devices_root / "pyproject.toml"
     if pyproject.exists():
