@@ -127,6 +127,181 @@ The honest split, because "it compiles" and "it ran" are different claims:
 
 None of it has run on physical silicon — see the README's list of what is not done.
 
+## Concurrency doctrine — priorities, preemption, and what it costs
+
+Every evaluation asks the same two questions. The short answers:
+
+- **Priorities?** Yes, among **interrupts** — `alloy::irq::set_priority(line, level)` writes the NVIC
+  priority field, and on ARMv7-M `alloy::irq::critical_section{level}` masks only lines at or below
+  a level so a control-loop ISR keeps running through it. **No**, among **tasks**: the executor's
+  ready queue is FIFO and has no priority field.
+- **Preemption?** **No**, between tasks. **Yes**, of every task, by every interrupt.
+
+That is the whole doctrine: *ISRs are the real-time tier; the executor is the "everything else"
+tier.* A task never interrupts another task, so no task needs a lock against another task, which is
+why nothing in `alloy::async` is a mutex. What replaces the RTOS priority table is the NVIC, which
+is a preemptive priority scheduler already present in the silicon.
+
+The rule that follows is uncomfortable and worth stating plainly:
+
+!!! warning "The cooperative bargain"
+    The worst-case wake latency of any task is the **tick quantisation plus the longest single
+    non-yielding run of every other runnable task**. One task that computes for 5 ms without a
+    `co_await` delays every other task by 5 ms. There is no preemption to save you, and the
+    framework cannot detect it. Work that must not be delayed belongs in an ISR.
+
+Measured, below: a 2 ms `co_await delay(2ms)` lands at 2000 µs alone, and at **6001 µs** beside a
+task that runs 5 ms without yielding. That is the bargain, in numbers.
+
+### How these numbers were obtained
+
+Everything below comes from one program — `examples/concurrency_probe` — run under Renode, gated in
+CI by `tests/emulation/concurrency_probe.robot`. Reproduce it with:
+
+```console
+$ cd examples/concurrency_probe && alloy emulate
+```
+
+- **Board:** `nucleo_g071rb` (STM32G071RB, **Cortex-M0+**, Thumb-1, 16 MHz HSI), built at the
+  default `-Os` with arm-none-eabi-gcc 14.2.
+- **Instrument:** the SysTick counter read at its native resolution (`systick_elapsed()`), not
+  `uptime_us()` — 1 µs is 16 core clocks here, coarser than the things being timed.
+- **Unit:** **instruction-equivalents (ieq)** — the measured interval divided by the cost of one
+  instruction, calibrated in-run against a block of exactly 1000 straight-line `nop`s. The probe
+  prints raw counter values alongside so the division can be checked.
+- **Latency figures** are the mean of 1024 samples (each individual sample is quantised to a whole
+  counter tick, so only the mean carries resolution; min/max are printed and are honestly coarse).
+  **Cost figures** are batches of 512 iterations with a baseline batch subtracted.
+- **Determinism:** two runs of the same binary produce byte-identical output. Different *binaries*
+  shift the figures by a few percent — code layout moves them — so treat these as one build's
+  measurements, not constants.
+
+**The instrument validates against the disassembly.** `systick_elapsed()` compiles to six
+instructions plus the caller's `bl`; the interval between two back-to-back stamps therefore spans
+seven to eight instructions. Measured: **8.00 ieq**. That agreement is the reason the other figures
+are quoted at all.
+
+### Interrupt path
+
+From the store that raises the interrupt to the first instruction of the handler:
+
+| Path | ieq | What it is |
+|---|---|---|
+| strong `<NAME>_IRQHandler` | 17.37 | the vendor-style expert path — no framework in the way |
+| via `alloy::irq::attach` | 30.00 | + weak wrapper → `alloy_irq_dispatch(n)` → chain walk |
+| two handlers on one line | 43.00 | + a second chain node |
+
+So **`alloy::irq` costs about 12.6 ieq over a raw vector**, and **each additional handler sharing a
+line costs about 13.0 ieq**. If you need neither, define a strong `<NAME>_IRQHandler`: it overrides
+alloy's weak wrapper entirely and you get the first row. (See
+[the escape hatch](escape-hatch.md).)
+
+### What delays an interrupt
+
+Nothing in alloy delays an ISR except an interrupts-off critical section — so the question is how
+long alloy holds one. Raising the line *from inside* a critical section measures exactly that:
+
+| Masked region | ieq | Delta |
+|---|---|---|
+| empty `irq_save`/`irq_restore` | 37.00 | +7.0 over the unmasked path |
+| 100-iteration loop | 537.50 | +500.5, i.e. **5.0 ieq per iteration** |
+
+Interrupt latency tracks the masked region **1:1**. alloy's own critical sections are the ones in
+`scheduler::signal()`, `executor::schedule()` and `event::set()` — each a handful of instructions
+around a queue push, all visible in the `exec` figures below. There is no long masked region hiding
+anywhere: the framework never masks across a loop, an I/O wait, or a call it does not control.
+
+### Scheduler and executor cost
+
+`alloy::scheduler` (the non-async table in `sched.hpp`), one `run_once()` superstep with every task
+runnable and an empty body:
+
+| Runnable tasks | superstep (ieq) | per task (ieq) |
+|---|---|---|
+| 1 | 12.87 | 12.87 |
+| 2 | 71.00 | 35.50 |
+| 4 | 147.25 | 36.75 |
+| 8 | 299.12 | 37.37 |
+| 16 | 578.87 | 36.12 |
+
+`alloy::async::executor`, one wake+resume of a coroutine parked on an `event` — that is the async
+"task switch": the ISR-side `set()`, the ready-queue push, the dequeue, the coroutine resume, and
+the re-suspend at the next `co_await`:
+
+| Ready tasks | superstep (ieq) | per task (ieq) |
+|---|---|---|
+| 0 (empty poll) | 35.12 | — |
+| 1 | 228.12 | 228.12 |
+| 2 | 412.00 | 206.00 |
+| 4 | 779.62 | 194.87 |
+| 8 | 1515.12 | 189.37 |
+
+Read the **marginal** cost, not the average: each extra runnable task adds **36.3 ieq** to a
+`scheduler` superstep and **183.9 ieq** to an executor superstep. Both are strictly linear in the
+number of *runnable* tasks — a task parked on an event or a timer costs nothing at all, which is why
+the empty poll is 35 ieq regardless of how many tasks exist. There is no per-task background cost,
+no tick handler walking a task list, and no priority search.
+
+A coroutine resume costing ~5x a plain function-pointer dispatch is the price of `co_await`: the
+frame's resume dispatch, the promise bookkeeping, and the awaiter's park/wake protocol. If a task is
+a simple periodic poll, `alloy::scheduler` is the cheaper tool and is still there.
+
+### Scheduling jitter
+
+A task doing `co_await delay(2ms)` in a loop, measuring what it actually got, 16 samples:
+
+| Condition | measured wake (µs) for a requested 2000 |
+|---|---|
+| alone on the executor | 1577 – 2000 |
+| beside a task that runs 5 ms without yielding | 5993 – 6001 |
+
+Two separate facts are in that table.
+
+**`delay()` can fire early.** Its deadline is `uptime_ms() + n`, and `uptime_ms()` is truncated to
+the 1 kHz tick, so a delay armed part-way through a tick loses that fraction. The bound is one full
+tick early; 1577 µs is what this build happened to hit. `delay()` is a **tick-quantised timer, not a
+one-shot with sub-tick accuracy** — for tighter timing use a hardware timer interrupt, and for
+measuring elapsed time use `uptime_us()`.
+
+**A non-yielding task is the dominant term.** 2 ms became 6 ms. Nothing in that number is an
+emulator artifact: it is the hog's own 5 ms (measured by the hog in the same timebase) plus tick
+quantisation.
+
+### What these numbers are NOT
+
+Renode is an instruction interpreter, not a cycle-accurate model. It advances virtual time by a
+fixed slice per executed instruction. That has one large advantage — the measurements are perfectly
+repeatable, which is why they can be a CI gate — and several hard limits:
+
+- **Not silicon.** Nothing here has run on a physical STM32G071. Every figure is an emulation
+  result.
+- **No cycles-per-instruction model.** Renode charges a `nop` and a `ldr` the same. On a real
+  Cortex-M0+ loads, stores and taken branches cost more, so ieq is a count of *work*, not of cycles.
+  Converting ieq to nanoseconds by dividing by the core clock would be wrong.
+- **No memory system.** Flash wait states, the prefetch buffer, caches (an M7 has them; the M0+ does
+  not), bus contention and DMA cycle-stealing are all outside the model. On a real part running from
+  flash at high clock these can dominate the numbers above.
+- **Architectural exception entry is not charged.** The `irq` row absolute values contain almost
+  none of the register-stacking cost real silicon pays on exception entry; that figure is in ARM's
+  TRM for your core and is not alloy's to claim. **Only the differences between the three rows are
+  alloy's, and only those are quoted as such.**
+- **Not the peripheral's own delay.** The probe raises the NVIC line in software. A real edge also
+  pays the peripheral's detect/synchronise path (a per-IP datasheet number) before the NVIC ever
+  sees it.
+- **One board, one core, one build.** Cortex-M0+ only. The `sched`/`exec`/`jitter` legs also ran
+  unmodified on `nucleo_f722ze` (Cortex-M7, Thumb-2) and came out roughly 25% cheaper — 27.1 ieq per
+  scheduler task, 144.5 ieq per executor resume — but that run's `irq vectored` verdict is **FAIL**
+  by construction (vector 22 is `CAN1_SCE` there, not `TIM17`, so the strong handler is an orphan),
+  so its interrupt figures are invalid and are not quoted. **RL78 and Xtensa are entirely
+  unmeasured.**
+- **No worst-case guarantee.** These are measured means and observed ranges, not a WCET analysis.
+  alloy has no timing analysis tool, and the numbers here do not constitute one.
+
+The CI leg asserts none of these figures. It asserts only the *ordering* properties the doctrine
+rests on — that `alloy::irq` costs more than a raw vector, that a longer masked region delays an ISR
+more than a short one, and that a non-yielding task delays a sleeping one — because those survive a
+Renode upgrade and an absolute number does not.
+
 ## How it works
 
 | Piece | Role |

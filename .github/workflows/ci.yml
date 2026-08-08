@@ -335,6 +335,23 @@ jobs:
             example: crash_report
             robot: crash_report.robot
             banner: alloy crash_report ready
+          # CONCURRENCY MODEL — BLOCKING — and the source of every number in
+          # docs/guide/async.md. The firmware measures itself against the SysTick
+          # counter, calibrates against 1000 straight-line nops, and prints its
+          # own verdicts; the leg asserts ONLY those, never a figure, because
+          # Renode charges a fixed slice of virtual time per instruction and
+          # pinning an absolute cost would make a Renode bump a red build.
+          # Negative controls, both run locally: (1) the same robot against the
+          # nucleo_f722ze build, where vector 22 is CAN1_SCE and not TIM17, so
+          # the strong handler is an orphan — "irq vectored: FAIL", leg red in
+          # 121 s (the bounded ISR wait is what makes that a FAILURE instead of a
+          # hang); (2) the 5 ms non-yielding task's spin cut to 0 — "verdict
+          # cooperative: FAIL", leg red in 31 s, so that verdict is measuring the
+          # hog and not a constant. Green locally in 1.9 s on Renode 1.16.1.
+          - board: nucleo_g071rb
+            example: concurrency_probe
+            robot: concurrency_probe.robot
+            banner: alloy concurrency_probe
     steps:
       - uses: actions/checkout@v4
         with:

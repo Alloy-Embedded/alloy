@@ -14,6 +14,7 @@ namespace alloy::arch::cortex_m::nvic {
 
 inline constexpr std::uintptr_t kIser = 0xE000E100;  // set-enable
 inline constexpr std::uintptr_t kIcer = 0xE000E180;  // clear-enable
+inline constexpr std::uintptr_t kIspr = 0xE000E200;  // set-pending
 inline constexpr std::uintptr_t kIcpr = 0xE000E280;  // clear-pending
 inline constexpr std::uintptr_t kIpr = 0xE000E400;   // priority
 
@@ -24,6 +25,15 @@ inline void enable(unsigned n) {
 inline void disable(unsigned n) {
     *reinterpret_cast<rw32*>(kIcer + 4u * (n >> 5)) = 1u << (n & 31u);
     __asm volatile("dsb\n\tisb");  // ensure the disable takes effect before return
+}
+
+// Raise `n` in software. The line still has to be enabled and unmasked for the
+// CPU to take it; if it is masked the exception is held pending and taken the
+// instant the mask drops. Two uses: deferring work from a fast ISR to a slower
+// one (the classic Cortex-M split-priority pattern), and MEASURING exception
+// entry from a known instruction (examples/concurrency_probe).
+inline void set_pending(unsigned n) {
+    *reinterpret_cast<rw32*>(kIspr + 4u * (n >> 5)) = 1u << (n & 31u);
 }
 
 inline void clear_pending(unsigned n) {

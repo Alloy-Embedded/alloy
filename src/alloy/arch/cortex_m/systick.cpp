@@ -39,6 +39,17 @@ void systick_init(std::uint32_t core_hz) {
     st.CSR = kCsrEnable | kCsrTickInt | kCsrClkSourceCore;
 }
 
+std::uint32_t systick_period() { return systick().RVR + 1u; }
+
+std::uint32_t systick_elapsed() { return (systick().RVR + 1u) - systick().CVR; }
+
+std::uint32_t systick_since(std::uint32_t a, std::uint32_t b) {
+    // No modulo: ARMv6-M has no divide instruction and `%` would become an
+    // __aeabi_uidivmod call, which is exactly the kind of cost a caller timing a
+    // short path does not want inside its measurement loop.
+    return b >= a ? b - a : b + systick_period() - a;
+}
+
 }  // namespace alloy::arch::cortex_m
 
 extern "C" void SysTick_Handler() {

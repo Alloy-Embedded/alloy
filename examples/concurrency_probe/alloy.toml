@@ -1,0 +1,5 @@
+[project]
+name = "concurrency_probe"
+
+[board]
+id = "nucleo_g071rb"
