@@ -305,6 +305,29 @@ jobs:
             example: pin_irq
             robot: pin_irq.robot
             banner: alloy pin_irq
+          # CRASH REPORTING END TO END — BLOCKING — five boots of one machine.
+          # Boot 1 prints "no crash on record", then fault::trigger() (a
+          # software-pended NMI — Renode never vectors ORGANIC faults, so a
+          # wild jump would just kill the core with the vector table unread)
+          # drives three crash/report cycles: each reboot is a real
+          # SYSRESETREQ, the record crosses it in .noinit RAM, and the
+          # firmware prints "RECOVERED FROM A FAULT pc=..." with the
+          # consecutive counter counting 1-2-3 into safe mode. The robot then
+          # pends HardFault through the NVIC to prove the second trampoline:
+          # "(4 in a row)". The emitted .resc's `macro reset` is what makes
+          # the reboots work — without it SYSRESETREQ parks Renode forever.
+          # Negative control: strip the strong handlers (weak Default_Handler
+          # wins) and the device dies silently at the first fault — no
+          # RECOVERED line, leg FAILS in ~10 s where the good build passes in
+          # ~3 s. Verified locally on the pinned Renode 1.16.1, both boards.
+          - board: nucleo_g071rb
+            example: crash_report
+            robot: crash_report.robot
+            banner: alloy crash_report ready
+          - board: nucleo_f722ze
+            example: crash_report
+            robot: crash_report.robot
+            banner: alloy crash_report ready
     steps:
       - uses: actions/checkout@v4
         with:

@@ -638,11 +638,25 @@ def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
     space_free = " " not in repl_path and " " not in elf_path
     repl_ref = repl_path if space_free else Path(repl_path).name
     elf_ref = elf_path if space_free else Path(elf_path).name
+    # The ELF is loaded through a registered `macro reset`, not a bare LoadELF:
+    # when the firmware resets itself (SYSRESETREQ from the fault handler, or a
+    # watchdog), Renode pauses the machine and runs the machine's `reset` macro
+    # to re-prepare it. With no macro registered it logs "No action for reset"
+    # and stays paused FOREVER — in CI that is indistinguishable from a hang.
+    # The macro re-runs LoadELF, which rewrites only the flash LOAD segments
+    # (RAM keeps its contents, which is what lets a .noinit crash record
+    # survive into the next boot), then the CPU re-inits PC/SP from the ELF —
+    # a clean warm reboot, observed as a fresh banner on the UART. This is the
+    # same pattern the OTA update lifecycle harness uses.
     return f"""{_RESC_BANNER}# Headless machine for {board['id']}: platform is generated from chip data.
 using sysbus
 mach create "{board['id']}"
 machine LoadPlatformDescription @{repl_ref}
-sysbus LoadELF @{elf_ref}
+macro reset
+\"\"\"
+    sysbus LoadELF @{elf_ref}
+\"\"\"
+runMacro $reset
 # No `start` here: `alloy emulate` adds `showAnalyzer {name}; start`; the CI
 # Robot test attaches a terminal tester to `{name}` first, then starts.
 """

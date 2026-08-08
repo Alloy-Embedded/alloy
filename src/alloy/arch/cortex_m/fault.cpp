@@ -19,14 +19,24 @@
 // are identical on every Cortex-M and are not in any chip's data. arch/ is the
 // one place the contract gate allows them.
 //
-// NOT YET PROVEN TO FIRE. It compiles into every Cortex-M build and the logic is
-// the textbook sequence, but nothing in this repo has yet observed it capture a
-// real fault. Renode is not the oracle here: it answers reads of unmapped
-// addresses with zero and a log line instead of a bus fault, and an attempt to
-// force one with a wild jump made the emulator hang rather than take the
-// exception. Proving this needs either a Renode CPU that models the fault path
-// or the board on a desk. Until then, treat it the way this repo treats a
-// tier-2 driver: written carefully, not yet witnessed.
+// WHAT IS WITNESSED AND WHAT IS NOT (Renode 1.16.1, nucleo_g071rb/Cortex-M0
+// and nucleo_f722ze/Cortex-M7). Witnessed end to end, repeatedly: handler entry
+// through BOTH trampolines below with a correctly stacked frame (the recorded
+// pc named the exact faulting instruction), the capture, the SYSRESETREQ
+// reset, and the next boot reading the record back — three consecutive
+// crash/report cycles ending in the example's safe mode. The NMI trampoline
+// fires from firmware alone (fault::trigger() pends it via ICSR), the
+// HardFault one via the NVIC (`sysbus.nvic SetPendingIRQ 3` in the CI leg).
+// The v7-M CFSR/MMFAR/BFAR branch executed without incident on the M7.
+//
+// STILL SILICON-ONLY: ORGANIC fault entry. Renode's core does not perform
+// M-profile fault exception entry at all — a udf or a wild jump to a non-Thumb
+// address warps PC to 0 WITHOUT ever reading the vector table (verified on
+// cortex-m0, m0+ and m7 cpuTypes; also with flash aliased at 0 and with
+// VectorTableOffset set explicitly), and an unaligned load on ARMv6-M simply
+// does not fault there. So "a real HardFault escalates into this handler" is
+// still an unwitnessed claim about silicon; everything downstream of handler
+// entry — capture, persistence across reset, take() — is not.
 
 #include "alloy/fault.hpp"
 
@@ -47,7 +57,25 @@ struct persistent {
 // `.noinit` is placed after .bss by the generated linker script and is NOLOAD,
 // so neither startup's zero-fill nor the .data copy touches it. RAM keeps its
 // contents across a warm reset, which is what makes this readable next boot.
-[[gnu::section(".noinit")]] persistent g_crash;
+//
+// The union is load-bearing, not decoration. `record` has default member
+// initializers, so a plain `persistent` global is not trivially
+// default-constructible and GCC emits a RUNTIME static initializer for it —
+// which zeroes the record every boot and silently defeats .noinit, on silicon
+// and emulator alike. Witnessed at instruction level: the ELF grew a
+// _GLOBAL__sub_I_ function storing zeros over rec.* (magic and consecutive
+// survived only because those two members happen to lack initializers), and
+// take() could never report. Wrapping the storage in a union whose chosen
+// constructor initializes only a char keeps the object out of static
+// initialization; `constinit` makes the compiler PROVE it stays out, so the
+// bug cannot creep back when someone touches `record`.
+union crash_store {
+    persistent p;
+    char raw;
+    constexpr crash_store() : raw(0) {}
+};
+[[gnu::section(".noinit")]] constinit crash_store g_store;
+constinit persistent& g_crash = g_store.p;
 
 // The exception frame the core stacks automatically (ARMv6-M and ARMv7-M
 // stack the same eight words in the same order).
@@ -175,6 +203,33 @@ std::uint8_t consecutive() noexcept {
 void healthy() noexcept {
     g_crash.magic = kMagic;
     g_crash.consecutive = 0;
+}
+
+[[noreturn]] void trigger() noexcept {
+    // ICSR.NMIPENDSET — pend the NMI from software. Architectural on ARMv6-M
+    // and ARMv7-M alike, so the same trigger serves the bench and the emulator.
+    // Chosen over a wild jump or `udf` deliberately: those rely on fault
+    // ESCALATION, which Renode does not model (see the header comment), while
+    // a pended NMI takes the normal exception-entry path everywhere and runs
+    // the identical capture/persist/reset sequence.
+    constexpr std::uintptr_t kSCB_ICSR = 0xE000ED04u;
+    constexpr std::uint32_t kNMIPendSet = 1u << 31;
+    auto* const icsr = reinterpret_cast<volatile std::uint32_t*>(kSCB_ICSR);
+    *icsr = kNMIPendSet;
+    for (;;) {
+        // The NMI preempts within a few instructions; waiting here keeps the
+        // captured pc honest — it points at this wait, not at unrelated code.
+        // The wait POLLS ICSR instead of parking in an empty `b .` self-loop,
+        // and that is load-bearing in emulation: Renode takes a pended
+        // exception at a translation-block boundary, and a branch-to-self is a
+        // block that re-enters itself, observed to wedge the virtual core at
+        // NMI entry (frame stacked, handler never executed, virtual time
+        // free-running). A volatile MMIO read ends the block every iteration,
+        // so the NMI is taken within a few instructions. On silicon the read
+        // is harmless — ICSR is always readable — and the NMI preempts either
+        // loop just the same.
+        (void)*icsr;
+    }
 }
 
 }  // namespace alloy::fault
