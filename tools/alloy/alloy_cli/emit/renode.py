@@ -347,9 +347,11 @@ def _window(chip: dict[str, Any], base: int) -> int:
     Renode takes the size from the MODEL when a line gives none, and a model
     written for another die can claim far more than the real block. That is not
     hypothetical: STM32WBA_EXTI claims at least 4K, so an unbounded `exti` at
-    the G0's 0x40021800 swallowed the flash controller at 0x40022000 — every
-    FLASH_SR/FLASH_CR access landed inside EXTI and was logged as an unhandled
-    offset 0x810/0x814 instead of reaching (or visibly missing) its own block.
+    the G0's EXTI base swallowed the flash controller sitting 2K above it —
+    every FLASH_SR/FLASH_CR access landed inside EXTI and was logged as an
+    unhandled offset 0x810/0x814 instead of reaching (or visibly missing) its
+    own block. (The concrete addresses live in the chip data and the commit
+    message, not here — the generator carries no silicon facts.)
 
     The bound is a fact, not a constant: the gap to the next peripheral this
     chip declares. Same technique as the GPIO aperture above, and it adapts to a
