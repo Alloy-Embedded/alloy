@@ -56,6 +56,7 @@ $ alloy build --board esp32_devkit
 | `alloy size` — **JSON** | flash/RAM of the last build against the chip's real memories, and whether the image fits its update slot |
 | `alloy matrix [--boards a,b]` — **JSON** | build this project for **every** board and table the result |
 | `alloy frame-audit` | coroutine frame sizes vs the `task_storage<N>` you declared |
+| `alloy crash [--line "…"] [--pc 0x…] [--elf app.elf]` — **JSON** | decode a device's crash report: pc/lr to file:line via addr2line, CFSR bits into words — see [Crash reports](crash-reports.md) |
 | `alloy svd [--chip <id>] [-o out]` | write a CMSIS-SVD file so a debugger can show peripheral registers |
 | `alloy debug-info` — **JSON** | debug-server facts for an IDE launch config |
 

@@ -24,6 +24,7 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | `fs` | a filesystem on on-chip or external storage |
 | `watchdog` | the independent watchdog |
 | `nvm`, `rtc`, `dac`, `can` | on-chip flash key/value, RTC, DAC, CAN |
+| `crash_report` | a device that crashes, reboots, and explains itself — the [crash report](crash-reports.md) loop |
 | `bootloader_uart` + `ota_app` | the [field-update](firmware-update.md) pair: update over UART, trial boot, confirm |
 
 The examples ending in `_read` (`i2c_read`, `spi_read`, `adc_read`, `dma_uart`) are the ones CI

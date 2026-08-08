@@ -437,6 +437,50 @@ def cmd_size(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_crash(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .crash import (  # noqa: PLC0415
+        crash_report, locate_addr2line, parse_report_line, print_report,
+    )
+
+    values: dict[str, int] = {}
+    if args.line:
+        values.update(parse_report_line(args.line))
+        if not values:
+            print("error: --line carried no pc=0x…/lr=0x…/status=0x… tokens — "
+                  "paste the device's RECOVERED FROM A FAULT line verbatim",
+                  file=sys.stderr)
+            return 1
+    for reg in ("pc", "lr", "status", "address"):
+        if (given := getattr(args, reg)) is not None:
+            try:
+                values[reg] = int(given, 16)
+            except ValueError:
+                print(f"error: --{reg} '{given}' is not a hex value", file=sys.stderr)
+                return 1
+    if not values:
+        print("error: nothing to decode — pass --line, or --pc/--lr/--status",
+              file=sys.stderr)
+        return 1
+
+    # The ELF is only needed for symbolication; a --status-only decode (or an
+    # explicit --elf) must not require being inside a project at all.
+    elf = Path(args.elf) if args.elf else None
+    if elf is None and any(reg in values for reg in ("pc", "lr")):
+        project = _project(args)
+        elf = project.build_dir / "out" / f"{project.name}.elf"
+
+    report = crash_report(values, elf, locate_addr2line())
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print_report(report)
+    # A decode that could not symbolize what it was asked to symbolize is a
+    # failure the caller should see, even though the partial decode printed.
+    return 1 if report["reason"] else 0
+
+
 def cmd_chips(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -1036,6 +1080,28 @@ def main() -> None:
                              "board+product)")
     p_size.add_argument("--json", action="store_true")
     p_size.set_defaults(func=cmd_size)
+
+    p_crash = sub.add_parser(
+        "crash", help="decode a device's crash report — pc/lr to file:line via "
+                      "addr2line, and the ARMv7-M fault status into words")
+    p_crash.add_argument("--line",
+                         help="a pasted 'RECOVERED FROM A FAULT pc=0x… lr=0x… "
+                              "status=0x…' UART line (parsed for any "
+                              "pc/lr/sp/psr/status/address tokens)")
+    p_crash.add_argument("--pc", help="faulting instruction address (hex)")
+    p_crash.add_argument("--lr", help="link register at the fault (hex)")
+    p_crash.add_argument("--status", help="the record's CFSR value (hex)")
+    p_crash.add_argument("--address", help="the record's faulting address (hex)")
+    p_crash.add_argument("--elf",
+                         help="ELF the device was running (default: this "
+                              "board's last build, as `alloy size` resolves it)")
+    p_crash.add_argument("--project", default=".")
+    p_crash.add_argument("--board", help="override the board declared in alloy.toml")
+    p_crash.add_argument("--product",
+                         help="override the product declared in alloy.toml — must "
+                              "match the build being decoded")
+    p_crash.add_argument("--json", action="store_true")
+    p_crash.set_defaults(func=cmd_crash)
 
     p_chips = sub.add_parser("chips", help="list MCUs you can scaffold a clean board for")
     p_chips.add_argument("--vendor", help="filter by vendor (st, espressif, …)")

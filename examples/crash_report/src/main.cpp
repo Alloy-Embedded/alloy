@@ -15,14 +15,28 @@
 //     RECOVERED FROM A FAULT  pc=0x0800... lr=0x0800... status=0x00000000 (3 in a row)
 //     three faults in a row — staying in safe mode
 //
-// `pc` is the instruction that died. Feed it to addr2line against the .elf and
-// you get the file and line, from a device that is already back up.
+// `pc` is the instruction that died. `alloy crash --line "<paste>"` turns it
+// into a file and line against the built ELF, from a device already back up.
+//
+// On a board with the `nvm` role the record is also persisted to flash — one
+// extra line after RECOVERED. That happens HERE, not in the fault handler:
+// the handler ran on a broken machine and must touch nothing that could fault
+// again (no flash programming, no driver), so it only parks the record in
+// .noinit RAM — which survives a warm reset but not power-off. The next boot
+// has a healthy machine and all the time in the world; persisting is its job.
 #include <alloy/board.hpp>
 #include <alloy/fault.hpp>
 
 #include <cstdint>
 
 namespace {
+
+// nvm keys for the persisted crash record (any u32 except the erased-slot
+// marker 0xFFFF'FFFF). A field unit's flash then carries the LAST crash and a
+// lifetime count, readable long after the RAM record and the UART line are gone.
+constexpr std::uint32_t kCrashPc = 0xC0;
+constexpr std::uint32_t kCrashStatus = 0xC1;
+constexpr std::uint32_t kCrashTotal = 0xC2;
 
 void put_hex(auto& uart, std::uint32_t v) {
     uart.write("0x");
@@ -50,6 +64,19 @@ int main() {
         uart.write(" (");
         uart.write(static_cast<std::uint8_t>('0' + crash.consecutive % 10));
         uart.write(" in a row)\r\n");
+        // take() -> nvm: the doctrine above, as code. `if constexpr` keeps the
+        // same source honest on boards without the role — the branch is not
+        // compiled, not merely skipped. (This board, nucleo_g071rb, declares
+        // no nvm role; nucleo_g0b1re compiles the true branch. UNWITNESSED in
+        // emulation either way: no Renode leg exercises nvm flash writes.)
+        if constexpr (board::caps::nvm) {
+            const bool saved =
+                board::nvm.set(kCrashPc, crash.pc) &&
+                board::nvm.set(kCrashStatus, crash.status) &&
+                board::nvm.set(kCrashTotal, board::nvm.get(kCrashTotal, 0u) + 1u);
+            uart.write(saved ? "crash record persisted to nvm\r\n"
+                             : "nvm persist FAILED\r\n");
+        }
         // A device that keeps dying should stop doing the thing that kills it.
         // Here that means parking instead of faulting again.
         if (crash.consecutive >= 3) {
