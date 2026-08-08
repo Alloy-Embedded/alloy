@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -87,7 +88,14 @@ def _cpu_flags(chip: dict[str, Any]) -> str:
         # -mmul=g13 is the hardware multiplier/divider this family carries;
         # without it GCC calls into libgcc for every multiply. The core is an
         # S3, which is the default, so it is not spelled again here.
-        return "-mmul=g13"
+        #
+        # --param=min-pagesize=0 is not an optimisation knob, it is what makes
+        # MMIO legal here. GCC assumes the first page is unmapped, so a
+        # peripheral pointer built from a small constant trips -Warray-bounds
+        # ("subscript 0 is outside array bounds"). On ARM the peripheral window
+        # sits high in the address space and it never comes up; RL78 reaches its
+        # SFRs through small 16-bit near addresses, so every access does.
+        return "-mmul=g13 --param=min-pagesize=0"
     if _arch_ns(chip) == "xtensa":
         # The unified xtensa-esp-elf toolchain is multi-core: -mdynconfig
         # selects the concrete core (ESP32 = LX6 little-endian); without it
@@ -137,16 +145,90 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "{cpu_flags}")
 """
 
 
+def generated_sources(project: Project) -> list[Path]:
+    """The codegen output this configuration compiles.
+
+    Named once, here, because two consumers need the same answer: the CMake
+    writer, and `alloy sbom` — which attributes these files to the device
+    database they were emitted from (and notices the RP2040 boot2 blob among
+    them).
+    """
+    gen = project.gen_dir
+    out = [gen / "board.cpp"]
+    for optional in ("vector_table.c", "boot2.c", "irq_data.c"):
+        if (gen / optional).exists():
+            out.append(gen / optional)
+    return out
+
+
+def _toolchain_root(chip: dict[str, Any]) -> Path | None:
+    """Where the cross toolchain is installed, or None if it cannot be found.
+
+    Only used to build a -ffile-prefix-map entry: GCC records its OWN include
+    directories in .debug_line, so two machines that keep arm-none-eabi-gcc in
+    different places produced different ELFs from identical source. Not being
+    able to locate it is not an error — the map entry is simply omitted (the
+    build then still works, it is just host-dependent in its debug info).
+    """
+    ns = _arch_ns(chip)
+    try:
+        if ns == "xtensa":
+            prefix = _xtensa_prefix()
+        elif ns == "rl78":
+            prefix = _rl78_prefix()
+        else:
+            found = shutil.which("arm-none-eabi-gcc")
+            if found is None:
+                return None
+            prefix = str(Path(found).with_name("arm-none-eabi-"))
+    except EmitError:
+        return None
+    # <root>/bin/<tuple>-gcc -> <root>. Resolve symlinks: GCC computes its own
+    # include paths from the REAL location of the binary, which is what lands
+    # in the debug info (xPack ships bin/ entries that are symlinks).
+    return Path(prefix).parent.resolve().parent
+
+
+def prefix_maps(project: Project, chip: dict[str, Any]) -> list[tuple[Path, str]]:
+    """(real prefix, virtual prefix) pairs baked in as -ffile-prefix-map.
+
+    Absolute paths were the ONLY thing keeping two identical checkouts at
+    different paths from producing identical ELFs — the .bin already matched
+    byte for byte, because code never carried a path; DWARF, DW_AT_comp_dir
+    and __FILE__ did. Mapping each real root onto a fixed virtual one makes the
+    whole artefact a function of the source, not of where the source lives.
+
+    Nested roots are dropped (an in-repo example lives UNDER the framework
+    root), so the emitted prefixes are pairwise disjoint and the order GCC
+    applies them in cannot change the answer.
+
+    The cost is honest and small: a debugger no longer finds sources by itself,
+    and `alloy crash` reports /alloy/framework/src/… instead of a host path.
+    `alloy debug-info --json` carries the inverse map so an IDE can undo it.
+    """
+    candidates: list[tuple[Path, str]] = [
+        (project.root.resolve(), "/alloy/project"),
+        (project.alloy_root.resolve(), "/alloy/framework"),
+    ]
+    if (toolchain := _toolchain_root(chip)) is not None:
+        candidates.append((toolchain, "/alloy/toolchain"))
+    kept: list[tuple[Path, str]] = []
+    for real, virtual in candidates:
+        if any(real != other and real.is_relative_to(other) for other, _ in candidates):
+            continue  # covered by an ancestor entry
+        if any(real == other for other, _ in kept):
+            continue  # project == alloy_root (framework built as its own project)
+        kept.append((real, virtual))
+    return kept
+
+
 def _cmakelists(project: Project, chip: dict[str, Any], sources: list[Path],
                 runtime_sources: list[Path], vendor_sources: list[Path],
                 lwip: dict[str, list[Path]] | None = None,
                 lfs_sources: list[Path] | None = None) -> str:
     gen = project.gen_dir
     lwip = lwip or {"c": [], "glue": [], "inc": []}
-    gen_sources = [gen / "board.cpp"]
-    for optional in ("vector_table.c", "boot2.c", "irq_data.c"):
-        if (gen / optional).exists():
-            gen_sources.append(gen / optional)
+    gen_sources = generated_sources(project)
     src_list = "\n    ".join(
         f'"{p}"' for p in [*sources, *gen_sources, *runtime_sources, *vendor_sources,
                            *lwip["c"], *lwip["glue"]]
@@ -216,6 +298,13 @@ add_custom_command(TARGET {project.name}.elf POST_BUILD
     COMMAND ${{CMAKE_OBJCOPY}} -O ihex   $<TARGET_FILE:{project.name}.elf> {project.name}.hex
     VERBATIM
 )"""
+    # Reproducibility: no absolute host path may reach the artefact. See
+    # prefix_maps() — one -ffile-prefix-map per disjoint root, in sorted order
+    # so the flag list itself is stable across runs.
+    repro = "".join(
+        f'\n    "-ffile-prefix-map={real}={virtual}"'
+        for real, virtual in sorted(prefix_maps(project, chip))
+    )
     return f"""# GENERATED by alloy — DO NOT EDIT
 cmake_minimum_required(VERSION 3.25)
 project({project.name} C CXX ASM)
@@ -240,7 +329,7 @@ target_include_directories({project.name}.elf PRIVATE
 target_compile_options({project.name}.elf PRIVATE
     -Os -g3
     -ffunction-sections -fdata-sections
-    -Wall -Wextra
+    -Wall -Wextra{repro}
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
@@ -259,7 +348,37 @@ target_link_options({project.name}.elf PRIVATE
 """
 
 
-def build(project: Project, chip: dict[str, Any]) -> Path:
+@dataclass(frozen=True)
+class BuildInputs:
+    """Every translation unit this configuration actually compiles.
+
+    Extracted from build() so a second consumer — `alloy sbom` — can answer
+    "what is IN this firmware" from the same seam that decides what gets
+    compiled, instead of from a hand-kept inventory that drifts the first time
+    somebody vendors a new tree. If the build stops compiling littlefs, the
+    SBOM stops listing it, with no second edit.
+    """
+
+    app: list[Path]                 # the project's own src/
+    runtime: list[Path]             # src/alloy/arch/<ns>
+    vendor: list[Path]              # every vendored C package pulled in
+    lfs: list[Path]                 # the littlefs subset of `vendor`
+    lwip: dict[str, list[Path]]     # c / glue / inc
+
+    def compiled(self) -> list[Path]:
+        """All sources on the compiler's command line, generated files aside."""
+        return [*self.app, *self.runtime, *self.vendor,
+                *self.lwip["c"], *self.lwip["glue"]]
+
+
+def build_inputs(project: Project, chip: dict[str, Any]) -> BuildInputs:
+    """Resolve the build seam: which optional packages this configuration pulls in.
+
+    The signals are the GENERATED headers, not the board JSON — codegen has
+    already decided by the time this runs, so the answer is what the compiler
+    will really see. Reading them requires `alloy gen` (or a full build) to have
+    happened; a project that has never been generated resolves to the lean set.
+    """
     sources = sorted((project.root / "src").rglob("*.cpp")) + \
         sorted((project.root / "src").rglob("*.c"))
     if not sources:
@@ -303,6 +422,15 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
                      + [vlwip / "netif" / "ethernet.c"])
         lwip["glue"] = [net / "lwip" / "port.cpp"]
         lwip["inc"] = [net / "lwip", vlwip / "include"]
+
+    return BuildInputs(app=sources, runtime=runtime_sources, vendor=vendor_sources,
+                       lfs=lfs_sources, lwip=lwip)
+
+
+def build(project: Project, chip: dict[str, Any]) -> Path:
+    inputs = build_inputs(project, chip)
+    sources, runtime_sources = inputs.app, inputs.runtime
+    vendor_sources, lfs_sources, lwip = inputs.vendor, inputs.lfs, inputs.lwip
 
     tree = project.build_dir
     tree.mkdir(parents=True, exist_ok=True)

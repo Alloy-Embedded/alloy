@@ -56,6 +56,33 @@ def curated_peripherals(chip: dict[str, Any]) -> dict[str, Any]:
     return {n: p for n, p in chip["peripherals"].items() if not p.get("uncurated")}
 
 
+#: Pointer width per architecture. Only entries that are NOT 32-bit need to be
+#: here; everything else keeps the 32-bit spelling it always had.
+_PTR_BITS = {"rl78_s3": 16}
+
+
+def _addr(chip: dict[str, Any], value: str) -> str:
+    """A peripheral base, in the width the TARGET's pointer actually has.
+
+    RL78 addresses 20 bits of space through 16-bit near pointers: a data
+    operand of 0xFF01 IS the byte at 0xFFF01, because near addressing covers
+    0xF0000..0xFFFFF. Emitting the physical address compiles — with a
+    -Woverflow warning — and truncates to the right value by accident. Relying
+    on an accident is the thing this framework exists not to do, and under
+    -Werror it is not even an accident, it is a failed build.
+    """
+    raw = int(value, 16)
+    bits = _PTR_BITS.get(chip["cores"][0]["arch"], 32)
+    if bits == 32:
+        return hex32(raw)
+    mask = (1 << bits) - 1
+    if raw > mask and (raw & ~mask) != (0xF0000 & ~mask):
+        raise EmitError(
+            f"{chip['part']}: {value} is outside the {bits}-bit window this "
+            f"architecture can reach with a near pointer")
+    return f"0x{raw & mask:0{bits // 4}X}u"
+
+
 def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
                        driver_includes: list[str]) -> str:
     chip = dict(chip)
@@ -93,8 +120,16 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
         lines = [
             f"struct {name}_t {{",
             f"    using ip = alloy::ip::{vendor}::{ip};",
-            f"    static constexpr std::uintptr_t base = {hex32(int(periph['base'], 16))};",
+            f"    static constexpr std::uintptr_t base = {_addr(chip, periph['base'])};",
         ]
+        # A peripheral spread over more than one address window carries a base
+        # per window (RL78 ports: direction in the SFR area, pull-up and the
+        # analogue switch in the 2nd SFR area ~64 KB below). Named base_<window>
+        # so a driver asks for the window it means rather than counting.
+        for window, wbase in sorted((periph.get("bases") or {}).items()):
+            lines.append(
+                f"    static constexpr std::uintptr_t base_{window} = "
+                f"{_addr(chip, wbase)};")
         # A flash controller also needs the flash MEMORY geometry (where the
         # array lives + how big) to turn an address into an erase page/bank.
         if registers[periph["ip"]].get("class") == "flash":
