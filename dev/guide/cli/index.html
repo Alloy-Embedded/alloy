@@ -1231,6 +1231,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#give-a-board-its-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Give a board its identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#lock-a-production-unit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1551,6 +1562,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#give-a-board-its-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Give a board its identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#lock-a-production-unit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1861,6 +1883,36 @@ memory map and UART cannot drift from the real target. See <a href="../emulation
 </span></code></pre></div>
 <p>The full story — slots, trial boots, rollback, signing — is in
 <a href="../firmware-update/">Firmware update</a>.</p>
+<h2 id="give-a-board-its-identity">Give a board its identity<a class="headerlink" href="#give-a-board-its-identity" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alloy provision write --serial &lt;sn&gt; [--mac &lt;m&gt;] [--hw-rev N] [--batch N]</code></td>
+<td>program this board's factory identity through the probe and verify it by reading it back</td>
+</tr>
+<tr>
+<td><code>alloy provision write … -o &lt;file&gt;</code></td>
+<td><strong>offline</strong>: encode the record to a file (no probe, no board) — mass pre-programming and test fixtures</td>
+</tr>
+<tr>
+<td><code>alloy provision read [--file &lt;dump&gt;]</code></td>
+<td>read the identity back — always safe, never writes</td>
+</tr>
+</tbody>
+</table>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>provision<span class="w"> </span>write<span class="w"> </span>--serial<span class="w"> </span>ALY-0001-A7<span class="w"> </span>--mac<span class="w"> </span><span class="m">02</span>:1a:2b:3c:4d:5e
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">  identity page: 0x08007800 +2048 B (from the slot layout)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">verified by readback: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 0  batch 0</span>
+</span></code></pre></div>
+<p>Identity lives outside both firmware slots, so updates never touch it. <strong>Provision before
+<code>alloy secure apply</code></strong> — locking the part first makes this impossible. The whole production
+line order, and a worked script for it, is in <a href="../firmware-update/">Firmware update</a>.</p>
 <h2 id="lock-a-production-unit">Lock a production unit<a class="headerlink" href="#lock-a-production-unit" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1900,9 +1952,9 @@ point: read <a href="../security/">Security</a> before using <code>apply</code> 
 <p>The framework's CI is what keeps every board building; a project built <em>on</em> alloy starts with
 nothing. This writes the equivalent — validate the boards it defines, then build its sources for
 each board it targets:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>ci-init
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">wrote .github/workflows/alloy.yml</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">  builds on: nucleo_g071rb</span>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>ci-init
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">wrote .github/workflows/alloy.yml</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">  builds on: nucleo_g071rb</span>
 </span></code></pre></div>
 <p>It targets what the project targets, not every supported board; <code>--all</code> widens it. Toolchain steps
 follow the same rule (an ARM-only project gets no ESP download) and are pinned to the versions alloy

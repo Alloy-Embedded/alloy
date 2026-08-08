@@ -1552,6 +1552,16 @@ the real bootloader cannot disagree:</p>
 <p>Everything is a read-modify-write under field masks from the device database: option bits
 this tool does not manage (brown-out level, watchdog mode, reset behaviour, boot addresses)
 are read back exactly as they were.</p>
+<div class="admonition danger">
+<p class="admonition-title">On the G0, this range also contains the factory identity page</p>
+<p>The slot layout carves per-device identity out of the <strong>last page of the bootloader region</strong>
+on uniform-page flash — page 15 on the G0. <code>--wrp-bootloader</code> therefore freezes it too, so
+<code>alloy provision write</code> must run <strong>before</strong> <code>alloy secure apply</code>, not after. Get it backwards
+and the write silently does nothing; the provisioning verb's readback is what catches it.</p>
+<p>On the F722 the identity page is its own sector, outside the WRP range, so it stays writable
+— but RDP level 1 locks the probe out either way. The line order is the same on both:
+provision, then secure. See <a href="../firmware-update/#mass-programming-the-production-line">Firmware update</a>.</p>
+</div>
 <p>A note on scope: <code>apply</code> supports STM32G0 and STM32F72x/F73x. On STM32F76x/F77x, <code>status</code>
 works but <code>apply</code> refuses — those parts carry a wider <code>nWRP</code> field and an <code>nDBANK</code> bit that
 changes the whole sector map, and alloy does not model that yet. The refusal says so.</p>

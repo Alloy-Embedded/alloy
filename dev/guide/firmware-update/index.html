@@ -1121,6 +1121,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#per-device-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-device identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Per-device identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-refusals-are-the-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The refusals are the product
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mass-programming-the-production-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mass programming: the production line
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-wire-protocol" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1607,6 +1657,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#per-device-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-device identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Per-device identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-refusals-are-the-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The refusals are the product
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mass-programming-the-production-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mass programming: the production line
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-wire-protocol" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1664,10 +1764,10 @@ hand-written.</p>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">into a TRIAL boot — it must be confirmed to stick</span>
 </span></code></pre></div>
 <h2 id="the-layout-comes-from-the-chip-data">The layout comes from the chip data<a class="headerlink" href="#the-layout-comes-from-the-chip-data" title="Permanent link">&para;</a></h2>
-<p>Flash is partitioned into four regions. The CLI derives them from the flash size and the erase
-granularity of the flash-controller IP — facts already in the device database — and emits them
-as <code>alloy/slots.hpp</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[ bootloader ][ slot A ][ slot B ][ boot-state store ]
+<p>Flash is partitioned into four regions, plus a factory identity page carved out of one of them.
+The CLI derives all of it from the flash size and the erase granularity of the flash-controller
+IP — facts already in the device database — and emits it as <code>alloy/slots.hpp</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[ bootloader | identity ][ slot A ][ slot B ][ boot-state store ]
 </span></code></pre></div>
 <table>
 <thead>
@@ -1678,6 +1778,7 @@ as <code>alloy/slots.hpp</code>:</p>
 <th>Slot A</th>
 <th>Slot B</th>
 <th>Store</th>
+<th>Identity</th>
 </tr>
 </thead>
 <tbody>
@@ -1688,6 +1789,7 @@ as <code>alloy/slots.hpp</code>:</p>
 <td>46 KB @ <code>0x08008000</code></td>
 <td>46 KB @ <code>0x08013800</code></td>
 <td>4 KB</td>
+<td>2 KB @ <code>0x08007800</code></td>
 </tr>
 <tr>
 <td><code>nucleo_f722ze</code> (512 KB)</td>
@@ -1696,6 +1798,7 @@ as <code>alloy/slots.hpp</code>:</p>
 <td>128 KB @ <code>0x08020000</code></td>
 <td>128 KB @ <code>0x08040000</code></td>
 <td>32 KB</td>
+<td>64 KB @ <code>0x08010000</code></td>
 </tr>
 <tr>
 <td><code>same70_xplained</code> (2 MB)</td>
@@ -1704,6 +1807,7 @@ as <code>alloy/slots.hpp</code>:</p>
 <td>1000 KB @ <code>0x00408000</code></td>
 <td>1000 KB @ <code>0x00502000</code></td>
 <td>16 KB</td>
+<td>8 KB @ <code>0x00406000</code></td>
 </tr>
 </tbody>
 </table>
@@ -1722,6 +1826,21 @@ cheap; a bricked fleet is not.</p>
 <p>The active slot <em>is</em> the known-good fallback. An update lands in the other slot and boots
 from there directly. That removes the swap algorithm (and its power-loss states) entirely,
 at the cost of linking the app twice — see below.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">The identity page is carved out, never added</p>
+<p>Per-device identity needs a home outside both slots. It could not become a <em>fifth</em> partition:
+that would have moved <code>slot_b_base</code>, and a slot base is the one number a fielded device can
+never be told about — the update it would need in order to learn the new layout is written
+using the old one. So the page comes out of a region that already exists.</p>
+<p>On uniform-page flash (G0, SAME70) it is the <strong>last erase page of the bootloader region</strong>.
+Every published address is byte-identical to what shipped before the page existed; what
+changes is the bootloader's <em>link window</em>, which shrinks by one page (<code>bootloader_code_size</code>
+in <code>slots.hpp</code>). A bootloader that grows into the identity page therefore fails the <strong>link</strong>,
+instead of quietly erasing a customer's serial number at the next reflash.</p>
+<p>On the F7 the erase unit is a whole sector and the bootloader needs all 32 KB for Ed25519, so
+there is no "last page" to give — identity goes in the medium sector the F7 map already left
+reserved, and nothing moves at all.</p>
 </div>
 <p>The app's vector table sits at a fixed <code>0x200</code> offset inside its slot, so the updater can stream
 <code>[header | payload]</code> straight into flash with the vectors landing where the bootloader's jump
@@ -1981,7 +2100,11 @@ Until the new bootloader lands, a device keeps trusting the leaked key. Plan the
 </tr>
 <tr>
 <td>Per-device keys (one compromised unit ≠ the fleet)</td>
-<td>No — alloy has no RNG/TRNG HAL, so a per-device keypair would have to be generated on the host, which means the host held the private half</td>
+<td>No — alloy has no RNG/TRNG HAL, so a per-device keypair would have to be generated on the host, which means the host held the private half (<a href="#per-device-identity">details</a>)</td>
+</tr>
+<tr>
+<td>Telling one unit from another (serial, MAC)</td>
+<td>Yes — but as <em>identity</em>, never as a secret: the factory writes it, firmware can only read it, and no update touches it (<a href="#per-device-identity">details</a>)</td>
 </tr>
 <tr>
 <td>Reading firmware off the device</td>
@@ -1989,13 +2112,288 @@ Until the new bootloader lands, a device keeps trusting the leaked key. Plan the
 </tr>
 </tbody>
 </table>
+<h2 id="per-device-identity">Per-device identity<a class="headerlink" href="#per-device-identity" title="Permanent link">&para;</a></h2>
+<p>A firmware image is the same on every board. A serial number is not. <code>alloy provision</code> writes the
+facts a board is <em>born</em> with into the identity page — outside both slots, so <code>alloy update</code> can
+replace the firmware a thousand times and the serial number is still the serial number.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>provision<span class="w"> </span>write<span class="w"> </span>--serial<span class="w"> </span>ALY-0001-A7<span class="w"> </span>--mac<span class="w"> </span><span class="m">02</span>:1a:2b:3c:4d:5e<span class="w"> </span>--hw-rev<span class="w"> </span><span class="m">3</span><span class="w"> </span>--batch<span class="w"> </span><span class="m">42</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="go">nucleo_g071rb (st/STM32G071RB)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="go">  identity page: 0x08007800 +2048 B (from the slot layout)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="go">  writing: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 3  batch 42</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="go">verified by readback: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 3  batch 42</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="gp">$ </span>alloy<span class="w"> </span>provision<span class="w"> </span><span class="nb">read</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="go">nucleo_g071rb @ 0x08007800: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 3  batch 42</span>
+</span></code></pre></div>
+<p>The record is a flat 64-byte little-endian POD with a self-CRC, marshaled field by field exactly
+like the image header:</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>magic</code> u32</td>
+<td><code>"APRV"</code> — fast-rejects erased flash</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>format_version</code> u16</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>record_size</code> u16</td>
+<td>64 — lets the record grow later without moving the page</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>serial[16]</code></td>
+<td>ASCII, NUL-padded; <strong>not</strong> NUL-terminated when full</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>mac[6]</code></td>
+<td>EUI-48 in wire order</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>hw_revision</code> u16</td>
+<td>board/PCB revision; 0 = unspecified</td>
+</tr>
+<tr>
+<td>32</td>
+<td><code>batch</code> u32</td>
+<td>factory lot id; 0 = unspecified</td>
+</tr>
+<tr>
+<td>36</td>
+<td><code>reserved[24]</code></td>
+<td>zero</td>
+</tr>
+<tr>
+<td>60</td>
+<td><code>crc32</code> u32</td>
+<td>CRC-32/ISO-HDLC over bytes 0…60</td>
+</tr>
+</tbody>
+</table>
+<p>Firmware reads it in one line, and the read is the <em>only</em> operation firmware has — there is no
+writer on the device at all, so no firmware bug and no hostile update can rewrite a device's
+identity:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/provision.hpp&gt;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/slots.hpp&gt;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">provision</span><span class="o">::</span><span class="n">read</span><span class="p">(</span><span class="n">alloy</span><span class="o">::</span><span class="n">slots</span><span class="o">::</span><span class="n">provision_base</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">id</span><span class="o">-&gt;</span><span class="n">serial_view</span><span class="p">());</span><span class="w">        </span><span class="c1">// bounded: a 16-byte serial has no terminator</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">error</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">provision</span><span class="o">::</span><span class="n">prov_error</span><span class="o">::</span><span class="n">blank</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="c1">// never provisioned — a line fault, not a field fault</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Three failure states, deliberately distinct, because they send an operator to different places:
+<code>blank</code> (erased page — a line step was skipped), <code>bad_magic</code> (something else is at that address),
+and <code>bad_crc</code> (a torn write or a partial erase — re-provision this board).</p>
+<div class="admonition warning">
+<p class="admonition-title">The CRC is integrity, not authenticity</p>
+<p>It catches a bad program, not an attacker with a probe. Identity is <strong>not a secret and not a
+capability</strong> — nothing here should ever be used as a key. What stops an attacker rewriting the
+page is <a href="../security/"><code>alloy secure</code></a> (RDP, and WRP where the page falls inside the
+write-protected bootloader region), not this CRC.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">There is no per-device private key, on purpose</p>
+<p>It is the obvious next field and it is absent because alloy has <strong>no RNG/TRNG HAL on any
+supported part</strong>. A per-device keypair would therefore have to be generated on the host —
+which means the factory PC held every device's private half, on disk, next to a CSV of serial
+numbers. That is a worse security story than having no per-device key at all. The field
+arrives when a TRNG driver and an on-device keygen do; <code>record_size</code> exists so the record can
+grow without moving the page.</p>
+</div>
+<h3 id="the-refusals-are-the-product">The refusals are the product<a class="headerlink" href="#the-refusals-are-the-product" title="Permanent link">&para;</a></h3>
+<p>A factory types these values once per board, at speed, off a work order. Each of these is a
+one-line mistake whose symptom appears months later, so each is a <strong>refusal</strong>, not a warning:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Why it is refused</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a serial longer than 16 bytes</td>
+<td>truncating silently is how two devices end up sharing a serial</td>
+</tr>
+<tr>
+<td><code>" SN-1 "</code></td>
+<td>stored verbatim, so the device would not match its own work order</td>
+</tr>
+<tr>
+<td>non-ASCII or control characters</td>
+<td>the record is 16 raw bytes printed over a debug UART</td>
+</tr>
+<tr>
+<td><code>01:…</code> (multicast bit set)</td>
+<td>a station may not use a group address as its own; frames it sends are dropped, and it is one nibble from a valid address</td>
+</tr>
+<tr>
+<td><code>ff:ff:ff:ff:ff:ff</code></td>
+<td>that is the broadcast address</td>
+</tr>
+<tr>
+<td>a duplicate serial in the work order</td>
+<td>see the line script below</td>
+</tr>
+</tbody>
+</table>
+<p><code>alloy provision write</code> also <strong>verifies by reading back</strong> — always. The record is dumped off the
+device and compared byte for byte before the command reports success, which is the only check that
+catches a write the hardware silently refused (see the ordering trap below).</p>
+<h2 id="mass-programming-the-production-line">Mass programming: the production line<a class="headerlink" href="#mass-programming-the-production-line" title="Permanent link">&para;</a></h2>
+<p><code>examples/factory/</code> is a worked production line: a line-test firmware and the script that drives
+it. <code>line.py</code> enforces the order rather than documenting it, because every step is reversible
+except the last one, and the last one is reversible only by mass-erasing the chip.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="gp">$ </span>python<span class="w"> </span>examples/factory/line.py<span class="w"> </span>--serials<span class="w"> </span>work-order.csv<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">      </span>--product-image<span class="w"> </span>/tmp/product.img<span class="w"> </span>--count<span class="w"> </span><span class="m">50</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Step</th>
+<th>Path</th>
+<th>Why here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>flash the bootloader</td>
+<td>probe</td>
+<td>the only step that needs a probe to load code — a blank board has nothing to take an update with</td>
+</tr>
+<tr>
+<td>2</td>
+<td>load the line-test image</td>
+<td><code>alloy update</code></td>
+<td>over the field path, so every unit's update path is exercised once before it ships</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>provision the identity</strong></td>
+<td>probe</td>
+<td>must precede step 6; verified by readback</td>
+</tr>
+<tr>
+<td>4</td>
+<td>run the line test</td>
+<td>debug UART</td>
+<td>requires <code>LINE TEST: PASS</code> — the step that proves the <em>device</em> agrees with the <em>work order</em></td>
+</tr>
+<tr>
+<td>5</td>
+<td>load the product firmware</td>
+<td><code>alloy update</code></td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>lock the part</td>
+<td>probe</td>
+<td><strong>dead last</strong> — see below</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Provision before you secure — this one bricks batches</p>
+<p><code>alloy secure apply --rdp 1 --wrp-bootloader</code> does two things that make steps 1–3 impossible:
+RDP level 1 blocks the debug probe from flash, and on uniform-page flash <code>--wrp-bootloader</code>
+write-protects the bootloader region — <strong>which contains the identity page</strong>. Provision first
+or the serial number never lands. Returning to RDP 0 to fix it mass-erases the board:
+bootloader, both slots, identity.</p>
+<p>If you do get it backwards, <code>alloy provision write</code>'s readback is what tells you, and it names
+the cause. openocd exits 0; the page is simply still erased.</p>
+<p>On the F7 the identity page is <em>outside</em> the write-protected sectors, so WRP does not freeze
+it there. The order is the same either way — RDP level 1 alone is enough to lock the probe out.</p>
+</div>
+<p>Two smaller things the script refuses, both of which are real production failures:</p>
+<ul>
+<li><strong>a duplicate serial inside the work order.</strong> The usual source is a spreadsheet copy-paste, and
+  the duplicate is discovered when two devices report the same identity to a fleet server, months
+  later, from different continents.</li>
+<li><strong>reusing a serial across runs.</strong> A ledger next to the work order records every serial that has
+  been burned into a board, flushed after <em>every</em> board — the failure it exists for is the line PC
+  losing power mid-batch — so a re-run resumes at the next unused serial instead of starting over.</li>
+</ul>
+<p>A board that fails any step never reaches step 6: locking an unprovisioned board makes it scrap.</p>
+<p>The line-test firmware (<code>examples/factory/src/main.cpp</code>) is a slot-A app, packed by <code>alloy image</code>
+like any other, so it boots through the real bootloader out of the real slot. It prints the
+identity and exactly one verdict line, which is the only thing a line script should grep for:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>alloy factory line-test
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>identity page: 0x08007800
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>serial: ALY-0001-A7
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>mac: 02:1a:2b:3c:4d:5e
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>hw_rev: 3
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>batch: 42
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>LINE TEST: PASS
+</span></code></pre></div>
+<h2 id="adding-a-transport">Adding a transport<a class="headerlink" href="#adding-a-transport" title="Permanent link">&para;</a></h2>
+<p>The UART receiver is sans-IO — it owns no UART, no clock and no flash — so the update machinery is
+reusable over any byte pipe: CAN, RS-485/Modbus, TCP, BLE. <code>src/alloy/ota/uart_transport.hpp</code> is
+the <strong>reference implementation</strong>; a new transport re-implements its framing half and reuses
+everything below it.</p>
+<p>A transport has to supply four things, and nothing else:</p>
+<ol>
+<li><strong>Framing.</strong> Deliver a whole, integrity-checked message to the session layer, and emit whole
+   messages back. UART does this with <code>SOF | type | seq | len | payload | crc32</code>; a bus that
+   already frames (CAN, Modbus RTU, TCP) reuses its own framing instead.</li>
+<li><strong>The four message types.</strong> <code>HELLO</code> → <code>INFO</code>, <code>DATA(seq, bytes)</code> → <code>ACK</code>/<code>NAK</code>,
+   <code>FINISH</code> → <code>ACK</code>/<code>NAK</code>. <code>INFO</code> carries the protocol version, the target slot, the running
+   <code>image_version</code> and the largest chunk the device will buffer.</li>
+<li><strong>The sequence rule.</strong> The device is a pure responder: a duplicate <code>DATA</code> seq (a retransmit
+   after a lost ACK) is re-ACKed <strong>without rewriting flash</strong>; anything else out of order is NAKed;
+   a fresh <code>HELLO</code> restarts the session. All retransmission policy lives in the host.</li>
+<li><strong>An error channel.</strong> <code>NAK</code> carries the <code>ota_error</code> value, which is how an operator learns
+   <em>why</em> — <code>10 not_authentic</code>, <code>11 rollback</code>, <code>12 unknown_key</code> are very different conversations.</li>
+</ol>
+<p>Below that line nothing changes: the transport writes into any <code>UpdateSink</code> (<code>alloy::ota::updater</code>
+satisfies it as-is), and verification, the anti-rollback floor, the key ring and the trial/confirm
+machine are all downstream of it.</p>
+<div class="admonition note">
+<p class="admonition-title">Update over Modbus RTU: designed, deliberately not built</p>
+<p><code>libs/modbus</code>'s <code>rtu_server</code> has the matching seam already — a <code>UserDispatch</code> hook for vendor
+function codes, invoked with the request PDU and a response buffer — so a device-side
+<code>ota_dispatch</code> satisfying it is about 95 lines, and it was written and compiled against
+<code>src/</code> + <code>libs/modbus</code> during this work. It is not in the tree, because the <em>demonstrated</em>
+cost is not 95 lines: it also needs a host-side RTU master (there is no Modbus <strong>client</strong> in
+<code>tools/alloy</code> today), an example, and a Renode leg. Shipping the device half alone would be
+exactly the half-built transport this section exists to prevent.</p>
+<p>Two findings are worth recording before anyone picks it up, because both are properties of
+Modbus and not of alloy:</p>
+<ul>
+<li><strong>A vendor function code has no length rule</strong>, so <code>expected_adu_length</code> returns
+  <code>length_unknown</code> and OTA frames are closed by <strong>t3.5 silence alone</strong>. That is solid at
+  ≤19200 baud (t3.5 ≈ 2005 µs, longer than one 1 ms tick) and tight at 115200 (≈1750 µs).</li>
+<li><strong>Modbus has no field for an <code>ota_error</code>.</strong> Every refusal collapses into exception <code>0x04</code>,
+  server failure. The UART transport's NAK carries the exact code; losing it is a genuine
+  regression in field diagnosability, and it is the reason update-over-Modbus should be an
+  option a product opts into rather than the default path.</li>
+</ul>
+<p>CAN, Ethernet and BLE are further away still: each needs its own framing <em>and</em> its own host
+client, and none has an emulation leg to be proven in.</p>
+</div>
 <h2 id="the-wire-protocol">The wire protocol<a class="headerlink" href="#the-wire-protocol" title="Permanent link">&para;</a></h2>
 <p>Stop-and-wait, every frame CRC-32 guarded, and deliberately dull:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>SOF 0x7E | type u8 | seq u8 | len u16 | payload[len] | crc32 u32
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>                     └────── crc32 covers type..payload ──────┘
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>host → device:  HELLO · DATA · FINISH
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>device → host:  INFO  · ACK  · NAK
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>SOF 0x7E | type u8 | seq u8 | len u16 | payload[len] | crc32 u32
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>                     └────── crc32 covers type..payload ──────┘
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>host → device:  HELLO · DATA · FINISH
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>device → host:  INFO  · ACK  · NAK
 </span></code></pre></div>
 <p>The device is a pure responder — <strong>all</strong> retransmission policy lives in the host. A duplicate
 <code>DATA</code> sequence number (a retransmit after a lost ACK) is re-ACKed without rewriting flash;
@@ -2027,6 +2425,13 @@ is in the day after its signing key leaked: an image signed by B with <code>--ke
 <em>very same file</em> that boots on the single-key bootloader is refused, which is the revocation
 claim; and an image signed by the retired key but stamped <code>--key-id 1</code> is refused, because
 <code>key_id</code> selects and never bypasses. Every rejection lands the device back in update mode.</p>
+<p>The provisioning gate adds four machines, all booting the real bootloader and running the
+line-test app out of slot A as a real packed image. A provisioned board prints back the exact
+serial, MAC, revision and batch that <code>alloy provision write</code> encoded — <em>and</em> the identity address
+the linker baked in, so a disagreement between the emitter and the host verb cannot hide. The
+other three are the refusals: an <strong>erased</strong> page (<code>FAIL unprovisioned</code>), a page holding
+<strong>something else</strong> (<code>FAIL no identity record</code>), and a record with <strong>one flipped bit</strong> in the
+serial (<code>FAIL ... corrupt</code>), which only the record's CRC can catch.</p>
 <p>See <a href="../emulation/">Emulation</a> for how that harness works.</p>
 <div class="admonition warning">
 <p class="admonition-title">Honest status</p>
@@ -2049,6 +2454,17 @@ board has run them. In particular, "a retired key can never authenticate again" 
 against Renode and against a native host test using the same vendored Monocypher the
 firmware links — not against silicon, and not against a device whose flash an attacker can
 write directly.</p>
+<p>Provisioning is split the same way. What is proven: the <strong>record format</strong>, by host tests on
+both sides of the language boundary pinning the same 64 golden bytes, and by four Renode
+machines that read it out of the layout's page through a real bootloader. What is <strong>not</strong>
+proven: that <code>alloy provision write</code> programs a real device. The openocd command list is
+reasoned from openocd's documented <code>flash write_image</code> / <code>dump_image</code> and has never driven a
+probe — no board was on hand. Neither has <code>examples/factory/line.py</code>; its refusals, its
+ledger, its step order and its exact argv are unit-tested, and nothing else about it is.</p>
+<p>Nor is "the identity page survives an update" a silicon claim. It rests on address arithmetic
+— checked over <strong>every</strong> chip in the database, so the provisioning page provably intersects
+neither slot nor the boot-state store — plus the Renode legs showing firmware reads it from
+where the layout says. No emulation leg runs an update and then re-reads the identity.</p>
 <p>Chips whose flash controller alloy does not model — RP2040 and ESP32 today — get no slot layout
 at all rather than a guessed one, so <code>--slot</code> is simply not offered for them.</p>
 </div>
