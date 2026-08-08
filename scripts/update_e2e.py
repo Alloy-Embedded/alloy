@@ -72,10 +72,17 @@ def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
             while want and want[0] in got:
                 got = got.split(want[0], 1)[1]
                 want.pop(0)
+    took = deadline_s - (end - time.monotonic())
     if want:
-        raise SystemExit(f"FAIL [{stage}]: never saw {want[0]!r}; "
-                         f"last output: {got[-200:]!r}")
-    print(f"  ok: {stage}")
+        raise SystemExit(f"FAIL [{stage}]: never saw {want[0]!r} in {took:.0f}s "
+                         f"(budget {deadline_s:.0f}s); last output: {got[-200:]!r}")
+    # The elapsed time is the whole diagnosis when this goes red. A leg that
+    # took 235s of a 240s budget is a budget problem; one that dies at 3s is a
+    # firmware problem, and the message alone cannot tell them apart. flush,
+    # because CI pipes stdout and a buffered log arrives with every line
+    # carrying the same timestamp — which is exactly what made one of these
+    # failures take hours to read.
+    print(f"  ok: {stage} [{took:.0f}s of {deadline_s:.0f}s]", flush=True)
 
 
 class Monitor:
@@ -117,7 +124,7 @@ def main() -> None:
     # 1. blank board -> install the good app (bootloader targets slot B: 1-active(0))
     info = update(link, good, retries=10)
     assert info["target_slot"] == 1, f"expected target B on a blank board, got {info}"
-    print(f"  ok: good image accepted -> slot B {info}")
+    print(f"  ok: good image accepted -> slot B {info}", flush=True)
 
     # 2. reboot -> trial boot -> the app confirms itself
     wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
@@ -133,14 +140,14 @@ def main() -> None:
         # Families whose watchdog isn't modeled in Renode yet stop here: the
         # install/trial/confirm/persist phases still prove the whole flash path
         # (erase, program, FLUSH DURABILITY across reset) end to end.
-        print("PASS (good-only): install -> trial -> confirm -> persisted")
+        print("PASS (good-only): install -> trial -> confirm -> persisted", flush=True)
         return
 
     # 4. update with the bad app (never confirms); device now targets slot A
     mon.power_cycle()  # reopen the bootloader's update window
     info = update(link, bad, retries=10)
     assert info["target_slot"] == 0, f"expected target A, got {info}"
-    print(f"  ok: bad image accepted -> slot A {info}")
+    print(f"  ok: bad image accepted -> slot A {info}", flush=True)
 
     # 5. three trial boots with NO help from the harness: the bad app (uart_echo)
     # never confirms and never feeds, so the WATCHDOG the bootloader armed before
@@ -159,7 +166,7 @@ def main() -> None:
              "AUTOMATIC ROLLBACK (autonomous)")
 
     print("PASS: install -> trial -> confirm -> bad update -> "
-          "3 watchdog-reset trials -> autonomous rollback")
+          "3 watchdog-reset trials -> autonomous rollback", flush=True)
 
 
 if __name__ == "__main__":
