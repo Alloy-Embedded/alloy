@@ -18,7 +18,11 @@ from .common import EmitError, cpp_ip_namespace
 from .device import curated_peripherals, emit_device_header, emit_routes_header
 from .ip import emit_ip_header
 from .linker import emit_linker_script
-from .vectors import emit_vector_table, emit_xtensa_irq_data
+from .vectors import (
+    emit_rl78_vector_table,
+    emit_vector_table,
+    emit_xtensa_irq_data,
+)
 
 _ARCH_NS = {
     "armv6m": "cortex_m",
@@ -185,6 +189,8 @@ def _emit_chip_sources(gen: Path, chip: dict[str, Any],
     _write(gen / "alloy" / "routes_gen.hpp", emit_routes_header(chip), written)
     if chip.get("interrupts") and arch_ns == "cortex_m":
         _write(gen / "vector_table.c", emit_vector_table(chip), written)
+    elif chip.get("interrupts") and arch_ns == "rl78":
+        _write(gen / "vector_table.c", emit_rl78_vector_table(chip), written)
     elif chip.get("interrupts") and arch_ns == "xtensa":
         _write(gen / "irq_data.c", emit_xtensa_irq_data(chip, registers), written)
     _write(gen / "linker.ld",

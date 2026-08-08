@@ -21,6 +21,85 @@ _SYSTEM_SLOTS = [
 ]
 
 
+#: RL78 fixes its table at 0x00000 and gives every entry two bytes. 64 of them,
+#: including the reset vector at slot 0 — there is no initial stack pointer
+#: there, because the SP is loaded by software in startup.
+_RL78_VECTOR_SLOTS = 64
+
+
+def emit_rl78_vector_table(chip: dict[str, Any]) -> str:
+    """The RL78 vector table.
+
+    Three things differ from the Cortex-M one beside it, and each is the
+    architecture rather than a preference:
+
+      * slot 0 is the RESET VECTOR, not the initial stack pointer. RL78 loads
+        SP in software, so startup does it before touching anything.
+      * entries are 2 bytes, not 4 — the table is 128 bytes total and cannot
+        move, because there is no VTOR.
+      * several sources legitimately share one vector on this family
+        (INTCSI20/INTIIC20/INTST2 are the same entry). The Cortex-M emitter
+        raises on a duplicate number; here that would reject the real silicon,
+        so a shared vector dispatches to every source that names it.
+    """
+    irqs = sorted(chip["interrupts"], key=lambda i: i["number"])
+    by_number: dict[int, list[str]] = {}
+    for irq in irqs:
+        number = int(irq["number"])
+        if not 0 <= number < _RL78_VECTOR_SLOTS:
+            raise EmitError(
+                f"{chip['part']}: interrupt {irq['name']} is vector {number}; "
+                f"RL78 has {_RL78_VECTOR_SLOTS} (0..{_RL78_VECTOR_SLOTS - 1})")
+        by_number.setdefault(number, []).append(irq["name"])
+
+    wrappers: list[str] = []
+    entries: list[str] = []
+    for slot in range(_RL78_VECTOR_SLOTS):
+        names = by_number.get(slot)
+        if slot == 0:
+            entries.append("    _start, /* reset — SP is set in software */")
+            continue
+        if not names:
+            entries.append(f"    Default_Handler, /* {slot} unused */")
+            continue
+        # One wrapper per VECTOR, forwarding the vector number. Which of the
+        # sharing sources actually fired is a question only the peripheral's
+        # own flags can answer, so the dispatcher hands it to every handler
+        # attached to the line and they check.
+        handler = f"vect{slot}_Handler"
+        shared = " / ".join(names)
+        wrappers.append(
+            f"__attribute__((weak, interrupt)) void {handler}(void) "
+            f"{{ alloy_irq_dispatch({slot}u); }}  /* {shared} */")
+        entries.append(f"    {handler}, /* {slot}: {shared} */")
+
+    wrapper_block = "\n".join(wrappers)
+    table = "\n".join(entries)
+    shared_count = sum(1 for v in by_number.values() if len(v) > 1)
+    return f"""{_C_BANNER}/* Chip: {chip['vendor']}/{chip['part']} — {len(irqs)} sources in \
+{len(by_number)} vectors ({shared_count} shared) */
+#include <stdint.h>
+
+void _start(void);
+void alloy_irq_dispatch(unsigned line);
+
+/* Anything with no handler attached: stop rather than return into a source
+   that is still asserting, which would spin forever without saying why. */
+__attribute__((weak, interrupt)) void Default_Handler(void) {{ for (;;) {{ }} }}
+
+{wrapper_block}
+
+typedef void (*vector_t)(void);
+
+/* Fixed at 0x00000 by the architecture — the linker places .vectors there and
+   nothing can move it. */
+__attribute__((used, section(".vectors")))
+const vector_t g_alloy_vectors[{_RL78_VECTOR_SLOTS}] = {{
+{table}
+}};
+"""
+
+
 def emit_vector_table(chip: dict[str, Any]) -> str:
     irqs = sorted(chip["interrupts"], key=lambda i: i["number"])
     max_irq = irqs[-1]["number"]

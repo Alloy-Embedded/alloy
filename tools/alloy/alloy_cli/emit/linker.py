@@ -61,8 +61,13 @@ def _emit_rl78_linker(chip: dict[str, Any], flash_reserved: int = 0) -> str:
         so the stack grows down from 0xFFEE0 — below the general-purpose
         register banks, which is why the end is not simply the end of RAM.
 
-    Symbols match the other backends (_sidata/_sdata/_edata/_sbss/_ebss/
-    _estack) so the generated startup stays arch-neutral.
+    The C names match the other backends (__sidata/__sdata/__edata/__sbss/__ebss/
+    __estack), so the shared startup contract is unchanged — but the RL78 ABI
+    prefixes every C symbol with an underscore, so the LINKER sees them with
+    two. Hence __sidata and ENTRY(__start) below: this script lives in the
+    linker's namespace, not C's. Getting it wrong compiles fine and fails the
+    link, with a message ("undefined reference to __sdata") that points at the
+    startup file rather than at here.
     """
     flash = next((m for m in chip["memories"] if m["kind"] == "flash"), None)
     ram = next((m for m in chip["memories"] if m["kind"] == "ram"), None)
@@ -93,7 +98,7 @@ MEMORY
     RAM    (rwx) : ORIGIN = {ram_base:#07x}, LENGTH = {ram_len:#x}
 }}
 
-ENTRY(_start)
+ENTRY(__start)
 
 SECTIONS
 {{
@@ -118,48 +123,48 @@ SECTIONS
     .init_array :
     {{
         . = ALIGN(2);
-        __preinit_array_start = .;
+        ___preinit_array_start = .;
         KEEP(*(.preinit_array))
-        __preinit_array_end = .;
-        __init_array_start = .;
+        ___preinit_array_end = .;
+        ___init_array_start = .;
         KEEP(*(SORT(.init_array.*)))
         KEEP(*(.init_array))
-        __init_array_end = .;
+        ___init_array_end = .;
         . = ALIGN(2);
     }} > FLASH
 
-    _sidata = LOADADDR(.data);
-
-    .data : AT (_sidata)
+    .data :
     {{
         . = ALIGN(2);
-        _sdata = .;
+        __sdata = .;
         *(.data) *(.data.*)
         . = ALIGN(2);
-        _edata = .;
+        __edata = .;
     }} > RAM AT > FLASH
+
+    __sidata = LOADADDR(.data);
 
     .bss (NOLOAD) :
     {{
         . = ALIGN(2);
-        _sbss = .;
+        __sbss = .;
         *(.bss) *(.bss.*) *(COMMON)
         . = ALIGN(2);
-        _ebss = .;
+        __ebss = .;
     }} > RAM
 
     /* Survives a warm reset — same contract as the other backends. */
     .noinit (NOLOAD) :
     {{
         . = ALIGN(2);
-        _snoinit = .;
+        __snoinit = .;
         *(.noinit .noinit.*)
         . = ALIGN(2);
-        _enoinit = .;
+        __enoinit = .;
     }} > RAM
 
     /* The stack grows down from the top of RAM. */
-    _estack = ORIGIN(RAM) + LENGTH(RAM);
+    __estack = ORIGIN(RAM) + LENGTH(RAM);
 
     /DISCARD/ : {{ *(.comment) *(.note.*) }}
 }}
