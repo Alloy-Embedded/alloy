@@ -502,7 +502,7 @@ one Tier-1 name that has to go gets its window.
 
 | Surface | What happens |
 |---|---|
-| `alloy::uart::config` | gains three fields **with defaults**. All 59 `::open(` sites in the 47 examples compile unchanged. MINOR. |
+| `alloy::uart::config` | gains three fields **with defaults**. All 59 `::open(` sites across the 48 examples compile unchanged — 45 of them `board::debug_uart::open`, the rest other peripherals' `open()` that this change must not disturb either. MINOR. |
 | `alloy::uart::bind` | gains a defaulted variadic tail for pin-bearing tags (`de<>`, `rts<>`, `cts<>`). Existing four-argument binds keep working. MINOR. |
 | `alloy::uart::opts<Inst>` | new. MINOR. |
 | `Inst::feat::*` | new, generated. Its *contents* are the chip database's promise, exactly like `alloy::dev::` — pin `[devices]`. |
@@ -638,6 +638,43 @@ so it costs nothing otherwise — the same honest runtime guard the double-open
 check already uses. **A mixed compile-time/runtime surface has a seam, and this
 is where it is.**
 
+Measured on the G0B1RE: with a compile-time-constant parity the trap folds,
+GCC merges it into the double-open `udf #255`, and everything after `open()`
+is deleted as unreachable — including the string the program meant to print.
+So the build is silent, the binary is *correct* (it refuses), and the failure
+arrives at run time on the first boot. No warning is emitted.
+
+### 6. Three more holes the layers do not close
+
+Found by trying combinations this page did not anticipate, all on the G0B1RE
+unless noted. None of them is a new defect introduced by the layers — they are
+the shape's blind spots, stated so nobody rediscovers them at driver 22.
+
+* **A Layer-1 value with no valid divisor.** `open({.baud = 0})` compiles with
+  no diagnostic. `baud_div()` divides by it, GCC folds the constant division by
+  zero to unreachable, and the emitted code falls into the same `udf` as the
+  seam above. The programme traps at run time — loudly, but at a fault PC that
+  belongs to the double-open guard, so the *diagnosis* is misleading. With a
+  run-time-variable baud there is no fold and no trap: `__aeabi_uidiv` returns
+  quietly and the port is misconfigured. **Layer 1 has no admission check on
+  the value at all**; only `open_checked<Baud>` does, and it is opt-in.
+* **`open_checked` silently discards a conflicting Layer-1 baud.**
+  `open_checked<115'200_baud>({.baud = 9'600})` compiles clean and runs at
+  115 200: the template argument overwrites `c.baud`. Two spellings of the same
+  fact disagree and the loser is never mentioned.
+* **The double-open guard is per *binder type*, not per instance.** Two
+  different `uart::bind<>` specialisations naming the same `usart2_t` — a
+  second, legitimately-routed pin pair — each carry their own `detail_opened`.
+  Opening both compiles clean, with *contradictory* Layer 1 and Layer 2
+  (`data_bits = 8` then `7`; `115'200/none` then `9'600/odd`), no error and no
+  warning; the second `open()` reprograms the peripheral under the first
+  handle, which stays usable. Layer 2 makes a *call site* impossible to lie in
+  and says nothing about **who owns the instance**. `reconfigure<Opts>()` has
+  the same shape: it is callable on a port nobody opened (verified on the F767,
+  whose `usart_v3` implements `configure_running`), and its `Opts` need not
+  match the ones `open()` used, because Layer 2 belongs to the call and not to
+  the handle.
+
 ---
 
 ## What it actually cost
@@ -672,10 +709,35 @@ The PL011's −80 has the same cause in miniature and one caveat worth stating:
 the writes are the same in both versions for a default config, so part of that
 delta is inlining shape rather than deleted stores. It was not disassembled.
 
-**Not measured:** compile time, and the cost on a *deep* configuration (8E2
-with vendor knobs) in the real tree rather than in a reduction. The reduction
-figures earlier on this page stand as they were labelled — a probe, not a
-build.
+### What a *deep* configuration costs
+
+The table above is the example that configures nothing. Here is the other end,
+measured the same way in the same tree: `uart_echo` with **Layer 1 in use**
+(`parity::even` + `stop_bits::two`), and then with **Layer 2 on top** — every
+knob the IP offers, set away from its default (`data_bits`, `invert_tx`,
+`invert_rx`, `swap_rx_tx`, `de_*_16ths`, `fifo_enable`), selected by the same
+`requires`-concept idiom `examples/uart_frame` uses. Δ is against the *after*
+column above, so it is the price of asking, not the price of the redesign.
+
+| board | driver | default | +Layer 1 | +Layer 1 & 2 |
+|---|---|---|---|---|
+| nucleo_g071rb | `st_usart_v4` | 1812 | 1848 (**+36**) | 1852 (**+40**) |
+| nucleo_g0b1re | `st_usart_v4` | 2736 | 2772 (**+36**) | 2776 (**+40**) |
+| nucleo_f767zi | `st_usart_v3` | 2264 | 2304 (**+40**) | 2328 (**+64**) |
+| raspberry_pi_pico | `raspberrypi_uart_pl011` | 2280 | 2304 (**+24**) | 2308 (**+28**) |
+| same70_xplained | `microchip_usart_v1` | 1944 | 1944 (**0**) | 1944 (**0**) |
+| esp32_devkit | `espressif_uart_v1` | 2641 | 2689 (**+48**) | 2689 (**+48**) |
+
+Two things to read off it. A full non-default frame costs **24–64 bytes** —
+the bound the "unused features cost nothing" claim needed, since a claim about
+zero is only half an answer without the other end. And the SAM's **0** is not
+a rounding artefact: `microchip_usart_v1` composes the whole of `MR` in one
+unconditional store, so the fields were always being written and asking for
+different values moves no code. The guarded-write rule buys nothing there,
+and costs nothing either.
+
+**Not measured:** compile time. The reduction figures earlier on this page
+stand as they were labelled — a probe, not a build.
 
 ---
 
@@ -683,11 +745,12 @@ build.
 
 | Claim | Evidence |
 |---|---|
-| `open({.baud = …})` still compiles everywhere | all 47 examples build; `uart_frame` builds **9 of 9 boards**, `alloy matrix` |
+| `open({.baud = …})` still compiles everywhere | all 48 examples build; `uart_frame` builds **9 of 9 boards**, `alloy matrix` |
 | a knob the IP lacks cannot be typed | `scripts/check_compile_errors.py::check_opts_absent_field` — 16-line error, first line names `uart_opts<alloy::dev::usart2_t>` and `de_assert_16ths` |
 | an over-ask is rejected against generated data | `check_opts_over_ask` — `static_assert` + `the comparison reduces to '(40 <= 31)'` |
 | a pin-bearing knob is rejected where the IP has none | `check_de_tag_unsupported` — on the G0B1RE, where the DE pin *does* route, so the route check passes and the driver's refusal is what is left |
-| degree reaches the image and changes behaviour | `tests/emulation/uart_frame_surface.robot` on **two** boards: the same source prints `rx-fifo: shallow` on the G071 (`feat::rx_fifo_depth == 8`) and `rx-fifo: none` on the F722 (`== 0`) |
+| degree reaches the image and changes behaviour | `tests/emulation/uart_frame_surface.robot` on **two** boards: the same source prints `rx-fifo: shallow` on the G071 (`feat::rx_fifo_depth == 8`) and `rx-fifo: none` on the F722 (`== 0`). With a **negative control**: run the F722 leg without its `--variable FIFO:` override and it fails in ~102 s, so the two legs genuinely discriminate rather than both matching a line that happens to be printed |
+| nothing else in the tree grew | `.text` before/after on six more examples × three boards (`hello`, `dma_uart`, `bootloader_uart`, `modbus_rtu_client`, `irq_echo`, `async_io`): every figure unchanged or smaller, none larger |
 | the ports still work | `firmware_boots` + `uart_echo_roundtrip` green under Renode on g071rb, g0b1re, f722ze, same70_xplained |
 | a hand-written degree claim cannot creep in | `scripts/check_contract.sh` greps for `struct feat` under `src/` |
 
