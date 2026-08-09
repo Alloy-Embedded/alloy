@@ -14,6 +14,64 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **Peripheral instance ownership (`alloy/core/claim.hpp`).** A peripheral is
+  owned by one binder, in one *personality*. `alloy::claim::owner<Inst>` is an
+  inline variable template, so it is one byte per instance across the whole
+  image — where the old `detail_opened` was a static of the *binder type*, and
+  two `bind<>`s naming one `usart2_t` therefore had two flags and both
+  "succeeded", the second silently reprogramming the port under the first
+  handle. `uart`, `i2c`, `spi` and `adc` claim exclusively; `pwm` claims
+  *shared*, because four channels of one timer are legitimate — and pass the
+  block-scoped frequency as a witness, which turns "two channels asked this
+  timer for two frequencies and the second one silently won" from a live defect
+  into a trap. `bind::reconfigure<Opts>()` now refuses a port nobody opened and
+  refuses `Opts` that disagree with the ones `open()` programmed. Each guard
+  puts an `alloy::trap_code` in a register before trapping, so a fault report
+  can tell them apart (it does **not** give each one its own PC — GCC
+  tail-merges the trap). Cost: **+8 bytes of `.text`** on every ARM board's
+  `uart_echo`, all of it in the branch that traps; the success path is
+  byte-identical.
+- **Board roles get the same rule at generation time.**
+  `emit/board.py::ROLE_PERSONALITY` refuses a `board.json` that hands one
+  peripheral to two mutually exclusive personalities, naming the peripheral and
+  both roles. `nvm` and `fs` deliberately share the `flash` personality — two
+  regions on one controller are one driver serving two roles, which
+  `nucleo_g0b1re` declares today.
+- **Layer 1 admits VALUES, not only fields (`alloy/core/admit.hpp`).**
+  `open({.baud = 0})` used to compile with no diagnostic, fold the constant
+  division to unreachable, and fall into the double-open trap — so even the
+  crash named the wrong guard. `open()` now refuses any rate no divisor can
+  represent (zero, or above the peripheral's own kernel clock): a **compile
+  error** naming the instance when the value is a literal, a named trap when it
+  is computed. Same two lines guard `i2c::open`, `spi::open` and `pwm::open`.
+  Zero bytes when the value is constant, 20 when it is not. Accuracy stays
+  `open_checked<Baud>`'s job, deliberately — a tolerance applied silently to a
+  runtime value is a policy, not a check.
+- **The rule that routes a knob to a layer is at revision 2**
+  ([docs/reference/peripheral-surface.md](docs/reference/peripheral-surface.md)).
+  v1 was derived from UART and failed all three of the features an adversarial
+  pass tried on it — I2C 10-bit addressing, the ADC analog watchdog, timer
+  encoder mode — because it asked *which layer* without first asking *what kind
+  of thing*. v2 adds a gate (**question 0: what does the database already
+  know**, four rows, because `alloy::dev::` is *not* the unconditional escape
+  hatch v1 advertised) and three categories in front of the layers:
+  **personality**, **sub-resource**, and **per-transfer value**. All three
+  counterexamples are answered with the code a user would write; three more
+  features are stressed against v2 and **two of them break it**, which the page
+  records rather than smooths over; and two categories v2 deliberately does not
+  decide are stated as questions a maintainer must answer.
+
+### Changed
+
+- **`bind::open_checked<Baud>()` takes `alloy::uart::frame`, not
+  `alloy::uart::config`.** `open_checked<115'200_baud>({.baud = 9'600})`
+  compiled clean and ran at 115 200, with the loser never mentioned; `frame` is
+  Layer 1 minus the rate, so that call is now a compile error naming the
+  member. `open_checked<A>()` and `open_checked<A>({.parity = …})` are
+  unchanged. This is a Tier-1 signature change with no in-tree caller, taken
+  rather than deprecated: a window in which both spellings work is a window in
+  which the disagreement is still silent.
+
 - **The peripheral surface, implemented on UART.** The three layers
   [decided last commit](docs/reference/peripheral-surface.md) now exist in
   code, across all six UART drivers and four vendors.

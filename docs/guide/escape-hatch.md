@@ -125,6 +125,22 @@ page, and know that the board portability of that line is now zero. If you find
 yourself writing several, the better fix is usually to add the fact to
 `alloy-devices` — then Route A works and every board gets it.
 
+!!! warning "Route A is not always available, and Route C is the only one that always is"
+    Route A goes through the generated description, so it reaches exactly what
+    the chip database curates — and 28 of the STM32G0B1RE's 65 peripherals are
+    uncurated, which means `alloy::dev::tim1_t` **does not exist**, not that it
+    exists and is empty. Curation has
+    [three separate gates](../reference/peripheral-surface.md#question-0-what-does-the-database-already-know)
+    — the peripheral, the register, the field — and a block can pass the first
+    and fail the second (the G0's ADC is curated and its map has no `TR1`).
+
+    So "you can always drop to registers" is true of Route C and of Route C
+    only. That is a real door, and it is the one with no gate address, no IRQ
+    number and no route check behind it. Reaching for it because a *peripheral*
+    is uncurated is usually the wrong trade against spending an afternoon in
+    `alloy-devices`; reaching for it because one *erratum* register is
+    undocumented is what it is for.
+
 ## 4. What DOES collide: the link, not the include
 
 This is the part that costs a day if nobody writes it down.

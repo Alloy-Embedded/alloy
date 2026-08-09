@@ -58,6 +58,16 @@ Two more names are public with **IP-shaped contents**, on the same footing:
   contents are the chip database's promise, exactly like `alloy::dev::`, and
   are pinned by `[devices]`.
 
+One more header is Tier 1 by intent rather than by the examples using it:
+
+- `alloy/core/claim.hpp` — `alloy::claim::exclusive/shared/held`,
+  `alloy::claim::personality`, `alloy::trap_code`. A facade written outside
+  this repo has to be able to participate in
+  [instance ownership](peripheral-surface.md#personalities-a-block-runs-in-one-mode-at-a-time),
+  so these are public names and not a `detail` namespace. `personality` gains
+  enumerators as alloy ships facades — additive, and it carries `user_a`/
+  `user_b` so an out-of-tree facade never has to patch the header.
+
 ### Tier 1 — the CLI
 
 Every verb `alloy --help` lists, and every `--json` envelope. Envelopes carry
