@@ -7,6 +7,7 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | --- | --- |
 | `blink` | the minimal portable app — `board::led.toggle()` |
 | `uart_echo` | UART TX/RX, the debug console |
+| `uart_frame` | the three layers of the [peripheral surface](../reference/peripheral-surface.md) in one portable file |
 | `hello` | blink + echo together (the `alloy new` scaffold) |
 | `pwm_fade` | PWM duty ramps, an LED breathing |
 | `analog_probe` | ADC sampling, printing raw counts |

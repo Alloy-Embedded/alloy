@@ -22,15 +22,32 @@
 
 namespace alloy::uart {
 
-struct config {
-    std::uint32_t baud = 115'200;
-};
+// LAYER 1 — the portable line shape. Runtime, because baud and parity
+// legitimately change on a live port. Every field is honoured by every UART
+// driver alloy ships; see hal::uart_config for the admission test and for
+// what is deliberately NOT here.
+using config = hal::uart_config;
+using parity = hal::parity;
+using stop_bits = hal::stop_bits;
 
-// Full line shape (parity/stop/inversion/hardware-DE) for drivers that can
-// program it — see hal::serial_config. Offered through bind::reconfigure(),
-// capability-gated: a board whose driver only speaks baud doesn't grow a
-// method that lies.
-using serial_config = hal::serial_config;
+// LAYER 2 — the vendor knobs, keyed by INSTANCE, so a knob the silicon lacks
+// is not a member and cannot be asked for. Surfaced on every binder as
+// `Role::opts`, which is the spelling to use: naming the type at the call
+// site is what buys the good diagnostic.
+//
+//     auto bus = board::rs485::open<board::rs485::opts{.de_assert_16ths = 12}>(
+//                    {.baud = 19'200, .parity = alloy::uart::parity::even});
+template <class Inst>
+using opts = hal::uart_opts<Inst>;
+
+// DEPRECATED — the nine-field struct that one driver honoured and five
+// ignored. Layer 1 (`config`) plus Layer 2 (`opts<Inst>`) replace it, and
+// unlike it they cannot promise a field the silicon does not have. Kept for
+// its stability window; there are no in-tree callers.
+using serial_config [[deprecated(
+    "use alloy::uart::config for portable fields and Role::opts for vendor "
+    "knobs — serial_config promised nine fields on behalf of six drivers")]] =
+    hal::serial_config;
 
 template <class Pin>
 struct tx {
@@ -40,6 +57,48 @@ template <class Pin>
 struct rx {
     using pin = Pin;
 };
+
+// PIN-BEARING OPTIONS ARE BINDER TAGS, NOT CONFIG FIELDS. Hardware RS-485
+// driver-enable needs a muxed pin, so the thing that turns it on is the tag
+// that names the pin — one decision, checked by routes::routable<> like any
+// other pin. A `.de_enable = true` bool that silently does nothing unless
+// some other code happened to mux the right pin is the exact failure mode
+// this framework exists to remove.
+//
+//     using Bus = alloy::uart::bind<dev::usart3_t,
+//                                   alloy::uart::tx<dev::pd8_t>,
+//                                   alloy::uart::rx<dev::pd9_t>, Clock,
+//                                   alloy::uart::de<dev::pd12_t>>;
+//
+// The DE pin routes on the UART's RTS signal, which is what the silicon
+// repurposes. A driver whose IP has no DEM bit rejects the tag with a
+// static_assert naming the IP; see the five uart_impl<>s that do.
+template <class Pin>
+struct de {
+    using pin = Pin;
+};
+
+namespace detail {
+template <class T>
+inline constexpr bool is_de_tag = false;
+template <class Pin>
+inline constexpr bool is_de_tag<uart::de<Pin>> = true;
+
+template <class... Extra>
+inline constexpr bool has_de = (is_de_tag<Extra> || ...);
+
+template <class... Extra>
+struct de_pin_of {
+    using type = void;
+};
+template <class Pin, class... Rest>
+struct de_pin_of<uart::de<Pin>, Rest...> {
+    using type = Pin;
+};
+template <class First, class... Rest>
+    requires (!is_de_tag<First>)
+struct de_pin_of<First, Rest...> : de_pin_of<Rest...> {};
+}  // namespace detail
 
 // Move-only handle: opening twice is a runtime trap (C++ cannot make a
 // cross-TU double-open a compile error — see NORTH_STAR guard #7).
@@ -125,7 +184,7 @@ public:
     }
 
 private:
-    template <class, class, class, class>
+    template <class, class, class, class, class...>
     friend struct bind;
     template <class>
     friend struct rom_bind;
@@ -136,16 +195,31 @@ private:
 // no pin routing, no clock math — open() defers entirely to the driver.
 template <class Inst>
 struct rom_bind {
+    using inst = Inst;
+    using opts = hal::uart_opts<Inst>;
+
+    template <opts Opts = {}>
     static handle<Inst> open(config c = {}) {
-        hal::uart_impl<Inst>::enable(0u, c.baud);
+        hal::uart_impl<Inst>::template enable<Opts>(0u, c);
         return handle<Inst>{};
     }
 };
 
-template <class Inst, class Tx, class Rx, class Clock>
+template <class Inst, class Tx, class Rx, class Clock, class... Extra>
 struct bind {
     using tx_pin = typename Tx::pin;
     using rx_pin = typename Rx::pin;
+
+    //: The instance this role is bound to. The door to generated DEGREE
+    //: numbers from portable code: `Role::inst::feat::rx_fifo_depth`.
+    using inst = Inst;
+    //: LAYER 2 for this role's IP. Spell it at the call site —
+    //: `Role::open<Role::opts{...}>(...)` — because naming the type is what
+    //: turns a substitution failure into a diagnostic that names the field.
+    using opts = hal::uart_opts<Inst>;
+
+    static constexpr bool has_de = detail::has_de<Extra...>;
+    using de_pin = typename detail::de_pin_of<Extra...>::type;
 
     static_assert(routes::routable<tx_pin, Inst, signal::tx>,
                   "TX pin has no route to this UART on the selected chip "
@@ -153,6 +227,9 @@ struct bind {
     static_assert(routes::routable<rx_pin, Inst, signal::rx>,
                   "RX pin has no route to this UART on the selected chip "
                   "(check the chip's route table in alloy-devices)");
+    static_assert(!has_de || routes::routable<de_pin, Inst, signal::rts>,
+                  "DE pin has no RTS route to this UART on the selected chip "
+                  "(hardware driver-enable repurposes the RTS output)");
 
     static constexpr std::uint32_t kernel_hz() {
         switch (Inst::kernel) {
@@ -178,7 +255,11 @@ struct bind {
         }
     }
 
-    static handle<Inst> open(config c) {
+    // Layer 1 is the runtime argument, Layer 2 the template argument, and
+    // both default — so `open({.baud = ...})` is unchanged, which is why this
+    // is an additive MINOR and not a migration.
+    template <opts Opts = {}>
+    static handle<Inst> open(config c = {}) {
         using tx_route = routes::route<tx_pin, Inst, signal::tx>;
         using rx_route = routes::route<rx_pin, Inst, signal::rx>;
 
@@ -189,7 +270,11 @@ struct bind {
 
         hal::pin_impl<tx_pin>::make_af(mux_value<tx_route>());
         hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
-        hal::uart_impl<Inst>::enable(kernel_hz(), c.baud);
+        if constexpr (has_de) {
+            using de_route = routes::route<de_pin, Inst, signal::rts>;
+            hal::pin_impl<de_pin>::make_af(mux_value<de_route>());
+        }
+        hal::uart_impl<Inst>::template enable<Opts, has_de>(kernel_hz(), c);
         return handle<Inst>{};
     }
 
@@ -198,7 +283,21 @@ struct bind {
     // settings, then this applies the new ones (UE-low rewrite + TEACK/REACK
     // waits live in the driver). Only exists where the driver implements
     // configure().
-    static void reconfigure(serial_config c)
+    template <opts Opts = {}>
+    static void reconfigure(config c)
+        requires requires {
+            hal::uart_impl<Inst>::template configure_running<Opts, has_de>(0u, c);
+        }
+    {
+        hal::uart_impl<Inst>::template configure_running<Opts, has_de>(kernel_hz(), c);
+    }
+
+    // DEPRECATED — the nine-field path, kept for its stability window. It
+    // never checked that the driver HONOURED the fields, only that a method
+    // existed, which is the defect the layered surface replaces.
+    [[deprecated("use reconfigure<Opts>(config) — serial_config's nine fields "
+                 "were honoured by one driver in six")]]
+    static void reconfigure_legacy(hal::serial_config c)
         requires requires { hal::uart_impl<Inst>::configure(0u, c); }
     {
         hal::uart_impl<Inst>::configure(kernel_hz(), c);
@@ -214,14 +313,16 @@ struct bind {
     //
     //   auto u = Dbg::open_checked<115'200_baud>();        // 2% default
     //   auto u = Dbg::open_checked<3'000'000_baud, 5>();   // tighten to 0.5%
-    template <alloy::frequency Baud, std::uint32_t TolPermille = 20>
-    static handle<Inst> open_checked()
+    template <alloy::frequency Baud, std::uint32_t TolPermille = 20,
+              opts Opts = {}>
+    static handle<Inst> open_checked(config c = {})
         requires requires { hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz()); }
     {
         constexpr alloy::frequency achieved =
             hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz());
         (void)alloy::rate_check<Baud.hz(), achieved.hz(), TolPermille>{};
-        return open(config{.baud = Baud.hz()});
+        c.baud = Baud.hz();
+        return open<Opts>(c);
     }
 
 private:

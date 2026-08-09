@@ -25,6 +25,17 @@
 
 namespace alloy::hal {
 
+// LAYER 2 for this IP. One knob, and its DOMAIN is narrower than v3/v4's for
+// a reason the register data states outright: this generation has a single M
+// bit, not M1:M0, so the word is 8 or 9 bits and 7 is not expressible. That
+// narrower domain is exactly why data bits cannot be a Layer-1 field.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v2>
+struct uart_opts<Inst> {
+    //: Data bits, EXCLUDING parity. {8, 9} on this IP.
+    std::uint8_t data_bits = 8;
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v2>
 struct uart_impl<Inst> {
@@ -46,10 +57,40 @@ struct uart_impl<Inst> {
         return alloy::frequency{brr != 0u ? kernel_hz / brr : 0u};
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+    // Layer 1 (runtime `c`) + Layer 2 (compile-time `O`). Runs on a just-gated
+    // peripheral, so every default-valued write is guarded and an unused knob
+    // costs nothing.
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void enable(std::uint32_t kernel_hz, hal::uart_config c) {
+        static_assert(!De,
+                      "this USART generation has no hardware driver-enable (no DEM bit); drive DE from a GPIO");
+        static_assert(O.data_bits >= 8u && O.data_bits <= 9u,
+                      "this USART generation has a single M bit: the word is "
+                      "8 or 9 bits, and 7 is not expressible");
         alloy::gate_on(Inst::gate);
         IP::ue.clear(r());
-        r().BRR = baud_div(kernel_hz, baud);
+        r().BRR = baud_div(kernel_hz, c.baud);
+
+        // Parity occupies a bit of the M word, exactly as on v3/v4.
+        const bool pce = c.parity != hal::parity::none;
+        if constexpr (O.data_bits == 9u) {
+            if (pce) {
+                __builtin_trap();  // 9 data bits + parity is a 10-bit word
+            }
+        }
+        if (O.data_bits + (pce ? 1u : 0u) == 9u) {
+            IP::m.set(r());
+        }
+        if (pce) {
+            IP::pce.set(r());
+            if (c.parity == hal::parity::odd) {
+                IP::ps.set(r());
+            }
+        }
+        if (c.stop == hal::stop_bits::two) {
+            IP::stop.write(r(), 2u);  // CR2.STOP: 00=1, 10=2
+        }
+
         IP::te.set(r());
         IP::re.set(r());
         IP::ue.set(r());

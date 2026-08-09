@@ -25,8 +25,39 @@ struct uart_impl<Inst> {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
     }
 
-    static void enable(std::uint32_t, std::uint32_t) {
-        // ROM-configured (115200 8N1); nothing to program in v1.
+    // This IP has NO Layer-2 specialization: uart_opts<Inst> is the empty
+    // primary, so `O` is always `{}` and asking for any vendor knob here is a
+    // compile error. It is also the measured wart — an empty opts makes GCC
+    // say "too many initializers", which names the instance but not the field.
+    //
+    // WHAT IT HONOURS, and what it does not. The frame shape (parity and stop
+    // bits) is programmed into CONF0 read-modify-write, so a Layer-1 field is
+    // not silently ignored on this chip. BAUD IS STILL IGNORED: this port is
+    // reached through uart::rom_bind, which passes kernel_hz = 0 because the
+    // boot ROM owns the clock tree at this point and there is no divisor to
+    // compute from. That is a pre-existing hole, it is not fixed here, and it
+    // is the one place in the tree where a Layer-1 field is documentary
+    // rather than structural.
+    //
+    // NOT SILICON-VALIDATED (no ESP32 on the bench): the CONF0 field
+    // positions come from the TRM via alloy-devices. Two stop bits is the
+    // riskiest of them — the TRM's STOP_BIT_NUM=3 encoding is known to need
+    // UART_RS485_CONF.DL1_EN on the classic ESP32, and that register is not
+    // in alloy's data yet.
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void enable(std::uint32_t, hal::uart_config c) {
+        static_assert(!De,
+                      "this ROM-configured UART has no hardware driver-enable in alloy's data");
+        // Guarded like every other driver's enable(), against the ROM's
+        // documented 8N1 rather than against a reset value: a default config
+        // must not cost a single store on a port nobody asked to reshape.
+        if (c.parity != hal::parity::none) {
+            IP::parity.write(r(), c.parity == hal::parity::odd ? 1u : 0u);
+            IP::parity_en.set(r());
+        }
+        if (c.stop == hal::stop_bits::two) {
+            IP::stop_bit_num.write(r(), 3u);
+        }
     }
 
     static void write(std::uint8_t byte) {

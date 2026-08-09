@@ -14,6 +14,41 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **The peripheral surface, implemented on UART.** The three layers
+  [decided last commit](docs/reference/peripheral-surface.md) now exist in
+  code, across all six UART drivers and four vendors.
+  `alloy::uart::config` (Layer 1) gains `parity` and `stop`, both defaulted, so
+  every `open({.baud = …})` call site — all 59 in the 47 examples — compiles
+  untouched. `alloy::uart::opts<Inst>` (Layer 2) is new: a compile-time value
+  whose members are declared beside each driver, so a knob the silicon lacks is
+  not a member and cannot be asked for. `uart::de<Pin>` is a new binder tag —
+  hardware RS-485 driver-enable needs a pin, so the tag that names the pin is
+  what switches it on, never a config bool. `Inst::feat::<name>` is new and
+  generated: degree numbers a register map cannot state (`rx_fifo_depth`,
+  `tx_fifo_depth` today), where **0 means absent**. `examples/uart_frame` shows
+  all three in one portable file with zero preprocessor, and builds for 9 of 9
+  boards. Costs measured on `examples/uart_echo` (the example that configures
+  nothing): four boards byte-identical, the two STM32F7 boards **164 bytes
+  smaller** and the two RP2040 boards 80 bytes smaller — nothing grew.
+  Three parts of the decision did not survive contact with the code and are
+  recorded in the page rather than edited out: word length is not a Layer-1
+  field (the six drivers' value domains intersect at `{8}` only), the
+  cross-vendor naming rule's falsification test came back **negative** (the SAM
+  USART has no DE assert/deassert time under any name), and a maximum
+  programmable value comes from the generated register field width
+  (`IP::deat.raw_mask`) rather than from `feat`.
+- **`scripts/check_compile_errors.py` grows three cases**, one per failure mode
+  the surface promises: a Layer-2 knob absent on this IP, a Layer-2 value wider
+  than the generated register field (GCC prints `the comparison reduces to
+  '(40 <= 31)'`), and a `uart::de<pin>` tag on an IP with no driver-enable.
+- **`tests/emulation/uart_frame_surface.robot`** — degree asserted on emulated
+  silicon rather than argued: the same `main.cpp` prints `rx-fifo: shallow` on
+  the STM32G0 (`feat::rx_fifo_depth == 8`) and `rx-fifo: none` on the STM32F7
+  (`== 0`). Two CI legs; if the generated number never reached the image, or
+  reached it as a silent default zero, one of them fails.
+- **`check_contract.sh` gains one grep**: `struct feat` may not appear under
+  `src/`. A hand-written degree number is guard #1 with a decimal literal.
+
 - **`docs/reference/peripheral-surface.md`** — the decision that governs the
   config surface of the remaining 28 uncurated peripherals, taken before those
   drivers are written rather than after. Three layers (`alloy::<periph>::config`
@@ -110,7 +145,13 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### Deprecated
 
-- Nothing.
+- **`alloy::uart::serial_config`** and `bind::reconfigure(serial_config)` —
+  the nine-field struct that one driver in six honoured. Replaced by
+  `alloy::uart::config` (portable fields) plus `Role::opts` (vendor knobs);
+  the live-port path is now `reconfigure<Opts>(config)`. The old spelling
+  survives as `reconfigure_legacy()` for the window. There are no in-tree
+  callers.
+
 
 ## 0.3.0 — 2026-08-07
 

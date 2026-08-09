@@ -211,6 +211,19 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
             lines.append(
                 f"    static constexpr std::uint8_t ch_{chname} = {periph['channels'][chname]}u;"
             )
+        # DEGREE. Presence is answered by the type system (a driver exists for
+        # this IP, a knob is a member of opts<Inst>); "how much of it" is a
+        # number, and a number has to come from the database or it is a
+        # hand-written silicon claim. Nested so a driver reads
+        # `Inst::feat::rx_fifo_depth` and a missing fact is a compile error
+        # naming the instance, never a zero that was never written down.
+        feat = periph.get("feat") or {}
+        if feat:
+            lines.append("    struct feat {")
+            for fname in sorted(feat):
+                lines.append(
+                    f"        static constexpr std::uint32_t {fname} = {feat[fname]}u;")
+            lines.append("    };")
         for reqname in sorted(periph.get("dma_requests", {})):
             lines.append(
                 f"    static constexpr std::uint8_t dmareq_{reqname} = "

@@ -46,6 +46,18 @@ in `src/alloy` at all — codegen writes them per board into `.alloy/generated/`
 Their **names** are public; their **contents** are the chip database's promise,
 which is what `[devices]` below pins.
 
+Two more names are public with **IP-shaped contents**, on the same footing:
+
+- `alloy::<periph>::opts<Inst>` (surfaced as `Role::opts`) — Layer 2 of the
+  [peripheral surface](peripheral-surface.md). The template's *name* is Tier 1
+  and will not move. Its *members* are declared per IP version beside the
+  driver, so which knobs exist changes with the chip, by design. Adding a
+  member is MINOR; renaming or removing one follows the deprecation window for
+  the drivers that had it.
+- `Inst::feat::<name>` — degree numbers, generated from `alloy-devices`. Their
+  contents are the chip database's promise, exactly like `alloy::dev::`, and
+  are pinned by `[devices]`.
+
 ### Tier 1 — the CLI
 
 Every verb `alloy --help` lists, and every `--json` envelope. Envelopes carry

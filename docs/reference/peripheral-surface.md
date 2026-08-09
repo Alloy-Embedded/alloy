@@ -60,23 +60,28 @@ pokes — *in their own code*, where nothing checks them.
 namespace alloy::uart {
 
 enum class parity    : std::uint8_t { none, even, odd };
-enum class stop_bits : std::uint8_t { one, half, one_and_half, two };
-enum class word_len  : std::uint8_t { seven, eight, nine };
+enum class stop_bits : std::uint8_t { one, two };
 
 struct config {
     std::uint32_t   baud   = 115'200;
     uart::parity    parity = parity::none;
     uart::stop_bits stop   = stop_bits::one;
-    uart::word_len  word   = word_len::eight;
 };
 }
 ```
 
-Four fields, and the admission test is mechanical: **a field is Layer 1 only
-when every `uart_impl<>` in the tree programs it.** Six drivers ship today
-(`st_usart_v2/v3/v4`, `microchip_usart_v1`, `espressif_uart_v1`,
-`raspberrypi_uart_pl011`) across four vendors. Four fields is a promise six
-drivers can keep. Nine is not — which is exactly the problem this replaces.
+!!! note "This block was written with four fields. The code says three."
+    Word length did not survive the admission test, and neither did two of the
+    four `stop_bits` values. Both are measured, both are in the tree, and the
+    reasoning is in [What the code changed about this page](#what-the-code-changed-about-this-page).
+    The rule survived; two of its example answers did not.
+
+Three fields, and the admission test is mechanical: **a field is Layer 1 only
+when every `uart_impl<>` in the tree programs it, for every value it can
+take.** Six drivers ship today (`st_usart_v2/v3/v4`, `microchip_usart_v1`,
+`espressif_uart_v1`, `raspberrypi_uart_pl011`) across four vendors. Three
+fields is a promise six drivers can keep. Nine is not — which is exactly the
+problem this replaces.
 
 !!! warning "The defect this fixes is live, not hypothetical"
     `src/alloy/hal/uart/uart_impl.hpp` declares one shared `serial_config` with
@@ -117,16 +122,22 @@ template <class Inst> struct uart_opts {};          // primary: empty, always us
 // alloy/uart.hpp — re-exported so users never type `hal`
 namespace alloy::uart { template <class Inst> using opts = hal::uart_opts<Inst>; }
 
-// alloy/hal/uart/st_usart_v4.hpp — beside the driver, constrained identically
-template <class Inst> requires std::same_as<typename Inst::ip, ip::st::usart_v4>
+// alloy/hal/uart/st_usart_v3.hpp — beside the driver, constrained identically
+template <class Inst> requires std::same_as<typename Inst::ip, ip::st::usart_v3>
 struct uart_opts<Inst> {
+    std::uint8_t data_bits         = 8;    // {7,8,9} on THIS IP
     bool         invert_tx         = false;
-    bool         de_enable         = false;
+    bool         invert_rx         = false;
+    bool         swap_rx_tx        = false;
     std::uint8_t de_assert_16ths   = 8;
     std::uint8_t de_deassert_16ths = 8;
-    std::uint8_t rx_fifo_threshold = 0;    // 0 = FIFO off
 };
 ```
+
+Note there is no `de_enable` bool: hardware driver-enable needs a PIN, so what
+switches it on is the binder tag `uart::de<pin>` (rule 1). The members here are
+the timings only. And note the IP: it is **v3**, not v4 — see the boxed
+correction below.
 
 Applied as a template argument, defaulted, so the empty case is the call you
 already write:
@@ -140,9 +151,9 @@ static handle<Inst> open(config c = {});
 // portable, every board
 auto dbg = board::debug_uart::open({.baud = board::debug_uart_baud});
 
-// the one door, greppable as `::opts{`
-auto bus = board::rs485::open<board::rs485::opts{.de_enable       = true,
-                                                 .de_assert_16ths = 12}>(
+// the one door, greppable as `::opts{`. DE is switched on by the bind's
+// `uart::de<pin>` tag; these are the timings it uses.
+auto bus = board::rs485::open<board::rs485::opts{.de_assert_16ths = 12}>(
                {.baud = 19'200, .parity = alloy::uart::parity::even});
 ```
 
@@ -531,3 +542,159 @@ same unit, the naming rule is wrong and the honest fallback is that Layer 2 is a
 *description* rather than a contract — the three-layer naming still holds, but
 `libs/` may not depend on Layer-2 field names. Better to learn that at driver 2
 than at driver 22.
+
+---
+
+## What the code changed about this page
+
+Everything above was decided before a line of it was written. UART has now been
+converted — six drivers, four vendors, the facade, the binder, the emitter, the
+chip data and a portable example — and five claims on this page did not survive
+contact with the tree. They are recorded here rather than quietly edited out,
+because which claims break is the useful part.
+
+### 1. Word length is not a Layer-1 field, and `stop_bits` has two values, not four
+
+The admission test as written asks about a FIELD. The real unit is the
+(field, **value domain**) pair, and word length is where that bites. Read off
+the register data, the character-length domains are:
+
+| driver | data bits it can program | why |
+|---|---|---|
+| `st_usart_v2` | 8, 9 | one `M` bit, no `M1` |
+| `st_usart_v3` / `st_usart_v4` | 7, 8, 9 | `M1:M0` |
+| `microchip_usart_v1` | 5, 6, 7, 8 | `MR.CHRL` is 2 bits |
+| `raspberrypi_uart_pl011` | 5, 6, 7, 8 | `LCR_H.WLEN` is 2 bits |
+| `espressif_uart_v1` | — | ROM-configured; alloy programs no character length |
+
+The intersection is **{8}**. A Layer-1 `word_len` would therefore be a runtime
+field that some driver must trap on, reject, or ignore for most of its values —
+the exact defect being removed. So data bits is a **Layer-2** knob named
+`data_bits` in each driver that has one, with that IP's own domain enforced by
+a `static_assert`. `stop_bits::half` and `stop_bits::one_and_half` fail the same
+way (ST smartcard/IrDA encodings that no other vendor has) and are gone.
+
+**This is the rule working, not the rule failing.** Teaching six drivers is
+what Layer 1 costs, and two of the four fields could not be taught.
+
+### 2. Layer 2 is a DESCRIPTION, not a contract — the falsification test came back negative
+
+The test this page named was: implement RS-485 DE on `st_usart_v3` **and**
+`microchip_usart_v1`, and see whether `de_assert_16ths` survives with the same
+meaning and unit. **It does not, and the reason is silicon rather than naming.**
+The SAM USART has no DE assert/deassert time at all — RS-485 mode drives RTS
+around the frame automatically and the only tunable is `US_TTGR`, a transmitter
+time *guard* in whole bit periods. There is no name under which the ST knob
+could appear on Microchip.
+
+So the honest fallback this page pre-committed to is the one in force:
+`libs/` code may probe a Layer-2 member by name, but it may not assume a
+feature present on one vendor appears under any name on another. The
+three-layer naming still holds.
+
+### 3. `usart_v4` has *fewer* Layer-2 knobs than `usart_v3`, which is backwards from the sketch
+
+The sketch above hung DE and inversion on `uart_opts<usart_v4>`. The G0 silicon
+does have them — and alloy's curated `usart_v4` register data does **not**
+(`usart_v3.yaml` carries `DEAT/DEDT/DEM/DEP` and `TXINV/RXINV/SWAP`;
+`usart_v4.yaml` carries none of them, and does carry `FIFOEN`, which v3 lacks).
+Declaring Layer 2 beside the driver is what forced this to surface: a knob can
+only be a member where a generated register field backs it. The consequence is
+stated by a compiler, not a README —
+
+```
+error: static assertion failed: this USART's driver has no hardware
+driver-enable: alloy's curated usart_v4 register data carries no DEM/DEAT/DEDT
+(the silicon has them; the database has not mined them). Drive DE from a GPIO,
+or reach the registers through alloy::dev::
+```
+
+— and mining those fields into `alloy-devices` is now a data task with a
+compile error pointing at it.
+
+### 4. A maximum programmable value should come from the register data, not from `feat`
+
+This page proposed `Inst::feat::de_time_max_16ths = 31`. It is not needed and
+it should not exist: the generated field accessor already knows its own width,
+so the driver writes
+
+```cpp
+static_assert(O.de_assert_16ths <= IP::deat.raw_mask,
+              "DE assertion time exceeds this USART's DEAT field width");
+```
+
+and GCC prints `the comparison reduces to '(40 <= 31)'`. One fewer number in
+the chip database, one fewer thing that can disagree with the registers.
+`feat` keeps what a register map genuinely cannot state — a FIFO **depth**, a
+transfer cap, a resolution.
+
+### 5. One combination neither layer can reject
+
+Layer 1 is runtime and Layer 2 is compile-time, so `opts{.data_bits = 9}` plus
+a runtime `parity::even` asks an ST USART for a 10-bit word. No `static_assert`
+can see a runtime parity, and silently programming 8 bits would be the lie.
+The drivers `__builtin_trap()`, guarded by `if constexpr (O.data_bits == 9)`
+so it costs nothing otherwise — the same honest runtime guard the double-open
+check already uses. **A mixed compile-time/runtime surface has a seam, and this
+is where it is.**
+
+---
+
+## What it actually cost
+
+Measured, not modelled: `examples/uart_echo` — the example that configures
+nothing but a baud rate — built for every board before and after, same
+toolchain (`arm-none-eabi-g++ 14.2.1` xPack for the Cortex-M boards), `.text`
+of the linked image in bytes.
+
+| board | UART driver | before | after | Δ |
+|---|---|---|---|---|
+| nucleo_g071rb | `st_usart_v4` | 1812 | 1812 | **0** |
+| nucleo_g0b1re | `st_usart_v4` | 2736 | 2736 | **0** |
+| same70_xplained | `microchip_usart_v1` | 1944 | 1944 | **0** |
+| esp32_devkit | `espressif_uart_v1` | 2641 | 2641 | **0** |
+| esp_wrover_kit | `espressif_uart_v1` | 2641 | 2641 | **0** |
+| nucleo_f722ze | `st_usart_v3` | 2284 | 2120 | **−164** |
+| nucleo_f767zi | `st_usart_v3` | 2428 | 2264 | **−164** |
+| raspberry_pi_pico | `raspberrypi_uart_pl011` | 2360 | 2280 | **−80** |
+| rp2040_zero | `raspberrypi_uart_pl011` | 2420 | 2340 | **−80** |
+
+Nothing grew. Five boards are byte-identical, and the two ST F7 boards each
+lost 164 bytes while *gaining* parity, stop bits, word length, line inversion,
+RX/TX swap and RS-485 DE timing. The −164 is not the abstraction paying for
+itself; it is the old shape being wasteful: `st_usart_v3::enable()` used to
+call `configure(serial_config{})` and program all nine fields
+unconditionally, including seven nobody asked for. The driver-authoring rule
+this page states — **`enable()` may assume reset state and must guard every
+default-valued write** — is what deleted them.
+
+The PL011's −80 has the same cause in miniature and one caveat worth stating:
+the writes are the same in both versions for a default config, so part of that
+delta is inlining shape rather than deleted stores. It was not disassembled.
+
+**Not measured:** compile time, and the cost on a *deep* configuration (8E2
+with vendor knobs) in the real tree rather than in a reduction. The reduction
+figures earlier on this page stand as they were labelled — a probe, not a
+build.
+
+---
+
+## What is proven, and how
+
+| Claim | Evidence |
+|---|---|
+| `open({.baud = …})` still compiles everywhere | all 47 examples build; `uart_frame` builds **9 of 9 boards**, `alloy matrix` |
+| a knob the IP lacks cannot be typed | `scripts/check_compile_errors.py::check_opts_absent_field` — 16-line error, first line names `uart_opts<alloy::dev::usart2_t>` and `de_assert_16ths` |
+| an over-ask is rejected against generated data | `check_opts_over_ask` — `static_assert` + `the comparison reduces to '(40 <= 31)'` |
+| a pin-bearing knob is rejected where the IP has none | `check_de_tag_unsupported` — on the G0B1RE, where the DE pin *does* route, so the route check passes and the driver's refusal is what is left |
+| degree reaches the image and changes behaviour | `tests/emulation/uart_frame_surface.robot` on **two** boards: the same source prints `rx-fifo: shallow` on the G071 (`feat::rx_fifo_depth == 8`) and `rx-fifo: none` on the F722 (`== 0`) |
+| the ports still work | `firmware_boots` + `uart_echo_roundtrip` green under Renode on g071rb, g0b1re, f722ze, same70_xplained |
+| a hand-written degree claim cannot creep in | `scripts/check_contract.sh` greps for `struct feat` under `src/` |
+
+**Unproven and labelled:** `espressif_uart_v1` now programs `CONF0` parity and
+stop bits, from TRM-derived field positions, with no ESP32 on the bench — and
+its two-stop-bit encoding is the known one that needs `UART_RS485_CONF.DL1_EN`
+on classic ESP32 silicon, a register alloy does not model. `st_usart_v2`'s
+frame programming is likewise compile-checked only (no F4 board), as that
+driver already was. Renode models no parity, so no leg asserts a parity bit on
+a wire.

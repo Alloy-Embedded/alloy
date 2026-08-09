@@ -18,6 +18,18 @@
 
 namespace alloy::hal {
 
+// LAYER 2 for this IP. No `fifo_enable`: this driver has always turned the
+// FIFOs on and turning them off is not a thing anyone has asked for, so the
+// knob would be surface with no user. Adding it later is additive.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::raspberrypi::uart_pl011>
+struct uart_opts<Inst> {
+    //: Data bits, EXCLUDING parity — LCR_H.WLEN, {5, 6, 7, 8}. There is no
+    //: 9-bit word on this IP, which is the other half of why data bits
+    //: cannot be a Layer-1 field: the ST USARTs reach 9 and this does not.
+    std::uint8_t data_bits = 8;
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::raspberrypi::uart_pl011>
 struct uart_impl<Inst> {
@@ -56,13 +68,29 @@ struct uart_impl<Inst> {
                                     : 0u};
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void enable(std::uint32_t kernel_hz, hal::uart_config c) {
+        static_assert(!De,
+                      "the PL011 has no hardware driver-enable; drive DE from a GPIO");
+        static_assert(O.data_bits >= 5u && O.data_bits <= 5u + IP::wlen.raw_mask,
+                      "LCR_H.WLEN encodes a 5- to 8-bit word on the PL011");
         alloy::gate_on(Inst::gate);  // reset_release: waits RESET_DONE
-        const baud_regs d = baud_div(kernel_hz, baud);
+        const baud_regs d = baud_div(kernel_hz, c.baud);
         r().UARTIBRD = d.ibrd;
         r().UARTFBRD = d.fbrd;
-        // 8N1 + FIFOs. LCR_H write also latches the baud divisors.
-        IP::wlen.write(r(), 0b11u);
+        // Frame + FIFOs. The LCR_H write also latches the baud divisors, so
+        // the whole line shape goes in with it. Parity is a bit OUTSIDE the
+        // word here, unlike the ST USARTs — data_bits means data bits.
+        IP::wlen.write(r(), O.data_bits - 5u);
+        if (c.parity != hal::parity::none) {
+            IP::pen.set(r());
+            if (c.parity == hal::parity::even) {
+                IP::eps.set(r());  // EPS=1 is EVEN on the PL011
+            }
+        }
+        if (c.stop == hal::stop_bits::two) {
+            IP::stp2.set(r());
+        }
         IP::fen.set(r());
         IP::uarten.set(r());
         IP::txe.set(r());

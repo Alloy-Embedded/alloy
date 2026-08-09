@@ -17,6 +17,33 @@
 
 namespace alloy::hal {
 
+// LAYER 2 for this IP. Note what is here that is NOT in uart_opts<usart_v4>:
+// hardware RS-485 driver-enable and line inversion. That asymmetry is not a
+// judgement call — usart_v3's curated register data carries DEAT/DEDT/DEM/DEP
+// and TXINV/RXINV/SWAP and usart_v4's does not, so v4 must not offer knobs it
+// cannot program. And note what is NOT here that IS on v4: fifo_enable. This
+// IP has no FIFOEN bit.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v3>
+struct uart_opts<Inst> {
+    //: Data bits, EXCLUDING parity — same name and same meaning as every
+    //: other driver that has it (the cross-vendor naming rule).
+    std::uint8_t data_bits = 8;
+    bool invert_tx = false;   //: CR2.TXINV
+    bool invert_rx = false;   //: CR2.RXINV
+    bool swap_rx_tx = false;  //: CR2.SWAP
+    //: DE lead/tail time in 16ths of a bit. The UNIT is a vendor register
+    //: artefact (the field is five bits wide), which is exactly why it is a
+    //: Layer-2 name and can never be promoted to alloy::uart::config.
+    //:
+    //: There is deliberately NO `de_enable` bool here. Driver-enable needs a
+    //: PIN, so what turns it on is the binder tag `uart::de<pin>`; a bool
+    //: that only works if some other code muxed a pin is the lie
+    //: routes::routable<> exists to kill. These two are the timings only.
+    std::uint8_t de_assert_16ths = 8;
+    std::uint8_t de_deassert_16ths = 8;
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v3>
 struct uart_impl<Inst> {
@@ -37,17 +64,125 @@ struct uart_impl<Inst> {
         return alloy::frequency{brr != 0u ? kernel_hz / brr : 0u};
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
-        configure(kernel_hz, hal::serial_config{.baud = baud});
+    // Layer 1 (runtime `c`) + Layer 2 (compile-time `O`). Same shape as the
+    // v4 driver, plus the vendor knobs this IP's register data actually has.
+    //
+    // Runs on a just-gated peripheral (CR1/CR2/CR3 read as reset), so every
+    // default-valued write is guarded and an unused knob emits nothing. The
+    // UE-low/TEACK/REACK dance lives in configure_running() below, which is
+    // what a LIVE reconfiguration needs and a cold enable does not.
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void enable(std::uint32_t kernel_hz, hal::uart_config c) {
+        static_assert(O.data_bits >= 7u && O.data_bits <= 9u,
+                      "this USART's M1:M0 encodes a 7-, 8- or 9-bit word");
+        // The bound is the GENERATED field width, not a number typed here:
+        // DEAT is five bits wide in the register data, so raw_mask is 31 and
+        // the check cannot drift from the silicon description.
+        static_assert(O.de_assert_16ths <= IP::deat.raw_mask,
+                      "DE assertion time exceeds this USART's DEAT field width");
+        static_assert(O.de_deassert_16ths <= IP::dedt.raw_mask,
+                      "DE deassertion time exceeds this USART's DEDT field width");
+
+        alloy::gate_on(Inst::gate);
+        IP::ue.clear(r());
+        r().BRR = baud_div(kernel_hz, c.baud);
+        program_frame<O, De, true>(c);
+        IP::te.set(r());
+        IP::re.set(r());
+        IP::ue.set(r());
     }
 
-    // Full line shape, runtime-safe: UE must be LOW while CR1/CR2/CR3/BRR
-    // change (RM0394 §38 marks them "only written when UE=0"), and the
-    // re-enable is only complete when the hardware acks BOTH directions —
-    // TEACK and REACK. A reconfigure that skips those waits and transmits
-    // immediately ships its first byte at the OLD line shape. This is what
-    // lets a running system change baud/parity from a protocol write: send
-    // the ACK at the old settings, then call this.
+    // The frame/vendor writes, shared by enable() and configure_running().
+    //
+    // FromReset is the driver-authoring rule made mechanical: on a just-gated
+    // peripheral every bit reads zero, so a default-valued write can be
+    // SKIPPED — which is what makes an unused knob cost zero bytes. On a live
+    // port nothing may be assumed and every field is written, including back
+    // to its default, or a knob that was set by an earlier call stays set.
+    template <uart_opts<Inst> O, bool De, bool FromReset>
+    static void program_frame(hal::uart_config c) {
+        const bool pce = c.parity != hal::parity::none;
+        const unsigned word = O.data_bits + (pce ? 1u : 0u);
+        // See st_usart_v4.hpp: 9 data bits plus parity is a 10-bit word this
+        // USART does not have, and no static_assert can see a runtime parity.
+        if constexpr (O.data_bits == 9u) {
+            if (pce) {
+                __builtin_trap();
+            }
+        }
+        if constexpr (FromReset) {
+            if (word == 9u) {
+                IP::m0.set(r());
+            } else if (word == 7u) {
+                IP::m1.set(r());
+            }
+            if (pce) {
+                IP::pce.set(r());
+                if (c.parity == hal::parity::odd) {
+                    IP::ps.set(r());
+                }
+            }
+            if (c.stop == hal::stop_bits::two) {
+                IP::stop.write(r(), 2u);
+            }
+        } else {
+            IP::m0.write(r(), word == 9u ? 1u : 0u);
+            IP::m1.write(r(), word == 7u ? 1u : 0u);
+            IP::pce.write(r(), pce ? 1u : 0u);
+            IP::ps.write(r(), c.parity == hal::parity::odd ? 1u : 0u);
+            IP::stop.write(r(), c.stop == hal::stop_bits::two ? 2u : 0u);
+        }
+
+        if constexpr (O.invert_tx || !FromReset) {
+            IP::txinv.write(r(), O.invert_tx ? 1u : 0u);
+        }
+        if constexpr (O.invert_rx || !FromReset) {
+            IP::rxinv.write(r(), O.invert_rx ? 1u : 0u);
+        }
+        if constexpr (O.swap_rx_tx || !FromReset) {
+            IP::swap.write(r(), O.swap_rx_tx ? 1u : 0u);
+        }
+        // Hardware driver-enable. Switched on by the PRESENCE of a
+        // uart::de<pin> tag in the bind, never by a config bool — the pin is
+        // muxed by the same decision that programs DEM, so the two cannot
+        // disagree.
+        if constexpr (De) {
+            IP::deat.write(r(), O.de_assert_16ths);
+            IP::dedt.write(r(), O.de_deassert_16ths);
+            IP::dem.set(r());
+            IP::dep.clear(r());  // active-high DE (the transceiver norm)
+        } else if constexpr (!FromReset) {
+            IP::dem.clear(r());
+        }
+    }
+
+    // Reprogram a RUNNING port — the RS-485/multidrop path. UE must be LOW
+    // while CR1/CR2/CR3/BRR change (RM0394 §38 marks them "only written when
+    // UE=0"), and the re-enable is only complete when the hardware acks BOTH
+    // directions — TEACK and REACK. A reconfigure that skips those waits and
+    // transmits immediately ships its first byte at the OLD line shape. This
+    // is what lets a running system change baud/parity from a protocol write:
+    // send the ACK at the old settings, then call this.
+    //
+    // Unlike enable() it may NOT assume reset state, so it writes every field
+    // unconditionally.
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void configure_running(std::uint32_t kernel_hz, hal::uart_config c) {
+        IP::ue.clear(r());
+        r().BRR = baud_div(kernel_hz, c.baud);
+        program_frame<O, De, false>(c);
+        IP::te.set(r());
+        IP::re.set(r());
+        IP::ue.set(r());
+        while (IP::teack.read(r()) == 0u || IP::reack.read(r()) == 0u) {
+        }
+    }
+
+    // DEPRECATED — the nine-field path. It is kept only so
+    // `bind::reconfigure(serial_config)` keeps working for its stability
+    // window; `configure_running<Opts>(kernel, config)` replaces it. This IP
+    // is the one that could honour all nine fields, which is precisely why
+    // the shared struct looked honest for as long as it did.
     static void configure(std::uint32_t kernel_hz, hal::serial_config c) {
         alloy::gate_on(Inst::gate);
         IP::ue.clear(r());

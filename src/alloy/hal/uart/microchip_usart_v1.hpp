@@ -19,6 +19,33 @@
 
 namespace alloy::hal {
 
+// LAYER 2 for this IP.
+//
+// THE FALSIFICATION TEST, and its result. The design's naming rule says the
+// same silicon feature must get the same member name and unit in every driver
+// that has it, and the test named for it was: implement RS-485 DE on both
+// st_usart_v3 and microchip_usart_v1, and see whether `de_assert_16ths`
+// survives. It does not, and the reason is silicon, not naming. The SAM USART
+// has no DE assert/deassert time at all: RS-485 mode asserts RTS around the
+// frame automatically and the only tunable is US_TTGR, a transmitter time
+// GUARD measured in whole bit periods after the stop bit. Neither MODE=RS485
+// nor TTGR is in alloy's curated register data, so this driver cannot offer a
+// DE knob under any name.
+//
+// So Layer 2 is a DESCRIPTION, not a contract: `libs/` code may probe an opts
+// member by name, but it may not assume that a feature present on one vendor
+// appears under the same name on another, because often it does not appear at
+// all. Recorded in docs/reference/peripheral-surface.md.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::microchip::usart_v1>
+struct uart_opts<Inst> {
+    //: Data bits, EXCLUDING parity — MR.CHRL, {5, 6, 7, 8}. Parity is a
+    //: separate bit on this IP, unlike the ST USARTs where it eats one of
+    //: the word's bits. Same name, same meaning; the DOMAIN differs, which
+    //: is why data bits is not a Layer-1 field anywhere.
+    std::uint8_t data_bits = 8;
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::microchip::usart_v1>
 struct uart_impl<Inst> {
@@ -39,9 +66,14 @@ struct uart_impl<Inst> {
         return alloy::frequency{cd != 0u ? kernel_hz / (16u * cd) : 0u};
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t baud) {
+    template <uart_opts<Inst> O = {}, bool De = false>
+    static void enable(std::uint32_t kernel_hz, hal::uart_config c) {
         using cr = typename IP::cr;
         using mr = typename IP::mr;
+        static_assert(!De,
+                      "the SAM USART has no DE assert/deassert time and alloy's data models neither MODE=RS485 nor TTGR; drive DE from a GPIO");
+        static_assert(O.data_bits >= 5u && O.data_bits <= 5u + IP::chrl.raw_mask,
+                      "MR.CHRL encodes a 5- to 8-bit character on this USART");
         alloy::gate_on(Inst::gate);
         // CR is write-only: whole-value command writes.
         r().CR = cr::rstrx | cr::rsttx | cr::rxdis | cr::txdis | cr::rststa;
@@ -53,9 +85,46 @@ struct uart_impl<Inst> {
         // start-frame delimiter and mangles every byte on the wire. Composing
         // the whole word from named flags writes exactly those bits, clearing
         // the stale ones — and reads like the register table.
-        r().MR = mr::mode_normal | mr::usclks_mck | mr::chrl_eight | mr::par_none;
-        IP::cd.write(r(), baud_div(kernel_hz, baud));
+        //
+        // The frame shape joins that whole-value write rather than following
+        // it with read-modify-writes: US_MR's stale reset bits are the reason
+        // the composition exists, and an RMW after it would put them back.
+        // Every term below is a constant or a two-way select, so the word is
+        // still one store.
+        r().MR = mr::mode_normal | mr::usclks_mck | chrl_value<O.data_bits>() |
+                 par_value(c.parity) | nbstop_value(c.stop);
+        IP::cd.write(r(), baud_div(kernel_hz, c.baud));
         r().CR = cr::rxen | cr::txen;
+    }
+
+    template <std::uint8_t Bits>
+    static constexpr std::uint32_t chrl_value() {
+        using mr = typename IP::mr;
+        if constexpr (Bits == 5u) {
+            return static_cast<std::uint32_t>(mr::chrl_five);
+        } else if constexpr (Bits == 6u) {
+            return static_cast<std::uint32_t>(mr::chrl_six);
+        } else if constexpr (Bits == 7u) {
+            return static_cast<std::uint32_t>(mr::chrl_seven);
+        } else {
+            return static_cast<std::uint32_t>(mr::chrl_eight);
+        }
+    }
+
+    static constexpr std::uint32_t par_value(hal::parity p) {
+        using mr = typename IP::mr;
+        switch (p) {
+            case hal::parity::even: return static_cast<std::uint32_t>(mr::par_even);
+            case hal::parity::odd: return static_cast<std::uint32_t>(mr::par_odd);
+            case hal::parity::none: break;
+        }
+        return static_cast<std::uint32_t>(mr::par_none);
+    }
+
+    // MR.NBSTOP: 0 = 1 stop bit, 2 = 2 stop bits (1 = 1.5, which alloy's
+    // Layer-1 stop_bits deliberately cannot express).
+    static constexpr std::uint32_t nbstop_value(hal::stop_bits s) {
+        return s == hal::stop_bits::two ? (2u << IP::nbstop.pos) : 0u;
     }
 
     static void write(std::uint8_t byte) {

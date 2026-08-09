@@ -180,6 +180,25 @@ jobs:
             example: uart_echo
             robot: uart_echo_roundtrip.robot
             banner: alloy uart_echo ready
+          # THE PERIPHERAL SURFACE, EXECUTING — BLOCKING. Two legs, same
+          # examples/uart_frame/src/main.cpp, no preprocessor, and they must
+          # print DIFFERENT lines: the STM32G0's usart_v4 has an 8-byte RX FIFO
+          # and the STM32F7's usart_v3 has none, so `Inst::feat::rx_fifo_depth`
+          # (generated from alloy-devices, 0 = absent) drives an `if constexpr`
+          # to two different strings. If the generated number never reached the
+          # image — or reached it as a silent default zero — the two legs print
+          # the same thing and one of them fails. That is the degree mechanism
+          # asserted on emulated silicon rather than argued.
+          # Green locally on the pinned Renode (both legs).
+          - board: nucleo_g071rb
+            example: uart_frame
+            robot: uart_frame_surface.robot
+            banner: "alloy uart_frame: this port, described by the surface"
+          - board: nucleo_f722ze
+            example: uart_frame
+            robot: uart_frame_surface.robot
+            banner: "alloy uart_frame: this port, described by the surface"
+            extra_args: "--variable FIFO:'rx-fifo: none (feat::rx_fifo_depth == 0)'"
           # I2C DRIVER CONFORMANCE — BLOCKING. The driver talks to a device on the
           # bus with no hardware: the platform carries the real STM32 I2C
           # controller, the robot attaches a DummyI2CSlave at 0x08, and i2c_read
@@ -401,6 +420,7 @@ jobs:
             --variable RESC:'${{ steps.emit.outputs.resc }}' \
             --variable UART:${{ steps.emit.outputs.uart }} \
             --variable BANNER:'${{ matrix.banner }}' \
+            ${{ matrix.extra_args }} \
             "$GITHUB_WORKSPACE/alloy/tests/emulation/${{ matrix.robot }}"
 
   # The UART update bootloader end-to-end in emulation: build the bootloader

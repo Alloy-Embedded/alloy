@@ -54,6 +54,17 @@ if grep -rnE "$addr_pattern" "$root/libs" --include='*.hpp' --include='*.cpp' \
     fail=1
 fi
 
+# Guard #1, the DEGREE half. A `struct feat` block states how much of a graded
+# silicon feature an instance has — a FIFO depth, a transfer cap, a resolution.
+# Hand-writing one is guard #1 with a decimal literal instead of a hex one: an
+# unverifiable claim about a die, in a file no chip vendor ever reviewed. feat
+# is emitted from alloy-devices (emit/device.py) and may only be READ under
+# src/.
+if grep -rn "struct feat" "$root/src/alloy" --include='*.hpp' --include='*.cpp'; then
+    echo "FAIL: hand-written 'struct feat' in src/ (degree numbers are generated from alloy-devices)"
+    fail=1
+fi
+
 # Guard #3: zero preprocessor conditionals in example/user code.
 # (.alloy/ trees are generated/build output, not example code.)
 if grep -rnE '^[[:space:]]*#[[:space:]]*(if|ifdef|ifndef|elif)\b' "$root/examples" \
