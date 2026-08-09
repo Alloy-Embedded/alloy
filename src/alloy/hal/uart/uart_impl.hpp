@@ -57,6 +57,26 @@ struct uart_config {
     hal::stop_bits stop = stop_bits::one;
 };
 
+// Layer 1 with the rate REMOVED — the argument type for a call that already
+// states the baud another way (bind::open_checked<Baud>()). Having it means a
+// call cannot carry two disagreeing spellings of the same fact:
+// `open_checked<115'200_baud>({.baud = 9'600})` used to compile and run at
+// 115 200, with the loser never mentioned.
+//
+// `baud` is still a MEMBER, of a type nothing converts to, because that is
+// what makes the diagnostic one line that says why instead of twenty lines of
+// overload-resolution notes. The name of the type IS the error message — the
+// same idiom core/units.hpp uses for an out-of-range frequency literal.
+namespace detail {
+struct baud_is_the_template_argument_of_open_checked {};
+}  // namespace detail
+
+struct uart_frame {
+    detail::baud_is_the_template_argument_of_open_checked baud = {};
+    hal::parity parity = parity::none;
+    hal::stop_bits stop = stop_bits::one;
+};
+
 // ── Layer 2 ─────────────────────────────────────────────────────────────
 //
 // The primary is EMPTY and always usable, so `uart_opts<Inst>{}` compiles

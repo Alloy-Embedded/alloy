@@ -112,6 +112,29 @@ using Bus = alloy::uart::bind<alloy::dev::usart2_t,
 void probe() { (void)Bus::open({.baud = 19'200}); }
 """
 
+# LAYER 1, IMPOSSIBLE VALUE. The layers made a FIELD honest and said nothing
+# about the VALUE: `open({.baud = 0})` used to compile with no diagnostic, fold
+# the constant division to unreachable, and fall into the double-open trap — so
+# even the crash named the wrong guard. Needs a real -O compile, not
+# -fsyntax-only: the check rides on __builtin_constant_p, which is what makes
+# it free when the value is a literal.
+BAUD_ZERO = """
+#include <alloy/board.hpp>
+void probe() { (void)board::debug_uart::open({.baud = 0}); }
+"""
+
+# TWO SPELLINGS OF ONE FACT. `open_checked<115'200_baud>({.baud = 9'600})`
+# compiled clean and ran at 115 200, with the loser never mentioned. The rate
+# is stated by the template argument, so open_checked() takes a `frame` whose
+# `baud` member has a type nothing converts to — the type's NAME is the error.
+OPEN_CHECKED_CONFLICT = """
+#include <alloy/board.hpp>
+using namespace alloy::literals;
+void probe() {
+    (void)board::debug_uart::open_checked<115'200_baud>({.baud = 9'600});
+}
+"""
+
 
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
@@ -136,9 +159,16 @@ def _compile_flags(cc_entry: dict) -> list[str]:
 
 def _compile_wrong_tu(example: Path, tree: str, source: str,
                       extra_build_args: list[str],
-                      board: str = BOARD) -> subprocess.CompletedProcess | None:
+                      board: str = BOARD,
+                      optimize: bool = False) -> subprocess.CompletedProcess | None:
     """Build the example (so headers + compile_commands.json exist), then
-    compile `source` with the example's own flags. None = setup failure."""
+    compile `source` with the example's own flags. None = setup failure.
+
+    `optimize` swaps -fsyntax-only for a real object compile: a diagnostic that
+    rides on __builtin_constant_p (the Layer-1 value admission) only exists
+    once the optimizer has folded the constant, which is also precisely why it
+    costs nothing when the value is a literal.
+    """
     subprocess.run(
         ["uv", "run", "--project", str(ALLOY / "tools/alloy"), "alloy",
          "build", "--board", board, *extra_build_args],
@@ -152,8 +182,9 @@ def _compile_wrong_tu(example: Path, tree: str, source: str,
     with tempfile.TemporaryDirectory() as tmp:
         src = Path(tmp) / "wrong.cpp"
         src.write_text(source)
+        mode = ["-c", "-o", str(Path(tmp) / "wrong.o")] if optimize else ["-fsyntax-only"]
         return subprocess.run(
-            [*_compile_flags(entry), "-fsyntax-only", str(src)],
+            [*_compile_flags(entry), *mode, str(src)],
             cwd=entry["directory"], capture_output=True, text=True,
         )
 
@@ -263,10 +294,30 @@ def check_de_tag_unsupported() -> int:
         ["no hardware driver-enable", "usart_v4"])
 
 
+def check_baud_zero() -> int:
+    """Layer 1: a value no divisor can reach is a compile error, by default."""
+    return _expect_failure(
+        "a Layer-1 baud of zero (impossible value, not an impossible field)",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", BOARD, BAUD_ZERO, [],
+                          optimize=True),
+        ["alloy::core::admit::uart_baud", "this baud rate is impossible",
+         "Inst = alloy::dev::usart2_t"])
+
+
+def check_open_checked_conflict() -> int:
+    """Two disagreeing spellings of the baud cannot both be typed."""
+    return _expect_failure(
+        "open_checked<Baud>() carrying a second, disagreeing baud",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", BOARD,
+                          OPEN_CHECKED_CONFLICT, []),
+        ["alloy::uart::frame", "9600"])
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
-            check_de_tag_unsupported())
+            check_de_tag_unsupported() | check_baud_zero() |
+            check_open_checked_conflict())
 
 
 if __name__ == "__main__":

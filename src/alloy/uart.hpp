@@ -14,6 +14,8 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/core/admit.hpp"
+#include "alloy/core/claim.hpp"
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/core/units.hpp"
@@ -29,6 +31,14 @@ namespace alloy::uart {
 using config = hal::uart_config;
 using parity = hal::parity;
 using stop_bits = hal::stop_bits;
+
+// Layer 1 MINUS the rate — the argument shape for the calls that state the
+// baud some other way. `open_checked<115'200_baud>({.baud = 9'600})` used to
+// compile clean and run at 115 200, because the template argument overwrote
+// the field and the loser was never mentioned. Two spellings of one fact
+// cannot disagree if only one of them is typeable, so open_checked() takes
+// this and `.baud` there is a compile error naming the member.
+using frame = hal::uart_frame;
 
 // LAYER 2 — the vendor knobs, keyed by INSTANCE, so a knob the silicon lacks
 // is not a member and cannot be asked for. Surfaced on every binder as
@@ -79,6 +89,26 @@ struct de {
 };
 
 namespace detail {
+// Layer 1's VALUE admission. Compile error when the baud is a constant (which
+// every literal call site is), named trap when it is not — see
+// alloy/core/admit.hpp for why the two lines are spelled here rather than
+// wrapped. `kernel` of zero is the same class of impossible: a port whose
+// clock tree never started cannot divide anything.
+inline void admit_baud(std::uint32_t baud, std::uint32_t kernel) {
+    const bool ok = baud != 0u && kernel != 0u && baud <= kernel;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::uart_baud();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+
+// A unique address per Layer-2 VALUE, so a binder can remember which `opts`
+// it was opened with and refuse a reconfigure that quietly asks for others.
+template <auto Opts>
+inline constexpr char opts_tag = 0;
+
 template <class T>
 inline constexpr bool is_de_tag = false;
 template <class Pin>
@@ -200,6 +230,10 @@ struct rom_bind {
 
     template <opts Opts = {}>
     static handle<Inst> open(config c = {}) {
+        // The ROM port has no clock math and no baud divisor of alloy's, so
+        // there is no rate to admit — but it is still one instance with one
+        // owner, and it used to have no double-open guard at all.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::uart>();
         hal::uart_impl<Inst>::template enable<Opts>(0u, c);
         return handle<Inst>{};
     }
@@ -263,10 +297,18 @@ struct bind {
         using tx_route = routes::route<tx_pin, Inst, signal::tx>;
         using rx_route = routes::route<rx_pin, Inst, signal::rx>;
 
-        if (detail_opened) {
-            __builtin_trap();  // double-open: honest runtime guard
+        // WHO OWNS THE INSTANCE — per instance and cross-TU, where the old
+        // `detail_opened` was per BINDER TYPE. Two bind<>s naming one
+        // usart2_t (a second legitimately routed pin pair) used to open both
+        // and silently reprogram the port under the first handle.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::uart>();
+        // And WHAT WAS ASKED FOR, before a register is touched.
+        detail::admit_baud(c.baud, kernel_hz());
+        if constexpr (requires {
+                          hal::uart_impl<Inst>::template configure_running<Opts, has_de>(0u, c);
+                      }) {
+            detail_opts = &detail::opts_tag<Opts>;
         }
-        detail_opened = true;
 
         hal::pin_impl<tx_pin>::make_af(mux_value<tx_route>());
         hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
@@ -282,13 +324,27 @@ struct bind {
     // path: a protocol write changes baud/parity, the ACK goes out at the old
     // settings, then this applies the new ones (UE-low rewrite + TEACK/REACK
     // waits live in the driver). Only exists where the driver implements
-    // configure().
+    // configure_running().
+    //
+    // Three things this used to accept and no longer does: a port nobody
+    // opened, an impossible baud, and a set of Layer-2 opts different from the
+    // ones open() programmed. The last one mattered because Layer 2 belonged
+    // to the CALL and not to the handle, so `reconfigure<opts{...}>` could
+    // quietly install a different frame than the port was opened with. It
+    // belongs to the port now.
     template <opts Opts = {}>
     static void reconfigure(config c)
         requires requires {
             hal::uart_impl<Inst>::template configure_running<Opts, has_de>(0u, c);
         }
     {
+        if (!alloy::claim::held<Inst, alloy::claim::personality::uart>()) {
+            alloy::trap<alloy::trap_code::not_open>();
+        }
+        if (detail_opts != &detail::opts_tag<Opts>) {
+            alloy::trap<alloy::trap_code::opts_mismatch>();
+        }
+        detail::admit_baud(c.baud, kernel_hz());
         hal::uart_impl<Inst>::template configure_running<Opts, has_de>(kernel_hz(), c);
     }
 
@@ -313,20 +369,29 @@ struct bind {
     //
     //   auto u = Dbg::open_checked<115'200_baud>();        // 2% default
     //   auto u = Dbg::open_checked<3'000'000_baud, 5>();   // tighten to 0.5%
+    //
+    // It takes a `frame`, not a `config`: the baud is already stated in the
+    // template argument, and a second, disagreeing spelling of it used to be
+    // accepted and silently discarded. `.baud` is not a member of `frame`, so
+    // that conflict is now a compile error naming the member.
     template <alloy::frequency Baud, std::uint32_t TolPermille = 20,
               opts Opts = {}>
-    static handle<Inst> open_checked(config c = {})
+    static handle<Inst> open_checked(frame f = {})
         requires requires { hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz()); }
     {
+        static_assert(Baud.hz() != 0u,
+                      "open_checked<Baud>: a baud rate of zero has no divisor");
         constexpr alloy::frequency achieved =
             hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz());
         (void)alloy::rate_check<Baud.hz(), achieved.hz(), TolPermille>{};
-        c.baud = Baud.hz();
-        return open<Opts>(c);
+        return open<Opts>(config{.baud = Baud.hz(), .parity = f.parity, .stop = f.stop});
     }
 
 private:
-    inline static bool detail_opened = false;
+    //: Which Layer-2 value open() programmed, as a unique address per `opts`
+    //: value. Only written where the driver can reconfigure a running port,
+    //: so a port that cannot be reconfigured pays nothing for the check.
+    inline static const void* detail_opts = nullptr;
 };
 
 }  // namespace alloy::uart

@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/core/admit.hpp"
+#include "alloy/core/claim.hpp"
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
@@ -19,6 +21,19 @@ struct config {
     std::uint32_t clock_hz = 1'000'000;
     std::uint8_t mode = 0;  // CPOL<<1 | CPHA
 };
+
+namespace detail {
+// Layer 1's VALUE admission — see alloy/core/admit.hpp.
+inline void admit_clock(std::uint32_t clock_hz, std::uint32_t kernel) {
+    const bool ok = clock_hz != 0u && kernel != 0u && clock_hz <= kernel;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::spi_clock();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+}  // namespace detail
 
 template <class Pin>
 struct sck {
@@ -150,19 +165,15 @@ struct bind {
     }
 
     static handle<Inst> open(config c = {}) {
-        if (detail_opened) {
-            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
-        }
-        detail_opened = true;
+        // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::spi>();
+        detail::admit_clock(c.clock_hz, kernel_hz());
         route_pin<typename Sck::pin, signal::sck>();
         route_pin<typename Miso::pin, signal::miso>();
         route_pin<typename Mosi::pin, signal::mosi>();
         hal::spi_impl<Inst>::enable(kernel_hz(), c.clock_hz, c.mode);
         return handle<Inst>{};
     }
-
-private:
-    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::spi

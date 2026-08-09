@@ -343,3 +343,43 @@ def test_route_into_an_uncurated_peripheral_is_not_listed_as_a_signal_gap() -> N
           "kind": "af_fixed", "af": 5}]))
     assert "pa0 -> lptim1" not in out
     assert "chip declares no routes" in out
+
+
+# ── Instance ownership, build-time half ─────────────────────────────────
+#
+# A peripheral runs in ONE personality at a time. The runtime half of this
+# rule lives in src/alloy/core/claim.hpp and catches hand-written binds; this
+# half catches the board file, before a compiler is ever started.
+
+
+def test_two_roles_may_share_a_peripheral_within_one_personality() -> None:
+    """nvm and fs on one flash controller is the shape a real board ships
+    (nucleo_g0b1re): one driver, two regions, not two personalities."""
+    from alloy_cli.emit.board import _check_role_personalities
+    _check_role_personalities({
+        "id": "synth",
+        "roles": {"nvm": {"peripheral": "flash"}, "fs": {"peripheral": "flash"}},
+    })
+
+
+def test_one_peripheral_in_two_personalities_fails_generation() -> None:
+    from alloy_cli.emit.board import _check_role_personalities
+    from alloy_cli.emit.common import EmitError
+    with pytest.raises(EmitError) as excinfo:
+        _check_role_personalities({
+            "id": "synth",
+            "roles": {"led_pwm": {"peripheral": "tim3"},
+                      "rtc": {"peripheral": "tim3"}},
+        })
+    msg = str(excinfo.value)
+    assert "tim3" in msg, "the diagnostic must name the contested peripheral"
+    assert "pwm" in msg and "rtc" in msg, "and both personalities"
+
+
+def test_roles_without_a_peripheral_are_not_claimants() -> None:
+    """led/button name PINS, not peripherals; they must not be dragged in."""
+    from alloy_cli.emit.board import _check_role_personalities
+    _check_role_personalities({
+        "id": "synth",
+        "roles": {"led": {"pin": "pa5"}, "button": {"pin": "pc13"}},
+    })

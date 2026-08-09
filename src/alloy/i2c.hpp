@@ -11,6 +11,8 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/core/admit.hpp"
+#include "alloy/core/claim.hpp"
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
@@ -21,6 +23,19 @@ namespace alloy::i2c {
 struct config {
     std::uint32_t speed_hz = 100'000;
 };
+
+namespace detail {
+// Layer 1's VALUE admission — see alloy/core/admit.hpp.
+inline void admit_speed(std::uint32_t speed_hz, std::uint32_t kernel) {
+    const bool ok = speed_hz != 0u && kernel != 0u && speed_hz <= kernel;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::i2c_speed();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+}  // namespace detail
 
 template <class Pin>
 struct scl {
@@ -172,10 +187,9 @@ struct bind {
     }
 
     static handle<Inst> open(config c = {}) {
-        if (detail_opened) {
-            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
-        }
-        detail_opened = true;
+        // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::i2c>();
+        detail::admit_speed(c.speed_hz, kernel_hz());
         using scl_route = routes::route<scl_pin, Inst, signal::scl>;
         using sda_route = routes::route<sda_pin, Inst, signal::sda>;
         route_pin<scl_route, scl_pin>();
@@ -183,9 +197,6 @@ struct bind {
         hal::i2c_impl<Inst>::enable(kernel_hz(), c.speed_hz);
         return handle<Inst>{};
     }
-
-private:
-    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::i2c

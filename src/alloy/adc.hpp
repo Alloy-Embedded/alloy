@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/core/claim.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/hal/adc/adc_impl.hpp"
 
@@ -70,16 +71,11 @@ struct bind {
     }
 
     static handle<Inst> open(config = {}) {
-        if (detail_opened) {
-            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
-        }
-        detail_opened = true;
+        // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::adc>();
         hal::adc_impl<Inst>::enable(kernel_hz());
         return handle<Inst>{};
     }
-
-private:
-    inline static bool detail_opened = false;
 };
 
 }  // namespace alloy::adc

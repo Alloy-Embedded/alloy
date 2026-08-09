@@ -79,6 +79,58 @@ def _require_curated(board_id: str, chip: dict[str, Any], periph: str, role: str
         )
 
 
+#: Which PERSONALITY each peripheral-bearing role puts a block into. A
+#: personality is a mutually exclusive whole-block mode — a timer is a PWM
+#: generator or an encoder counter, never both — so two roles that name one
+#: peripheral under DIFFERENT personalities describe a board that cannot exist.
+#:
+#: `nvm` and `fs` share `flash` deliberately: two memory regions carved out of
+#: one flash controller are not two personalities, they are one driver serving
+#: two roles, and the nucleo_g0b1re board declares exactly that today.
+#:
+#: This is the BUILD-TIME half of the instance-ownership rule
+#: (docs/reference/peripheral-surface.md). The runtime half is
+#: alloy::claim::exclusive/shared in src/alloy/core/claim.hpp, which catches
+#: the hand-written binds a board.json never sees. Neither subsumes the other:
+#: this one runs before a compiler does and names the board file; that one sees
+#: across translation units, where a compiler cannot.
+ROLE_PERSONALITY = {
+    "debug_uart": "uart",
+    "i2c": "i2c",
+    "spi": "spi",
+    "adc": "adc",
+    "dac": "dac",
+    "can": "can",
+    "led_pwm": "pwm",
+    "watchdog": "wdt",
+    "rtc": "rtc",
+    "nvm": "flash",
+    "fs": "flash",
+    "ethernet": "ethernet",
+}
+
+
+def _check_role_personalities(board: dict[str, Any]) -> None:
+    """Refuse a board that gives one peripheral to two mutually exclusive modes."""
+    claimed: dict[str, tuple[str, str]] = {}
+    for role in sorted(ROLE_PERSONALITY):
+        spec = (board.get("roles") or {}).get(role)
+        if not isinstance(spec, dict) or "peripheral" not in spec:
+            continue
+        periph = spec["peripheral"]
+        personality = ROLE_PERSONALITY[role]
+        prev = claimed.get(periph)
+        if prev is not None and prev[1] != personality:
+            raise EmitError(
+                f"board {board['id']}: peripheral '{periph}' is claimed by role "
+                f"'{prev[0]}' as a {prev[1]} and by role '{role}' as a "
+                f"{personality} — a block runs in one personality at a time, so "
+                "one of the two roles has to name a different peripheral"
+            )
+        if prev is None:
+            claimed[periph] = (role, personality)
+
+
 def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
@@ -120,6 +172,9 @@ def role_caps(board: dict[str, Any], chip: dict[str, Any],
 def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
                       registers: dict[str, dict[str, Any]]) -> str:
     roles = board.get("roles", {})
+    # Before anything is emitted: no peripheral may be handed to two mutually
+    # exclusive personalities. Generation is the earliest place that can see it.
+    _check_role_personalities(board)
     # A board may carry an INLINE clock profile (a custom PLL from `alloy clock`
     # / the visual editor) instead of naming one of the chip's curated profiles.
     if isinstance(board.get("clock"), dict):

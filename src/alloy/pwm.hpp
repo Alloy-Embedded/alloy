@@ -11,6 +11,8 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/core/admit.hpp"
+#include "alloy/core/claim.hpp"
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
@@ -18,9 +20,31 @@
 
 namespace alloy::pwm {
 
+// BLOCK-SCOPED, and that is the whole subtlety of this facade. A timer has one
+// prescaler and one auto-reload for all four of its channels, so `freq_hz` is
+// not a property of the channel you are opening — it is a property of the
+// timer, stated at a channel's call site because that is the only call there
+// is. Two channels of one timer asking for different frequencies is a
+// contradiction the block cannot honour; the claim below refuses it instead of
+// letting the second open() silently win.
 struct config {
     std::uint32_t freq_hz = 1'000;
 };
+
+namespace detail {
+// Layer 1's VALUE admission — see alloy/core/admit.hpp. The driver computes
+// `period_ticks = tick_hz / freq_hz`, so zero was a fold-to-unreachable that
+// landed in the double-open trap.
+inline void admit_freq(std::uint32_t freq_hz, std::uint32_t kernel) {
+    const bool ok = freq_hz != 0u && kernel != 0u && freq_hz <= kernel;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::pwm_freq();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+}  // namespace detail
 
 template <class Inst, unsigned Channel>
 class handle {
@@ -90,10 +114,20 @@ struct bind {
     }
 
     static handle<Inst, Channel> open(config c = {}) {
-        if (detail_opened) {
-            __builtin_trap();  // double-open: honest runtime guard (NORTH_STAR #7)
+        // SHARED, not exclusive: four channels of one timer are one legitimate
+        // owner in one personality. What they may not do is disagree about the
+        // block-scoped value — `enable()` writes PSC and ARR unconditionally,
+        // so before this the second channel's frequency silently replaced the
+        // first's and both handles kept working at the wrong rate. The witness
+        // is that value; a mismatch traps with its own code.
+        detail::admit_freq(c.freq_hz, kernel_hz());
+        // The CHANNEL is still exclusive — sharing the block does not mean
+        // opening one channel twice is suddenly fine.
+        if (detail_channel_opened) {
+            alloy::trap<alloy::trap_code::instance_owned>();
         }
-        detail_opened = true;
+        detail_channel_opened = true;
+        alloy::claim::shared<Inst, alloy::claim::personality::pwm>(c.freq_hz);
         using pin_route = routes::route<Pin, Inst, Sig>;
         hal::pin_impl<Pin>::make_af(routes::mux_value<pin_route>());
         hal::pwm_impl<Inst>::enable(kernel_hz(), c.freq_hz, Channel);
@@ -101,7 +135,7 @@ struct bind {
     }
 
 private:
-    inline static bool detail_opened = false;
+    inline static bool detail_channel_opened = false;
 };
 
 }  // namespace alloy::pwm
