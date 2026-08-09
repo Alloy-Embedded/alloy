@@ -30,6 +30,10 @@ struct registry {
 
     std::uint32_t total_checks{0};
     std::uint32_t total_failures{0};
+    // Registrations that did not fit. A dropped test is invisible — it does
+    // not fail, it simply never runs — so the count is kept and run_all()
+    // turns it into a hard failure rather than a green run of the survivors.
+    std::size_t dropped{0};
 
     // state for the test currently running
     std::uint32_t cur_failures{0};
@@ -52,6 +56,8 @@ struct registrar {
             r.names[r.count] = name;
             r.fns[r.count] = fn;
             ++r.count;
+        } else {
+            ++r.dropped;  // reported as a FAILURE by run_all(), never silent
         }
     }
 };
@@ -113,6 +119,19 @@ int run_all(Sink& sink) {
             detail::put_uint(sink, static_cast<std::uint32_t>(r.fail_line));
             sink.write(")\r\n");
         }
+    }
+    // A registry overflow is a BUILD problem masquerading as a green run:
+    // the survivors all pass and the total looks plausible. Say it loudly and
+    // fail, because which tests were dropped depends on static-init order
+    // across translation units — i.e. it is unspecified WHICH coverage was
+    // lost. Fix by raising max_tests or splitting the binary.
+    if (r.dropped != 0) {
+        ++failed;
+        sink.write("[ FAIL ] test registry overflow: ");
+        detail::put_uint(sink, static_cast<std::uint32_t>(r.dropped));
+        sink.write(" test(s) NEVER RAN (max_tests = ");
+        detail::put_uint(sink, static_cast<std::uint32_t>(max_tests));
+        sink.write(") — raise max_tests or split the binary\r\n");
     }
     sink.write(failed == 0 ? "PASSED " : "FAILED ");
     detail::put_uint(sink, static_cast<std::uint32_t>(r.count) - static_cast<std::uint32_t>(failed));
