@@ -37,6 +37,26 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 - A `static-limits` CI job runs all of the above, plus the two escape-hatch
   link experiments, on every push.
 
+### Changed
+
+- **A route naming a signal `alloy::signal` does not model is skipped, not an
+  error.** A chip's full alternate-function table names far more signals than
+  the framework models — complementary PWM outputs, timer break and ETR inputs,
+  RS-485 DE, I2S, comparator inputs, USB DM/DP. `emit_routes_header` used to
+  refuse the whole build over one of them, which forced the chip database to
+  carry only signals alloy already understood. It now applies the same rule it
+  already applied to routes into an uncurated peripheral — the fact stays in the
+  database, codegen emits nothing — and the generated `routes.hpp` **lists what
+  it skipped**, so the gap is readable in the artefact instead of invisible.
+  Adding an enumerator in `core/types.hpp` (plus `emit/common.py`'s `SIGNALS`)
+  is all it takes to turn one of those lines into a compile-checked route.
+- **`nucleo_g0b1re` now points at `st/stm32g0b1re`**, the graduated
+  full-silicon chip file (65 peripherals) that replaces the hand-written
+  `st/stm32g0b1` (23). The `adc` and `dac` roles name `adc1`/`dac1`, the
+  instance names that die actually has. Verified: `blink` and `uart_echo` build,
+  and the `firmware_boots` emulation leg passes on the regenerated platform —
+  which now also models GPIOE, the EXTI controller and the IWDG.
+
 ### Fixed
 
 - **`alloy sbom` no longer relabels an undeclared vendored tree as alloy's own.**

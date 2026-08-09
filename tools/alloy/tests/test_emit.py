@@ -294,3 +294,52 @@ def test_a_chip_with_no_image_config_is_unaffected() -> None:
     from alloy_cli.board_validate import _check_image_config
 
     assert _check_image_config({"id": "x"}, {"vendor": "st"}) == []
+
+
+# --------------------------------------------------- routes the framework
+# does not model yet
+
+
+def _routes_chip(routes: list[dict]) -> dict:
+    return {
+        "vendor": "st", "part": "SYNTH",
+        "peripherals": {"tim2": {"ip": "st/tim_gp16", "base": "0x40000000"},
+                        "lptim1": {"uncurated": True, "ip_hint": "lptim:v1b",
+                                   "base": "0x40007C00"}},
+        "routes": routes,
+    }
+
+
+def test_route_with_a_modelled_signal_is_emitted() -> None:
+    from alloy_cli.emit.device import emit_routes_header
+    out = emit_routes_header(_routes_chip(
+        [{"pin": "pa5", "peripheral": "tim2", "signal": "ch1",
+          "kind": "af_fixed", "af": 2}]))
+    assert "alloy::signal::ch1" in out
+    assert "static constexpr std::uint8_t af = 2u;" in out
+
+
+def test_route_with_an_unmodelled_signal_is_skipped_and_named() -> None:
+    """A full AF table names signals alloy::signal has no enumerator for. That
+    must not fail the build (it would forbid the chip database from carrying
+    the silicon's real routing), and it must not vanish silently either."""
+    from alloy_cli.emit.device import emit_routes_header
+    out = emit_routes_header(_routes_chip(
+        [{"pin": "pa0", "peripheral": "tim2", "signal": "etr",
+          "kind": "af_fixed", "af": 2},
+         {"pin": "pa5", "peripheral": "tim2", "signal": "ch1",
+          "kind": "af_fixed", "af": 2}]))
+    assert "alloy::signal::etr" not in out
+    assert "alloy::signal::ch1" in out
+    assert "pa0 -> tim2.etr" in out, "the skipped route must be named in the header"
+
+
+def test_route_into_an_uncurated_peripheral_is_not_listed_as_a_signal_gap() -> None:
+    """Those routes are skipped for a different reason and were already
+    skipped; listing them would drown the signal-gap list."""
+    from alloy_cli.emit.device import emit_routes_header
+    out = emit_routes_header(_routes_chip(
+        [{"pin": "pa0", "peripheral": "lptim1", "signal": "out",
+          "kind": "af_fixed", "af": 5}]))
+    assert "pa0 -> lptim1" not in out
+    assert "chip declares no routes" in out

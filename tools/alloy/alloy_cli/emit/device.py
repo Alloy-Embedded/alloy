@@ -257,6 +257,7 @@ namespace alloy::dev {{
 def emit_routes_header(chip: dict[str, Any]) -> str:
     curated = curated_peripherals(chip)
     specs: list[str] = []
+    unmodelled: set[tuple[str, str, str]] = set()
     for route in sorted(
         chip.get("routes", []),
         key=lambda r: (r["pin"], r["peripheral"], r["signal"]),
@@ -264,7 +265,15 @@ def emit_routes_header(chip: dict[str, Any]) -> str:
         if route["peripheral"] not in curated:
             continue  # route to an uncurated stub: fact kept, nothing emitted
         if route["signal"] not in SIGNALS:
-            raise EmitError(f"route {route['pin']}->{route['peripheral']}: unknown signal '{route['signal']}'")
+            # A full alternate-function table names far more signals than
+            # `alloy::signal` models (complementary PWM outputs, timer break
+            # and ETR inputs, RS-485 DE, I2S, comparator inputs, USB DM/DP).
+            # Same rule as the uncurated-peripheral case above: the fact stays
+            # in the chip database, codegen emits nothing for it — and the
+            # header below LISTS what it skipped, so the gap is visible in the
+            # artefact instead of being an error that forbids the data.
+            unmodelled.add((route["pin"], route["peripheral"], route["signal"]))
+            continue
         payload = [f"    static constexpr alloy::routes::kind k = {_KIND_CPP[route['kind']]};"]
         if route["kind"] == "af_fixed":
             payload.append(f"    static constexpr std::uint8_t af = {route['af']}u;")
@@ -279,6 +288,19 @@ def emit_routes_header(chip: dict[str, Any]) -> str:
         )
 
     body = "\n\n".join(specs) if specs else "// (chip declares no routes)"
+    if unmodelled:
+        gap = "\n".join(
+            f"//   {pin} -> {periph}.{signal}"
+            for pin, periph, signal in sorted(unmodelled))
+        body = (
+            f"// {len(unmodelled)} route(s) of this chip name a signal "
+            "alloy::signal does not model yet.\n"
+            "// The facts are in the chip database; nothing is emitted for them "
+            "here. Adding an\n"
+            "// enumerator in core/types.hpp (and emit/common.py SIGNALS) is all "
+            "it takes to\n"
+            "// turn one of these into a compile-checked route:\n"
+            f"{gap}\n\n{body}")
     return f"""{BANNER}// Route table: {chip['vendor']}/{chip['part']}
 #pragma once
 

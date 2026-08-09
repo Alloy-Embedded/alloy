@@ -2,7 +2,7 @@
   "schema": "alloy.board.v1",
   "id": "nucleo_g0b1re",
   "name": "ST Nucleo-G0B1RE",
-  "chip": "st/stm32g0b1",
+  "chip": "st/stm32g0b1re",
   "clock_profile": "pll_64mhz",
   "roles": {
     "led": {
@@ -29,7 +29,7 @@
       "label": "LD4 via TIM2_CH1 (AF2)"
     },
     "adc": {
-      "peripheral": "adc",
+      "peripheral": "adc1",
       "label": "internal vref/temp channels"
     },
     "i2c": {
@@ -65,7 +65,7 @@
       "label": "RTC on LSI (~32 kHz), backup-domain calendar"
     },
     "dac": {
-      "peripheral": "dac",
+      "peripheral": "dac1",
       "label": "DAC_OUT1 on PA4 (also ADC_IN4 — internal loopback readback)"
     },
     "can": {
