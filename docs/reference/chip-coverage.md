@@ -43,9 +43,11 @@ push, not its ceiling.
 
 ## Baseline — STM32G0B1RE, 2026-08-09
 
-Taken at `alloy` 1568006 with `alloy-devices` 9949429 (declared 0.3.0,
-digest `sha256:ab31e6be…`), the commit that graduated the hand-written
-`stm32g0b1.yaml` (23 peripherals) into the builder-generated `stm32g0b1re.yaml`.
+Taken against `alloy` 1568006 — the tip this verb was written on, so the driver
+tree and Renode tables it read are that commit's — with `alloy-devices` 9949429
+(declared 0.3.0, digest `sha256:ab31e6be…`), the commit that graduated the
+hand-written `stm32g0b1.yaml` (23 peripherals) into the builder-generated
+`stm32g0b1re.yaml`.
 
 **37 of 65 peripherals curated, 31 with drivers**, 23 with a Renode model,
 13 reachable from a board role (`nucleo_g0b1re`). By IP: 18 curated IPs, 13 with drivers.
