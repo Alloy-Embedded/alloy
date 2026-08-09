@@ -1533,17 +1533,17 @@ the shared claim's witness, since that is the value the channels must agree on.
 | two disagreeing spellings of the baud cannot both be typed | `check_open_checked_conflict` — 13 lines, names `alloy::uart::frame` and `9600` |
 | none of it costs a working program anything | `uart_echo` `.text` on seven ARM boards, built from a clean `git archive` of `aa95f94` and from this tree with the same toolchain: **+8 bytes on six, +4 on the SAM**, and the G071RB disassembly shows the success path is byte-identical (`ldrb / cmp / beq`) with every added byte in the branch that traps |
 | nothing in the tree stopped building | every example on the CI board×example list, plus `uart_frame`, `crash_report`, `concurrency_probe`, `product_demo` and `product_line`, built on **four boards** (`nucleo_g0b1re`, `nucleo_f767zi`, `raspberry_pi_pico`, `same70_xplained`). The only failures are `escape_hatch`, `factory` and `bootloader_uart` on the boards they were never portable to — **each one verified to fail identically at `aa95f94`**, which is the control that makes the sweep mean anything |
+| the guarded `open()` still boots and still moves bytes on emulated silicon | `firmware_boots.robot` green on **`nucleo_g0b1re`, `nucleo_f722ze` and `same70_xplained`** — three families, two vendors — and `uart_echo_roundtrip.robot` green on `nucleo_g071rb`, which injects a line and asserts the firmware echoes it. Run on this host against the native arm64 Renode 1.16.1, on the tree at `1aa512f`. This is the leg the shipped revision said could not be run here; see the box below |
+| the claim guard is not a boot-time regression | the G0B1RE image under test is the +8-byte one (`.text` 2744, versus 2736 at `aa95f94`), so the leg that boots is the leg carrying the guard, not a stale artefact |
 
 **Not proven, and worth saying plainly.**
 
-- **No emulation evidence at all for this revision.** The death tests are
-  host-side. No Renode leg asserts that the claim traps on an emulated part,
-  and — the part that matters more — **the existing `firmware_boots` and
-  `uart_echo_roundtrip` legs were not re-run** against these changes, which
-  touch `open()` on five facades. The local Renode is an x86_64 build whose ARM
-  translation library will not load on this arm64 host
-  (`incompatible architecture (have 'x86_64', need 'arm64')`), so CI is the
-  only place they run. **Read the CI result before trusting the +8 bytes.**
+- **No leg asserts that the claim TRAPS on emulated silicon.** The seven
+  refusal tests are host-side `fork()` death tests. What the emulation legs
+  below prove is the *other* half — that the guard on the success path does not
+  break a working port — and those two halves are not the same claim. A leg
+  that binds one instance twice on an emulated part and asserts the `udf` is
+  reachable-but-not-reached is unwritten.
 - **The generator half is proven only against a synthetic board dict**, because
   no shipped `board.json` can express the conflict yet: today's role schema has
   one UART role, one SPI role and one PWM role. The gate is guarding a door
@@ -1551,6 +1551,25 @@ the shared claim's witness, since that is the value the channels must agree on.
   for the boards in the tree.
 - **Nothing here was measured on ESP32 or RP2040 hardware, or on any board at
   all.** Every number on this page is a cross-compile or an emulator.
+
+!!! note "One 'not proven' on this page was retired by checking it, and the reason it was written is worth keeping"
+    Revision 2 shipped saying *"no emulation evidence at all for this
+    revision"*, and blamed the host: *"the local Renode is an x86_64 build whose
+    ARM translation library will not load on this arm64 host."* **That was
+    false, and the four legs in the table below were run on this machine.**
+
+    The claim was not invented — it was read off the wrong install. There are
+    two Renodes here: `/Applications/Renode.app`, which the `renode-test` shell
+    alias points at and which *is* the x86_64 build, and
+    `~/renode/Renode.app`, a native arm64 1.16.1 (`libllvm-disas.dylib:
+    Mach-O 64-bit … arm64`) that `alloy emulate` finds on its own. Checking the
+    binary the alias resolved to, and stopping there, is how a true sentence
+    about one file became a false sentence about the host.
+
+    The lesson is the cheap one and it is the same one this page keeps
+    relearning: **an unproven claim and a claim that could not be proven are
+    different, and only one of them is an excuse.** `firmware_boots` on three
+    boards and `uart_echo_roundtrip` on a fourth cost four minutes.
 
 **Unproven and labelled:** `espressif_uart_v1` now programs `CONF0` parity and
 stop bits, from TRM-derived field positions, with no ESP32 on the bench — and
