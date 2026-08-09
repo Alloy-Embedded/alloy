@@ -17,13 +17,18 @@ The firmware is a function of the source, not of where the source lives.
 
 ```console
 $ scripts/check_reproducible.sh blink nucleo_g071rb
-ok   blink.elf  10b6fbf6e70c4f249c6ffb7fdcec0a1f523c764434f7d428651c4c059dc47a93
+ok   blink.elf  7f18f6d5d788d2efe9a1d08301ec6f3a04fa5349eb7130916f59359b9f768cb2
 ok   blink.bin  2a9963ab936d760e26f951a33c003b663c62b1afea112e8bea3c8121aff4d8da
 ok   blink.hex  ae6aeae495cb209a27f71a681be2cb976f61d10d6ec69de0eee15b2f0f31017e
 ok   negative control: a one-byte change is detected
 ok   no absolute host paths in blink.elf
 reproducible: blink@nucleo_g071rb is byte-identical from two different paths
 ```
+
+Those three digests are one build's, with arm-none-eabi-gcc 14.2.1: the claim is that **the two
+paths agree**, not that the hex strings are constants. Touch a framework source or move to another
+compiler release and they change together — the `.elf` line in particular moves whenever any linked
+translation unit does, since DWARF records more than code.
 
 The script copies the framework tree to two deliberately different absolute
 paths, builds the example in each and compares digests. It also runs a negative
@@ -117,7 +122,18 @@ $ alloy setup --from /media/usb/alloy-tools --offline
   arm-gnu-toolchain: from mirror /media/usb/alloy-tools/arm-gnu-toolchain-13.2.rel1-…tar.xz
   arm-gnu-toolchain: sha256 39c44f8af42695b7b871df42e346c09fee670ea8dfc11f17083e296ea2b0d279
   arm-gnu-toolchain: installed -> ~/.alloy/tools/arm-gnu-toolchain
+
+add these to PATH before `alloy build` — it looks for the cross compiler on PATH only:
+  export PATH="~/.alloy/tools/arm-gnu-toolchain/bin:~/.alloy/tools/openocd/bin:$PATH"
 ```
+
+**Do the export.** `alloy setup --check` will report the toolchain as
+`ok (~/.alloy/tools)` whether or not it is on `PATH`, but `alloy build` searches
+`PATH` and nowhere else — without the export the next command is CMake saying
+*"The CXX compiler identification is unknown"*, with nothing to connect it back
+to a mirror that worked perfectly. Verified end to end: mirror, `--offline`
+install into a clean `HOME`, export, `alloy build` — a 2 528-byte `blink.elf`
+with no network at any point.
 
 `ALLOY_TOOLS_MIRROR=/media/usb/alloy-tools` does the same without the flag.
 `--offline` is a promise, not a hint: with it set and no mirror, the installer

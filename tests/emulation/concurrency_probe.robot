@@ -34,6 +34,12 @@ Documentation     Concurrency-model conformance under emulation, and the source
 ...                                    the no-preemption doctrine as a test: if
 ...                                    the executor ever gained preemption this
 ...                                    line would go FAIL.
+...                 verdict parked   — an empty superstep costs the same with
+...                                    eight event-parked tasks as with none, and
+...                                    MORE once eight tasks are parked on
+...                                    timers. run_once() walks the timer list
+...                                    every superstep; the guide quotes what
+...                                    that costs, so the ordering is gated.
 ...
 ...               The firmware prints its whole measurement block to the UART, so
 ...               the CI log carries the figures even though nothing gates on
@@ -59,4 +65,5 @@ Interrupts Preempt, The Executor Does Not
     Wait For Line On Uart     verdict dispatch: ok    timeout=120
     Wait For Line On Uart     verdict mask: ok    timeout=30
     Wait For Line On Uart     verdict cooperative: ok    timeout=30
+    Wait For Line On Uart     verdict parked: ok    timeout=30
     Wait For Line On Uart     concurrency_probe done    timeout=30

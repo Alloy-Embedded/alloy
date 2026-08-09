@@ -172,13 +172,16 @@ $ cd examples/concurrency_probe && alloy emulate
 - **Latency figures** are the mean of 1024 samples (each individual sample is quantised to a whole
   counter tick, so only the mean carries resolution; min/max are printed and are honestly coarse).
   **Cost figures** are batches of 512 iterations with a baseline batch subtracted.
-- **Determinism:** two runs of the same binary produce byte-identical output. Different *binaries*
-  shift the figures by a few percent — code layout moves them — so treat these as one build's
-  measurements, not constants.
+- **Determinism, and how far to read a number:** two runs of the same binary produce byte-identical
+  output — that is what lets a figure be quoted at all. Two *different* binaries do not: adding a
+  line to this probe moved `irq raw` by 0.5 ieq and three `sched` rows by 0.4 ieq, because code
+  layout moves them and because a 512-iteration batch is quantised to 1 µs (0.39 ieq). **Read these
+  to about ±1 ieq.** The second decimal is printed because the probe computes it, not because it
+  reproduces across builds; only the run that produced this table reproduces it exactly.
 
 **The instrument validates against the disassembly.** `systick_elapsed()` compiles to six
 instructions plus the caller's `bl`; the interval between two back-to-back stamps therefore spans
-seven to eight instructions. Measured: **8.00 ieq**. That agreement is the reason the other figures
+seven to eight instructions. Measured: **7.87 ieq**. That agreement is the reason the other figures
 are quoted at all.
 
 ### Interrupt path
@@ -187,12 +190,12 @@ From the store that raises the interrupt to the first instruction of the handler
 
 | Path | ieq | What it is |
 |---|---|---|
-| strong `<NAME>_IRQHandler` | 17.37 | the vendor-style expert path — no framework in the way |
-| via `alloy::irq::attach` | 30.00 | + weak wrapper → `alloy_irq_dispatch(n)` → chain walk |
+| strong `<NAME>_IRQHandler` | 16.87 | the vendor-style expert path — no framework in the way |
+| via `alloy::irq::attach` | 29.87 | + weak wrapper → `alloy_irq_dispatch(n)` → chain walk |
 | two handlers on one line | 43.00 | + a second chain node |
 
-So **`alloy::irq` costs about 12.6 ieq over a raw vector**, and **each additional handler sharing a
-line costs about 13.0 ieq**. If you need neither, define a strong `<NAME>_IRQHandler`: it overrides
+So **`alloy::irq` costs about 13 ieq over a raw vector**, and **each additional handler sharing a
+line costs about 13 ieq**. If you need neither, define a strong `<NAME>_IRQHandler`: it overrides
 alloy's weak wrapper entirely and you get the first row. (See
 [the escape hatch](escape-hatch.md).)
 
@@ -203,8 +206,8 @@ long alloy holds one. Raising the line *from inside* a critical section measures
 
 | Masked region | ieq | Delta |
 |---|---|---|
-| empty `irq_save`/`irq_restore` | 37.00 | +7.0 over the unmasked path |
-| 100-iteration loop | 537.50 | +500.5, i.e. **5.0 ieq per iteration** |
+| empty `irq_save`/`irq_restore` | 36.87 | +7.0 over the unmasked path |
+| 100-iteration loop | 537.50 | +500.6, i.e. **5.0 ieq per iteration** |
 
 Interrupt latency tracks the masked region **1:1**. alloy's own critical sections are the ones in
 `scheduler::signal()`, `executor::schedule()` and `event::set()` — each a handful of instructions
@@ -221,8 +224,12 @@ runnable and an empty body:
 | 1 | 12.87 | 12.87 |
 | 2 | 71.00 | 35.50 |
 | 4 | 147.25 | 36.75 |
-| 8 | 299.12 | 37.37 |
+| 8 | 298.75 | 37.34 |
 | 16 | 578.87 | 36.12 |
+
+The `N = 1` row is the odd one out and is not a typo: a one-entry table is small enough that `-Os`
+optimises the superstep down to roughly a single dispatch, so the step from 1 to 2 tasks (+58 ieq)
+is much larger than every step after it. Size for the marginal cost below, not for that row.
 
 `alloy::async::executor`, one wake+resume of a coroutine parked on an `event` — that is the async
 "task switch": the ISR-side `set()`, the ready-queue push, the dequeue, the coroutine resume, and
@@ -237,10 +244,31 @@ the re-suspend at the next `co_await`:
 | 8 | 1515.12 | 189.37 |
 
 Read the **marginal** cost, not the average: each extra runnable task adds **36.3 ieq** to a
-`scheduler` superstep and **183.9 ieq** to an executor superstep. Both are strictly linear in the
-number of *runnable* tasks — a task parked on an event or a timer costs nothing at all, which is why
-the empty poll is 35 ieq regardless of how many tasks exist. There is no per-task background cost,
-no tick handler walking a task list, and no priority search.
+`scheduler` superstep (measured from `N = 2` upwards) and **183.9 ieq** to an executor superstep.
+Both are linear in the number of *runnable* tasks: there is no priority search and no per-task
+scan of a ready list.
+
+### What a suspended task costs
+
+"Parked" is two different things, and only one of them is free:
+
+| Executor state | empty superstep (ieq) |
+|---|---|
+| 8 tasks parked on an `event` | 34.75 |
+| the same 8, plus 8 parked on `delay()` | 131.25 |
+
+A task waiting on an `event` is in **no list the executor owns** — `set()` from the ISR pushes it
+onto the ready queue and nothing polls it meanwhile, so eight of them cost the same as none. A task
+inside `co_await delay(...)` is different: it holds a `timer_node`, and `run_once()` walks that list
+on **every** superstep before it touches the ready queue. That is **≈12 ieq per sleeping task, per
+superstep** — small, but O(sleeping tasks) rather than zero, and `delay()` is the most common idiom
+in the framework. Sixteen sleepers on a busy-polled executor is a few thousand ieq per second of
+pure list walking; if that matters, park on events driven by one hardware timer instead of giving
+every task its own `delay()`.
+
+(An earlier version of this page said an event-parked *or* timer-parked task cost nothing. The
+`parked` rows above and the `verdict parked` line in the CI leg exist because that was measured and
+was only half true.)
 
 A coroutine resume costing ~5x a plain function-pointer dispatch is the price of `co_await`: the
 frame's resume dispatch, the promise bookkeeping, and the awaiter's park/wake protocol. If a task is
@@ -252,14 +280,14 @@ A task doing `co_await delay(2ms)` in a loop, measuring what it actually got, 16
 
 | Condition | measured wake (µs) for a requested 2000 |
 |---|---|
-| alone on the executor | 1577 – 2000 |
+| alone on the executor | 1569 – 2000 |
 | beside a task that runs 5 ms without yielding | 5993 – 6001 |
 
 Two separate facts are in that table.
 
 **`delay()` can fire early.** Its deadline is `uptime_ms() + n`, and `uptime_ms()` is truncated to
 the 1 kHz tick, so a delay armed part-way through a tick loses that fraction. The bound is one full
-tick early; 1577 µs is what this build happened to hit. `delay()` is a **tick-quantised timer, not a
+tick early; 1569 µs is what this build happened to hit. `delay()` is a **tick-quantised timer, not a
 one-shot with sub-tick accuracy** — for tighter timing use a hardware timer interrupt, and for
 measuring elapsed time use `uptime_us()`.
 
@@ -299,8 +327,9 @@ repeatable, which is why they can be a CI gate — and several hard limits:
 
 The CI leg asserts none of these figures. It asserts only the *ordering* properties the doctrine
 rests on — that `alloy::irq` costs more than a raw vector, that a longer masked region delays an ISR
-more than a short one, and that a non-yielding task delays a sleeping one — because those survive a
-Renode upgrade and an absolute number does not.
+more than a short one, that a non-yielding task delays a sleeping one, and that timer-parked tasks
+cost a superstep more than event-parked ones — because those survive a Renode upgrade and an
+absolute number does not.
 
 ## How it works
 

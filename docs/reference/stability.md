@@ -98,9 +98,11 @@ boundary cannot erode quietly.
 2. It keeps working for at least one further MINOR release.
 3. It is removed no earlier than the next MAJOR.
 
-`CHANGELOG.md` carries a `### Deprecated` section in every release, even when
-the answer is "nothing" — an empty section is a claim; a missing one is a
-question.
+From the next release on, `CHANGELOG.md` carries a `### Deprecated` section in
+every entry, even when the answer is "nothing" — an empty section is a claim; a
+missing one is a question. `Unreleased` has one today; `0.1.0`–`0.3.0` predate
+the policy and do not, so read those three as "no deprecations were tracked",
+not as "none happened".
 
 ### The docs are versioned too
 
@@ -198,8 +200,14 @@ digest  = "sha256:…"             # optional: what it actually IS.
   invalidate a shipped product's pin.
 
 The check runs in `load_project`, so **every** verb that opens a project —
-`gen`, `build`, `flash`, `size`, `image`, `sbom` — refuses together. There is no
-route that quietly builds against the wrong facts.
+`gen`, `build`, `flash`, `monitor`, `size`, `sbom`, `boards`, `board-info`,
+`matrix`, `debug-info`, `devices` itself — refuses together, with exit 1 and
+before a single file is generated. There is no route that quietly builds
+against the wrong facts.
+
+Two verbs deliberately do not: `clean` only removes build trees, and `image`
+takes an already-built binary as an argument and never opens a project or reads
+the database at all.
 
 ### Which pin to use
 

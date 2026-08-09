@@ -37,6 +37,35 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 - A `static-limits` CI job runs all of the above, plus the two escape-hatch
   link experiments, on every push.
 
+### Fixed
+
+- **`alloy sbom` no longer relabels an undeclared vendored tree as alloy's own.**
+  A third-party source under `<alloy>/src/**/vendor/` that matched no entry in
+  `sbom.py`'s `_VENDORED` table fell through to the framework bucket and was
+  reported as part of "alloy, MIT" — silently, with its own licence file sitting
+  beside it. Both packages alloy vendors today live under exactly that path, so
+  the next one would have inherited the bug. Such a file is now an **undeclared
+  component**, which is also what makes `--strict` refuse it.
+- **`docs/guide/async.md` figures re-measured, and one claim withdrawn.** The
+  guide said a task parked on an event *or a timer* costs nothing per superstep.
+  Measured: eight event-parked tasks cost nothing (34.75 ieq empty poll, same as
+  none), but eight parked on `delay()` cost 131.25 — `run_once()` walks the timer
+  list every superstep, ≈12 ieq per sleeping task. `examples/concurrency_probe`
+  now measures it, the emulation leg gates it as `verdict parked`, and the page
+  says how far to read a figure (±1 ieq; a rebuild moves the last digit).
+- **`alloy setup` now prints the `export PATH=…` its own install requires.**
+  An offline install put the cross compiler in `~/.alloy/tools`, `alloy setup
+  --check` called it `ok`, and `alloy build` then failed with "The CXX compiler
+  identification is unknown" — because the build looks for the compiler on
+  `PATH` only. On an air-gapped host those two messages have nothing connecting
+  them. The line is now printed at the end of any install, and
+  `docs/guide/supply-chain.md` says to run it.
+- Two factual corrections on `docs/reference/stability.md`: `alloy image` was
+  listed among the verbs a `[devices]` mismatch refuses, but it takes a built
+  binary and never opens a project; and the `### Deprecated` changelog policy
+  starts here, not retroactively at 0.1.0. The stale sample `.elf` digest on
+  `docs/guide/supply-chain.md` was refreshed and labelled as one build's.
+
 ### Deprecated
 
 - Nothing.

@@ -174,6 +174,51 @@ def test_a_source_from_no_declared_package_becomes_an_undeclared_component(
     assert "declared in no package definition" in mystery.evidence
 
 
+def test_an_undeclared_vendor_tree_inside_src_is_not_swallowed_by_the_framework(
+    tmp_path, monkeypatch
+) -> None:
+    """The realistic version of the test above.
+
+    Both packages alloy vendors today live UNDER `<alloy>/src` — in
+    `src/alloy/net/vendor/lwip` and `src/alloy/fs/vendor` — so that is where the
+    next one will go. A file there that matches no `_VENDORED` entry used to
+    fall through to the framework bucket and be reported as part of "alloy,
+    MIT": a third-party licence, silently relabelled. It must surface as an
+    undeclared component like any other.
+    """
+    fake_alloy = tmp_path / "alloy"
+    (fake_alloy / "src" / "alloy" / "crypto" / "vendor").mkdir(parents=True)
+    (fake_alloy / "LICENSE").write_text("MIT — alloy itself\n")
+    (fake_alloy / "src" / "alloy" / "crypto" / "vendor" / "LICENSE").write_text(
+        "Apache License, Version 2.0\n")
+    stray = fake_alloy / "src" / "alloy" / "crypto" / "vendor" / "tinycrypt.c"
+    stray.write_text("int f(void){return 0;}\n")
+    own = fake_alloy / "src" / "alloy" / "arch" / "cortex_m"
+    own.mkdir(parents=True)
+    (own / "startup.cpp").write_text("int g(void){return 0;}\n")
+
+    project = _fake_project(tmp_path)
+    project = type(project)(root=project.root, name=project.name,
+                            board_id=project.board_id, alloy_root=fake_alloy,
+                            devices_root=project.devices_root)
+    monkeypatch.setattr(
+        sbom, "build_inputs",
+        lambda *_a: _Inputs([project.root / "src" / "main.cpp"],
+                            [stray, own / "startup.cpp"]))
+    monkeypatch.setattr(sbom, "generated_sources", lambda _p: [])
+
+    items = sbom.components(project, {"boot": {}})
+    framework = next(c for c in items if c.name == "alloy")
+    assert not any("tinycrypt" in f for f in framework.files), \
+        "an undeclared vendored tree was reported as part of alloy itself"
+    assert any("startup.cpp" in f for f in framework.files)
+
+    stray_component = next(c for c in items if c.name == "vendor")
+    assert stray_component.license is None
+    assert not stray_component.declared
+    assert "declared in no package definition" in stray_component.evidence
+
+
 class _Inputs:
     """Stand-in for build.BuildInputs with an arbitrary compiled set."""
 

@@ -376,6 +376,7 @@ def setup(families: set[str] | None, check_only: bool,
         return 0 if all(r["status"] != "missing" for r in rows) else 1
 
     failures = 0
+    installed: list[Path] = []
     for r in rows:
         if r["status"] != "missing":
             continue
@@ -396,9 +397,21 @@ def setup(families: set[str] | None, check_only: bool,
         # operator wants the FULL list of what their mirror is missing, in one
         # run, not one name per trip to the sneakernet.
         try:
-            install_tool(r["tool"], json_progress=json_progress,
-                         mirror=mirror, offline=offline)
+            installed.append(install_tool(r["tool"], json_progress=json_progress,
+                                          mirror=mirror, offline=offline))
         except EmitError as exc:
             print(str(exc), file=sys.stderr)  # already names the tool
             failures += 1
+
+    # `alloy build` finds the cross compiler on PATH and nowhere else, so an
+    # install into ~/.alloy/tools is not yet a working build until the operator
+    # adds it. On a connected laptop that is a nuisance; on an air-gapped build
+    # server it is the difference between "the mirror worked" and "cmake cannot
+    # find a compiler", with nothing connecting the two messages. Say it here,
+    # where the paths are already in hand.
+    bins = [d / "bin" for d in installed if (d / "bin").is_dir()]
+    if bins:
+        print("\nadd these to PATH before `alloy build` — it looks for the cross "
+              "compiler on PATH only:")
+        print(f'  export PATH="{":".join(str(b) for b in bins)}:$PATH"')
     return 1 if failures else 0

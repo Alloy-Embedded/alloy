@@ -31,6 +31,8 @@
 //          superstep against 1..16 runnable tasks.
 //   exec   alloy::async::executor: an empty superstep, and one wake+resume of a
 //          coroutine parked on an event, against 1..8 tasks.
+//   parked what a SUSPENDED task costs per superstep — nothing when it waits
+//          on an event, a timer-list walk when it waits on delay().
 //   jitter the doctrine, measured: how late a `co_await delay(2ms)` actually
 //          wakes — alone, and beside a task that runs 5 ms without yielding.
 //          Reported in µs of the firmware's OWN timebase, so it is a property
@@ -273,6 +275,7 @@ constexpr std::size_t kMaxAsync = 8;
 async::executor<16> ex;
 async::event ev[kMaxAsync];
 async::task_storage<256> park_frame[kMaxAsync];
+async::task_storage<256> sleeper_frame[kMaxAsync];
 async::task_storage<256> jitter_frame;
 async::task_storage<256> hog_frame;
 
@@ -281,6 +284,17 @@ async::task_storage<256> hog_frame;
 async::task park(async::task_storage<256>&, async::event& e) {
     for (;;) {
         co_await e;
+    }
+}
+
+// Parks on a TIMER instead. The two are not the same to the executor: an
+// event-parked task is in no list at all, while a sleeping one holds a
+// timer_node that run_once() walks on EVERY superstep before it looks at the
+// ready queue. Measured separately because that difference is a per-superstep
+// cost the doctrine has to state.
+async::task sleeper(async::task_storage<256>&) {
+    for (;;) {
+        co_await async::delay(60000ms);
     }
 }
 
@@ -515,6 +529,38 @@ int main() {
     wu(uart, hog_max);
     uart.write("\r\n");
 
+    // --- parked ------------------------------------------------------------
+    // What a SUSPENDED task costs per superstep. "Parked" is not one thing:
+    // a task waiting on an event is in no list the executor owns, but a task
+    // inside `co_await delay(...)` holds a timer_node that run_once() walks
+    // before it touches the ready queue. Measured LAST so nothing above is
+    // perturbed by the tasks spawned here.
+    // Let the hog retire first — it is still sleeping on delay(1ms) and its own
+    // timer node would land in the baseline.
+    {
+        const std::uint32_t t = alloy::uptime_ms();
+        while (alloy::uptime_ms() - t < 5u) {
+            ex.run_once();
+        }
+    }
+    auto empty_poll_x100 = [&]() {
+        const std::uint32_t t0 = alloy::uptime_us();
+        for (unsigned it = 0; it < kExecIters; ++it) {
+            ex.run_once();
+        }
+        const std::uint32_t us = alloy::uptime_us() - t0;
+        return static_cast<std::uint32_t>(static_cast<std::uint64_t>(us) * cpu_per_us *
+                                          100u / kExecIters);
+    };
+    const std::uint32_t parked_events = empty_poll_x100();
+    report_cost(uart, "parked events=8 timers=0", parked_events);
+    for (std::size_t i = 0; i < kMaxAsync; ++i) {
+        ex.spawn(sleeper(sleeper_frame[i]));
+    }
+    ex.run_once();  // every sleeper reaches its first co_await and arms a timer
+    const std::uint32_t parked_timers = empty_poll_x100();
+    report_cost(uart, "parked events=8 timers=8", parked_timers);
+
     // --- in-band verdicts --------------------------------------------------
     // The emulation leg gates on THESE, not on the raw figures: a number that
     // moves with the emulator's speed is not a regression, but a broken
@@ -526,6 +572,10 @@ int main() {
     //     an EMPTY one costs almost nothing.
     //  3. the executor does NOT preempt: a 5 ms non-yielding task pushes a 2 ms
     //     delay out past 4 ms, while unloaded it lands within one extra tick.
+    //  4. a task parked on an EVENT costs nothing per superstep, but a task
+    //     parked on a TIMER does — run_once() walks the timer list every time.
+    //     The guide used to claim both were free; this verdict is why it no
+    //     longer does.
     // !g_irq_timeout matters: without it a raw leg that never vectored reads as
     // 0 and would SATISFY "alloy costs more than raw" — a green verdict from a
     // measurement that did not happen. (Seen for real on an STM32F722, where
@@ -534,10 +584,14 @@ int main() {
                             chained.mean_x100() > via_alloy.mean_x100();
     const bool v_mask = masked100.mean_x100() > masked0.mean_x100() * 2u;
     const bool v_cooperative = idle_max < 4000u && hog_max >= 4000u;
+    // `parked_events > 0` guards the same vacuity the irq legs needed: if the
+    // baseline never measured, 0 < anything would read as a pass.
+    const bool v_parked = parked_events > 0u && parked_timers > parked_events * 2u;
     uart.write(v_dispatch ? "verdict dispatch: ok\r\n" : "verdict dispatch: FAIL\r\n");
     uart.write(v_mask ? "verdict mask: ok\r\n" : "verdict mask: FAIL\r\n");
     uart.write(v_cooperative ? "verdict cooperative: ok\r\n"
                              : "verdict cooperative: FAIL\r\n");
+    uart.write(v_parked ? "verdict parked: ok\r\n" : "verdict parked: FAIL\r\n");
     uart.write("concurrency_probe done\r\n");
 
     for (;;) {

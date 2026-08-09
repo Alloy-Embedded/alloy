@@ -263,3 +263,43 @@ def test_fetch_refuses_to_mirror_a_bad_digest(tmp_path, monkeypatch) -> None:
     assert toolchains.fetch(mirror, [toolchains._platform_key()], None,
                             json_progress=False) == 1
     assert not (mirror / archive.name).exists()
+
+
+def test_setup_prints_the_path_export_its_own_install_requires(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    """An install into ~/.alloy/tools is not yet a build.
+
+    `alloy build` resolves the cross compiler on PATH and nowhere else, so on an
+    air-gapped host a perfect mirror still ends in "The CXX compiler
+    identification is unknown" unless the operator exports the path. `setup`
+    has the directory in hand at that moment; it must say so.
+    """
+    installed = tmp_path / "tools" / "arm-gnu-toolchain"
+    (installed / "bin").mkdir(parents=True)
+
+    monkeypatch.setattr(toolchains, "check_status", lambda _f: [
+        {"tool": "arm-gnu-toolchain", "status": "missing", "kind": "archive",
+         "installable": True, "remedy": "", "path": None},
+    ])
+    monkeypatch.setattr(toolchains, "install_tool",
+                        lambda *_a, **_k: installed)
+
+    assert toolchains.setup(None, check_only=False, json_out=False,
+                            json_progress=False) == 0
+    out = capsys.readouterr().out
+    assert "export PATH=" in out
+    assert str(installed / "bin") in out
+
+
+def test_setup_says_nothing_about_path_when_it_installed_nothing(
+    monkeypatch, capsys
+) -> None:
+    """The negative control for the line above: no install, no advice."""
+    monkeypatch.setattr(toolchains, "check_status", lambda _f: [
+        {"tool": "arm-gnu-toolchain", "status": "path", "kind": "archive",
+         "installable": True, "remedy": "", "path": "/usr/bin/arm-none-eabi-gcc"},
+    ])
+    assert toolchains.setup(None, check_only=False, json_out=False,
+                            json_progress=False) == 0
+    assert "export PATH=" not in capsys.readouterr().out

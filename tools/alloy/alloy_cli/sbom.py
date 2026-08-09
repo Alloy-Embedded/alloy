@@ -184,6 +184,20 @@ _RUNTIME_ARCHIVES = {
 }
 
 
+# Directory names that mean "this is somebody else's code" inside src/alloy.
+# Both vendored packages alloy carries today live under one of these
+# (src/alloy/net/vendor/lwip, src/alloy/fs/vendor), so a file under one that
+# matches no _VENDORED entry is an UNDECLARED third-party tree, not framework
+# code — without this it would be attributed to alloy's own MIT component and
+# vanish from the report, which is exactly the silence this command exists to
+# prevent.
+_VENDOR_DIR_NAMES = frozenset({"vendor", "vendored", "third_party", "3rdparty", "external"})
+
+
+def _looks_vendored(rel: Path) -> bool:
+    return any(part in _VENDOR_DIR_NAMES for part in rel.parts)
+
+
 def _nearest_license_file(start: Path, stop: Path) -> Path | None:
     """Walk up from `start` to `stop` looking for a licence file.
 
@@ -342,7 +356,9 @@ def components(project: Project, chip: dict[str, Any]) -> list[Component]:
         else:
             if path.is_relative_to(project.root / "src"):
                 continue  # the application, reported separately
-            if path.is_relative_to(alloy_root / "src"):
+            if path.is_relative_to(alloy_root / "src") and not _looks_vendored(
+                path.relative_to(alloy_root / "src")
+            ):
                 framework.append(path)
             else:
                 # Compiled, but from no tree alloy knows about. Attribute it to
