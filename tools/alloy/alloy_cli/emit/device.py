@@ -56,6 +56,24 @@ def curated_peripherals(chip: dict[str, Any]) -> dict[str, Any]:
     return {n: p for n, p in chip["peripherals"].items() if not p.get("uncurated")}
 
 
+def pin_port_peripheral(chip: dict[str, Any], pin_name: str) -> str:
+    """Which GPIO-port PERIPHERAL owns a pin — the one rule, in one place.
+
+    A pin says which port letter it is on; the peripheral that drives that port
+    is named by vendor convention (`gpioX` on ST/others, `pioX` on Microchip) or
+    stated outright by the pin's own `bank`. device.hpp needs it to give every
+    pin a `port_t`; `alloy chip-status` needs it to answer "is this GPIO port
+    reachable from a board role" when a role names a bare pin and no peripheral.
+    """
+    pin = chip["pins"][pin_name]
+    candidates = ([pin["bank"]] if "bank" in pin else
+                  [f"gpio{pin['port']}", f"pio{pin['port']}"])
+    port_periph = next((c for c in candidates if c in chip["peripherals"]), None)
+    if port_periph is None:
+        raise EmitError(f"pin {pin_name}: none of {candidates} is a peripheral in chip data")
+    return port_periph
+
+
 #: Pointer width per architecture. Only entries that are NOT 32-bit need to be
 #: here; everything else keeps the 32-bit spelling it always had.
 _PTR_BITS = {"rl78_s3": 16}
@@ -209,11 +227,7 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
     pin_blocks: list[str] = []
     for pname in sorted(chip.get("pins", {})):
         pin = chip["pins"][pname]
-        candidates = ([pin["bank"]] if "bank" in pin else
-                      [f"gpio{pin['port']}", f"pio{pin['port']}"])
-        port_periph = next((c for c in candidates if c in chip["peripherals"]), None)
-        if port_periph is None:
-            raise EmitError(f"pin {pname}: none of {candidates} is a peripheral in chip data")
+        port_periph = pin_port_peripheral(chip, pname)
         lines = [
             f"struct {pname}_t {{",
             f"    using port_t = {port_periph}_t;",

@@ -14,6 +14,15 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **`alloy chip-status <chip>`** (`--json`) — the peripheral coverage
+  scoreboard: per peripheral instance, is there curated register data, a HAL
+  driver, a Renode model, and is it bound by a board role? Every column is
+  DERIVED (chip yaml, `alloy-devices/registers/`, `src/alloy/hal/`,
+  `emit/renode.py`'s model tables, `boards/` + `roles.py`), so it cannot rot
+  the way a checklist does. The headline — "X of Y peripherals curated, Z with
+  drivers" — is stated with what it does and does not count. See
+  [docs/reference/chip-coverage.md](docs/reference/chip-coverage.md), which
+  records the STM32G0B1RE baseline the coverage push is measured against.
 - **`alloy devices`** — report the chip database this project resolves: root,
   declared version, and a content digest over every schema/register/chip file.
   `--pin` writes both into `alloy.toml` under `[devices]`, and from then on any

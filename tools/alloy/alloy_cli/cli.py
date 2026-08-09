@@ -631,6 +631,25 @@ def cmd_chip_info(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_chip_status(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .chip_status import chip_status, format_status, resolve_chip_id  # noqa: PLC0415
+    from .project import _find_alloy_root, _find_devices_root  # noqa: PLC0415
+
+    alloy_root = _find_alloy_root(Path.cwd())
+    devices_root = _find_devices_root(alloy_root)
+    # A project's own boards/ shadow the framework's, so run inside one and the
+    # "reachable from a board role" column answers about YOUR boards too.
+    cwd = Path.cwd().resolve()
+    project_root = cwd if (cwd / "alloy.toml").exists() else None
+    status = chip_status(alloy_root, devices_root,
+                         resolve_chip_id(devices_root, args.chip), project_root)
+    print(json.dumps(status, indent=2) if getattr(args, "json", False)
+          else format_status(status))
+    return 0
+
+
 def _layout(args: argparse.Namespace) -> str:
     return "ram" if getattr(args, "ram", False) else "flash"
 
@@ -1505,6 +1524,14 @@ def main() -> None:
                                 help="clock profiles + pins + peripherals for one chip (JSON)")
     p_chipinfo.add_argument("chip", help="an MCU id (see `alloy chips`)")
     p_chipinfo.set_defaults(func=cmd_chip_info)
+
+    p_cstat = sub.add_parser(
+        "chip-status",
+        help="peripheral coverage scoreboard for one chip: curated? driver? "
+             "Renode model? reachable from a board role?")
+    p_cstat.add_argument("chip", help="an MCU id (see `alloy chips`)")
+    p_cstat.add_argument("--json", action="store_true", help="machine-readable")
+    p_cstat.set_defaults(func=cmd_chip_status)
 
     p_clock = sub.add_parser("clock",
                              help="solve a PLL clock for a target frequency (JSON)")

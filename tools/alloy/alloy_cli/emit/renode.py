@@ -150,7 +150,38 @@ RENODE_WDG = {
 # cannot falsify a misreading of the reference manual that it shares with the
 # driver, and this one additionally had no NVIC connection, which made every
 # interrupt-driven DMA path untestable.
-_DMA_G0_MODEL = {"st/dma_v1"}
+RENODE_DMA = {"st/dma_v1": "DMA.STM32G0DMA"}
+
+# Flash CONTROLLER model. MTD's F4 model covers the F7 (same CR/SR + sector map
+# at each size) and services REAL sector erases against the MappedMemory. The G0
+# is deliberately absent — see the emission block.
+RENODE_FLASH = {"st/flash_f7": "MTD.STM32F4_FlashController"}
+
+# SAME70 EEFC: Renode ships no EFC model, so the platform emits a purpose-written
+# Python peripheral (see the emission block for what it is and is not faithful to).
+RENODE_EFC = {"microchip/efc_v1": "Python.PythonPeripheral"}
+
+# GPIO ports. Emitted only alongside an EXTI (their sole job in the platform is
+# to feed pin edges into it), which is why this table lives next to RENODE_EXTI.
+RENODE_GPIO = {"st/gpio_v2": "GPIOPort.STM32_GPIOPort"}
+
+
+def renode_models() -> dict[str, str]:
+    """Every IP this emitter knows a Renode model for: ``ip key -> model``.
+
+    The union of the tables above, and the ONLY place to ask the question "can
+    this silicon be emulated at all". It answers about the IP, not about a
+    particular platform: whether a given .repl actually instantiates the model
+    additionally depends on the chip's data and the board's roles (an ADC with
+    no `adc` role is not emitted, a flash controller needs curated data, a GPIO
+    port needs an EXTI). A reporter that wants "modelled" must say which of the
+    two it means; `alloy chip-status` says IP.
+    """
+    models: dict[str, str] = {}
+    for table in (RENODE_UART, RENODE_I2C, RENODE_SPI, RENODE_EXTI, RENODE_ADC,
+                  RENODE_WDG, RENODE_DMA, RENODE_FLASH, RENODE_EFC, RENODE_GPIO):
+        models.update(table)
+    return models
 
 
 # Cortex-M System Control Space / NVIC base. Architectural — identical on every
@@ -271,11 +302,11 @@ def _resolve_dma(chip: dict[str, Any]):
     board role, so this keys straight off the chip peripheral."""
     for name in ("dma1", "dma"):
         periph = chip["peripherals"].get(name)
-        if periph and not periph.get("uncurated") and periph.get("ip") in _DMA_G0_MODEL:
+        if periph and not periph.get("uncurated") and periph.get("ip") in RENODE_DMA:
             ch = periph.get("channels") or {}
             if not all(k in ch for k in ("count", "irqline1", "irqline2_3", "irqline4_7")):
                 return None  # data too thin to wire interrupts: emit nothing
-            return name, int(periph["base"], 16), ch
+            return name, int(periph["base"], 16), ch, RENODE_DMA[periph["ip"]]
     return None
 
 
@@ -319,13 +350,13 @@ def _resolve_exti(chip: dict[str, Any]):
     if any(g["irq"] not in irqs for g in groups):
         return None
     ports = sorted(
-        (int(p["port_index"]), pname, int(p["base"], 16))
+        (int(p["port_index"]), pname, int(p["base"], 16), RENODE_GPIO[p["ip"]])
         for pname, p in chip.get("peripherals", {}).items()
-        if not p.get("uncurated") and "port_index" in p
+        if not p.get("uncurated") and "port_index" in p and p.get("ip") in RENODE_GPIO
     )
     if len(ports) < 2:
         return None
-    bases = sorted(b for _, _, b in ports)
+    bases = sorted(b for _, _, b, _m in ports)
     aperture = min(b - a for a, b in zip(bases, bases[1:]) if b > a)
     resolved = [(g["irq"], irqs[g["irq"]], int(g["first"]), int(g["last"]))
                 for g in sorted(groups, key=lambda g: g["first"])]
@@ -462,7 +493,7 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 """
     dma = _resolve_dma(chip)
     if dma is not None:
-        dma_name, dma_base, dma_ch = dma
+        dma_name, dma_base, dma_ch, dma_model = dma
         count = int(dma_ch["count"])
         line1 = int(dma_ch["irqline1"])
         line23 = int(dma_ch["irqline2_3"])
@@ -481,7 +512,7 @@ nvicInput{line47}: Miscellaneous.CombinedInput @ none
     numberOfInputs: {rest}
     -> nvic@{line47}
 
-{dma_name}: DMA.STM32G0DMA @ sysbus {dma_base:#010x}
+{dma_name}: {dma_model} @ sysbus {dma_base:#010x}
     numberOfChannels: {count}
     0 -> nvic@{line1}
     [1, 2] -> nvicInput{line23}@[0, 1]
@@ -564,9 +595,9 @@ nvicInput{irqn}: Miscellaneous.CombinedInput @ none
     numberOfOutputLines: {max(g[3] for g in exti_groups) + 1}
 {conns}
 """
-        for port_index, port_name, port_base in exti_ports:
+        for port_index, port_name, port_base, port_model in exti_ports:
             platform += f"""
-{port_name}: GPIOPort.STM32_GPIOPort @ sysbus <{port_base:#010x}, +{exti_ap:#x}>
+{port_name}: {port_model} @ sysbus <{port_base:#010x}, +{exti_ap:#x}>
     [0-15] -> {exti_name}#{port_index}@[0-15]
 """
     # Flash controller: only for IPs Renode models faithfully. MTD's F4 model
@@ -575,9 +606,9 @@ nvicInput{irqn}: Miscellaneous.CombinedInput @ none
     # is genuinely modeled, not a no-op. G0 stays without a controller model on
     # purpose (its legs are green on direct memory writes; do not disturb).
     fc = chip.get("peripherals", {}).get("flash")
-    if fc and not fc.get("uncurated") and fc.get("ip") == "st/flash_f7":
+    if fc and not fc.get("uncurated") and fc.get("ip") in RENODE_FLASH:
         platform += f"""
-flash_ctrl: MTD.STM32F4_FlashController @ sysbus {int(fc["base"], 16):#010x}
+flash_ctrl: {RENODE_FLASH[fc["ip"]]} @ sysbus {int(fc["base"], 16):#010x}
     flash: flash
 """
     # SAME70 EEFC: Renode ships no EFC model, so emit a purpose-written one (the
@@ -591,7 +622,7 @@ flash_ctrl: MTD.STM32F4_FlashController @ sysbus {int(fc["base"], 16):#010x}
     # row-once discipline is enforced by construction in microchip_efc_v1.hpp,
     # not claimed as emulation-proven.
     efc = chip.get("peripherals", {}).get("efc")
-    if efc and not efc.get("uncurated") and efc.get("ip") == "microchip/efc_v1":
+    if efc and not efc.get("uncurated") and efc.get("ip") in RENODE_EFC:
         flash_mem = next(m for m in chip["memories"] if m["kind"] == "flash")
         fb = int(flash_mem["base"], 16) if isinstance(flash_mem["base"], str) else int(flash_mem["base"])
         platform += f"""

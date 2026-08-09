@@ -129,6 +129,7 @@ nav:
       - guide/vscode.md
   - Concepts:
       - reference/architecture.md
+      - reference/chip-coverage.md
       - reference/error-handling.md
       - reference/stability.md
       - reference/safety.md

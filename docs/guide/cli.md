@@ -99,6 +99,7 @@ tells you what fits where.
 | `alloy board-validate [<id>] [--file f\|-]` — **JSON** | every problem located, with the pins that *would* work |
 | `alloy board-clone <src> <new>` | copy a curated board into your project as an editable one |
 | `alloy chip-info <chip>` — JSON | clock profiles, pin map with alternate functions, peripherals, role catalogue |
+| `alloy chip-status <chip> [--json]` | per peripheral: curated register data? HAL driver? Renode model? reachable from a board role? — see [Chip coverage](../reference/chip-coverage.md) |
 | `alloy clock --chip <id> --mhz <n> [--hse <mhz>]` — JSON | solve a PLL for a target frequency |
 | `alloy clock --chip <id> --graph [--profile p]` — **JSON** | the whole clock: sources, buses, and what each peripheral is fed |
 

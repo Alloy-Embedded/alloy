@@ -28,7 +28,8 @@ SRC = REPO / "src" / "alloy"
 PUBLIC_VERBS = {
     "new", "boards", "board-info", "board-clone", "ci-init", "matrix", "svd",
     "board-validate", "product-validate", "size", "crash", "chips", "devices",
-    "chip-info", "clock", "clean", "set-board", "setup", "debug-info",
+    "chip-info", "chip-status", "clock", "clean", "set-board", "setup",
+    "debug-info",
     "emulate", "test", "frame-audit", "sbom", "lib", "image", "keygen",
     "secure", "provision", "ports", "update", "gen", "build", "flash",
     "monitor", "run",
@@ -40,7 +41,8 @@ PUBLIC_VERBS = {
 PUBLIC_SCHEMAS = {
     "alloy.board.v1", "alloy.board_info.v1", "alloy.board_validate.v1",
     "alloy.boards.v1", "alloy.build.v1", "alloy.chip_info.v1",
-    "alloy.chips.v1", "alloy.clock.v1", "alloy.clock_graph.v1",
+    "alloy.chip_status.v1", "alloy.chips.v1", "alloy.clock.v1",
+    "alloy.clock_graph.v1",
     "alloy.crash.v1", "alloy.debug_info.v1", "alloy.devices.v1",
     "alloy.family.v1", "alloy.libs.v1", "alloy.matrix.v1", "alloy.ports.v1",
     "alloy.product.v1", "alloy.product_validate.v1", "alloy.registry.v1",
