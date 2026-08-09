@@ -10,13 +10,11 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/portable-code/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/safety/">
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../stability/">
       
-      
-        <link rel="next" href="../boards/">
       
       
         
@@ -27,7 +25,7 @@
     
     
       
-        <title>Portable code - alloy</title>
+        <title>Safety posture - alloy</title>
       
     
     
@@ -80,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portable-code" class="md-skip">
+        <a href="#safety-posture" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portable code
+              Safety posture
             
           </span>
         </div>
@@ -263,12 +261,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../getting-started/" class="md-tabs__link">
           
   
@@ -291,7 +287,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../peripherals/" class="md-tabs__link">
+        <a href="../../guide/peripherals/" class="md-tabs__link">
           
   
   
@@ -313,7 +309,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../emulation/" class="md-tabs__link">
+        <a href="../../guide/emulation/" class="md-tabs__link">
           
   
   
@@ -335,7 +331,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../cli/" class="md-tabs__link">
+        <a href="../../guide/cli/" class="md-tabs__link">
           
   
   
@@ -353,11 +349,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../architecture/" class="md-tabs__link">
           
   
   
@@ -447,10 +445,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -466,22 +462,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -499,7 +492,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -542,37 +535,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portable code
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../guide/portable-code/" class="md-nav__link">
         
   
   
@@ -588,72 +554,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Board roles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Capabilities and if constexpr
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Errors you can read
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Putting it together
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -666,7 +566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../boards/" class="md-nav__link">
+      <a href="../../guide/boards/" class="md-nav__link">
         
   
   
@@ -694,7 +594,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../../guide/examples/" class="md-nav__link">
         
   
   
@@ -797,7 +697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../peripherals/" class="md-nav__link">
+      <a href="../../guide/peripherals/" class="md-nav__link">
         
   
   
@@ -825,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
+      <a href="../../guide/async/" class="md-nav__link">
         
   
   
@@ -853,7 +753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../libraries/" class="md-nav__link">
+      <a href="../../guide/libraries/" class="md-nav__link">
         
   
   
@@ -881,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../products/" class="md-nav__link">
+      <a href="../../guide/products/" class="md-nav__link">
         
   
   
@@ -909,7 +809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adding-a-board/" class="md-nav__link">
+      <a href="../../guide/adding-a-board/" class="md-nav__link">
         
   
   
@@ -937,7 +837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+      <a href="../../guide/testing/" class="md-nav__link">
         
   
   
@@ -965,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../escape-hatch/" class="md-nav__link">
+      <a href="../../guide/escape-hatch/" class="md-nav__link">
         
   
   
@@ -1064,7 +964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../emulation/" class="md-nav__link">
+      <a href="../../guide/emulation/" class="md-nav__link">
         
   
   
@@ -1092,7 +992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firmware-update/" class="md-nav__link">
+      <a href="../../guide/firmware-update/" class="md-nav__link">
         
   
   
@@ -1120,7 +1020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../security/" class="md-nav__link">
+      <a href="../../guide/security/" class="md-nav__link">
         
   
   
@@ -1148,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../crash-reports/" class="md-nav__link">
+      <a href="../../guide/crash-reports/" class="md-nav__link">
         
   
   
@@ -1176,7 +1076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../supply-chain/" class="md-nav__link">
+      <a href="../../guide/supply-chain/" class="md-nav__link">
         
   
   
@@ -1269,7 +1169,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../../guide/cli/" class="md-nav__link">
         
   
   
@@ -1297,7 +1197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vscode/" class="md-nav__link">
+      <a href="../../guide/vscode/" class="md-nav__link">
         
   
   
@@ -1329,8 +1229,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1346,19 +1248,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -1376,7 +1281,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1394,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -1422,7 +1327,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/error-handling/" class="md-nav__link">
+      <a href="../error-handling/" class="md-nav__link">
         
   
   
@@ -1450,7 +1355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/stability/" class="md-nav__link">
+      <a href="../stability/" class="md-nav__link">
         
   
   
@@ -1475,10 +1380,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/safety/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety posture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1494,6 +1426,144 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scope-of-the-measurements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope of the measurements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-no-exceptions-no-rtti" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. No exceptions, no RTTI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-no-libc-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. No libc heap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-no-recursion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. No recursion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bounded-stack-with-real-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Bounded stack — with real numbers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bounded stack — with real numbers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-number-includes-and-what-it-does-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the number includes, and what it does not
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-deterministic-control-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Deterministic control flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-facts-come-from-data-not-from-typing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Facts come from data, not from typing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-not-true-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is NOT true today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-running-any-of-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Re-running any of it
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1535,10 +1605,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
+  <a href="#scope-of-the-measurements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Board roles
+        Scope of the measurements
       
     </span>
   </a>
@@ -1546,10 +1616,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
+  <a href="#1-no-exceptions-no-rtti" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities and if constexpr
+        1. No exceptions, no RTTI
       
     </span>
   </a>
@@ -1557,10 +1627,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
+  <a href="#2-no-libc-heap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Errors you can read
+        2. No libc heap
       
     </span>
   </a>
@@ -1568,10 +1638,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#3-no-recursion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Putting it together
+        3. No recursion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bounded-stack-with-real-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Bounded stack — with real numbers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bounded stack — with real numbers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-number-includes-and-what-it-does-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the number includes, and what it does not
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-deterministic-control-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Deterministic control flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-facts-come-from-data-not-from-typing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Facts come from data, not from typing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-not-true-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is NOT true today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-running-any-of-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Re-running any of it
       
     </span>
   </a>
@@ -1598,101 +1740,331 @@
   
 
 
-<h1 id="portable-code">Portable code<a class="headerlink" href="#portable-code" title="Permanent link">&para;</a></h1>
-<p>alloy's headline promise is that <strong>one <code>main.cpp</code> recompiles for any board, with zero
-preprocessor conditionals</strong>. This page explains the three ideas that make that true.</p>
-<h2 id="board-roles">Board roles<a class="headerlink" href="#board-roles" title="Permanent link">&para;</a></h2>
-<p>A board provides a fixed set of <strong>roles</strong> — named objects your app talks to instead of raw
-peripherals:</p>
+<h1 id="safety-posture">Safety posture<a class="headerlink" href="#safety-posture" title="Permanent link">&para;</a></h1>
+<p>What is already true of an alloy image by construction, what the number
+actually is, <strong>how each one was checked</strong>, and — the part that matters more —
+what is <em>not</em> true today.</p>
+<p>Nothing on this page is a certification claim. Alloy has never been assessed
+against IEC 61508, ISO 26262 or DO-178C, uses no qualified tool chain, and
+carries no MISRA conformance statement. What it has is a set of properties you
+can re-verify yourself in about two minutes:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span><span class="w">          </span><span class="c1"># and the arm-none-eabi toolchain</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span>scripts/check_static_limits.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">== blink@nucleo_g071rb</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">ok   blink@nucleo_g071rb: no heap, no exceptions/RTTI, no recursion; peak stack 180 bytes (thread 132 + handler 16 + 32 entry), 3 indirect call(s) not followed, 10 frame(s) estimated, 0 vtable(s)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">== async_blink@nucleo_g071rb</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">ok   async_blink@nucleo_g071rb: … peak stack 128 bytes …</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">== fs@nucleo_g0b1re</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">ok   fs@nucleo_g0b1re: … peak stack 1776 bytes …</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">== http_server@nucleo_f767zi</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">ok   http_server@nucleo_f767zi: … peak stack 688 bytes …</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">== negative control: a project that DOES recurse and DOES allocate</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">ok   negative control: recursion detected — _Z4pingi -&gt; _Z4pongi -&gt; _Z4pingi</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">ok   negative control: heap detected — [&#39;_free_r&#39;, &#39;_malloc_r&#39;, &#39;_sbrk&#39;, &#39;_sbrk_r&#39;, &#39;free&#39;, &#39;malloc&#39;]</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">== negative control: -fno-exceptions / -fno-rtti actually refuse the code</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">ok   control: the same code compiles when the flags are absent</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="go">ok   negative control: refused — 4 compile error(s)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="go">static limits: every claim on docs/reference/safety.md holds</span>
+</span></code></pre></div>
+<p>The negative controls are the point. A checker that only ever prints "clean"
+proves nothing, so every property below is paired with a deliberately broken
+build that the same checker <strong>must</strong> catch.</p>
+<hr />
+<h2 id="scope-of-the-measurements">Scope of the measurements<a class="headerlink" href="#scope-of-the-measurements" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>What it is</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>board::led</code></td>
-<td>the status LED</td>
+<td>Analysed</td>
+<td><strong>146 linked ELF images</strong> — every example × board build tree in this repo</td>
 </tr>
 <tr>
-<td><code>board::button</code></td>
-<td>the user button</td>
+<td>Boards</td>
+<td>7: <code>nucleo_g071rb</code> (29), <code>same70_xplained</code> (28), <code>nucleo_g0b1re</code> (25), <code>nucleo_f722ze</code> (21), <code>rp2040_zero</code> (19), <code>raspberry_pi_pico</code> (16), <code>nucleo_f767zi</code> (8)</td>
 </tr>
 <tr>
-<td><code>board::debug_uart</code></td>
-<td>the console UART</td>
+<td>Architecture</td>
+<td><strong>Cortex-M only</strong></td>
 </tr>
 <tr>
-<td><code>board::i2c</code>, <code>board::spi</code></td>
-<td>the wired bus</td>
+<td>Not measured</td>
+<td><strong>Xtensa (ESP32) and RL78.</strong> The RL78 backend is new and has no released binary toolchain here; no number on this page covers either.</td>
 </tr>
 <tr>
-<td><code>board::adc</code>, <code>board::led_pwm</code></td>
-<td>analog in / PWM out</td>
-</tr>
-<tr>
-<td><code>board::watchdog</code>, <code>board::rtc</code>, <code>board::nvm</code></td>
-<td>system services</td>
+<td>Tool</td>
+<td><code>scripts/static_limits.py</code>, ~450 lines, no dependencies beyond binutils</td>
 </tr>
 </tbody>
 </table>
-<p>Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
-an address, or a vendor. The board data binds each role to the right pins with <strong>compile-time
-route checking</strong>.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
+<hr />
+<h2 id="1-no-exceptions-no-rtti">1. No exceptions, no RTTI<a class="headerlink" href="#1-no-exceptions-no-rtti" title="Permanent link">&para;</a></h2>
+<p><strong>True, and enforced at compile time — which is stronger than "the image
+happens to contain no unwinder".</strong></p>
+<p>How it is checked, three ways:</p>
+<ol>
+<li><strong>The flags.</strong> <code>tools/alloy/alloy_cli/build.py</code> puts <code>-fno-exceptions</code>,
+   <code>-fno-rtti</code>, <code>-fno-threadsafe-statics</code> and <code>-fno-use-cxa-atexit</code> on every
+   C++ translation unit of every firmware build. The host test suite
+   (<code>tests/CMakeLists.txt</code>) uses the same first two, so a test cannot pass
+   using machinery the firmware does not have.</li>
+<li><strong>The compiler refuses.</strong> A translation unit containing <code>throw</code> and
+   <code>typeid</code> compiles cleanly with default flags and fails with <strong>4 errors</strong>
+   under alloy's — <code>cannot use 'typeid' with '-fno-rtti'</code> and the exception
+   equivalents. That is negative control 2 above.</li>
+<li><strong>The image.</strong> No <code>__cxa_throw</code>, <code>__cxa_allocate_exception</code>,
+   <code>__gxx_personality_v0</code> or <code>_Unwind_RaiseException</code> in any of the 146
+   images; <code>.eh_frame</code> is 0 bytes; the linker script <code>/DISCARD/</code>s
+   <code>.ARM.exidx</code> and <code>.ARM.extab</code> outright.</li>
+</ol>
+<p>Two honest footnotes:</p>
+<ul>
+<li><code>-fno-rtti</code> does <strong>not</strong> forbid virtual functions. Virtual dispatch is legal
+  and the checker reports vtables (<code>_ZTV…</code>) rather than failing on them. All
+  146 images happen to carry <strong>zero</strong> vtables today, but that is a property of
+  the code written so far, not a rule.</li>
+<li>Error handling therefore uses return values and <code>expected</code>-shaped types
+  throughout — see <a href="../error-handling/">Error handling</a>.</li>
+</ul>
+<h2 id="2-no-libc-heap">2. No libc heap<a class="headerlink" href="#2-no-libc-heap" title="Permanent link">&para;</a></h2>
+<p><strong>True, with a qualification that matters.</strong></p>
+<ul>
+<li>No <code>malloc</code>, <code>calloc</code>, <code>realloc</code>, <code>free</code>, <code>_sbrk</code>, <code>operator new</code> or
+  <code>operator delete</code> is defined or referenced in any of the 146 images.</li>
+<li>The linker script is heapless by design but still defines <code>end</code> /
+  <code>__heap_start</code>, so a stray <code>printf</code> gets a bounded region and a link-time
+  error instead of <code>undefined reference to 'end'</code>.</li>
+<li>Static footprint that does not fit fails the <strong>link</strong> — the <code>._heap_stack</code>
+  region is placed <code>&gt; RAM</code> and reserves <code>_Min_Stack_Size</code> (0x800 by default,
+  overridable with <code>--defsym</code>), so an overflow is a readable "region RAM
+  overflowed", not silent corruption at runtime.</li>
+</ul>
+<p><strong>The qualification:</strong> "no heap" is not "no allocation". The lwIP images
+define <code>mem_malloc</code>, <code>memp_malloc</code>, <code>mem_free</code> and friends — those are lwIP's
+own allocators over <strong>fixed static pools</strong> sized in the generated
+<code>lwipopts.h</code> (<code>MEM_SIZE</code>, <code>PBUF_POOL_SIZE</code>, <code>MEMP_NUM_*</code>). They cannot grow,
+they never call <code>sbrk</code>, and they fail by returning null. If your posture
+requires <em>no dynamic allocation of any kind</em>, an lwIP image does not qualify;
+a non-networked one does.</p>
+<p>Negative control: a project that calls <code>std::malloc</code> links, and the checker
+reports <code>['_free_r', '_malloc_r', '_sbrk', '_sbrk_r', 'free', 'malloc']</code>.</p>
+<h2 id="3-no-recursion">3. No recursion<a class="headerlink" href="#3-no-recursion" title="Permanent link">&para;</a></h2>
+<p><strong>True in the direct-call graph of all 146 images. Conditional on indirect
+calls, and that condition is stated with every result.</strong></p>
+<p>Method: disassemble the linked image, build a call graph from <code>bl</code>/<code>blx</code> to a
+symbol plus <code>b</code>/<code>b.w</code> landing on another function's entry (that is how <code>-Os</code>
+spells a tail call), then look for cycles with a DFS. Only <code>STT_FUNC</code> symbols
+are considered, so const tables emitted into <code>.text</code> are not mistaken for code.</p>
+<p>Result: <strong>zero cycles, in every image, on every board.</strong> That includes the
+lwIP and littlefs images, which are where recursion normally hides.</p>
+<p>What this does <strong>not</strong> cover: calls made through a register or a table are
+invisible to the method. They are counted and printed with every result —
+3 in a plain <code>blink</code>, 5 with the async executor, 18 in the littlefs image,
+25–28 in the lwIP ones. Two of the three in <code>blink</code> are <code>Reset_Handler</code>
+walking <code>__init_array_start</code>…<code>__init_array_end</code>; the third is
+<code>alloy_irq_dispatch</code> reaching the registered handler. A recursion that exists
+only through a function pointer would not be found.</p>
+<p>The usual trap is littlefs, and it is clean for a reason worth knowing: the
+recursive <code>lfs_dir_traverse</code> was replaced upstream by an explicit bounded
+stack — <code>struct lfs_dir_traverse stack[LFS_DIR_TRAVERSE_DEPTH-1]</code> with
+<code>LFS_DIR_TRAVERSE_DEPTH 3</code> (<code>src/alloy/fs/vendor/lfs.c:889,920</code>).</p>
+<p>Negative control: a mutually recursive pair marked <code>noinline,noipa</code> (so <code>-Os</code>
+cannot turn it into a loop) is reported as
+<code>_Z4pingi -&gt; _Z4pongi -&gt; _Z4pingi</code>.</p>
+<h2 id="4-bounded-stack-with-real-numbers">4. Bounded stack — with real numbers<a class="headerlink" href="#4-bounded-stack-with-real-numbers" title="Permanent link">&para;</a></h2>
+<p><strong>A bound can be computed, and here it is. It is an engineering estimate, not
+a certified WCET result.</strong></p>
+<p>Every C and C++ file is now compiled with <code>-fstack-usage</code>, so GCC writes each
+function's frame size beside its object file. <code>static_limits.py</code> matches those
+to the linked symbols by demangled name and sums along the longest path in the
+call graph.</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Thread (from <code>main</code>)</th>
+<th>Worst handler</th>
+<th>+ exception entry</th>
+<th><strong>Peak</strong></th>
+<th>RAM left for stack</th>
+<th>Peak as %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>blink@nucleo_g071rb</code></td>
+<td>132 B</td>
+<td>16 B</td>
+<td>32 B</td>
+<td><strong>180 B</strong></td>
+<td>36 696 B</td>
+<td>0.5 %</td>
+</tr>
+<tr>
+<td><code>async_blink@nucleo_g071rb</code></td>
+<td>80 B</td>
+<td>16 B</td>
+<td>32 B</td>
+<td><strong>128 B</strong></td>
+<td>36 112 B</td>
+<td>0.4 %</td>
+</tr>
+<tr>
+<td><code>http_server@nucleo_f767zi</code> (lwIP)</td>
+<td>648 B</td>
+<td>8 B</td>
+<td>32 B</td>
+<td><strong>688 B</strong></td>
+<td>460 376 B</td>
+<td>0.1 %</td>
+</tr>
+<tr>
+<td><code>fs@nucleo_g0b1re</code> (littlefs)</td>
+<td>1 728 B</td>
+<td>16 B</td>
+<td>32 B</td>
+<td><strong>1 776 B</strong></td>
+<td>146 264 B</td>
+<td>1.2 %</td>
+</tr>
+</tbody>
+</table>
+<p>Deepest across all 146 images: <code>fs</code> at 1 776 B; then <code>dhcp_echo</code> 952 B,
+<code>tcp_echo</code> 936 B, <code>modbus_rtu_server</code> 752 B. "RAM left for stack" is
+<code>_estack</code> minus <code>_end</code> from the image's own symbol table.</p>
+<p>The bound also reports a <strong>reset path</strong> (<code>Reset_Handler</code> → <code>main</code>) separately,
+because it runs before <code>main</code> and then hands over — 140 B in <code>blink</code>.</p>
+<h3 id="what-the-number-includes-and-what-it-does-not">What the number includes, and what it does not<a class="headerlink" href="#what-the-number-includes-and-what-it-does-not" title="Permanent link">&para;</a></h3>
+<p>Included: the deepest chain of compiler-declared frames from <code>main</code>, plus the
+deepest handler chain, plus the 8 words (32 B) Cortex-M pushes on exception
+entry.</p>
+<p><strong>Not</strong> included, and each one can only make the real figure larger:</p>
+<ul>
+<li><strong>Indirect calls are not followed</strong> (see above), so a deeper path reachable
+  only through a function pointer is not in the sum.</li>
+<li><strong>One level of interrupt nesting</strong> is assumed. If you enable priorities that
+  allow a second preemption, add that handler's path too.</li>
+<li><strong>No FP exception frame.</strong> These builds are <code>-mfloat-abi=soft</code>; a build with
+  lazy FP stacking pushes 18 more words.</li>
+<li><strong>Library functions the build did not compile</strong> have no <code>.su</code> file — 10 in
+  <code>blink</code>, all libgcc integer helpers (<code>__divdi3</code>, <code>__aeabi_ldivmod</code>, …).
+  Their frames are estimated from the disassembled body, which <em>over</em>-counts a
+  function with two alternative prologues. They are listed and marked <code>~</code> in
+  the output, and they are on the deepest <code>blink</code> path, which is why its 132 B
+  is flagged as containing an estimate.</li>
+<li><strong>No <code>alloca</code>, no VLAs</strong> are modelled. None appear in <code>src/alloy</code>; a project
+  that adds one is on its own.</li>
+</ul>
+<p>This is a design-review number. It is not produced by a qualified tool and
+should not be pasted into a safety case as though it were.</p>
+<h2 id="5-deterministic-control-flow">5. Deterministic control flow<a class="headerlink" href="#5-deterministic-control-flow" title="Permanent link">&para;</a></h2>
+<p><strong>True of the concurrency model as written; verify the parts you rely on.</strong></p>
+<ul>
+<li>One cooperative executor, one stack, single core. <code>alloy::scheduler</code>
+  (<code>src/alloy/sched.hpp</code>) is a fixed compile-time table of tasks run by a
+  <code>run_once(now)</code> superstep — no preemption between tasks, no context switch,
+  no heap. <code>alloy::async::executor_core</code> is the coroutine equivalent, with a
+  fixed ready queue; a second instance is a <code>__builtin_trap</code>, and a ready-queue
+  overflow traps rather than dropping work.</li>
+<li>Coroutine frames are statically sized: <code>task_storage&lt;N&gt;</code> declares the size
+  and <code>alloy frame-audit</code> reads the real frame sizes back out of the built
+  ELF's DWARF and compares. That is a genuine static memory check — of
+  coroutine frames, <strong>not</strong> of stack depth. Do not conflate the two.</li>
+<li>Interrupts are the only preemption. <code>run_once</code> is pure enough to be driven
+  with a fake clock on the host, which is how the scheduling logic is tested
+  without hardware.</li>
+<li><strong>Startup is not free of dynamic initialisation.</strong> 30 of the 146 images have
+  a non-empty <code>.init_array</code>, and <code>Reset_Handler</code>
+  (<code>src/alloy/arch/cortex_m/startup.cpp</code>) walks <code>__preinit_array</code> and
+  <code>__init_array</code> through function pointers before calling <code>main</code>. In the
+  littlefs image the two entries are the generated <code>board.hpp</code>'s static
+  objects. <code>-fno-use-cxa-atexit</code> means static <strong>destructors</strong> are never
+  registered and never run, which is correct for a <code>main</code> that does not return.</li>
+</ul>
+<h2 id="6-facts-come-from-data-not-from-typing">6. Facts come from data, not from typing<a class="headerlink" href="#6-facts-come-from-data-not-from-typing" title="Permanent link">&para;</a></h2>
+<p>Two mechanical guards, run by <code>scripts/check_contract.sh</code> in CI:</p>
+<ul>
+<li>no hardware address literal may appear in hand-written C++ under
+  <code>src/alloy</code> (they must come from the chip database), and</li>
+<li>a 32-bit mask may not be built from <code>1u</code>, whose width the target decides.</li>
+</ul>
+<p>These are not safety standards, but they remove two of the classic sources of
+"works on this chip" defects. See <a href="../stability/">Stability</a> for how to pin the
+database those facts come from — an unpinned database is a bigger correctness
+risk than anything on this page.</p>
+<hr />
+<h2 id="what-is-not-true-today">What is NOT true today<a class="headerlink" href="#what-is-not-true-today" title="Permanent link">&para;</a></h2>
+<p>Written plainly, because the value of this page is that you can trust the
+parts above.</p>
+<table>
+<thead>
+<tr>
+<th>Claim you might expect</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MISRA C++ conformance or a deviation record</strong></td>
+<td><strong>None.</strong> There is no MISRA configuration, no deviation register, and no static-analysis run of any kind in this repo. There is no <code>.clang-tidy</code> and no <code>.clang-format</code> either. Any MISRA posture would have to be built from scratch.</td>
+</tr>
+<tr>
+<td>Certified or qualified tooling</td>
+<td>None. The compiler is stock GCC; <code>static_limits.py</code> is a 450-line script with no qualification evidence.</td>
+</tr>
+<tr>
+<td>A safety manual, FMEDA, or failure-rate data</td>
+<td>None.</td>
+</tr>
+<tr>
+<td>Formal WCET or a sound stack analysis</td>
+<td>No. Section 4 states its own limits.</td>
+</tr>
+<tr>
+<td>The properties above on Xtensa or RL78</td>
+<td><strong>Unmeasured.</strong> Cortex-M only.</td>
+</tr>
+<tr>
+<td>"No dynamic allocation anywhere"</td>
+<td>False for lwIP images — static pools, see §2.</td>
+</tr>
+<tr>
+<td>"No virtual functions"</td>
+<td>Not a rule; today's images happen to have no vtables.</td>
+</tr>
+<tr>
+<td>Freedom from interference between tasks</td>
+<td>There is one stack and no MPU use. A task that overruns its arithmetic corrupts its neighbours like any other single-stack system.</td>
+</tr>
+<tr>
+<td>Redundancy, lockstep, or diagnostic coverage of the CPU</td>
+<td>Nothing of the kind exists.</td>
+</tr>
+</tbody>
+</table>
+<p>What <em>does</em> exist next to this page: a crash path that captures faults and
+decodes them (<code>alloy crash</code>), signed A/B updates with anti-rollback, RDP/WRP
+locking, and roughly fifteen blocking emulation legs in CI. Those are
+reliability engineering, not functional safety, and the difference is the
+subject of this page.</p>
+<hr />
+<h2 id="re-running-any-of-it">Re-running any of it<a class="headerlink" href="#re-running-any-of-it" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp"># </span>every<span class="w"> </span>property,<span class="w"> </span>four<span class="w"> </span>images,<span class="w"> </span>all<span class="w"> </span>negative<span class="w"> </span>controls
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">scripts/check_static_limits.sh</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="gp"># </span>a<span class="w"> </span>specific<span class="w"> </span>image
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">scripts/check_static_limits.sh http_server nucleo_f767zi</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="gp"># </span>the<span class="w"> </span>raw<span class="w"> </span>report<span class="w"> </span><span class="k">for</span><span class="w"> </span>one<span class="w"> </span>ELF,<span class="w"> </span>including<span class="w"> </span>the<span class="w"> </span>deepest<span class="w"> </span>path
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="go">python3 scripts/static_limits.py examples/fs/.alloy/build-tree/nucleo_g0b1re/out/fs.elf</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">python3 scripts/static_limits.py &lt;elf&gt; --json | jq .stack</span>
 </span></code></pre></div>
-<h2 id="capabilities-and-if-constexpr">Capabilities and <code>if constexpr</code><a class="headerlink" href="#capabilities-and-if-constexpr" title="Permanent link">&para;</a></h2>
-<p>Not every board has every role. Instead of <code>#ifdef</code>, alloy exposes compile-time booleans under
-<code>board::caps::*</code> and you branch with <code>if constexpr</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>The discarded branch is <strong>removed at compile time</strong>, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.</p>
-<div class="admonition info">
-<p class="admonition-title">Roles that are absent</p>
-<p>A small role you don't use degrades to a <strong>no-op stub</strong> (so <code>board::watchdog.feed()</code> always
-compiles). Using a role a board <em>truly</em> lacks — say <code>board::led</code> on a headless board —
-fails at <strong>compile time</strong> with a <code>static_assert</code> message, never at runtime.</p>
-</div>
-<h2 id="errors-you-can-read">Errors you can read<a class="headerlink" href="#errors-you-can-read" title="Permanent link">&para;</a></h2>
-<p>Portability is only useful if mistakes are caught early. Bind a UART to a pin that has no route
-to it and the compiler stops you, <strong>naming the pin</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   note: in instantiation of &#39;uart::bind&lt;usart2_t, tx&lt;pa5_t&gt;, rx&lt;pa3_t&gt;, ...&gt;&#39;
-</span></code></pre></div>
-<p>This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see <a href="../../reference/architecture/">Architecture</a>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><span class="filename">A portable app that adapts to what the board offers</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;up</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">adc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// only where an ADC role exists</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample ok</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
-source, no edits. The ADC block simply vanishes on a board without that role.</p>
+<p><code>static_limits.py --help</code> prints the method and its limits in full; they are
+also at the top of the file.</p>
 
 
 
@@ -1730,7 +2102,7 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get started">
+          <a href="../stability/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API stability and support">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1740,27 +2112,11 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
                 Previous
               </span>
               <div class="md-ellipsis">
-                Get started
+                API stability and support
               </div>
             </div>
           </a>
         
-        
-          
-          <a href="../boards/" class="md-footer__link md-footer__link--next" aria-label="Next: Boards">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                Boards
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
         
       </nav>
     

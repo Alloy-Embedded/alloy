@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/portable-code/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/escape-hatch/">
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../testing/">
       
       
-        <link rel="next" href="../boards/">
+        <link rel="next" href="../emulation/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Portable code - alloy</title>
+        <title>The escape hatch - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portable-code" class="md-skip">
+        <a href="#the-escape-hatch" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portable code
+              The escape hatch
             
           </span>
         </div>
@@ -263,12 +263,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../getting-started/" class="md-tabs__link">
           
   
@@ -287,10 +285,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../peripherals/" class="md-tabs__link">
           
   
@@ -447,10 +447,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -466,22 +464,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -499,7 +494,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -542,37 +537,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portable code
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../portable-code/" class="md-nav__link">
         
   
   
@@ -588,72 +556,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Board roles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Capabilities and if constexpr
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Errors you can read
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Putting it together
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -726,8 +628,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -749,19 +653,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -779,7 +686,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -962,10 +869,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../escape-hatch/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The escape hatch
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -981,6 +915,139 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-short-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The short answers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-headers-no-collision-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Headers: no collision, and why
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Headers: no collision, and why">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-bonus-you-get-for-free" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A bonus you get for free
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-calling-a-vendor-hal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Calling a vendor HAL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-writing-a-register-directly-three-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Writing a register directly — three routes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-what-does-collide-the-link-not-the-include" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. What DOES collide: the link, not the include
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. What DOES collide: the link, not the include">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-one-silent-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one silent case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-migrating-gradually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Migrating gradually
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building the example
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1535,10 +1602,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
+  <a href="#the-short-answers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Board roles
+        The short answers
       
     </span>
   </a>
@@ -1546,10 +1613,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
+  <a href="#1-headers-no-collision-and-why" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities and if constexpr
+        1. Headers: no collision, and why
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Headers: no collision, and why">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-bonus-you-get-for-free" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A bonus you get for free
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-calling-a-vendor-hal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Calling a vendor HAL
       
     </span>
   </a>
@@ -1557,10 +1652,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
+  <a href="#3-writing-a-register-directly-three-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Errors you can read
+        3. Writing a register directly — three routes
       
     </span>
   </a>
@@ -1568,10 +1663,49 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#4-what-does-collide-the-link-not-the-include" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Putting it together
+        4. What DOES collide: the link, not the include
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. What DOES collide: the link, not the include">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-one-silent-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one silent case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-migrating-gradually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Migrating gradually
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building the example
       
     </span>
   </a>
@@ -1598,101 +1732,188 @@
   
 
 
-<h1 id="portable-code">Portable code<a class="headerlink" href="#portable-code" title="Permanent link">&para;</a></h1>
-<p>alloy's headline promise is that <strong>one <code>main.cpp</code> recompiles for any board, with zero
-preprocessor conditionals</strong>. This page explains the three ideas that make that true.</p>
-<h2 id="board-roles">Board roles<a class="headerlink" href="#board-roles" title="Permanent link">&para;</a></h2>
-<p>A board provides a fixed set of <strong>roles</strong> — named objects your app talks to instead of raw
-peripherals:</p>
+<h1 id="the-escape-hatch">The escape hatch<a class="headerlink" href="#the-escape-hatch" title="Permanent link">&para;</a></h1>
+<p>Adopting alloy is not all-or-nothing. A company arriving with 40 000 lines of
+CubeMX-generated code, a register no HAL exposes, and an erratum workaround
+copied out of a forum post needs to know three things before it starts:</p>
+<ol>
+<li>can it call the vendor HAL it already has,</li>
+<li>can it write a register directly, and</li>
+<li>does including a vendor CMSIS header alongside alloy's generated ones break
+   anything?</li>
+</ol>
+<p>Everything below is answered by a build, not by a paragraph.
+<code>examples/escape_hatch/</code> does all three in one image; every output quoted here
+came from compiling and linking it.</p>
+<hr />
+<h2 id="the-short-answers">The short answers<a class="headerlink" href="#the-short-answers" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>What it is</th>
+<th>Question</th>
+<th>Answer</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>board::led</code></td>
-<td>the status LED</td>
+<td>Include a CMSIS-style device header next to alloy's?</td>
+<td><strong>No conflict.</strong> Even included <em>first</em>. Alloy's generated headers define zero preprocessor macros.</td>
 </tr>
 <tr>
-<td><code>board::button</code></td>
-<td>the user button</td>
+<td>Call a vendor HAL C function?</td>
+<td><strong>Yes</strong>, unchanged, <code>extern "C"</code>, compiled by <code>alloy build</code> like any other file under <code>src/</code>.</td>
 </tr>
 <tr>
-<td><code>board::debug_uart</code></td>
-<td>the console UART</td>
+<td>Poke a register directly?</td>
+<td><strong>Yes</strong>, three ways, in decreasing order of how much you should like them.</td>
 </tr>
 <tr>
-<td><code>board::i2c</code>, <code>board::spi</code></td>
-<td>the wired bus</td>
+<td>Link a vendor <code>startup_*.s</code> / <code>system_*.c</code>?</td>
+<td><strong>No</strong> — and it fails loudly at link time, not subtly.</td>
 </tr>
 <tr>
-<td><code>board::adc</code>, <code>board::led_pwm</code></td>
-<td>analog in / PWM out</td>
-</tr>
-<tr>
-<td><code>board::watchdog</code>, <code>board::rtc</code>, <code>board::nvm</code></td>
-<td>system services</td>
+<td>Define your own <code>&lt;PERIPH&gt;_IRQHandler</code>?</td>
+<td><strong>Yes, and it silently wins.</strong> This is the one hazard on the page.</td>
 </tr>
 </tbody>
 </table>
-<p>Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
-an address, or a vendor. The board data binds each role to the right pins with <strong>compile-time
-route checking</strong>.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
+<hr />
+<h2 id="1-headers-no-collision-and-why">1. Headers: no collision, and why<a class="headerlink" href="#1-headers-no-collision-and-why" title="Permanent link">&para;</a></h2>
+<p>Alloy's generated headers live in <code>namespace alloy::dev</code> / <code>alloy::ip::…</code>, in
+lower case, and define <strong>no preprocessor macros at all</strong> — 0 <code>#define</code> lines
+across all 2 577 generated <code>.hpp</code> files in this repo (the only generated file
+with macros is <code>lwipopts.h</code>, which is lwIP's own C configuration and is not
+part of the device API).</p>
+<p>A vendor CMSIS device header is the opposite: uppercase object-like macros
+(<code>GPIOA</code>, <code>RCC</code>), <code>&lt;NAME&gt;_TypeDef</code> structs at global scope, <code>__IO</code>, and
+<code>&lt;BLOCK&gt;_&lt;REG&gt;_&lt;FIELD&gt;_Pos</code> constants. The two name spaces do not intersect,
+so the include order does not matter. <code>examples/escape_hatch/src/main.cpp</code>
+proves the harder direction:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Deliberately FIRST: if any vendor macro collided, this is what would break.</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;vendor_device.h&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;vendor_hal.h&quot;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/device.hpp&gt;</span>
 </span></code></pre></div>
-<h2 id="capabilities-and-if-constexpr">Capabilities and <code>if constexpr</code><a class="headerlink" href="#capabilities-and-if-constexpr" title="Permanent link">&para;</a></h2>
-<p>Not every board has every role. Instead of <code>#ifdef</code>, alloy exposes compile-time booleans under
-<code>board::caps::*</code> and you branch with <code>if constexpr</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>The discarded branch is <strong>removed at compile time</strong>, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.</p>
-<div class="admonition info">
-<p class="admonition-title">Roles that are absent</p>
-<p>A small role you don't use degrades to a <strong>no-op stub</strong> (so <code>board::watchdog.feed()</code> always
-compiles). Using a role a board <em>truly</em> lacks — say <code>board::led</code> on a headless board —
-fails at <strong>compile time</strong> with a <code>static_assert</code> message, never at runtime.</p>
+<p>It compiles with <code>-Wall -Wextra</code> and no warnings.</p>
+<div class="admonition note">
+<p class="admonition-title">About <code>vendor_device.h</code></p>
+<p>The example ships a header written in CMSIS's exact <em>shape</em> rather than
+ST's actual <code>stm32g0xx.h</code>, which is not redistributable here. The claim
+above is about those shapes — uppercase macros, <code>_TypeDef</code> structs, <code>__IO</code>,
+<code>_Pos</code>/<code>_Msk</code> constants, an <code>IRQn_Type</code> enum. If you have the real header,
+use it; nothing in the argument depends on the stand-in.</p>
 </div>
-<h2 id="errors-you-can-read">Errors you can read<a class="headerlink" href="#errors-you-can-read" title="Permanent link">&para;</a></h2>
-<p>Portability is only useful if mistakes are caught early. Bind a UART to a pin that has no route
-to it and the compiler stops you, <strong>naming the pin</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   note: in instantiation of &#39;uart::bind&lt;usart2_t, tx&lt;pa5_t&gt;, rx&lt;pa3_t&gt;, ...&gt;&#39;
+<h3 id="a-bonus-you-get-for-free">A bonus you get for free<a class="headerlink" href="#a-bonus-you-get-for-free" title="Permanent link">&para;</a></h3>
+<p>Both worlds carry the same constants, so make them agree at compile time:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">GPIOA_BASE</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">,</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">              </span><span class="s">&quot;vendor header and alloy-devices disagree about GPIOA&quot;</span><span class="p">);</span>
 </span></code></pre></div>
-<p>This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see <a href="../../reference/architecture/">Architecture</a>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><span class="filename">A portable app that adapts to what the board offers</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;up</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">adc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// only where an ADC role exists</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample ok</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
+<p>If your CMSIS header and the chip database ever disagreed about where a
+peripheral lives, that line tells you at build time instead of on the bench.</p>
+<h2 id="2-calling-a-vendor-hal">2. Calling a vendor HAL<a class="headerlink" href="#2-calling-a-vendor-hal" title="Permanent link">&para;</a></h2>
+<p>Vendor code stays vendor code: its own header, its own <code>.c</code> file, its own
+idiom. <code>alloy build</code> compiles every <code>.c</code> and <code>.cpp</code> under the project's <code>src/</code>,
+so nothing has to be ported.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/* vendor_hal.c — plain C, knows nothing about alloy */</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">VENDOR_GPIO_TogglePin</span><span class="p">(</span><span class="n">GPIO_TypeDef</span><span class="o">*</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pin</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">odr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">port</span><span class="o">-&gt;</span><span class="n">ODR</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">port</span><span class="o">-&gt;</span><span class="n">BSRR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">odr</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="mi">1UL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pin</span><span class="p">))</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="mi">1UL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">pin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">16U</span><span class="p">))</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="mi">1UL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pin</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
-source, no edits. The ADC block simply vanishes on a board without that role.</p>
+<p>The bridge from C++ is one cast, and the address comes from the database:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">vendor_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">GPIO_TypeDef</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">VENDOR_GPIO_TogglePin</span><span class="p">(</span><span class="n">vendor_port</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Configure the pin with alloy (<code>board::led</code>), poke it with the vendor function,
+or the other way round. They are writing the same registers.</p>
+<h2 id="3-writing-a-register-directly-three-routes">3. Writing a register directly — three routes<a class="headerlink" href="#3-writing-a-register-directly-three-routes" title="Permanent link">&para;</a></h2>
+<p><strong>Route A — through the generated description (recommended).</strong> The address
+comes from the chip database and the offsets are <code>static_assert</code>ed in the
+generated header, so this survives a board change and a database update:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="n">gpio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa_t</span><span class="o">::</span><span class="n">ip</span><span class="p">;</span><span class="w">                 </span><span class="c1">// alloy::ip::st::gpio_v2</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">regs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">gpio</span><span class="o">::</span><span class="n">regs</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">regs</span><span class="p">.</span><span class="n">BSRR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Route B — through the vendor's own types</strong>, as in §2. Fine, and the
+<code>static_assert</code> above keeps the two definitions of "where GPIOA is" honest.</p>
+<p><strong>Route C — a raw literal address.</strong> Legal, sometimes the only way to reach an
+erratum workaround, and exactly what alloy's first contract guard forbids in
+<em>framework</em> code:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// STM32G071 RM0444 rev 5, §6.4.7: GPIOA_BSRR at 0x5000&#39;0018.</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">bsrr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">volatile</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="mh">0x50000018u</span><span class="p">);</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="o">*</span><span class="n">bsrr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Nothing stops you. Keep them in one file, comment the datasheet, revision and
+page, and know that the board portability of that line is now zero. If you find
+yourself writing several, the better fix is usually to add the fact to
+<code>alloy-devices</code> — then Route A works and every board gets it.</p>
+<h2 id="4-what-does-collide-the-link-not-the-include">4. What DOES collide: the link, not the include<a class="headerlink" href="#4-what-does-collide-the-link-not-the-include" title="Permanent link">&para;</a></h2>
+<p>This is the part that costs a day if nobody writes it down.</p>
+<p>Alloy generates its own vector table and links with <code>-nostartfiles</code> and its own
+linker script. A vendor <code>startup_stm32g071xx.s</code> (or the <code>system_stm32g0xx.c</code>
+that comes with it) defines the same symbols. The link fails, loudly:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ld: .alloy/generated/nucleo_g071rb/vector_table.c.obj: in function `Default_Handler&#39;:
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    multiple definition of `Default_Handler&#39;; src/startup_vendor.c.obj: first defined here
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>ld: src/alloy/arch/cortex_m/startup.cpp.obj: in function `Reset_Handler&#39;:
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    multiple definition of `Reset_Handler&#39;; src/startup_vendor.c.obj: first defined here
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>collect2: error: ld returned 1 exit status
+</span></code></pre></div>
+<p>The same happens for <code>SysTick_Handler</code>, which alloy defines <strong>strongly</strong> in
+<code>src/alloy/arch/cortex_m/systick.cpp</code> because it drives <code>uptime_ms()</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ld: src/alloy/arch/cortex_m/systick.cpp:45: multiple definition of `SysTick_Handler&#39;
+</span></code></pre></div>
+<p>That is good news: alloy's timebase cannot be silently replaced.</p>
+<p><strong>Do not add a vendor startup file, a vendor linker script, or a vendor
+<code>SystemInit</code>.</strong> Alloy already does reset, <code>.data</code> copy, <code>.bss</code> zero,
+<code>__init_array</code> and the vector table. Take the peripheral drivers from your
+legacy tree, not the startup.</p>
+<h3 id="the-one-silent-case">The one silent case<a class="headerlink" href="#the-one-silent-case" title="Permanent link">&para;</a></h3>
+<p>Peripheral interrupt handlers in the generated vector table are <strong>weak</strong> thunks
+into <code>alloy_irq_dispatch()</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">__attribute__</span><span class="p">((</span><span class="n">weak</span><span class="p">))</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">TIM2_IRQHandler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">alloy_irq_dispatch</span><span class="p">(</span><span class="mi">15u</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>A strong definition anywhere in your project wins, with no warning:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">TIM2_IRQHandler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* your CubeMX handler */</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">$ </span>arm-none-eabi-nm<span class="w"> </span>escape_hatch.elf<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>IRQHandler
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">080000e0 T TIM2_IRQHandler        &lt;- yours, strong</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="go">080003e0 W TIM3_IRQHandler        &lt;- alloy&#39;s weak thunk</span>
+</span></code></pre></div>
+<p>That is a <strong>feature</strong> — it is how you keep a hand-tuned ISR — but it means
+<code>alloy::irq</code>'s registration for that line silently stops being called. If an
+interrupt-driven alloy peripheral (I²C, SPI, DMA, UART, pin interrupts) shares
+that line, it stops working with no diagnostic. Check for it the same way:
+<code>nm &lt;elf&gt; | grep IRQHandler</code> and look for a <code>T</code> where you expected a <code>W</code>.</p>
+<h2 id="5-migrating-gradually">5. Migrating gradually<a class="headerlink" href="#5-migrating-gradually" title="Permanent link">&para;</a></h2>
+<p>A workable order, in decreasing risk:</p>
+<ol>
+<li><strong>Start from the board, not from the app.</strong> <code>alloy new --chip &lt;part&gt;</code> gives
+   a project whose <code>boards/&lt;id&gt;/board.json</code> you edit to match your schematic.
+   Nothing of your application moves yet.</li>
+<li><strong>Bring the legacy drivers over as C files</strong> under <code>src/</code>, minus the startup
+   and minus the linker script. They compile unchanged.</li>
+<li><strong>Replace one peripheral at a time</strong> with the alloy role — the LED, then the
+   debug UART, then the buses. Each replacement deletes vendor code rather than
+   wrapping it.</li>
+<li><strong>Keep the <code>static_assert</code>s</strong> that pin vendor addresses to
+   <code>alloy::dev::</code> while both exist. They are free and they catch the one class
+   of mistake this migration produces.</li>
+<li><strong>Pin the chip database</strong> before you ship — see
+   <a href="../../reference/stability/#pinning-the-chip-database">API stability</a>.</li>
+</ol>
+<h2 id="building-the-example">Building the example<a class="headerlink" href="#building-the-example" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/escape_hatch<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>build
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="go">[10/10] Linking CXX executable escape_hatch.elf</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="go">   text    data     bss     dec     hex  filename</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="go">   2912       0    2224    5136    1410  escape_hatch.elf</span>
+</span></code></pre></div>
+<p>It is a <code>nucleo_g071rb</code> example on purpose: an escape hatch is chip-specific by
+nature, and pretending otherwise would be the wrong lesson. Its static
+properties are checked with everything else —
+<code>scripts/check_static_limits.sh escape_hatch nucleo_g071rb</code> reports no heap, no
+exceptions, no recursion and a 188-byte peak stack.</p>
 
 
 
@@ -1730,7 +1951,7 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get started">
+          <a href="../testing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Testing your firmware on a laptop">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1740,20 +1961,20 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
                 Previous
               </span>
               <div class="md-ellipsis">
-                Get started
+                Testing your firmware on a laptop
               </div>
             </div>
           </a>
         
         
           
-          <a href="../boards/" class="md-footer__link md-footer__link--next" aria-label="Next: Boards">
+          <a href="../emulation/" class="md-footer__link md-footer__link--next" aria-label="Next: Emulation">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Boards
+                Emulation
               </div>
             </div>
             <div class="md-footer__button md-icon">

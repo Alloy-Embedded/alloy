@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/portable-code/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/testing/">
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../adding-a-board/">
       
       
-        <link rel="next" href="../boards/">
+        <link rel="next" href="../escape-hatch/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Portable code - alloy</title>
+        <title>Testing your firmware on a laptop - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portable-code" class="md-skip">
+        <a href="#testing-your-firmware-on-a-laptop" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portable code
+              Testing your firmware on a laptop
             
           </span>
         </div>
@@ -263,12 +263,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../getting-started/" class="md-tabs__link">
           
   
@@ -287,10 +285,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../peripherals/" class="md-tabs__link">
           
   
@@ -447,10 +447,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -466,22 +464,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -499,7 +494,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -542,37 +537,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portable code
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../portable-code/" class="md-nav__link">
         
   
   
@@ -588,72 +556,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Board roles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Capabilities and if constexpr
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Errors you can read
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Putting it together
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -726,8 +628,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -749,19 +653,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -779,7 +686,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -934,10 +841,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing your firmware on a laptop
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -953,6 +887,127 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#start-from-the-scaffold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start from the scaffold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-scaffold-actually-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the scaffold actually does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-fakes-you-get-for-free" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The fakes you get for free
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-harness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The harness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-your-own-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding your own tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alloy-test-precisely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        alloy test, precisely
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-does-not-give-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this does not give you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In CI
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1535,10 +1590,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
+  <a href="#start-from-the-scaffold" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Board roles
+        Start from the scaffold
       
     </span>
   </a>
@@ -1546,10 +1601,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
+  <a href="#what-the-scaffold-actually-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities and if constexpr
+        What the scaffold actually does
       
     </span>
   </a>
@@ -1557,10 +1612,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
+  <a href="#the-fakes-you-get-for-free" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Errors you can read
+        The fakes you get for free
       
     </span>
   </a>
@@ -1568,10 +1623,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#the-harness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Putting it together
+        The harness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-your-own-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding your own tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alloy-test-precisely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        alloy test, precisely
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-does-not-give-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this does not give you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In CI
       
     </span>
   </a>
@@ -1598,101 +1708,213 @@
   
 
 
-<h1 id="portable-code">Portable code<a class="headerlink" href="#portable-code" title="Permanent link">&para;</a></h1>
-<p>alloy's headline promise is that <strong>one <code>main.cpp</code> recompiles for any board, with zero
-preprocessor conditionals</strong>. This page explains the three ideas that make that true.</p>
-<h2 id="board-roles">Board roles<a class="headerlink" href="#board-roles" title="Permanent link">&para;</a></h2>
-<p>A board provides a fixed set of <strong>roles</strong> — named objects your app talks to instead of raw
-peripherals:</p>
+<h1 id="testing-your-firmware-on-a-laptop">Testing your firmware on a laptop<a class="headerlink" href="#testing-your-firmware-on-a-laptop" title="Permanent link">&para;</a></h1>
+<p>Most firmware bugs are not electrical. They are an off-by-one in a state machine, a threshold that
+chatters, a retry that never retries, an error path nobody took. None of those need a board to find
+— but they usually get one anyway, because the logic is tangled up with the peripherals.</p>
+<p>alloy's answer is not a mocking framework. It is a shape:</p>
+<div class="admonition tip">
+<p class="admonition-title">The whole technique</p>
+<p>Put the decisions in a header <strong>templated on alloy's concepts</strong>. Keep <code>main.cpp</code> to board
+wiring. The same source then compiles against the generated silicon driver on the target and
+against a fake on your laptop, because both satisfy the same concept.</p>
+</div>
+<h2 id="start-from-the-scaffold">Start from the scaffold<a class="headerlink" href="#start-from-the-scaffold" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>new<span class="w"> </span>thermo<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb<span class="w"> </span>--with-tests
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">created thermo/ (board: nucleo_g071rb, framework: /path/to/alloy)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">  + src/app.hpp</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">  + src/main.cpp</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">  + tests/test_app.cpp</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">  + tests/CMakeLists.txt</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">next:  cd thermo &amp;&amp; alloy test     # runs on your laptop, no board</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">       cd thermo &amp;&amp; alloy run      # and on the target</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>thermo<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">...</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">1/1 Test #1: thermo_tests .....................   Passed    0.31 sec</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">100% tests passed, 0 tests failed out of 1</span>
+</span></code></pre></div>
+<p>The runner's own output, if you run the binary directly:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>./.alloy/host-tests/thermo_tests
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">[ PASS ] thermostat_heats_when_cold</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">[ PASS ] thermostat_idles_when_warm</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="go">[ PASS ] thermostat_does_not_chatter_in_the_band</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="go">[ PASS ] thermostat_holds_output_when_the_sensor_fails</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="go">[ PASS ] thermostat_addresses_the_sensor_correctly</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="go">PASSED 5/5</span>
+</span></code></pre></div>
+<p>Five tests, no hardware, a third of a second. Two of them — the hysteresis band and the sensor that
+NACKs mid-operation — are genuinely awkward to reproduce on a bench.</p>
+<h2 id="what-the-scaffold-actually-does">What the scaffold actually does<a class="headerlink" href="#what-the-scaffold-actually-does" title="Permanent link">&para;</a></h2>
+<p><code>src/app.hpp</code> holds the logic and names no chip:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">Bus</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Pin</span><span class="o">&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="k">requires</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">I2cBus</span><span class="o">&lt;</span><span class="n">Bus</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">OutputPin</span><span class="o">&lt;</span><span class="n">Pin</span><span class="o">&gt;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">thermostat</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">poll</span><span class="p">();</span><span class="w">          </span><span class="c1">// read the sensor, decide, drive the output</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">...</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><code>tests/test_app.cpp</code> instantiates it against fakes:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;alloy_test.hpp&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;doubles.hpp&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;testkit/mock_bus.hpp&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;app.hpp&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">ALLOY_TEST</span><span class="p">(</span><span class="n">thermostat_holds_output_when_the_sensor_fails</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">testkit</span><span class="o">::</span><span class="n">mock_i2c</span><span class="w"> </span><span class="n">bus</span><span class="p">;</span><span class="w">      </span><span class="c1">// scriptable I²C</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">test</span><span class="o">::</span><span class="n">fake_pin</span><span class="w"> </span><span class="n">heater</span><span class="p">;</span><span class="w">      </span><span class="c1">// recording output pin</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">app</span><span class="o">::</span><span class="n">thermostat</span><span class="w"> </span><span class="n">t</span><span class="p">{</span><span class="n">bus</span><span class="p">,</span><span class="w"> </span><span class="n">heater</span><span class="p">,</span><span class="w"> </span><span class="p">{}};</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">bus</span><span class="p">.</span><span class="n">queue_read</span><span class="p">(</span><span class="n">cold_reading</span><span class="p">);</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">poll</span><span class="p">());</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">heating</span><span class="p">());</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">bus</span><span class="p">.</span><span class="n">fail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">                   </span><span class="c1">// the sensor stops answering</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="o">!</span><span class="n">t</span><span class="p">.</span><span class="n">poll</span><span class="p">());</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">heating</span><span class="p">());</span><span class="w">          </span><span class="c1">// and the output must NOT move</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>main.cpp</code> is the only file that mentions a board, and it stays short.</p>
+<h2 id="the-fakes-you-get-for-free">The fakes you get for free<a class="headerlink" href="#the-fakes-you-get-for-free" title="Permanent link">&para;</a></h2>
+<p>They are not test-framework mocks; they are ordinary structs that satisfy the same concepts the
+silicon drivers do, each with a <code>static_assert</code> against the real concept so a concept change breaks
+the double instead of silently diverging.</p>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>What it is</th>
+<th>Double</th>
+<th>Satisfies</th>
+<th>Header</th>
+<th>Gives you</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>board::led</code></td>
-<td>the status LED</td>
+<td><code>alloy::test::fake_pin</code></td>
+<td><code>OutputPin</code></td>
+<td><code>doubles.hpp</code></td>
+<td>current <code>level</code>, <code>toggles</code> count</td>
 </tr>
 <tr>
-<td><code>board::button</code></td>
-<td>the user button</td>
+<td><code>alloy::test::fake_uart&lt;Cap&gt;</code></td>
+<td><code>ByteStream</code></td>
+<td><code>doubles.hpp</code></td>
+<td>captured TX, replayed RX, <code>tx_contains()</code></td>
 </tr>
 <tr>
-<td><code>board::debug_uart</code></td>
-<td>the console UART</td>
+<td><code>alloy::test::fake_clock</code></td>
+<td>callable clock</td>
+<td><code>doubles.hpp</code></td>
+<td><code>advance(ms)</code> — drive timeouts without waiting</td>
 </tr>
 <tr>
-<td><code>board::i2c</code>, <code>board::spi</code></td>
-<td>the wired bus</td>
+<td><code>alloy::testkit::mock_i2c</code></td>
+<td><code>I2cBus</code></td>
+<td><code>testkit/mock_bus.hpp</code></td>
+<td><code>queue_read()</code>, <code>last_addr</code>, full <code>writes[]</code> history, <code>fail</code></td>
 </tr>
 <tr>
-<td><code>board::adc</code>, <code>board::led_pwm</code></td>
-<td>analog in / PWM out</td>
+<td><code>alloy::testkit::mock_spi</code></td>
+<td><code>SpiBus</code></td>
+<td><code>testkit/mock_bus.hpp</code></td>
+<td>the same, for SPI</td>
 </tr>
 <tr>
-<td><code>board::watchdog</code>, <code>board::rtc</code>, <code>board::nvm</code></td>
-<td>system services</td>
+<td><code>alloy::testkit::mock_delay</code></td>
+<td><code>DelayNs</code></td>
+<td><code>testkit/mock_bus.hpp</code></td>
+<td>records requested delays instead of sleeping</td>
 </tr>
 </tbody>
 </table>
-<p>Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
-an address, or a vendor. The board data binds each role to the right pins with <strong>compile-time
-route checking</strong>.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
+<p><code>fake_clock</code> and <code>mock_delay</code> matter more than they look: a timeout test that really waits is a
+test nobody runs twice.</p>
+<h2 id="the-harness">The harness<a class="headerlink" href="#the-harness" title="Permanent link">&para;</a></h2>
+<p><code>alloy_test.hpp</code> is deliberately not Catch2 or doctest. Those need exceptions, RTTI and a heap, so
+they could never cross-compile onto a <code>-fno-exceptions</code> target — and then "the tests pass" would be a
+statement about a <em>different</em> build of your code than the one you ship. alloy's harness is
+freestanding and heapless, and your project's tests are compiled with the firmware's own
+<code>-fno-exceptions -fno-rtti</code>, so passing here means the same source compiles for the target.</p>
+<p>Two macros:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">ALLOY_TEST</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">        </span><span class="c1">// self-registering test</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">expr</span><span class="p">);</span><span class="w">              </span><span class="c1">// record a condition</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">ALLOY_CHECK_EQ</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">           </span><span class="c1">// ... and report both sides on failure</span>
 </span></code></pre></div>
-<h2 id="capabilities-and-if-constexpr">Capabilities and <code>if constexpr</code><a class="headerlink" href="#capabilities-and-if-constexpr" title="Permanent link">&para;</a></h2>
-<p>Not every board has every role. Instead of <code>#ifdef</code>, alloy exposes compile-time booleans under
-<code>board::caps::*</code> and you branch with <code>if constexpr</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>The discarded branch is <strong>removed at compile time</strong>, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.</p>
-<div class="admonition info">
-<p class="admonition-title">Roles that are absent</p>
-<p>A small role you don't use degrades to a <strong>no-op stub</strong> (so <code>board::watchdog.feed()</code> always
-compiles). Using a role a board <em>truly</em> lacks — say <code>board::led</code> on a headless board —
-fails at <strong>compile time</strong> with a <code>static_assert</code> message, never at runtime.</p>
+<div class="admonition warning">
+<p class="admonition-title">Commas inside template arguments</p>
+<p><code>ALLOY_CHECK_EQ</code> is a macro, so <code>ALLOY_CHECK_EQ(x, foo&lt;A, B&gt;::k)</code> looks like three arguments to
+the preprocessor. Name the instantiation first: <code>using foo_t = foo&lt;A, B&gt;;</code>.</p>
 </div>
-<h2 id="errors-you-can-read">Errors you can read<a class="headerlink" href="#errors-you-can-read" title="Permanent link">&para;</a></h2>
-<p>Portability is only useful if mistakes are caught early. Bind a UART to a pin that has no route
-to it and the compiler stops you, <strong>naming the pin</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   note: in instantiation of &#39;uart::bind&lt;usart2_t, tx&lt;pa5_t&gt;, rx&lt;pa3_t&gt;, ...&gt;&#39;
+<p>Sanitizers (ASan + UBSan) are on by default except on macOS, where ASan's at-exit pass hangs on
+arm64. <code>alloy test --no-sanitize</code> turns them off.</p>
+<h2 id="adding-your-own-tests">Adding your own tests<a class="headerlink" href="#adding-your-own-tests" title="Permanent link">&para;</a></h2>
+<p>Drop another <code>tests/test_*.cpp</code> in. The scaffold's CMake globs them, so there is nothing to edit.</p>
+<h2 id="coverage">Coverage<a class="headerlink" href="#coverage" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>alloy<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--coverage
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">...</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="go">File                                       Lines     Exec  Cover   Missing</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">------------------------------------------------------------------------------</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">app.hpp                                       25       25   100%</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="go">------------------------------------------------------------------------------</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="go">lines: 100.0% (25 out of 25)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="go">functions: 100.0% (5 out of 5)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="go">branches: 100.0% (12 out of 12)</span>
 </span></code></pre></div>
-<p>This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see <a href="../../reference/architecture/">Architecture</a>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><span class="filename">A portable app that adapts to what the board offers</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;up</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">adc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// only where an ADC role exists</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample ok</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
-source, no edits. The ADC block simply vanishes on a board without that role.</p>
+<p>The report is scoped to your project's <code>src/</code> — the framework's runner and host seams are not your
+coverage. It needs <strong>gcovr</strong> on <code>PATH</code> (<code>pip install gcovr</code>), and under Clang it also needs
+<code>llvm-cov</code>, because Clang's profile data is not plain gcov's and <code>alloy test</code> tells gcovr so. If
+either is missing you get a message naming what to install, and the profile is left in place rather
+than thrown away.</p>
+<h2 id="alloy-test-precisely"><code>alloy test</code>, precisely<a class="headerlink" href="#alloy-test-precisely" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Where you run it</th>
+<th>What runs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>in a project with <code>tests/CMakeLists.txt</code></td>
+<td>that project's suite</td>
+</tr>
+<tr>
+<td>in a project without one</td>
+<td>the framework's own suite</td>
+</tr>
+<tr>
+<td>in the alloy repo</td>
+<td>the framework's own suite</td>
+</tr>
+<tr>
+<td>anywhere, with <code>--framework</code></td>
+<td>the framework's own suite</td>
+</tr>
+</tbody>
+</table>
+<p>The framework is resolved from your <code>alloy.toml</code> (<code>[alloy] root</code>, and the <code>[devices]</code> pin if you
+have one), not from whatever checkout happens to sit above your working directory — so a project's
+tests compile against the framework the project <em>declares</em>.</p>
+<h2 id="what-this-does-not-give-you">What this does not give you<a class="headerlink" href="#what-this-does-not-give-you" title="Permanent link">&para;</a></h2>
+<p>Being direct, because it is easy to oversell:</p>
+<ul>
+<li><strong>This is not hardware validation.</strong> It tests logic against fakes. A driver that writes the wrong
+  register still passes, because the fake accepts whatever it is given. Register-level behaviour is
+  what the <a href="../emulation/">emulation legs</a> are for, and neither substitutes for silicon.</li>
+<li><strong>It does not test your <code>main.cpp</code>.</strong> Board wiring is exactly the part with no double. Keep it
+  thin so there is little there to be wrong.</li>
+<li><strong>Concept satisfaction is not behavioural equivalence.</strong> <code>mock_i2c</code> satisfies <code>I2cBus</code>; it does not
+  reproduce clock stretching, arbitration loss, or a device that NACKs on the third byte.</li>
+<li><strong>There is no test for the scaffold's own sensor.</strong> The thermostat's device is invented for the
+  template. Replace it with your real part — or with a driver from <code>alloy lib</code>, which arrives with
+  its own testkit-based tests.</li>
+<li><strong>Coverage is line and branch coverage of host runs.</strong> It says nothing about the target build,
+  and 100% of a header is not 100% of a product.</li>
+</ul>
+<h2 id="in-ci">In CI<a class="headerlink" href="#in-ci" title="Permanent link">&para;</a></h2>
+<p>The <code>scaffold</code> job does this end to end on every push: scaffolds <code>--with-tests</code> out-of-repo, builds
+the firmware, runs the suite, reports coverage, and then <strong>inverts one expectation and demands a red
+run</strong> — a test scaffold that cannot fail is a decoration.</p>
 
 
 
@@ -1730,7 +1952,7 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get started">
+          <a href="../adding-a-board/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Adding a board">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1740,20 +1962,20 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
                 Previous
               </span>
               <div class="md-ellipsis">
-                Get started
+                Adding a board
               </div>
             </div>
           </a>
         
         
           
-          <a href="../boards/" class="md-footer__link md-footer__link--next" aria-label="Next: Boards">
+          <a href="../escape-hatch/" class="md-footer__link md-footer__link--next" aria-label="Next: The escape hatch">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Boards
+                The escape hatch
               </div>
             </div>
             <div class="md-footer__button md-icon">

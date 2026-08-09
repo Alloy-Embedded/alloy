@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/cli/">
       
       
-        <link rel="prev" href="../crash-reports/">
+        <link rel="prev" href="../supply-chain/">
       
       
         <link rel="next" href="../vscode/">
@@ -643,6 +643,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -828,6 +832,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing your firmware on a laptop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../escape-hatch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The escape hatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -843,6 +903,8 @@
   
     
     
+      
+        
       
         
       
@@ -996,6 +1058,34 @@
     
   
     Crash reports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../supply-chain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supply chain
   
 
     
@@ -1342,6 +1432,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1430,6 +1524,62 @@
     
   
     Error handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/stability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API stability and support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety posture
   
 
     
@@ -1660,6 +1810,10 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 <td>scaffold a <strong>clean, editable board</strong> for any MCU in the database</td>
 </tr>
 <tr>
+<td><code>alloy new &lt;name&gt; ... --with-tests</code></td>
+<td>also scaffold a host test suite wired to the concept fakes (<a href="../testing/">guide</a>)</td>
+</tr>
+<tr>
 <td><code>alloy boards</code> — <strong>JSON</strong></td>
 <td>list curated boards</td>
 </tr>
@@ -1672,8 +1826,24 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 <td>change the board in <code>alloy.toml</code></td>
 </tr>
 <tr>
+<td><code>alloy devices</code> — <strong>JSON</strong></td>
+<td>which chip database this project resolves: root, declared version, content digest</td>
+</tr>
+<tr>
+<td><code>alloy devices --pin [--version-only\|--digest-only]</code></td>
+<td>freeze that database into <code>alloy.toml</code> <code>[devices]</code>, so a shipped product's facts cannot move — see <a href="../../reference/stability/#pinning-the-chip-database">API stability</a></td>
+</tr>
+<tr>
 <td><code>alloy setup [--check] [--family &lt;f&gt;]</code></td>
 <td>verify / install cross-toolchains into <code>~/.alloy/tools</code></td>
+</tr>
+<tr>
+<td><code>alloy setup --fetch &lt;dir&gt; [--platform &lt;key&gt;]</code></td>
+<td>populate a local mirror of the pinned archives, for an air-gapped host — see <a href="../supply-chain/">Supply chain</a></td>
+</tr>
+<tr>
+<td><code>alloy setup --from &lt;dir&gt; [--offline]</code></td>
+<td>install from that mirror, same sha256 verification, no network</td>
 </tr>
 </tbody>
 </table>
@@ -1715,7 +1885,15 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 </tr>
 <tr>
 <td><code>alloy test [--no-sanitize]</code></td>
-<td>build + run the host unit tests (ASan/UBSan on by default)</td>
+<td>build + run the host unit tests — the PROJECT's if it has a <code>tests/</code>, else the framework's (ASan/UBSan on by default)</td>
+</tr>
+<tr>
+<td><code>alloy test --coverage</code></td>
+<td>the same, instrumented, plus a line/branch report over the project's <code>src/</code> (needs gcovr)</td>
+</tr>
+<tr>
+<td><code>alloy test --framework</code></td>
+<td>run the framework's own suite even from inside a project</td>
 </tr>
 </tbody>
 </table>
@@ -1762,6 +1940,10 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 <tr>
 <td><code>alloy debug-info</code> — <strong>JSON</strong></td>
 <td>debug-server facts for an IDE launch config</td>
+</tr>
+<tr>
+<td><code>alloy sbom [--format notice\|spdx\|cyclonedx\|json] [--out f] [--strict]</code></td>
+<td>what the built image actually contains, derived from what it compiles and links — see <a href="../supply-chain/">Supply chain</a></td>
 </tr>
 </tbody>
 </table>
@@ -2033,7 +2215,7 @@ itself is tested against.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../crash-reports/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Crash reports">
+          <a href="../supply-chain/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Supply chain">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2043,7 +2225,7 @@ itself is tested against.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Crash reports
+                Supply chain
               </div>
             </div>
           </a>

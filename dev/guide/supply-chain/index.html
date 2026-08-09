@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/portable-code/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/supply-chain/">
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../crash-reports/">
       
       
-        <link rel="next" href="../boards/">
+        <link rel="next" href="../cli/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Portable code - alloy</title>
+        <title>Supply chain - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portable-code" class="md-skip">
+        <a href="#supply-chain" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portable code
+              Supply chain
             
           </span>
         </div>
@@ -263,12 +263,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../getting-started/" class="md-tabs__link">
           
   
@@ -309,10 +307,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../emulation/" class="md-tabs__link">
           
   
@@ -447,10 +447,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -466,22 +464,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -499,7 +494,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -542,37 +537,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portable code
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../portable-code/" class="md-nav__link">
         
   
   
@@ -588,72 +556,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Board roles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Capabilities and if constexpr
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Errors you can read
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Putting it together
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -997,8 +899,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1016,19 +920,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1046,7 +953,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1173,10 +1080,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../supply-chain/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supply chain
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1192,6 +1126,145 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#reproducible-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducible builds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reproducible builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-leaking-and-what-fixes-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was leaking, and what fixes it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-not-claimed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is not claimed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-debugger-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The debugger, honestly
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-air-gapped-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline / air-gapped builds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Offline / air-gapped builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-one-thing-alloy-cannot-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one thing alloy cannot mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alloy-sbom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        alloy sbom
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="alloy sbom">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-it-refuses-to-guess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where it refuses to guess
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1535,46 +1608,119 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
+  <a href="#reproducible-builds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Board roles
+        Reproducible builds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reproducible builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-leaking-and-what-fixes-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was leaking, and what fixes it
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-not-claimed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities and if constexpr
+        What is not claimed
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#the-debugger-honestly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Errors you can read
+        The debugger, honestly
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+  <a href="#offline-air-gapped-builds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Putting it together
+        Offline / air-gapped builds
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Offline / air-gapped builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-one-thing-alloy-cannot-mirror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one thing alloy cannot mirror
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alloy-sbom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        alloy sbom
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="alloy sbom">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-it-refuses-to-guess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where it refuses to guess
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1598,101 +1744,270 @@
   
 
 
-<h1 id="portable-code">Portable code<a class="headerlink" href="#portable-code" title="Permanent link">&para;</a></h1>
-<p>alloy's headline promise is that <strong>one <code>main.cpp</code> recompiles for any board, with zero
-preprocessor conditionals</strong>. This page explains the three ideas that make that true.</p>
-<h2 id="board-roles">Board roles<a class="headerlink" href="#board-roles" title="Permanent link">&para;</a></h2>
-<p>A board provides a fixed set of <strong>roles</strong> — named objects your app talks to instead of raw
-peripherals:</p>
+<h1 id="supply-chain">Supply chain<a class="headerlink" href="#supply-chain" title="Permanent link">&para;</a></h1>
+<p>Three questions a company asks before it bets a product on a framework, and
+what alloy can actually show for each.</p>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>What it is</th>
+<th>Question</th>
+<th>Answer</th>
+<th>Gate that keeps it true</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>board::led</code></td>
-<td>the status LED</td>
+<td>Does the same source produce the same bytes?</td>
+<td>Yes, for <code>.elf</code>, <code>.bin</code> and <code>.hex</code></td>
+<td><code>scripts/check_reproducible.sh</code>, run on two examples in CI</td>
 </tr>
 <tr>
-<td><code>board::button</code></td>
-<td>the user button</td>
+<td>Can we build with no internet?</td>
+<td>Yes, from a local mirror of the same pinned archives</td>
+<td>host tests in <code>tools/alloy/tests/test_toolchains.py</code></td>
 </tr>
 <tr>
-<td><code>board::debug_uart</code></td>
-<td>the console UART</td>
-</tr>
-<tr>
-<td><code>board::i2c</code>, <code>board::spi</code></td>
-<td>the wired bus</td>
-</tr>
-<tr>
-<td><code>board::adc</code>, <code>board::led_pwm</code></td>
-<td>analog in / PWM out</td>
-</tr>
-<tr>
-<td><code>board::watchdog</code>, <code>board::rtc</code>, <code>board::nvm</code></td>
-<td>system services</td>
+<td>What is in the image, legally?</td>
+<td><code>alloy sbom</code> — SPDX, CycloneDX or a human NOTICE</td>
+<td>CI asserts the report follows the build seam</td>
 </tr>
 </tbody>
 </table>
-<p>Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
-an address, or a vendor. The board data binds each role to the right pins with <strong>compile-time
-route checking</strong>.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
+<hr />
+<h2 id="reproducible-builds">Reproducible builds<a class="headerlink" href="#reproducible-builds" title="Permanent link">&para;</a></h2>
+<p>The firmware is a function of the source, not of where the source lives.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>scripts/check_reproducible.sh<span class="w"> </span>blink<span class="w"> </span>nucleo_g071rb
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">ok   blink.elf  7f18f6d5d788d2efe9a1d08301ec6f3a04fa5349eb7130916f59359b9f768cb2</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">ok   blink.bin  2a9963ab936d760e26f951a33c003b663c62b1afea112e8bea3c8121aff4d8da</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">ok   blink.hex  ae6aeae495cb209a27f71a681be2cb976f61d10d6ec69de0eee15b2f0f31017e</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">ok   negative control: a one-byte change is detected</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">ok   no absolute host paths in blink.elf</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">reproducible: blink@nucleo_g071rb is byte-identical from two different paths</span>
 </span></code></pre></div>
-<h2 id="capabilities-and-if-constexpr">Capabilities and <code>if constexpr</code><a class="headerlink" href="#capabilities-and-if-constexpr" title="Permanent link">&para;</a></h2>
-<p>Not every board has every role. Instead of <code>#ifdef</code>, alloy exposes compile-time booleans under
-<code>board::caps::*</code> and you branch with <code>if constexpr</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+<p>Those three digests are one build's, with arm-none-eabi-gcc 14.2.1: the claim is that <strong>the two
+paths agree</strong>, not that the hex strings are constants. Touch a framework source or move to another
+compiler release and they change together — the <code>.elf</code> line in particular moves whenever any linked
+translation unit does, since DWARF records more than code.</p>
+<p>The script copies the framework tree to two deliberately different absolute
+paths, builds the example in each and compares digests. It also runs a negative
+control (mutate one byte, the comparison must notice) and scans the ELF for any
+remaining absolute host path — because two builds from the <em>same</em> leaked prefix
+would otherwise compare equal and prove nothing.</p>
+<h3 id="what-was-leaking-and-what-fixes-it">What was leaking, and what fixes it<a class="headerlink" href="#what-was-leaking-and-what-fixes-it" title="Permanent link">&para;</a></h3>
+<p>Before this, the <code>.bin</code> was <strong>already</strong> byte-identical across paths — code never
+carried a path. The <code>.elf</code> was not: DWARF, <code>DW_AT_comp_dir</code> and the compiler's
+own include directories are recorded as absolute paths, 121 of them in a plain
+<code>blink</code>.</p>
+<p>The build now passes one <code>-ffile-prefix-map</code> per root:</p>
+<table>
+<thead>
+<tr>
+<th>Real root</th>
+<th>Recorded as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the project directory</td>
+<td><code>/alloy/project</code></td>
+</tr>
+<tr>
+<td>the framework checkout</td>
+<td><code>/alloy/framework</code></td>
+</tr>
+<tr>
+<td>the cross toolchain install</td>
+<td><code>/alloy/toolchain</code></td>
+</tr>
+</tbody>
+</table>
+<p>Nested roots collapse (an in-repo example lives <em>under</em> the framework root), so
+the maps are pairwise disjoint and their order cannot change the result. The
+toolchain entry is why an image built on a laptop with the toolchain in
+<code>~/Library/xPacks/...</code> matches one built on a server with it in <code>/opt</code> —
+verified locally by building the same example against two installs of the same
+compiler at different paths and getting the same ELF digest.</p>
+<h3 id="what-is-not-claimed">What is <em>not</em> claimed<a class="headerlink" href="#what-is-not-claimed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>The <code>.map</code> file is not reproducible</strong> and is not compared. CMake derives
+  object-file names from the absolute path of any source outside its own tree,
+  and the map prints those names. Nothing in the map reaches the device.</li>
+<li><strong>A different compiler build gives different bytes.</strong> Reproducibility here
+  means <em>same source + same toolchain version → same image</em>. Pin the toolchain
+  (alloy's <code>toolchains.json</code> does, by sha256) if you need this across machines.</li>
+<li><strong>RL78 is unverified.</strong> The byte-for-byte comparison has been run on Cortex-M
+  (<code>blink</code>, <code>fs</code> with littlefs, <code>http_server</code> with lwIP) and on Xtensa
+  (<code>blink</code> for <code>esp32_devkit</code>, ELF only — that target emits no flat <code>.bin</code>).
+  The prefix maps are emitted for RL78 too, but nothing has measured it: there
+  is no binary <code>rl78-elf</code> release to install, so no build was available. Both
+  CI legs are Cortex-M; the Xtensa result above is a local measurement, not a
+  gate — that job would have to install the Xtensa toolchain to run it.</li>
+</ul>
+<h3 id="the-debugger-honestly">The debugger, honestly<a class="headerlink" href="#the-debugger-honestly" title="Permanent link">&para;</a></h3>
+<p>Remapped paths mean a debugger no longer finds sources by itself, and <code>alloy
+crash</code> prints <code>/alloy/framework/src/...</code> rather than a path on your disk. The
+inverse map is published so tooling can undo it:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>debug-info<span class="w"> </span>--json
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">  ...</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">  &quot;source_map&quot;: {</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">    &quot;/alloy/framework&quot;: &quot;/home/you/src/alloy&quot;,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">    &quot;/alloy/toolchain&quot;: &quot;/opt/arm-gnu-toolchain&quot;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">  }</span>
 </span></code></pre></div>
-<p>The discarded branch is <strong>removed at compile time</strong>, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.</p>
-<div class="admonition info">
-<p class="admonition-title">Roles that are absent</p>
-<p>A small role you don't use degrades to a <strong>no-op stub</strong> (so <code>board::watchdog.feed()</code> always
-compiles). Using a role a board <em>truly</em> lacks — say <code>board::led</code> on a headless board —
-fails at <strong>compile time</strong> with a <code>static_assert</code> message, never at runtime.</p>
-</div>
-<h2 id="errors-you-can-read">Errors you can read<a class="headerlink" href="#errors-you-can-read" title="Permanent link">&para;</a></h2>
-<p>Portability is only useful if mistakes are caught early. Bind a UART to a pin that has no route
-to it and the compiler stops you, <strong>naming the pin</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   note: in instantiation of &#39;uart::bind&lt;usart2_t, tx&lt;pa5_t&gt;, rx&lt;pa3_t&gt;, ...&gt;&#39;
+<p>Feed it to Cortex-Debug as <code>sourceFileMap</code>, or to gdb as
+<code>set substitute-path /alloy/framework /home/you/src/alloy</code>.</p>
+<hr />
+<h2 id="offline-air-gapped-builds">Offline / air-gapped builds<a class="headerlink" href="#offline-air-gapped-builds" title="Permanent link">&para;</a></h2>
+<p><code>alloy setup</code> downloads toolchains over HTTPS and verifies each archive against
+a sha256 pinned in <code>toolchains.json</code>. A build server behind a firewall has no
+route to <code>developer.arm.com</code> — but the digest, not the origin, is the security
+property. So the same archives can come from a directory.</p>
+<p><strong>On a machine with network</strong>, populate a mirror:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>setup<span class="w"> </span>--fetch<span class="w"> </span>/media/usb/alloy-tools<span class="w"> </span>--platform<span class="w"> </span>linux-x86_64
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">  arm-gnu-toolchain/linux-x86_64: mirrored -&gt; arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz  sha256 6cd1bbc1…</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">  openocd/linux-x86_64: mirrored -&gt; xpack-openocd-0.12.0-3-linux-x64.tar.gz  sha256 …</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="go">mirror at /media/usb/alloy-tools — use it with `alloy setup --from /media/usb/alloy-tools --offline`</span>
 </span></code></pre></div>
-<p>This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see <a href="../../reference/architecture/">Architecture</a>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><span class="filename">A portable app that adapts to what the board offers</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;up</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">adc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// only where an ADC role exists</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample ok</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
+<p><code>--platform</code> matters: the laptop populating the stick is usually not the
+architecture of the build server. <code>--platform all</code> mirrors every platform the
+manifest knows. Re-running skips archives already present with the right digest,
+so a mirror can be topped up over a slow link.</p>
+<p><strong>On the air-gapped host</strong>, install from it:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>setup<span class="w"> </span>--from<span class="w"> </span>/media/usb/alloy-tools<span class="w"> </span>--offline
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">  arm-gnu-toolchain: from mirror /media/usb/alloy-tools/arm-gnu-toolchain-13.2.rel1-…tar.xz</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="go">  arm-gnu-toolchain: sha256 39c44f8af42695b7b871df42e346c09fee670ea8dfc11f17083e296ea2b0d279</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="go">  arm-gnu-toolchain: installed -&gt; ~/.alloy/tools/arm-gnu-toolchain</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="go">add these to PATH before `alloy build` — it looks for the cross compiler on PATH only:</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go">  export PATH=&quot;~/.alloy/tools/arm-gnu-toolchain/bin:~/.alloy/tools/openocd/bin:$PATH&quot;</span>
 </span></code></pre></div>
-<p>Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
-source, no edits. The ADC block simply vanishes on a board without that role.</p>
+<p><strong>Do the export.</strong> <code>alloy setup --check</code> will report the toolchain as
+<code>ok (~/.alloy/tools)</code> whether or not it is on <code>PATH</code>, but <code>alloy build</code> searches
+<code>PATH</code> and nowhere else — without the export the next command is CMake saying
+<em>"The CXX compiler identification is unknown"</em>, with nothing to connect it back
+to a mirror that worked perfectly. Verified end to end: mirror, <code>--offline</code>
+install into a clean <code>HOME</code>, export, <code>alloy build</code> — a 2 528-byte <code>blink.elf</code>
+with no network at any point.</p>
+<p><code>ALLOY_TOOLS_MIRROR=/media/usb/alloy-tools</code> does the same without the flag.
+<code>--offline</code> is a promise, not a hint: with it set and no mirror, the installer
+refuses rather than attempting a connection, and the refusal prints the exact
+<code>--fetch</code> command that would have produced the mirror.</p>
+<p>Check a mirror is complete <em>before</em> the build server needs it:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>setup<span class="w"> </span>--check<span class="w"> </span>--from<span class="w"> </span>/media/usb/alloy-tools<span class="w"> </span>--family<span class="w"> </span>stm32g0
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">arm-gnu-toolchain    MISSING     — not in mirror /media/usb/alloy-tools (arm-gnu-toolchain-…tar.xz)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">openocd              MISSING     — archive present in the mirror</span>
+</span></code></pre></div>
+<h3 id="the-one-thing-alloy-cannot-mirror">The one thing alloy cannot mirror<a class="headerlink" href="#the-one-thing-alloy-cannot-mirror" title="Permanent link">&para;</a></h3>
+<p><code>cmake</code> and <code>ninja</code> are declared <code>kind: system</code> — they come from the OS image,
+not from alloy. On an air-gapped host, bake them into the image; <code>alloy setup</code>
+says so instead of printing a <code>brew install</code> you cannot run.</p>
+<hr />
+<h2 id="alloy-sbom"><code>alloy sbom</code><a class="headerlink" href="#alloy-sbom" title="Permanent link">&para;</a></h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>build
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>sbom<span class="w">                      </span><span class="c1"># human attribution text</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>sbom<span class="w"> </span>--format<span class="w"> </span>spdx<span class="w">        </span><span class="c1"># SPDX 2.3 JSON</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="gp">$ </span>alloy<span class="w"> </span>sbom<span class="w"> </span>--format<span class="w"> </span>cyclonedx<span class="w">   </span><span class="c1"># CycloneDX 1.5 JSON</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="gp">$ </span>alloy<span class="w"> </span>sbom<span class="w"> </span>--format<span class="w"> </span>json<span class="w">        </span><span class="c1"># alloy&#39;s own schema, for tooling</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="gp">$ </span>alloy<span class="w"> </span>sbom<span class="w"> </span>--format<span class="w"> </span>spdx<span class="w"> </span>--out<span class="w"> </span>sbom.spdx.json
+</span></code></pre></div>
+<p>It requires a completed build, because it reports what the build <em>did</em>, not what
+it might do:</p>
+<ul>
+<li><strong>compiled</strong> — from the same seam that drives the compiler. littlefs appears
+  only when the board has an <code>fs</code> role, Monocypher only when the project
+  configured an OTA key, lwIP only when the sources use the net facade <em>and</em> the
+  board has a MAC. Stop compiling one and it stops being reported, with no
+  second edit anywhere.</li>
+<li><strong>generated</strong> — <code>board.cpp</code>, <code>vector_table.c</code>, <code>boot2.c</code>, attributed to the
+  alloy-devices database they were emitted from. The RP2040 second-stage
+  bootloader is a precompiled third-party blob and is reported as its own
+  component, with the licence string the chip record carries.</li>
+<li><strong>linked</strong> — parsed out of the linker's own map file. On a plain <code>blink</code> only
+  <code>libgcc.a</code> contributes members, even though libc, libm and libstdc++ were all
+  searched; an SBOM that listed the searched ones would be over-claiming.</li>
+</ul>
+<p>The report carries the sha256 of the built image, so a document cannot drift
+from the binary it describes, and that digest is also the SPDX document
+namespace (reproducible builds make it a stable identity).</p>
+<h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/http_server<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>build<span class="w"> </span>--board<span class="w"> </span>nucleo_f767zi<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>sbom
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Kind</th>
+<th>Version</th>
+<th>Licence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http_server</code></td>
+<td>application</td>
+<td>—</td>
+<td>from <code>[project] license</code>, if declared</td>
+</tr>
+<tr>
+<td>alloy</td>
+<td>framework</td>
+<td>0.3.0</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td>alloy-devices</td>
+<td>device-data</td>
+<td>0.3.0</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td>lwIP</td>
+<td>vendored</td>
+<td>2.2.1</td>
+<td>BSD-3-Clause</td>
+</tr>
+<tr>
+<td>libgcc</td>
+<td>toolchain-runtime</td>
+<td>14.2.1</td>
+<td><code>GPL-3.0-or-later WITH GCC-exception-3.1</code></td>
+</tr>
+<tr>
+<td>newlib (nano)</td>
+<td>toolchain-runtime</td>
+<td>4.4.0</td>
+<td><em>not asserted</em> — licence text path given</td>
+</tr>
+<tr>
+<td>newlib syscall stubs</td>
+<td>toolchain-runtime</td>
+<td>4.4.0</td>
+<td><em>not asserted</em></td>
+</tr>
+</tbody>
+</table>
+<p>Versions are read out of the trees themselves (<code>LWIP_VERSION_*</code>, <code>LFS_VERSION</code>,
+the Monocypher vendoring note), so a vendor bump moves the report without an
+edit. Where a tree records no version, the report says so rather than inventing
+one.</p>
+<h3 id="where-it-refuses-to-guess">Where it refuses to guess<a class="headerlink" href="#where-it-refuses-to-guess" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>newlib</strong> is a collection of licences, not one identifier. alloy reports the
+  path to the licence text the toolchain ships and asserts nothing.</li>
+<li><strong>A source file belonging to no declared package is not dropped.</strong> It becomes
+  a component with an undeclared licence, pointing at the nearest licence file
+  found by walking up the tree. <code>--strict</code> turns any undeclared licence into a
+  non-zero exit — useful as a release gate once you have decided what your
+  policy is for the toolchain runtime.</li>
+<li><strong>Scope is the firmware image.</strong> alloy's Python build tooling (pyyaml,
+  jsonschema, cryptography, …) runs on the build host, ships in no device and is
+  deliberately out of scope. Use <code>uv export</code> against <code>tools/alloy</code> for that
+  question — and say which one you mean when legal asks.</li>
+</ul>
+<p>The repository also carries a static <a href="https://github.com/Alloy-Embedded/alloy/blob/main/NOTICE"><code>NOTICE</code></a>
+covering every third-party tree in the source distribution, whether or not a
+given image compiles it. A unit test fails if it stops matching the versions
+read from the vendored trees.</p>
 
 
 
@@ -1730,7 +2045,7 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get started">
+          <a href="../crash-reports/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Crash reports">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1740,20 +2055,20 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
                 Previous
               </span>
               <div class="md-ellipsis">
-                Get started
+                Crash reports
               </div>
             </div>
           </a>
         
         
           
-          <a href="../boards/" class="md-footer__link md-footer__link--next" aria-label="Next: Boards">
+          <a href="../cli/" class="md-footer__link md-footer__link--next" aria-label="Next: The alloy CLI">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Boards
+                The alloy CLI
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/portable-code/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/stability/">
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../error-handling/">
       
       
-        <link rel="next" href="../boards/">
+        <link rel="next" href="../safety/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Portable code - alloy</title>
+        <title>API stability and support - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portable-code" class="md-skip">
+        <a href="#api-stability-and-support" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portable code
+              API stability and support
             
           </span>
         </div>
@@ -263,12 +263,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../getting-started/" class="md-tabs__link">
           
   
@@ -291,7 +289,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../peripherals/" class="md-tabs__link">
+        <a href="../../guide/peripherals/" class="md-tabs__link">
           
   
   
@@ -313,7 +311,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../emulation/" class="md-tabs__link">
+        <a href="../../guide/emulation/" class="md-tabs__link">
           
   
   
@@ -335,7 +333,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../cli/" class="md-tabs__link">
+        <a href="../../guide/cli/" class="md-tabs__link">
           
   
   
@@ -353,11 +351,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../architecture/" class="md-tabs__link">
           
   
   
@@ -447,10 +447,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -466,22 +464,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -499,7 +494,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -542,37 +537,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portable code
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../guide/portable-code/" class="md-nav__link">
         
   
   
@@ -588,72 +556,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Board roles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Capabilities and if constexpr
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Errors you can read
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Putting it together
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -666,7 +568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../boards/" class="md-nav__link">
+      <a href="../../guide/boards/" class="md-nav__link">
         
   
   
@@ -694,7 +596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../../guide/examples/" class="md-nav__link">
         
   
   
@@ -797,7 +699,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../peripherals/" class="md-nav__link">
+      <a href="../../guide/peripherals/" class="md-nav__link">
         
   
   
@@ -825,7 +727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
+      <a href="../../guide/async/" class="md-nav__link">
         
   
   
@@ -853,7 +755,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../libraries/" class="md-nav__link">
+      <a href="../../guide/libraries/" class="md-nav__link">
         
   
   
@@ -881,7 +783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../products/" class="md-nav__link">
+      <a href="../../guide/products/" class="md-nav__link">
         
   
   
@@ -909,7 +811,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adding-a-board/" class="md-nav__link">
+      <a href="../../guide/adding-a-board/" class="md-nav__link">
         
   
   
@@ -937,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+      <a href="../../guide/testing/" class="md-nav__link">
         
   
   
@@ -965,7 +867,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../escape-hatch/" class="md-nav__link">
+      <a href="../../guide/escape-hatch/" class="md-nav__link">
         
   
   
@@ -1064,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../emulation/" class="md-nav__link">
+      <a href="../../guide/emulation/" class="md-nav__link">
         
   
   
@@ -1092,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firmware-update/" class="md-nav__link">
+      <a href="../../guide/firmware-update/" class="md-nav__link">
         
   
   
@@ -1120,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../security/" class="md-nav__link">
+      <a href="../../guide/security/" class="md-nav__link">
         
   
   
@@ -1148,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../crash-reports/" class="md-nav__link">
+      <a href="../../guide/crash-reports/" class="md-nav__link">
         
   
   
@@ -1176,7 +1078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../supply-chain/" class="md-nav__link">
+      <a href="../../guide/supply-chain/" class="md-nav__link">
         
   
   
@@ -1269,7 +1171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../../guide/cli/" class="md-nav__link">
         
   
   
@@ -1297,7 +1199,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vscode/" class="md-nav__link">
+      <a href="../../guide/vscode/" class="md-nav__link">
         
   
   
@@ -1329,8 +1231,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1346,19 +1250,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -1376,7 +1283,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1394,7 +1301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -1422,7 +1329,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/error-handling/" class="md-nav__link">
+      <a href="../error-handling/" class="md-nav__link">
         
   
   
@@ -1447,10 +1354,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/stability/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API stability and support
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1466,6 +1400,211 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-public-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The public surface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The public surface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-application-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — application headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-the-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — the CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-alloytoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — alloy.toml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-public" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not public
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-number-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each number means
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What each number means">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-deprecation-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The deprecation window
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-docs-are-versioned-too" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The docs are versioned too
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pinning-the-chip-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pinning the chip database
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pinning the chip database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-failure-it-causes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The failure it causes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-three-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-pin-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which pin to use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-the-framework-itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        And the framework itself
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-page-does-not-promise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this page does not promise
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1478,7 +1617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/safety/" class="md-nav__link">
+      <a href="../safety/" class="md-nav__link">
         
   
   
@@ -1535,43 +1674,182 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#board-roles" class="md-nav__link">
+  <a href="#the-public-surface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Board roles
+        The public surface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The public surface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-application-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — application headers
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#capabilities-and-if-constexpr" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-the-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities and if constexpr
+        Tier 1 — the CLI
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#errors-you-can-read" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-alloytoml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Errors you can read
+        Tier 1 — alloy.toml
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#putting-it-together" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#not-public" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Putting it together
+        Not public
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-number-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each number means
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What each number means">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-deprecation-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The deprecation window
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-docs-are-versioned-too" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The docs are versioned too
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pinning-the-chip-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pinning the chip database
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pinning the chip database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-failure-it-causes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The failure it causes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-three-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-pin-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which pin to use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-the-framework-itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        And the framework itself
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-page-does-not-promise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this page does not promise
       
     </span>
   </a>
@@ -1598,101 +1876,290 @@
   
 
 
-<h1 id="portable-code">Portable code<a class="headerlink" href="#portable-code" title="Permanent link">&para;</a></h1>
-<p>alloy's headline promise is that <strong>one <code>main.cpp</code> recompiles for any board, with zero
-preprocessor conditionals</strong>. This page explains the three ideas that make that true.</p>
-<h2 id="board-roles">Board roles<a class="headerlink" href="#board-roles" title="Permanent link">&para;</a></h2>
-<p>A board provides a fixed set of <strong>roles</strong> — named objects your app talks to instead of raw
-peripherals:</p>
+<h1 id="api-stability-and-support">API stability and support<a class="headerlink" href="#api-stability-and-support" title="Permanent link">&para;</a></h1>
+<p>What a company can plan against: which parts of alloy are promised, what a
+version number is allowed to break, how much notice a removal gets, and — the
+sharp one — how a shipped product stops its <em>chip facts</em> from moving.</p>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>What it is</th>
+<th>Question</th>
+<th>Answer</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>board::led</code></td>
-<td>the status LED</td>
+<td>What is public API?</td>
+<td>The <code>alloy::</code> and <code>board::</code> headers, the CLI verbs, the <code>--json</code> envelopes, and <code>alloy.toml</code>. Enumerated below.</td>
 </tr>
 <tr>
-<td><code>board::button</code></td>
-<td>the user button</td>
+<td>What is internal?</td>
+<td><code>alloy::arch::</code>, <code>alloy::hal::</code>, any <code>detail</code> namespace, <code>src/alloy/*/vendor/</code>.</td>
 </tr>
 <tr>
-<td><code>board::debug_uart</code></td>
-<td>the console UART</td>
+<td>What may break in a MINOR?</td>
+<td>Nothing public, except by deprecation-then-removal across two releases.</td>
 </tr>
 <tr>
-<td><code>board::i2c</code>, <code>board::spi</code></td>
-<td>the wired bus</td>
+<td>How long is the deprecation window?</td>
+<td>At least one MINOR release, removal no earlier than the next MAJOR.</td>
 </tr>
 <tr>
-<td><code>board::adc</code>, <code>board::led_pwm</code></td>
-<td>analog in / PWM out</td>
+<td>Can we pin the chip database?</td>
+<td>Yes — <code>[devices]</code> in <code>alloy.toml</code>, by version <strong>and</strong> by content digest.</td>
 </tr>
 <tr>
-<td><code>board::watchdog</code>, <code>board::rtc</code>, <code>board::nvm</code></td>
-<td>system services</td>
+<td>Is any of this enforced?</td>
+<td>The surface is recorded in <code>tools/alloy/tests/test_stability.py</code>; deleting a public name fails CI.</td>
 </tr>
 </tbody>
 </table>
-<p>Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
-an address, or a vendor. The board data binds each role to the right pins with <strong>compile-time
-route checking</strong>.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
+<p>Alloy is <code>0.x</code>. That is a real statement, not modesty: until <code>1.0</code> a MINOR
+release <strong>may</strong> make a breaking change, and the promise below is that it will
+be announced and given a window, not that it will never happen. Everything on
+this page is what the project holds itself to today; nothing here is a
+contractual support agreement.</p>
+<hr />
+<h2 id="the-public-surface">The public surface<a class="headerlink" href="#the-public-surface" title="Permanent link">&para;</a></h2>
+<h3 id="tier-1-application-headers">Tier 1 — application headers<a class="headerlink" href="#tier-1-application-headers" title="Permanent link">&para;</a></h3>
+<p>Headers under <code>src/alloy/</code> that application code includes directly. These are
+the ones the in-repo examples use, which is also how the list was built:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>alloy/board.hpp     alloy/time.hpp      alloy/delay.hpp     alloy/gpio.hpp
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>alloy/uart.hpp      alloy/i2c.hpp       alloy/spi.hpp       alloy/adc.hpp
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>alloy/dac.hpp       alloy/pwm.hpp       alloy/can.hpp       alloy/rtc.hpp
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>alloy/dma.hpp       alloy/irq.hpp       alloy/wdt.hpp       alloy/flash.hpp
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>alloy/log.hpp       alloy/sched.hpp     alloy/fault.hpp     alloy/secure.hpp
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>alloy/ota.hpp       alloy/provision.hpp alloy/concepts.hpp  alloy/fastcode.hpp
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>alloy/async/{task,executor,delay,i2c,spi,dma}.hpp
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>alloy/net/{socket,http,lwip}.hpp        alloy/ota/{signed,uart_transport}.hpp
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>alloy/drivers/…     alloy/dsp/…         alloy/util/…
 </span></code></pre></div>
-<h2 id="capabilities-and-if-constexpr">Capabilities and <code>if constexpr</code><a class="headerlink" href="#capabilities-and-if-constexpr" title="Permanent link">&para;</a></h2>
-<p>Not every board has every role. Instead of <code>#ifdef</code>, alloy exposes compile-time booleans under
-<code>board::caps::*</code> and you branch with <code>if constexpr</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">on</span><span class="p">();</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+<p><code>alloy/board.hpp</code>, <code>alloy/device.hpp</code>, <code>alloy/product.hpp</code>,
+<code>alloy/product_nvm.hpp</code>, <code>alloy/slots.hpp</code> and <code>alloy/ota_key.hpp</code> have no file
+in <code>src/alloy</code> at all — codegen writes them per board into <code>.alloy/generated/</code>.
+Their <strong>names</strong> are public; their <strong>contents</strong> are the chip database's promise,
+which is what <code>[devices]</code> below pins.</p>
+<h3 id="tier-1-the-cli">Tier 1 — the CLI<a class="headerlink" href="#tier-1-the-cli" title="Permanent link">&para;</a></h3>
+<p>Every verb <code>alloy --help</code> lists, and every <code>--json</code> envelope. Envelopes carry
+their own version in the payload:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alloy.board_info.v1&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">…</span><span class="p">}</span>
 </span></code></pre></div>
-<p>The discarded branch is <strong>removed at compile time</strong>, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.</p>
-<div class="admonition info">
-<p class="admonition-title">Roles that are absent</p>
-<p>A small role you don't use degrades to a <strong>no-op stub</strong> (so <code>board::watchdog.feed()</code> always
-compiles). Using a role a board <em>truly</em> lacks — say <code>board::led</code> on a headless board —
-fails at <strong>compile time</strong> with a <code>static_assert</code> message, never at runtime.</p>
-</div>
-<h2 id="errors-you-can-read">Errors you can read<a class="headerlink" href="#errors-you-can-read" title="Permanent link">&para;</a></h2>
-<p>Portability is only useful if mistakes are caught early. Bind a UART to a pin that has no route
-to it and the compiler stops you, <strong>naming the pin</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: static assertion failed: TX pin has no route to this UART on the selected chip
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   note: in instantiation of &#39;uart::bind&lt;usart2_t, tx&lt;pa5_t&gt;, rx&lt;pa3_t&gt;, ...&gt;&#39;
+<p>A breaking change to an envelope bumps <code>.v1</code> to <code>.v2</code> and both are emitted for
+the window. A tool that checks the <code>schema</code> field will never be silently handed
+a different shape.</p>
+<h3 id="tier-1-alloytoml">Tier 1 — <code>alloy.toml</code><a class="headerlink" href="#tier-1-alloytoml" title="Permanent link">&para;</a></h3>
+<p>The tables a project may write: <code>[project]</code>, <code>[board]</code>, <code>[alloy]</code>,
+<code>[devices]</code>, <code>[product]</code>, <code>[libs]</code>, <code>[ota]</code>, <code>[roles.*]</code>, <code>[clock]</code>. Unknown
+keys inside <code>[devices]</code> are refused rather than ignored — a typo in a pin is
+the last thing that should fail open.</p>
+<h3 id="not-public">Not public<a class="headerlink" href="#not-public" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alloy::arch::</code> (<code>src/alloy/arch/…</code>)</td>
+<td>the per-ISA backend; portable code never names it, and a new backend reshapes it</td>
+</tr>
+<tr>
+<td><code>alloy::hal::</code> (<code>src/alloy/hal/…</code>)</td>
+<td>the per-IP peripheral drivers the generated <code>board.hpp</code> instantiates; they move whenever the data does</td>
+</tr>
+<tr>
+<td>any <code>detail</code> namespace</td>
+<td>implementation of the header it sits in</td>
+</tr>
+<tr>
+<td><code>src/alloy/net/vendor/</code>, <code>src/alloy/fs/vendor/</code>, <code>third_party/</code></td>
+<td>upstream trees, on upstream's terms — see the <a href="https://github.com/Alloy-Embedded/alloy/blob/main/NOTICE">NOTICE</a></td>
+</tr>
+<tr>
+<td><code>alloy::dev::</code></td>
+<td>generated register facts — stable in <em>shape</em>, but its content is the chip database's version, not alloy's</td>
+</tr>
+</tbody>
+</table>
+<p>A test asserts that <code>alloy::arch</code> is not declared outside <code>arch/</code>, so the
+boundary cannot erode quietly.</p>
+<hr />
+<h2 id="what-each-number-means">What each number means<a class="headerlink" href="#what-each-number-means" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Bumps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>new board, new chip, new peripheral, new verb, new <code>--flag</code></td>
+<td>MINOR</td>
+</tr>
+<tr>
+<td>bug fix that does not change a documented behaviour</td>
+<td>PATCH</td>
+</tr>
+<tr>
+<td>removing or renaming a Tier-1 name; changing an envelope's shape without a new <code>.vN</code>; making a previously accepted <code>alloy.toml</code> invalid</td>
+<td>MAJOR</td>
+</tr>
+<tr>
+<td>anything under "Not public"</td>
+<td>any release, no notice</td>
+</tr>
+<tr>
+<td>a new chip fact, a corrected register offset</td>
+<td><strong>alloy-devices</strong>, not alloy — see below</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-deprecation-window">The deprecation window<a class="headerlink" href="#the-deprecation-window" title="Permanent link">&para;</a></h3>
+<ol>
+<li>The release that deprecates a name keeps it working, marks it
+   <strong>Deprecated</strong> in <code>CHANGELOG.md</code>, and names the replacement.</li>
+<li>It keeps working for at least one further MINOR release.</li>
+<li>It is removed no earlier than the next MAJOR.</li>
+</ol>
+<p>From the next release on, <code>CHANGELOG.md</code> carries a <code>### Deprecated</code> section in
+every entry, even when the answer is "nothing" — an empty section is a claim; a
+missing one is a question. <code>Unreleased</code> has one today; <code>0.1.0</code>–<code>0.3.0</code> predate
+the policy and do not, so read those three as "no deprecations were tracked",
+not as "none happened".</p>
+<h3 id="the-docs-are-versioned-too">The docs are versioned too<a class="headerlink" href="#the-docs-are-versioned-too" title="Permanent link">&para;</a></h3>
+<p><code>mkdocs</code> publishes with <code>mike</code>: a tag becomes <code>/&lt;version&gt;/</code> and <code>latest</code>, and
+<code>main</code> becomes <code>/dev/</code>. Documentation for the version you pinned does not
+disappear when the next one ships.</p>
+<hr />
+<h2 id="pinning-the-chip-database">Pinning the chip database<a class="headerlink" href="#pinning-the-chip-database" title="Permanent link">&para;</a></h2>
+<p>This is the part that matters most and is easiest to miss.</p>
+<p>The register offsets, memory maps, IRQ numbers and clock trees a build compiles
+do <strong>not</strong> live in this repo. They live in <code>alloy-devices</code>, which is resolved at
+build time — from <code>ALLOY_DEVICES_ROOT</code>, from a sibling checkout, or from an
+installed wheel, in that order. A product built from a repo checkout therefore
+gets <em>whatever that checkout is today</em>.</p>
+<p>That is not hypothetical. <code>alloy-devices</code> <code>0.3.0</code> is tagged, and its main branch
+has already changed schema since the tag while still calling itself <code>0.3.0</code>.</p>
+<h3 id="the-failure-it-causes">The failure it causes<a class="headerlink" href="#the-failure-it-causes" title="Permanent link">&para;</a></h3>
+<p>Move one register offset in the database and rebuild:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/offset: &quot;0x14&quot;/offset: &quot;0x40&quot;/&#39;</span><span class="w"> </span>registers/st/gpio_v2.yaml<span class="w">   </span><span class="c1"># ODR</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>my-project<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>gen
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">generated 20 file(s) -&gt; .alloy/generated/nucleo_g071rb</span>
 </span></code></pre></div>
-<p>This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see <a href="../../reference/architecture/">Architecture</a>.</p>
-<h2 id="putting-it-together">Putting it together<a class="headerlink" href="#putting-it-together" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><span class="filename">A portable app that adapts to what the board offers</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">alloy</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">uart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">baud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">debug_uart_baud</span><span class="p">});</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;up</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">adc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// only where an ADC role exists</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sample ok</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
+<p>Nothing complained. The generated header now says:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">offsetof</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span><span class="w"> </span><span class="n">ODR</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x40</span><span class="p">);</span>
 </span></code></pre></div>
-<p>Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
-source, no edits. The ADC block simply vanishes on a board without that role.</p>
+<p>Every write to that pin now lands on a different register. The firmware builds,
+flashes, and behaves differently on the bench with no version, no warning and
+no diff in your own repository.</p>
+<h3 id="the-pin">The pin<a class="headerlink" href="#the-pin" title="Permanent link">&para;</a></h3>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>devices
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">database  /opt/alloy-devices</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">version   0.3.0</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">digest    sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551  (477 files)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">this project pins nothing — its facts follow whatever database is</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="go">resolved at build time. `alloy devices --pin` freezes them.</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="gp">$ </span>alloy<span class="w"> </span>devices<span class="w"> </span>--pin
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">pinned in /home/me/my-project/alloy.toml:</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">  [devices]</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">  version = &quot;0.3.0&quot;</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">  digest = &quot;sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551&quot;</span>
+</span></code></pre></div>
+<p>Now the same edit is caught before a single file is generated:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>gen
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="go">error: chip database CONTENT mismatch: alloy.toml pins</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="go">  [devices] digest = &quot;sha256:77e851f7…&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">but /opt/alloy-devices hashes to</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="go">  sha256:5d6007db…</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="go">The facts this project would compile are not the facts it was pinned to.</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="go">Check out the pinned database, or re-pin with `alloy devices --pin` if the</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="go">move was intended.</span>
+</span></code></pre></div>
+<h3 id="the-three-keys">The three keys<a class="headerlink" href="#the-three-keys" title="Permanent link">&para;</a></h3>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[devices]</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">path</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/alloy-devices&quot;</span><span class="w">   </span><span class="c1"># optional: WHERE. Wins over ALLOY_DEVICES_ROOT.</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.3.0&quot;</span><span class="w">                </span><span class="c1"># optional: what it calls itself. Also &quot;&gt;=0.3.0&quot;.</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">digest</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sha256:…&quot;</span><span class="w">             </span><span class="c1"># optional: what it actually IS.</span>
+</span></code></pre></div>
+<ul>
+<li><code>path</code> only redirects discovery. It takes precedence over the environment,
+  exactly as <code>[alloy] root</code> does — a shipped product says where its facts come
+  from, and a shell variable does not get to move them.</li>
+<li><code>version</code> and <code>digest</code> are <strong>assertions</strong>, checked against whatever was
+  resolved, by any route. An operator who points <code>ALLOY_DEVICES_ROOT</code> at a
+  different database still trips the pin. That is what makes it load-bearing
+  rather than advisory.</li>
+<li><code>version</code> compares release numbers (<code>0.3.0</code>, <code>&gt;=0.3.0</code>) — it is not PEP 440,
+  and anything else is refused rather than guessed.</li>
+<li><code>digest</code> covers every file under <code>schema/</code>, <code>registers/</code> and <code>chips/</code>, path
+  and content both, so a rename is caught even when no byte changed. It ignores
+  READMEs, changelogs and editor droppings, so a prose commit does not
+  invalidate a shipped product's pin.</li>
+</ul>
+<p>The check runs in <code>load_project</code>, so <strong>every</strong> verb that opens a project —
+<code>gen</code>, <code>build</code>, <code>flash</code>, <code>monitor</code>, <code>size</code>, <code>sbom</code>, <code>boards</code>, <code>board-info</code>,
+<code>matrix</code>, <code>debug-info</code>, <code>devices</code> itself — refuses together, with exit 1 and
+before a single file is generated. There is no route that quietly builds
+against the wrong facts.</p>
+<p>Two verbs deliberately do not: <code>clean</code> only removes build trees, and <code>image</code>
+takes an already-built binary as an argument and never opens a project or reads
+the database at all.</p>
+<h3 id="which-pin-to-use">Which pin to use<a class="headerlink" href="#which-pin-to-use" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Pin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a released product, a certification package, a build you must reproduce</td>
+<td><code>digest</code> (with <code>version</code> for readability)</td>
+</tr>
+<tr>
+<td>a library or example that should track the database</td>
+<td><code>version = "&gt;=0.3.0"</code></td>
+</tr>
+<tr>
+<td>a corporate build server with the database at a fixed path</td>
+<td><code>path</code> + <code>digest</code></td>
+</tr>
+<tr>
+<td>day-to-day development against a moving sibling checkout</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<h3 id="and-the-framework-itself">And the framework itself<a class="headerlink" href="#and-the-framework-itself" title="Permanent link">&para;</a></h3>
+<p>The Python side pins the database the ordinary way — <code>tools/alloy/pyproject.toml</code>
+depends on <code>alloy-devices==0.3.0</code>, an exact <code>==</code>. Be aware of one development
+wart: <code>[tool.uv.sources]</code> overrides that dependency with the sibling checkout
+in editable mode, so <strong>a development checkout is never version-checked by pip
+resolution</strong>. The <code>[devices]</code> pin is what covers that case, which is why it
+asserts against the resolved root rather than against installed metadata.</p>
+<p>To pin the framework too, <code>[alloy] root</code> records the checkout <code>alloy new</code>
+scaffolded against; an installed wheel embeds framework and boards as package
+data, so pinning the wheel version pins both.</p>
+<hr />
+<h2 id="what-this-page-does-not-promise">What this page does not promise<a class="headerlink" href="#what-this-page-does-not-promise" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No LTS branch and no security-fix backports.</strong> Fixes land on <code>main</code> and
+  ship in the next release. If you need a supported old line, that is a
+  conversation, not a policy.</li>
+<li><strong>No ABI stability.</strong> Everything is headers and templates; there is no
+  pre-built alloy library to link against, so "ABI" has no meaning here yet.</li>
+<li><strong>No promise about <code>alloy-devices</code> schema.</strong> It has its own repo, its own
+  tags and its own changelog, and it changes more often than alloy does. Pin
+  it; do not assume it.</li>
+<li><strong>Nothing about certification.</strong> See <a href="../safety/">Safety posture</a> for what is
+  and is not true today.</li>
+</ul>
 
 
 
@@ -1730,7 +2197,7 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get started">
+          <a href="../error-handling/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Error handling">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1740,20 +2207,20 @@ source, no edits. The ADC block simply vanishes on a board without that role.</p
                 Previous
               </span>
               <div class="md-ellipsis">
-                Get started
+                Error handling
               </div>
             </div>
           </a>
         
         
           
-          <a href="../boards/" class="md-footer__link md-footer__link--next" aria-label="Next: Boards">
+          <a href="../safety/" class="md-footer__link md-footer__link--next" aria-label="Next: Safety posture">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Boards
+                Safety posture
               </div>
             </div>
             <div class="md-footer__button md-icon">
