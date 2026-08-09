@@ -14,6 +14,19 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **`docs/reference/peripheral-surface.md`** — the decision that governs the
+  config surface of the remaining 28 uncurated peripherals, taken before those
+  drivers are written rather than after. Three layers (`alloy::<periph>::config`
+  frozen at what every driver honours, `alloy::<periph>::opts<Inst>` whose
+  *members* are declared per IP version, `alloy::dev::` for the rest), degree as
+  a generated `Inst::feat::` number where 0 means absent, and a five-question
+  rule that routes any future knob to exactly one of them. Costs measured
+  (+4 bytes for a user who configures nothing; +8 for five vendor features;
+  +80 when the config is not a compile-time literal) and the give-up named: a
+  Layer-2 knob cannot be changed at run time. UART converts first, because it
+  is the one peripheral where the shape fixes a live defect —
+  `hal::serial_config` promises nine fields on behalf of six drivers, one of
+  which implements `configure()`.
 - **`alloy chip-status <chip>`** (`--json`) — the peripheral coverage
   scoreboard: per peripheral instance, is there curated register data, a HAL
   driver, a Renode model, and is it bound by a board role? Every column is
