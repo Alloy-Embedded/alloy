@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/stability/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/chip-coverage/">
       
       
-        <link rel="prev" href="../error-handling/">
+        <link rel="prev" href="../architecture/">
       
       
-        <link rel="next" href="../safety/">
+        <link rel="next" href="../peripheral-surface/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>API stability and support - alloy</title>
+        <title>Chip coverage - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-stability-and-support" class="md-skip">
+        <a href="#chip-coverage" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API stability and support
+              Chip coverage
             
           </span>
         </div>
@@ -1330,10 +1330,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../chip-coverage/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip coverage
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1349,6 +1376,111 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-column-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each column means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-100-counts-and-what-it-does-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What "100%" counts — and what it does not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline-stm32g0b1re-2026-08-09" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline — STM32G0B1RE, 2026-08-09
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Baseline — STM32G0B1RE, 2026-08-09">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#curated-with-a-driver-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Curated, with a driver (31)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#curated-no-driver-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Curated, no driver (6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uncurated-the-28-peripheral-gap-43-of-the-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uncurated — the 28-peripheral gap (43 % of the die)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#curated-but-unmodelled-in-renode-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Curated but unmodelled in Renode (14)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1414,37 +1546,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API stability and support
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../stability/" class="md-nav__link">
         
   
   
@@ -1460,211 +1565,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-public-surface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The public surface
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The public surface">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#tier-1-application-headers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 1 — application headers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-1-the-cli" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 1 — the CLI
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tier-1-alloytoml" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tier 1 — alloy.toml
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#not-public" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Not public
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-each-number-means" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What each number means
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What each number means">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-deprecation-window" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The deprecation window
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-docs-are-versioned-too" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The docs are versioned too
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pinning-the-chip-database" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pinning the chip database
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Pinning the chip database">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-failure-it-causes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The failure it causes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-pin" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The pin
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-three-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The three keys
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#which-pin-to-use" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Which pin to use
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#and-the-framework-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        And the framework itself
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-this-page-does-not-promise" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What this page does not promise
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1734,22 +1634,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-public-surface" class="md-nav__link">
+  <a href="#what-each-column-means" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The public surface
+        What each column means
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The public surface">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-100-counts-and-what-it-does-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What "100%" counts — and what it does not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline-stm32g0b1re-2026-08-09" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baseline — STM32G0B1RE, 2026-08-09
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Baseline — STM32G0B1RE, 2026-08-09">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tier-1-application-headers" class="md-nav__link">
+  <a href="#curated-with-a-driver-31" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tier 1 — application headers
+        Curated, with a driver (31)
       
     </span>
   </a>
@@ -1757,10 +1679,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tier-1-the-cli" class="md-nav__link">
+  <a href="#curated-no-driver-6" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tier 1 — the CLI
+        Curated, no driver (6)
       
     </span>
   </a>
@@ -1768,10 +1690,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tier-1-alloytoml" class="md-nav__link">
+  <a href="#uncurated-the-28-peripheral-gap-43-of-the-die" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tier 1 — alloy.toml
+        Uncurated — the 28-peripheral gap (43 % of the die)
       
     </span>
   </a>
@@ -1779,10 +1701,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#not-public" class="md-nav__link">
+  <a href="#curated-but-unmodelled-in-renode-14" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Not public
+        Curated but unmodelled in Renode (14)
       
     </span>
   </a>
@@ -1791,128 +1713,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-each-number-means" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What each number means
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What each number means">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-deprecation-window" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The deprecation window
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-docs-are-versioned-too" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The docs are versioned too
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pinning-the-chip-database" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pinning the chip database
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Pinning the chip database">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-failure-it-causes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The failure it causes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-pin" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The pin
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-three-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The three keys
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#which-pin-to-use" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Which pin to use
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#and-the-framework-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        And the framework itself
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-this-page-does-not-promise" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What this page does not promise
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1936,312 +1736,95 @@
   
 
 
-<h1 id="api-stability-and-support">API stability and support<a class="headerlink" href="#api-stability-and-support" title="Permanent link">&para;</a></h1>
-<p>What a company can plan against: which parts of alloy are promised, what a
-version number is allowed to break, how much notice a removal gets, and — the
-sharp one — how a shipped product stops its <em>chip facts</em> from moving.</p>
+<h1 id="chip-coverage">Chip coverage<a class="headerlink" href="#chip-coverage" title="Permanent link">&para;</a></h1>
+<p>How much of a chip's silicon does alloy actually support? Until there was a verb for it, the
+answer was an impression. <code>alloy chip-status</code> makes it a number — and, more importantly, makes
+the number <strong>derived</strong>, so it moves on its own when the work lands and cannot be talked up.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>chip-status<span class="w"> </span>st/stm32g0b1re
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>chip-status<span class="w"> </span>st/stm32g0b1re<span class="w"> </span>--json<span class="w">      </span><span class="c1"># same facts, for tooling</span>
+</span></code></pre></div>
+<h2 id="what-each-column-means">What each column means<a class="headerlink" href="#what-each-column-means" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
+<th>Column</th>
 <th>Question</th>
-<th>Answer</th>
+<th>Where the answer comes from</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>What is public API?</td>
-<td>The <code>alloy::</code> and <code>board::</code> headers, the CLI verbs, the <code>--json</code> envelopes, and <code>alloy.toml</code>. Enumerated below.</td>
+<td><code>REG</code></td>
+<td>is there curated register data?</td>
+<td>the chip yaml binds an <code>ip</code>, and <code>alloy-devices</code> ships <code>registers/&lt;vendor&gt;/&lt;ip&gt;.yaml</code> for it — the same gate codegen applies before it emits a descriptor</td>
 </tr>
 <tr>
-<td>What is internal?</td>
-<td><code>alloy::arch::</code>, <code>alloy::hal::</code>, any <code>detail</code> namespace, <code>src/alloy/*/vendor/</code>.</td>
+<td><code>DRV</code></td>
+<td>is there a HAL driver?</td>
+<td><code>src/alloy/hal/&lt;class&gt;/&lt;vendor&gt;_&lt;ip&gt;.hpp</code> exists — the exact path the chip codegen <code>#include</code>s when it is there</td>
 </tr>
 <tr>
-<td>What may break in a MINOR?</td>
-<td>Nothing public, except by deprecation-then-removal across two releases.</td>
+<td><code>REN</code></td>
+<td>is there a Renode model?</td>
+<td>the IP is named in one of <code>emit/renode.py</code>'s model tables</td>
 </tr>
 <tr>
-<td>How long is the deprecation window?</td>
-<td>At least one MINOR release, removal no earlier than the next MAJOR.</td>
-</tr>
-<tr>
-<td>Can we pin the chip database?</td>
-<td>Yes — <code>[devices]</code> in <code>alloy.toml</code>, by version <strong>and</strong> by content digest.</td>
-</tr>
-<tr>
-<td>Is any of this enforced?</td>
-<td>The surface is recorded in <code>tools/alloy/tests/test_stability.py</code>; deleting a public name fails CI.</td>
+<td><code>ROLE</code></td>
+<td>is it reachable from a board?</td>
+<td>a board using this chip binds the instance to a role — or, for a GPIO port, names one of its pins</td>
 </tr>
 </tbody>
 </table>
-<p>Alloy is <code>0.x</code>. That is a real statement, not modesty: until <code>1.0</code> a MINOR
-release <strong>may</strong> make a breaking change, and the promise below is that it will
-be announced and given a window, not that it will never happen. Everything on
-this page is what the project holds itself to today; nothing here is a
-contractual support agreement.</p>
-<hr />
-<h2 id="the-public-surface">The public surface<a class="headerlink" href="#the-public-surface" title="Permanent link">&para;</a></h2>
-<h3 id="tier-1-application-headers">Tier 1 — application headers<a class="headerlink" href="#tier-1-application-headers" title="Permanent link">&para;</a></h3>
-<p>Headers under <code>src/alloy/</code> that application code includes directly. These are
-the ones the in-repo examples use, which is also how the list was built:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>alloy/board.hpp     alloy/time.hpp      alloy/delay.hpp     alloy/gpio.hpp
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>alloy/uart.hpp      alloy/i2c.hpp       alloy/spi.hpp       alloy/adc.hpp
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>alloy/dac.hpp       alloy/pwm.hpp       alloy/can.hpp       alloy/rtc.hpp
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>alloy/dma.hpp       alloy/irq.hpp       alloy/wdt.hpp       alloy/flash.hpp
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>alloy/log.hpp       alloy/sched.hpp     alloy/fault.hpp     alloy/secure.hpp
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>alloy/ota.hpp       alloy/provision.hpp alloy/concepts.hpp  alloy/fastcode.hpp
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>alloy/async/{task,executor,delay,i2c,spi,dma}.hpp
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>alloy/net/{socket,http,lwip}.hpp        alloy/ota/{signed,uart_transport}.hpp
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>alloy/drivers/…     alloy/dsp/…         alloy/util/…
-</span></code></pre></div>
-<p><code>alloy/board.hpp</code>, <code>alloy/device.hpp</code>, <code>alloy/product.hpp</code>,
-<code>alloy/product_nvm.hpp</code>, <code>alloy/slots.hpp</code> and <code>alloy/ota_key.hpp</code> have no file
-in <code>src/alloy</code> at all — codegen writes them per board into <code>.alloy/generated/</code>.
-Their <strong>names</strong> are public; their <strong>contents</strong> are the chip database's promise,
-which is what <code>[devices]</code> below pins.</p>
-<p>Two more names are public with <strong>IP-shaped contents</strong>, on the same footing:</p>
+<p>Nothing is hand-maintained. There is no checklist file to update, so the scoreboard cannot
+quietly drift from the tree it describes. Run it inside a project and your own <code>boards/</code> are
+searched too.</p>
+<h2 id="what-100-counts-and-what-it-does-not">What "100%" counts — and what it does not<a class="headerlink" href="#what-100-counts-and-what-it-does-not" title="Permanent link">&para;</a></h2>
+<p>The denominator is <strong>peripheral instances of one part</strong>, as the chip yaml lists them. On the
+G0B1RE that means <code>usart1</code>…<code>usart6</code> count six times while sharing one IP, one register file and
+one driver — so the per-IP figures are printed next to the headline. Six instances of a curated
+IP is <em>one</em> curation job done, not six.</p>
+<p>Three things the scoreboard deliberately does <strong>not</strong> claim:</p>
 <ul>
-<li><code>alloy::&lt;periph&gt;::opts&lt;Inst&gt;</code> (surfaced as <code>Role::opts</code>) — Layer 2 of the
-  <a href="../peripheral-surface/">peripheral surface</a>. The template's <em>name</em> is Tier 1
-  and will not move. Its <em>members</em> are declared per IP version beside the
-  driver, so which knobs exist changes with the chip, by design. Adding a
-  member is MINOR; renaming or removing one follows the deprecation window for
-  the drivers that had it.</li>
-<li><code>Inst::feat::&lt;name&gt;</code> — degree numbers, generated from <code>alloy-devices</code>. Their
-  contents are the chip database's promise, exactly like <code>alloy::dev::</code>, and
-  are pinned by <code>[devices]</code>.</li>
+<li><strong><code>REG</code> is about register data, not about a working peripheral.</strong> An instance can be curated,
+  have a driver, and be entirely unproven.</li>
+<li><strong><code>DRV</code> is about a header existing for the IP.</strong> It says nothing about how much of the
+  peripheral that driver covers, and nothing about it being tested.</li>
+<li><strong><code>REN</code> means a model is known for the IP</strong> — not that this board's platform instantiates it
+  (that also depends on the board's roles), and not that any emulation leg exercises it.</li>
 </ul>
-<p>One more header is Tier 1 by intent rather than by the examples using it:</p>
-<ul>
-<li><code>alloy/core/claim.hpp</code> — <code>alloy::claim::exclusive/shared/held</code>,
-  <code>alloy::claim::personality</code>, <code>alloy::trap_code</code>. A facade written outside
-  this repo has to be able to participate in
-  <a href="../peripheral-surface/#personalities-a-block-runs-in-one-mode-at-a-time">instance ownership</a>,
-  so these are public names and not a <code>detail</code> namespace. <code>personality</code> gains
-  enumerators as alloy ships facades — additive, and it carries <code>user_a</code>/
-  <code>user_b</code> so an out-of-tree facade never has to patch the header.</li>
-</ul>
-<h3 id="tier-1-the-cli">Tier 1 — the CLI<a class="headerlink" href="#tier-1-the-cli" title="Permanent link">&para;</a></h3>
-<p>Every verb <code>alloy --help</code> lists, and every <code>--json</code> envelope. Envelopes carry
-their own version in the payload:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alloy.board_info.v1&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">…</span><span class="p">}</span>
-</span></code></pre></div>
-<p>A breaking change to an envelope bumps <code>.v1</code> to <code>.v2</code> and both are emitted for
-the window. A tool that checks the <code>schema</code> field will never be silently handed
-a different shape.</p>
-<h3 id="tier-1-alloytoml">Tier 1 — <code>alloy.toml</code><a class="headerlink" href="#tier-1-alloytoml" title="Permanent link">&para;</a></h3>
-<p>The tables a project may write: <code>[project]</code>, <code>[board]</code>, <code>[alloy]</code>,
-<code>[devices]</code>, <code>[product]</code>, <code>[libs]</code>, <code>[ota]</code>, <code>[roles.*]</code>, <code>[clock]</code>. Unknown
-keys inside <code>[devices]</code> are refused rather than ignored — a typo in a pin is
-the last thing that should fail open.</p>
-<h3 id="not-public">Not public<a class="headerlink" href="#not-public" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Surface</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>alloy::arch::</code> (<code>src/alloy/arch/…</code>)</td>
-<td>the per-ISA backend; portable code never names it, and a new backend reshapes it</td>
-</tr>
-<tr>
-<td><code>alloy::hal::</code> (<code>src/alloy/hal/…</code>)</td>
-<td>the per-IP peripheral drivers the generated <code>board.hpp</code> instantiates; they move whenever the data does</td>
-</tr>
-<tr>
-<td>any <code>detail</code> namespace</td>
-<td>implementation of the header it sits in</td>
-</tr>
-<tr>
-<td><code>src/alloy/net/vendor/</code>, <code>src/alloy/fs/vendor/</code>, <code>third_party/</code></td>
-<td>upstream trees, on upstream's terms — see the <a href="https://github.com/Alloy-Embedded/alloy/blob/main/NOTICE">NOTICE</a></td>
-</tr>
-<tr>
-<td><code>alloy::dev::</code></td>
-<td>generated register facts — stable in <em>shape</em>, but its content is the chip database's version, not alloy's</td>
-</tr>
-</tbody>
-</table>
-<p>A test asserts that <code>alloy::arch</code> is not declared outside <code>arch/</code>, so the
-boundary cannot erode quietly.</p>
-<hr />
-<h2 id="what-each-number-means">What each number means<a class="headerlink" href="#what-each-number-means" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Change</th>
-<th>Bumps</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>new board, new chip, new peripheral, new verb, new <code>--flag</code></td>
-<td>MINOR</td>
-</tr>
-<tr>
-<td>bug fix that does not change a documented behaviour</td>
-<td>PATCH</td>
-</tr>
-<tr>
-<td>removing or renaming a Tier-1 name; changing an envelope's shape without a new <code>.vN</code>; making a previously accepted <code>alloy.toml</code> invalid</td>
-<td>MAJOR</td>
-</tr>
-<tr>
-<td>anything under "Not public"</td>
-<td>any release, no notice</td>
-</tr>
-<tr>
-<td>a new chip fact, a corrected register offset</td>
-<td><strong>alloy-devices</strong>, not alloy — see below</td>
-</tr>
-</tbody>
-</table>
-<h3 id="the-deprecation-window">The deprecation window<a class="headerlink" href="#the-deprecation-window" title="Permanent link">&para;</a></h3>
-<ol>
-<li>The release that deprecates a name keeps it working, marks it
-   <strong>Deprecated</strong> in <code>CHANGELOG.md</code>, and names the replacement.</li>
-<li>It keeps working for at least one further MINOR release.</li>
-<li>It is removed no earlier than the next MAJOR.</li>
-</ol>
-<p>From the next release on, <code>CHANGELOG.md</code> carries a <code>### Deprecated</code> section in
-every entry, even when the answer is "nothing" — an empty section is a claim; a
-missing one is a question. <code>Unreleased</code> has one today; <code>0.1.0</code>–<code>0.3.0</code> predate
-the policy and do not, so read those three as "no deprecations were tracked",
-not as "none happened".</p>
-<h3 id="the-docs-are-versioned-too">The docs are versioned too<a class="headerlink" href="#the-docs-are-versioned-too" title="Permanent link">&para;</a></h3>
-<p><code>mkdocs</code> publishes with <code>mike</code>: a tag becomes <code>/&lt;version&gt;/</code> and <code>latest</code>, and
-<code>main</code> becomes <code>/dev/</code>. Documentation for the version you pinned does not
-disappear when the next one ships.</p>
-<hr />
-<h2 id="pinning-the-chip-database">Pinning the chip database<a class="headerlink" href="#pinning-the-chip-database" title="Permanent link">&para;</a></h2>
-<p>This is the part that matters most and is easiest to miss.</p>
-<p>The register offsets, memory maps, IRQ numbers and clock trees a build compiles
-do <strong>not</strong> live in this repo. They live in <code>alloy-devices</code>, which is resolved at
-build time — from <code>ALLOY_DEVICES_ROOT</code>, from a sibling checkout, or from an
-installed wheel, in that order. A product built from a repo checkout therefore
-gets <em>whatever that checkout is today</em>.</p>
-<p>That is not hypothetical. <code>alloy-devices</code> <code>0.3.0</code> is tagged, and its main branch
-has already changed schema since the tag while still calling itself <code>0.3.0</code>.</p>
-<h3 id="the-failure-it-causes">The failure it causes<a class="headerlink" href="#the-failure-it-causes" title="Permanent link">&para;</a></h3>
-<p>Move one register offset in the database and rebuild:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/offset: &quot;0x14&quot;/offset: &quot;0x40&quot;/&#39;</span><span class="w"> </span>registers/st/gpio_v2.yaml<span class="w">   </span><span class="c1"># ODR</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>my-project<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>gen
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">generated 20 file(s) -&gt; .alloy/generated/nucleo_g071rb</span>
-</span></code></pre></div>
-<p>Nothing complained. The generated header now says:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">offsetof</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span><span class="w"> </span><span class="n">ODR</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x40</span><span class="p">);</span>
-</span></code></pre></div>
-<p>Every write to that pin now lands on a different register. The firmware builds,
-flashes, and behaves differently on the bench with no version, no warning and
-no diff in your own repository.</p>
-<h3 id="the-pin">The pin<a class="headerlink" href="#the-pin" title="Permanent link">&para;</a></h3>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>devices
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">database  /opt/alloy-devices</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">version   0.3.0</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">digest    sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551  (477 files)</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">this project pins nothing — its facts follow whatever database is</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="go">resolved at build time. `alloy devices --pin` freezes them.</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="gp">$ </span>alloy<span class="w"> </span>devices<span class="w"> </span>--pin
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">pinned in /home/me/my-project/alloy.toml:</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">  [devices]</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">  version = &quot;0.3.0&quot;</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">  digest = &quot;sha256:77e851f7b10b82b123fb6ca459a2c0243dd739b11a8b40c42fa1092d54875551&quot;</span>
-</span></code></pre></div>
-<p>Now the same edit is caught before a single file is generated:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>gen
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="go">error: chip database CONTENT mismatch: alloy.toml pins</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="go">  [devices] digest = &quot;sha256:77e851f7…&quot;</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">but /opt/alloy-devices hashes to</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="go">  sha256:5d6007db…</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="go">The facts this project would compile are not the facts it was pinned to.</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="go">Check out the pinned database, or re-pin with `alloy devices --pin` if the</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="go">move was intended.</span>
-</span></code></pre></div>
-<h3 id="the-three-keys">The three keys<a class="headerlink" href="#the-three-keys" title="Permanent link">&para;</a></h3>
-<div class="language-toml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[devices]</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">path</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/alloy-devices&quot;</span><span class="w">   </span><span class="c1"># optional: WHERE. Wins over ALLOY_DEVICES_ROOT.</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.3.0&quot;</span><span class="w">                </span><span class="c1"># optional: what it calls itself. Also &quot;&gt;=0.3.0&quot;.</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">digest</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sha256:…&quot;</span><span class="w">             </span><span class="c1"># optional: what it actually IS.</span>
-</span></code></pre></div>
-<ul>
-<li><code>path</code> only redirects discovery. It takes precedence over the environment,
-  exactly as <code>[alloy] root</code> does — a shipped product says where its facts come
-  from, and a shell variable does not get to move them.</li>
-<li><code>version</code> and <code>digest</code> are <strong>assertions</strong>, checked against whatever was
-  resolved, by any route. An operator who points <code>ALLOY_DEVICES_ROOT</code> at a
-  different database still trips the pin. That is what makes it load-bearing
-  rather than advisory.</li>
-<li><code>version</code> compares release numbers (<code>0.3.0</code>, <code>&gt;=0.3.0</code>) — it is not PEP 440,
-  and anything else is refused rather than guessed.</li>
-<li><code>digest</code> covers every file under <code>schema/</code>, <code>registers/</code> and <code>chips/</code>, path
-  and content both, so a rename is caught even when no byte changed. It ignores
-  READMEs, changelogs and editor droppings, so a prose commit does not
-  invalidate a shipped product's pin.</li>
-</ul>
-<p>The check runs in <code>load_project</code>, so <strong>every</strong> verb that opens a project —
-<code>gen</code>, <code>build</code>, <code>flash</code>, <code>monitor</code>, <code>size</code>, <code>sbom</code>, <code>boards</code>, <code>board-info</code>,
-<code>matrix</code>, <code>debug-info</code>, <code>devices</code> itself — refuses together, with exit 1 and
-before a single file is generated. There is no route that quietly builds
-against the wrong facts.</p>
-<p>Two verbs deliberately do not: <code>clean</code> only removes build trees, and <code>image</code>
-takes an already-built binary as an argument and never opens a project or reads
-the database at all.</p>
-<h3 id="which-pin-to-use">Which pin to use<a class="headerlink" href="#which-pin-to-use" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Situation</th>
-<th>Pin</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>a released product, a certification package, a build you must reproduce</td>
-<td><code>digest</code> (with <code>version</code> for readability)</td>
-</tr>
-<tr>
-<td>a library or example that should track the database</td>
-<td><code>version = "&gt;=0.3.0"</code></td>
-</tr>
-<tr>
-<td>a corporate build server with the database at a fixed path</td>
-<td><code>path</code> + <code>digest</code></td>
-</tr>
-<tr>
-<td>day-to-day development against a moving sibling checkout</td>
-<td>none</td>
-</tr>
-</tbody>
-</table>
-<h3 id="and-the-framework-itself">And the framework itself<a class="headerlink" href="#and-the-framework-itself" title="Permanent link">&para;</a></h3>
-<p>The Python side pins the database the ordinary way — <code>tools/alloy/pyproject.toml</code>
-depends on <code>alloy-devices==0.3.0</code>, an exact <code>==</code>. Be aware of one development
-wart: <code>[tool.uv.sources]</code> overrides that dependency with the sibling checkout
-in editable mode, so <strong>a development checkout is never version-checked by pip
-resolution</strong>. The <code>[devices]</code> pin is what covers that case, which is why it
-asserts against the resolved root rather than against installed metadata.</p>
-<p>To pin the framework too, <code>[alloy] root</code> records the checkout <code>alloy new</code>
-scaffolded against; an installed wheel embeds framework and boards as package
-data, so pinning the wheel version pins both.</p>
-<hr />
-<h2 id="what-this-page-does-not-promise">What this page does not promise<a class="headerlink" href="#what-this-page-does-not-promise" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>No LTS branch and no security-fix backports.</strong> Fixes land on <code>main</code> and
-  ship in the next release. If you need a supported old line, that is a
-  conversation, not a policy.</li>
-<li><strong>No ABI stability.</strong> Everything is headers and templates; there is no
-  pre-built alloy library to link against, so "ABI" has no meaning here yet.</li>
-<li><strong>No promise about <code>alloy-devices</code> schema.</strong> It has its own repo, its own
-  tags and its own changelog, and it changes more often than alloy does. Pin
-  it; do not assume it.</li>
-<li><strong>Nothing about certification.</strong> See <a href="../safety/">Safety posture</a> for what is
-  and is not true today.</li>
-</ul>
+<p>And none of the four is evidence from silicon. This scoreboard is the <strong>floor</strong> of the coverage
+push, not its ceiling.</p>
+<h2 id="baseline-stm32g0b1re-2026-08-09">Baseline — STM32G0B1RE, 2026-08-09<a class="headerlink" href="#baseline-stm32g0b1re-2026-08-09" title="Permanent link">&para;</a></h2>
+<p>Taken against <code>alloy</code> 1568006 — the tip this verb was written on, so the driver
+tree and Renode tables it read are that commit's — with <code>alloy-devices</code> 9949429
+(declared 0.3.0, digest <code>sha256:ab31e6be…</code>), the commit that graduated the
+hand-written <code>stm32g0b1.yaml</code> (23 peripherals) into the builder-generated
+<code>stm32g0b1re.yaml</code>.</p>
+<p><strong>37 of 65 peripherals curated, 31 with drivers</strong>, 23 with a Renode model,
+13 reachable from a board role (<code>nucleo_g0b1re</code>). By IP: 18 curated IPs, 13 with drivers.</p>
+<p>The jump from 23 to 65 peripherals is not new support — it is the <strong>gap becoming visible</strong>.
+Every peripheral the silicon has now appears, and the ones alloy cannot yet touch say so.</p>
+<h3 id="curated-with-a-driver-31">Curated, with a driver (31)<a class="headerlink" href="#curated-with-a-driver-31" title="Permanent link">&para;</a></h3>
+<p><code>adc1</code>, <code>dac1</code>, <code>dma1</code>, <code>dma2</code>, <code>exti</code>, <code>fdcan1</code>, <code>fdcan2</code>, <code>flash</code>,
+<code>gpioa</code>–<code>gpiof</code>, <code>i2c1</code>–<code>i2c3</code>, <code>iwdg</code>, <code>rtc</code>, <code>spi1</code>–<code>spi3</code>, <code>tim2</code>, <code>tim3</code>, <code>tim4</code>,
+<code>usart1</code>–<code>usart6</code>.</p>
+<h3 id="curated-no-driver-6">Curated, no driver (6)<a class="headerlink" href="#curated-no-driver-6" title="Permanent link">&para;</a></h3>
+<p><code>adc1_common</code>, <code>dmamux1</code>, <code>fdcanram1</code>, <code>fdcanram2</code>, <code>pwr</code>, <code>rcc</code>.</p>
+<p>These are the register-only blocks: they exist so other code can address them (the clock
+program writes <code>rcc</code>, the FDCAN driver addresses its message RAM), and a standalone driver
+would have nothing to drive.</p>
+<h3 id="uncurated-the-28-peripheral-gap-43-of-the-die">Uncurated — the 28-peripheral gap (43 % of the die)<a class="headerlink" href="#uncurated-the-28-peripheral-gap-43-of-the-die" title="Permanent link">&para;</a></h3>
+<p><code>cec</code>, <code>comp1</code>–<code>comp3</code>, <code>crc</code>, <code>crs</code>, <code>dbgmcu</code>, <code>lptim1</code>, <code>lptim2</code>, <code>lpuart1</code>, <code>lpuart2</code>,
+<code>syscfg</code>, <code>tamp</code>, <code>tim1</code>, <code>tim6</code>, <code>tim7</code>, <code>tim14</code>–<code>tim17</code>, <code>ucpd1</code>, <code>ucpd2</code>, <code>uid</code>, <code>usb</code>,
+<code>usbram</code>, <code>vrefbuf</code>, <code>vrefintcal</code>, <code>wwdg</code>.</p>
+<p>They are admitted by the database with their base address and clock gate, and marked
+<code>uncurated: true</code>: codegen emits no descriptor, so nothing can accidentally depend on them.
+This list <em>is</em> the work queue.</p>
+<h3 id="curated-but-unmodelled-in-renode-14">Curated but unmodelled in Renode (14)<a class="headerlink" href="#curated-but-unmodelled-in-renode-14" title="Permanent link">&para;</a></h3>
+<p><code>adc1_common</code>, <code>dac1</code>, <code>dmamux1</code>, <code>fdcan1</code>, <code>fdcan2</code>, <code>fdcanram1</code>, <code>fdcanram2</code>, <code>flash</code>, <code>pwr</code>,
+<code>rcc</code>, <code>rtc</code>, <code>tim2</code>, <code>tim3</code>, <code>tim4</code>.</p>
+<p>A second, quieter gap: these have data and (mostly) drivers, but no emulation can falsify them.
+The G0 flash controller is unmodelled on purpose — its legs pass on direct memory writes.</p>
 
 
 
@@ -2279,7 +1862,7 @@ data, so pinning the wheel version pins both.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../error-handling/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Error handling">
+          <a href="../architecture/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Architecture">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2289,20 +1872,20 @@ data, so pinning the wheel version pins both.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Error handling
+                Architecture
               </div>
             </div>
           </a>
         
         
           
-          <a href="../safety/" class="md-footer__link md-footer__link--next" aria-label="Next: Safety posture">
+          <a href="../peripheral-surface/" class="md-footer__link md-footer__link--next" aria-label="Next: The peripheral surface">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Safety posture
+                The peripheral surface
               </div>
             </div>
             <div class="md-footer__button md-icon">

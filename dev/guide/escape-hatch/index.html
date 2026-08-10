@@ -1409,6 +1409,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1469,6 +1473,62 @@
     
   
     Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/chip-coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
   
 
     
@@ -1849,6 +1909,22 @@ erratum workaround, and exactly what alloy's first contract guard forbids in
 page, and know that the board portability of that line is now zero. If you find
 yourself writing several, the better fix is usually to add the fact to
 <code>alloy-devices</code> — then Route A works and every board gets it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Route A is not always available, and Route C is the only one that always is</p>
+<p>Route A goes through the generated description, so it reaches exactly what
+the chip database curates — and 28 of the STM32G0B1RE's 65 peripherals are
+uncurated, which means <code>alloy::dev::tim1_t</code> <strong>does not exist</strong>, not that it
+exists and is empty. Curation has
+<a href="../../reference/peripheral-surface/#question-0-what-does-the-database-already-know">three separate gates</a>
+— the peripheral, the register, the field — and a block can pass the first
+and fail the second (the G0's ADC is curated and its map has no <code>TR1</code>).</p>
+<p>So "you can always drop to registers" is true of Route C and of Route C
+only. That is a real door, and it is the one with no gate address, no IRQ
+number and no route check behind it. Reaching for it because a <em>peripheral</em>
+is uncurated is usually the wrong trade against spending an afternoon in
+<code>alloy-devices</code>; reaching for it because one <em>erratum</em> register is
+undocumented is what it is for.</p>
+</div>
 <h2 id="4-what-does-collide-the-link-not-the-include">4. What DOES collide: the link, not the include<a class="headerlink" href="#4-what-does-collide-the-link-not-the-include" title="Permanent link">&para;</a></h2>
 <p>This is the part that costs a day if nobody writes it down.</p>
 <p>Alloy generates its own vector table and links with <code>-nostartfiles</code> and its own
