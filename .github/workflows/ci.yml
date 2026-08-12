@@ -255,6 +255,24 @@ jobs:
             example: adc_read
             robot: adc_read.robot
             banner: alloy adc_read
+          # ADC ANALOG WATCHDOG — BLOCKING — the SUB-RESOURCE shape, on the same
+          # Analog.STM32G0_ADC model and the same voltage fixture as the leg
+          # above, but on the G0B1RE (whose die names the instance adc1). Four
+          # printed lines from ONE window: quiet inside it, TRIPPED outside,
+          # quiet after clearing, quiet after disarming across the sample that
+          # tripped it — two of which contradict each other unless the watchdog
+          # is real, so no stuck flag passes all four. PASS in 1.61 s locally
+          # (pinned Renode 1.16.1) with a negative control: delete AWD1EN from
+          # the driver and it fails in 31.7 s on the TRIPPED line alone.
+          # VACUOUS SPOTS, stated: the model is constructed with
+          # watchdogCount: 1, so ordinals 1 and 2 — which this die has and this
+          # driver programs, in a different register shape — are NOT exercised,
+          # and neither is AWDnIE (the driver polls). The CCRDY shim above
+          # applies here too.
+          - board: nucleo_g0b1re
+            example: adc_watchdog
+            robot: adc_watchdog.robot
+            banner: alloy adc_watchdog
           # DMA DRIVER CONFORMANCE — BLOCKING — against Renode's OWN
           # DMA.STM32G0DMA, NVIC-wired (the purpose-written inline model was
           # replaced in commit 52c2642, which this comment used to predate).
@@ -881,7 +899,7 @@ jobs:
         run: |
           set -u
           failed=()
-          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs; do
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs; do
             echo "::group::$ex"
             if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
               failed+=("$ex")
