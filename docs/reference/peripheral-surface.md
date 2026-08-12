@@ -1703,7 +1703,7 @@ four clauses whose witness is a comment rather than a test.
 | Clause of [the rule](#the-rule) | From | What witnesses it |
 |---|---|---|
 | question 0 has a **fifth row** — a curated field whose encoding is not curated | `3ef5130` | `RXGFC.ANFS`'s `values:` in `alloy-devices` (`fb46ebb`, `7cc8ff8`), and `emit/ip.py` learning to emit `values:` for fields of ARRAY registers — which it had been accepting and silently dropping |
-| curation is a **closure over companions** | `3ef5130` | `emit/device.py` raises naming the companion and why; the message it replaced said `companion cycle among peripherals: ['fdcan1']` |
+| curation is a **closure over companions** | `3ef5130` | `emit/device.py` raises naming the companion and why, with two tests in `tools/alloy/tests/test_emit.py` — one for the diagnostic, one negative control that generates the curated pair. Disabling the check reproduces the message it replaced, `companion cycle among peripherals: ['fdcan1']`: a true sentence about the wrong thing |
 | **where a maximum comes from** | `3ef5130`, and `st_tim_gp16.hpp` for the contrast | `filter_capacity = RAM::FLSSA_count` with two `static_assert`s tying it to `IP::lss.raw_mask` and to the element format; `max_period = IP::arr.wide_raw_mask + 1u` |
 | the second block is an **edge on the descriptor**, not a second facade | `3ef5130` | `Inst::ram_t` in `st_fdcan_v1.hpp`; there is no `fdcanram` facade, driver or role |
 | **order** (elements before size) and the **config window** are the driver's obligation | `3ef5130` | **a comment and a code shape, and nothing else.** No test asserts the order; Renode maps `fdcan1` to a bxCAN model, so no leg can exist, and the host suite is board-free — it pins what a filter *means*, not how it is spelled |
