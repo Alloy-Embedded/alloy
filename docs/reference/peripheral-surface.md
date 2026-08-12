@@ -385,11 +385,9 @@ usart1:
   irq: USART1
   kernel_clock: apb
   dma_requests: {rx: 50, tx: 51}
-  feat:                      # NEW
+  feat:
     rx_fifo_depth: 8
     tx_fifo_depth: 8
-    de_time_max_16ths: 31
-    max_data_bits: 9
 ```
 
 ```cpp
@@ -397,35 +395,69 @@ struct usart1_t {
     using ip = alloy::ip::st::usart_v4;
     // ... base, gate, irq, kernel, dmareq_* (unchanged) ...
     struct feat {
-        static constexpr std::uint8_t rx_fifo_depth     = 8u;
-        static constexpr std::uint8_t de_time_max_16ths = 31u;
-        static constexpr std::uint8_t max_data_bits     = 9u;
+        static constexpr std::uint32_t rx_fifo_depth = 8u;
+        static constexpr std::uint32_t tx_fifo_depth = 8u;
     };
 };
 ```
+
+!!! note "This block is the file, not a sketch — and it used to carry two keys that are refuted"
+    Earlier revisions of this page printed `de_time_max_16ths: 31` and
+    `max_data_bits: 9` in the same `feat` block, with a real chip-file path
+    above them. Neither has ever been in `chips/st/stm32g0b1re.yaml`, and
+    `de_time_max_16ths` is exactly the answer
+    [where a maximum comes from](#where-a-maximum-comes-from) says v1 got
+    wrong: the DE assertion-time bound is read from the generated field's own
+    `raw_mask`, which is what the `(40 <= 31)` acceptance case in
+    `scripts/check_compile_errors.py` pins. A worked example that shows the
+    refuted design as though it were the shipped data is how a rule survives
+    being wrong, so it is deleted rather than annotated.
 
 Five rules, and they matter more than the syntax:
 
 1. **Zero means absent.** There is no `has_fifo` beside `rx_fifo_depth`. A bool
    and a count that can disagree is a bug class; deleting the bool deletes the
    class. A bool appears only where the fact is genuinely ungraded.
-2. **It has two homes, and they may not disagree.** A number that differs
+2. **It has two homes.** A number that differs
    between two instances on one die lives on the **instance**, in the chip file
    — `usart1` and `lpuart1` on the G0B1 share an IP tag and differ in
    oversampling and flow control. A number the **IP version** fixes lives on the
    register file, or it is the same integer copied into every chip that names
    the IP and free to drift in any of them: `st/adc_v2` carries
-   `analog_watchdogs: 3` once. Both land in `Inst::feat`; the same name in both
-   places with *different* values is an error, not an override
-   (`emit/device.py`).
-3. **`feat` numbers are only ever generated.** A hand-written header asserting a
+   `analog_watchdogs: 3` once. Both land in `Inst::feat`.
+3. **The two homes may not disagree.** The same name in both places with
+   *different* values is an error, not an override (`emit/device.py`). An
+   override would make the chip file able to contradict the register file
+   silently, which is the drift the second home exists to remove.
+4. **`feat` numbers are only ever generated.** A hand-written header asserting a
    silicon quantity is guard #1 with a different literal. `check_contract.sh`
    gains one grep: `struct feat` may not appear under `src/`. Concretely,
    `st_i2c_v2.hpp`'s `kMaxNbytes = 255` is a silicon fact hand-written today and
    becomes `Inst::feat::max_transfer_bytes`.
-4. **Absence in the data is a lint failure, not a default.** A missing `feat`
+5. **Absence in the data is a lint failure, not a default.** A missing `feat`
    block must fail the plausibility lint, never be read as zero — a generated
    lie is worse than a hand-written one, because nobody reviews it.
+
+!!! danger "Two of those five rules are aspirations, and the tree contradicts both"
+    Written down here because a rule stated in the indicative that nothing
+    enforces is how v1 and v2 read right for months.
+
+    - **Rule 5 is not implemented, and rule 5 is contradicted by the shipped
+      `watchdog_count<Inst>`.** No lint in `alloy-devices` requires a `feat`
+      block anywhere; `same70_xplained`'s `afec0_t` is generated with no `feat`
+      at all, and `alloy::adc::watchdog_count<afec0_t>` reads that absence as
+      **0** — deliberately, because
+      [question 6](#questions-610-which-layer-does-the-knob-live-in) needs one
+      answer for "not reachable from here". So "never be read as zero" and "one
+      answer folds both into 0" are the same page disagreeing with itself. The
+      resolution is a maintainer's call and is not made here.
+    - **There is a THIRD home, already in the data.** `dma1` on the G0B1RE
+      carries `channels: {count: 7, mux_offset: 0, …}`, emitted as
+      `Inst::ch_count` — a per-instance degree number in a bespoke key outside
+      `feat`, for the tree's *oldest* sub-resource. `st_dma_v1.hpp` bounds
+      `setup<Ch>()` against it. It is generated, so it is not guard #1, but
+      `check_contract.sh`'s `struct feat` grep cannot see it and rule 3's
+      "may not disagree" check does not cover it.
 
 Portable code branches on the number, with no preprocessor:
 
