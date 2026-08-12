@@ -151,6 +151,40 @@ using wrong = alloy::pwm::bind<alloy::dev::tim2_t, 2u,
 void probe() { (void)sizeof(wrong); }  // force instantiation of the bind body
 """
 
+# SUB-RESOURCE ORDINAL vs A GENERATED COUNT. `adc.watchdog<N>()` is bounded by
+# `Inst::feat::analog_watchdogs`, which comes from alloy-devices — the whole
+# point of degree being a generated number rather than a hand-written constant.
+# The G0B1RE's adc_v2 has three, so ordinal 3 is one too many. Both numbers
+# have to reach the reader, and here they arrive as GCC's "the comparison
+# reduces to" note rather than as template arguments, which is exactly why this
+# case exists: nothing else in the tree compiles this line.
+ADC_WATCHDOG_ORDINAL = """
+#include <alloy/board.hpp>
+void probe() {
+    auto adc = board::adc::open();
+    (void)adc.watchdog<3>({.channel = 3, .low = 1000, .high = 3000});
+}
+"""
+
+# CROSS-PERIPHERAL CAPACITY, stated by the OTHER block. The number of standard
+# acceptance filters an FDCAN can hold is the companion message RAM's element
+# count (28), not the width of the controller field that counts them (RXGFC.LSS
+# is five bits and would admit 31). Asking for 29 must fail with both numbers,
+# and they are template arguments so the instantiation line carries them.
+CAN_FILTERS_OVER_CAPACITY = """
+#include <alloy/board.hpp>
+using alloy::can::match;
+void probe() {
+    board::can.accept_only(
+        match(0x000), match(0x001), match(0x002), match(0x003), match(0x004),
+        match(0x005), match(0x006), match(0x007), match(0x008), match(0x009),
+        match(0x00A), match(0x00B), match(0x00C), match(0x00D), match(0x00E),
+        match(0x00F), match(0x010), match(0x011), match(0x012), match(0x013),
+        match(0x014), match(0x015), match(0x016), match(0x017), match(0x018),
+        match(0x019), match(0x01A), match(0x01B), match(0x01C));
+}
+"""
+
 
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
@@ -340,11 +374,34 @@ def check_pwm_channel_disagrees() -> int:
         ["names one channel ordinal and a different channel signal"])
 
 
+def check_adc_watchdog_ordinal() -> int:
+    """Sub-resource degree: an ordinal past the GENERATED count, with both
+    numbers in the diagnostic."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        "a sub-resource ordinal past the generated count (adc_v2 has 3 watchdogs)",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          ADC_WATCHDOG_ORDINAL, ["--board", board], board=board),
+        ["this ADC does not have that many analog watchdogs", "(3 < 3)"])
+
+
+def check_can_filters_over_capacity() -> int:
+    """Cross-peripheral degree: the capacity is the COMPANION's element count,
+    and over-asking names both numbers."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        "more CAN filters than the companion message RAM holds",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          CAN_FILTERS_OVER_CAPACITY, ["--board", board], board=board),
+        ["more acceptance filters than this", "filters_fit<29, 28>"])
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
             check_de_tag_unsupported() | check_baud_zero() |
-            check_open_checked_conflict() | check_pwm_channel_disagrees())
+            check_open_checked_conflict() | check_pwm_channel_disagrees() |
+            check_adc_watchdog_ordinal() | check_can_filters_over_capacity())
 
 
 if __name__ == "__main__":
