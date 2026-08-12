@@ -159,10 +159,16 @@ struct exti_impl<Inst> {
     // edges. Re-arming an already-armed line is allowed and replaces the edge
     // and the callback (alloy::irq::attach traps on a duplicate, so the detach
     // below is load-bearing, not defensive).
+    //
+    // Re-arming it from a DIFFERENT PORT is not, and used to be silent — see
+    // claim_exti_line() in exti_impl.hpp. The claim goes first, before any
+    // register is touched, so a refused second pin cannot have disturbed the
+    // first one's line on its way to the trap.
     template <unsigned PortIndex, unsigned Line>
     static void arm(pin_edge e, void (*fn)(void*), void* ctx) {
         static_assert(Line < line_count,
                       "st/exti_g0 routes GPIO pins on lines 0..15 only");
+        claim_exti_line<Inst, Line>(PortIndex);
         constexpr std::uint32_t bit = std::uint32_t{1} << Line;
         auto& regs = r();
 
@@ -197,8 +203,14 @@ struct exti_impl<Inst> {
         regs.IMR1 = regs.IMR1 | bit;
     }
 
-    template <unsigned Line>
+    // Takes the port index `arm` took, and for the same reason: this is the one
+    // place in alloy where a claim is GIVEN BACK, so it has to be given back by
+    // whoever holds it. `pb5.clear_on_edge()` while PA5 owns line 5 used to
+    // disarm PA5's interrupt without a word; it traps now. Disarming a line
+    // nobody armed stays the no-op it always was.
+    template <unsigned PortIndex, unsigned Line>
     static void disarm() {
+        release_exti_line<Inst, Line>(PortIndex);
         constexpr std::uint32_t bit = std::uint32_t{1} << Line;
         auto& regs = r();
         regs.IMR1 = regs.IMR1 & ~bit;

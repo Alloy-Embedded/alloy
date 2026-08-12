@@ -559,11 +559,13 @@ never on a call that only moves data.** `uart::write`, `pwm::set_duty`,
 `can::send` and `wdt::feed` are on the hot path and claim nothing.
 
 **This table is a test.** `tools/alloy/tests/test_claim_surface.py` parses it
-and checks each row against the file it describes: a facade that claims *less*
-than its row says fails, a facade that claims something the row does not
-mention fails, and a peripheral class with a driver directory and no row at all
-fails. That is not decoration — hole (A2) below is exactly a row this page
-asserted and the code did not have, twice, and prose cannot catch that.
+and checks each row against the file it describes. A facade that claims *less*
+than its row says fails; a peripheral class that ships a driver directory with
+no row at all fails; and the two facades that promise **nothing** — `flash` and
+`gpio` — fail if a claim appears in them. The one direction it does not fail on
+is a facade claiming *more* than the table says, which is this page lagging the
+code rather than the code lying. That asymmetry is deliberate: hole (A2) below
+is exactly a row this page asserted and the code did not have, twice.
 
 | Facade | Entry point | Instance scope | Sub-resource scope | What the claim catches |
 |---|---|---|---|---|
@@ -1376,11 +1378,12 @@ is the same limitation (A2) recorded, and a wedge is still not a pass.
 **The inventory is a test now, because prose was what failed twice.** (A2) was
 found by hand, by asking each facade whether it had the claim this page said it
 had. `tools/alloy/tests/test_claim_surface.py` asks mechanically: it parses the
-[table](#which-facade-claims-what), checks each row against the file it names
-in both directions, and fails if a peripheral class has a driver directory and
+[table](#which-facade-claims-what), checks that each row's claims are really in
+the file it names, and fails if a peripheral class has a driver directory and
 no row at all. Negative control: deleting `pwm`'s `sub_exclusive` call fails the
-`pwm` row; `src/alloy/hal/encoder/` arriving mid-flight failed the row-coverage
-test until the encoder got a row.
+`pwm` row. It has already caught two things it was not written for — a new
+`hal/encoder/` directory with no row, and an `adc` that had grown a
+sub-resource claim the table did not know about.
 
 **And the claim is now shown to cross translation units, which is the entire
 point of it.** Every test written for (A) and (A2) lived in one `.cpp` — the

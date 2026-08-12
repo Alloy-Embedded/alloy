@@ -14,6 +14,42 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **An EXTI line gets an owner, and the sub-resource scope gets the `shared`
+  shape it was argued out of (`alloy/core/claim.hpp`,
+  `alloy/hal/exti/exti_impl.hpp`).** The two entries below closed instance
+  ownership and then sub-resource ownership, and the second one wrote down what
+  a sub-resource is: *"no block-scoped register for two claimants to disagree
+  about."* That was derived from a timer channel and a DMA channel, and the
+  EXTI line — in the tree the whole time — refutes it. One line serves the same
+  index on every port, so PA5 and PB5 are both line 5, sharing one EXTICR
+  field, one trigger pair and one callback slot. Arming both compiled clean and
+  said nothing: the second pin took the line and the FIRST pin's handle was left
+  reporting the second pin's edges as its own. Proven on emulated silicon in
+  9.1 s with exact counters (`a_edges=00000001` after an edge that only ever
+  happened on PB5, `cb_a` never run). New `claim::sub_shared<Inst, Sub, P>(w)`
+  keys the line on the instance and the ordinal with the PORT INDEX as witness,
+  so re-arming one pin stays legal and a second pin traps
+  `trap_code::sub_config_conflict`; new `claim::sub_release<Inst, Sub, P>(w)` is
+  the mechanism's one release, because `gpio::input::clear_on_edge()` genuinely
+  frees a line and refusing the handover would have been a new wrong answer in
+  place of the old one — it also catches `pb5.clear_on_edge()` silently
+  disarming PA5. The handover is proven positively under Renode (7.8 s). Cost on
+  `nucleo_g0b1re`: `.text` **unchanged** for every example that arms no pin
+  interrupt, +40 bytes and +8 bytes of `.bss` for `pin_irq`, which gains the
+  claim. `gpio::input::disable_edge_irq()` now passes the port index to the
+  driver's `disarm<PortIndex, Line>()`; the portable API is unchanged.
+- **The claim inventory is a test, and the claim is shown to cross translation
+  units.** Hole (A2) — a facade the reference page said claimed and did not —
+  was found by reading the facades one at a time, which is not a thing that
+  happens twice. `tools/alloy/tests/test_claim_surface.py` parses the "which
+  facade claims what" table out of `docs/reference/peripheral-surface.md` and
+  checks every row against the file it names, in both directions, plus a check
+  that no peripheral class ships a driver directory without a row.
+  `tests/test_claim_tu2.cpp` is a second translation unit naming the same
+  instances as `tests/test_claim.cpp`: it proves that `claim::owner<Inst>` is
+  one object across the image and not one per compilation — the property the
+  whole repair rests on, and the one no single-`.cpp` test could distinguish
+  from the per-binder `static` it replaced.
 - **CAN acceptance filters (`alloy/can.hpp`), and what a two-peripheral
   feature demanded.** `board::can.accept_only(alloy::can::match(0x123),
   alloy::can::match_masked(0x200, 0x7F0))` tells the controller to drop

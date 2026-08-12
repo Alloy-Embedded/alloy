@@ -17,11 +17,11 @@
 //
 //   owner<Inst>            a whole peripheral — usart2, i2c1, tim2.
 //   sub_owner<Inst, N>     one numbered part of it — TIM2 channel 1, DMA1
-//                          channel 3. Keyed on the instance and the ORDINAL
-//                          and nothing else, which is the entire point: see
-//                          the comment on sub_exclusive().
+//                          channel 3, EXTI line 5. Keyed on the instance and
+//                          the ORDINAL and nothing else, which is the entire
+//                          point: see the comment on sub_exclusive().
 //
-// TWO SHAPES, because two of them are legitimate:
+// TWO SHAPES AT EACH SCOPE, because both are legitimate at both:
 //
 //   exclusive<Inst, P>()   one owner, full stop. A UART has one TX pin; a
 //                          second binder on it is always a bug.
@@ -30,6 +30,10 @@
 //                          channels on one timer are legal; two PWM channels
 //                          asking that timer for different FREQUENCIES are
 //                          not, because there is one PSC/ARR pair.
+//   sub_exclusive<..>()    the same two, one level down. The `shared` twin was
+//   sub_shared<..>(w)      argued away when this file was written and the EXTI
+//                          line refuted the argument — see the comment above
+//                          sub_shared().
 //
 // A PERSONALITY is a mutually exclusive whole-block mode — timer as PWM vs as
 // encoder, USART as UART vs as SPI master. Those are different binders in
@@ -42,9 +46,14 @@
 // per binder type and per TU. The board generator refuses the same conflict
 // EARLIER, when it can see it (emit/board.py, role personalities).
 //
-// Claims are never released. A peripheral opened once stays owned for the life
-// of the image — alloy has no close(), by design, and a handle that could be
-// dropped and reopened is a lifetime question this framework does not have.
+// Claims are released only where the facade HAS a release. A peripheral opened
+// once stays owned for the life of the image — alloy has no close(), by design,
+// and a handle that could be dropped and reopened is a lifetime question this
+// framework does not have. The one exception found so far is a sub-resource
+// with a documented disarm (`gpio::input::clear_on_edge()` frees an EXTI line);
+// see sub_release() at the bottom of this file, and note that it is offered at
+// the SUB scope only, because that is the only scope where anything in alloy
+// can give a resource back.
 
 #pragma once
 
@@ -71,6 +80,7 @@ enum class trap_code : std::uint32_t {
     not_open = 5,               // reconfigure() on a port nobody opened
     opts_mismatch = 6,          // reconfigure<Opts> disagreeing with open<Opts>
     sub_resource_owned = 7,     // a second binder opens one channel of a block
+    sub_config_conflict = 8,    // one channel, two claimants, disagreeing config
 };
 
 template <trap_code Code>
@@ -119,6 +129,7 @@ enum class personality : std::uint8_t {
     flash,
     dma,
     ethernet,
+    exti,
     user_a,
     user_b,
 };
@@ -193,10 +204,15 @@ template <class Inst, personality P>
 template <class Inst, unsigned Sub>
 inline personality sub_owner = personality::none;
 
-// One owner of one sub-resource, full stop. There is no `shared` twin: a
-// sub-resource has no block-scoped register for two claimants to disagree
-// about — that is what makes it a sub-resource. Two claimants of the same
-// channel are always a bug, so the shape that admits them is not offered.
+// The value a SHARED sub-resource's claimants must agree on. Instantiated only
+// by sub_shared(), so a channel claimed exclusively costs one byte, exactly as
+// before this existed.
+template <class Inst, unsigned Sub>
+inline std::uint32_t sub_witness = 0;
+
+// One owner of one sub-resource, full stop. Two claimants of the same DMA
+// channel or the same timer channel are always a bug, so this shape does not
+// admit a second one at all.
 template <class Inst, unsigned Sub, personality P>
 inline void sub_exclusive() {
     if (sub_owner<Inst, Sub> != personality::none) {
@@ -211,6 +227,62 @@ inline void sub_exclusive() {
 template <class Inst, unsigned Sub, personality P>
 [[nodiscard]] inline bool sub_held() {
     return sub_owner<Inst, Sub> == P;
+}
+
+// ── ...and this scope needed a `shared` twin after all ───────────────────
+//
+// WHAT THIS FILE USED TO CLAIM, in as many words: "There is deliberately no
+// sub_shared. A sub-resource is a sub-resource BECAUSE it has no block-scoped
+// register for two claimants to disagree about." That was derived from the two
+// sub-resources alloy had — a timer channel and a DMA channel — and the EXTI
+// LINE refutes it. A line has its own port-select field (EXTICR), its own
+// trigger pair and its own callback slot, and the claimants competing for it
+// are PINS: PA5 and PB5 are both routed to line 5, and until this existed
+// arming both compiled clean, silently handed the line to PB5, and left PA5's
+// handle reporting PB5's edges as its own (proven under Renode in 9.1 s).
+//
+// So the sub scope gets the same two shapes the block scope has, and the
+// witness is what says WHICH claimant: the port index for an EXTI line. Same
+// value = the same pin re-arming, which the driver documents as legal;
+// different value = a second pin stealing the line, which is the bug.
+template <class Inst, unsigned Sub, personality P>
+inline void sub_shared(std::uint32_t w) {
+    if (sub_owner<Inst, Sub> == personality::none) {
+        sub_owner<Inst, Sub> = P;
+        sub_witness<Inst, Sub> = w;
+        return;
+    }
+    if (sub_owner<Inst, Sub> != P) {
+        alloy::trap<trap_code::personality_conflict>();
+    }
+    if (sub_witness<Inst, Sub> != w) {
+        alloy::trap<trap_code::sub_config_conflict>();
+    }
+}
+
+// AND THE ONE RELEASE IN THIS FILE, which is also new evidence: "claims are
+// never released" (the header comment above) held while every claim was made
+// by an open() with no close() to match. The EXTI line has one — disarming a
+// pin's edge interrupt genuinely frees the line, and `gpio::input::
+// clear_on_edge()` is a shipped, documented call. Refusing PB5 forever because
+// PA5 was armed once and let go would be a new lie in place of the old one.
+//
+// Releasing a line NOBODY owns stays a no-op, because disarming a pin that was
+// never armed was always harmless. Releasing a line owned by a DIFFERENT
+// claimant is the bug this catches: `pb5.clear_on_edge()` used to silently
+// disarm PA5's interrupt.
+template <class Inst, unsigned Sub, personality P>
+inline void sub_release(std::uint32_t w) {
+    if (sub_owner<Inst, Sub> == personality::none) {
+        return;
+    }
+    if (sub_owner<Inst, Sub> != P) {
+        alloy::trap<trap_code::personality_conflict>();
+    }
+    if (sub_witness<Inst, Sub> != w) {
+        alloy::trap<trap_code::sub_config_conflict>();
+    }
+    sub_owner<Inst, Sub> = personality::none;
 }
 
 }  // namespace claim

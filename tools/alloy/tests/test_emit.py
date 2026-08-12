@@ -411,3 +411,70 @@ def test_every_generator_personality_exists_in_the_cpp_vocabulary() -> None:
     assert not missing, (
         f"emit/board.py names personalities the C++ enum does not have: {missing}"
     )
+
+
+# ── DEGREE has two homes, and the emitter merges them ───────────────────────
+#
+# A UART FIFO depth differs between two instances on one die and belongs to the
+# chip file; an ADC's analog-watchdog count is fixed by the IP version and
+# belongs to the IP register file, or it is one integer copied into every chip
+# that names the IP. Both must land in the same `struct feat`, and an instance
+# must not be able to contradict its own IP quietly.
+
+
+def _feat_chip() -> tuple[dict, dict]:
+    chip = {
+        "vendor": "st",
+        "part": "TEST",
+        "cores": [{"name": "cm0plus", "arch": "armv6m"}],
+        "peripherals": {"adc1": {"ip": "st/adc_x", "base": "0x40012400"}},
+        "interrupts": [],
+    }
+    registers = {
+        "st/adc_x": {
+            "vendor": "st", "ip": "adc_x", "class": "adc",
+            "feat": {"analog_watchdogs": 3},
+            "registers": [{"name": "ISR", "offset": "0x00", "access": "rw"}],
+        }
+    }
+    return chip, registers
+
+
+def test_ip_level_degree_lands_on_the_instance() -> None:
+    from alloy_cli.emit.device import emit_device_header
+
+    chip, registers = _feat_chip()
+    out = emit_device_header(chip, registers, [])
+    assert "struct feat {" in out
+    assert "static constexpr std::uint32_t analog_watchdogs = 3u;" in out
+
+
+def test_instance_and_ip_degree_merge_into_one_block() -> None:
+    from alloy_cli.emit.device import emit_device_header
+
+    chip, registers = _feat_chip()
+    chip["peripherals"]["adc1"]["feat"] = {"rx_fifo_depth": 8}
+    out = emit_device_header(chip, registers, [])
+    assert "static constexpr std::uint32_t analog_watchdogs = 3u;" in out
+    assert "static constexpr std::uint32_t rx_fifo_depth = 8u;" in out
+
+
+def test_an_instance_may_not_quietly_contradict_its_own_ip() -> None:
+    from alloy_cli.emit.common import EmitError
+    from alloy_cli.emit.device import emit_device_header
+
+    chip, registers = _feat_chip()
+    chip["peripherals"]["adc1"]["feat"] = {"analog_watchdogs": 1}
+    with pytest.raises(EmitError, match="one of the two"):
+        emit_device_header(chip, registers, [])
+
+
+def test_the_lead_boards_adc_reports_three_watchdogs_from_real_data() -> None:
+    """The number a driver's static_assert compares against, read end to end
+    from the shipped database rather than from a fixture."""
+    from alloy_cli.devices import load_chip, load_registers
+
+    devices_root = ALLOY_ROOT.parent / "alloy-devices"
+    chip = load_chip(devices_root, "st/stm32g0b1re")
+    registers = load_registers(devices_root)
+    assert registers[chip["peripherals"]["adc1"]["ip"]]["feat"]["analog_watchdogs"] == 3

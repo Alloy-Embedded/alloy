@@ -19,6 +19,7 @@
 
 #include "alloy/core/claim.hpp"
 #include "alloy_test.hpp"
+#include "claim_cross_tu.hpp"
 
 using alloy::claim::personality;
 
@@ -40,6 +41,12 @@ struct inst_l {};
 struct inst_m {};
 struct inst_n {};
 struct inst_o {};
+struct inst_p {};
+struct inst_q {};
+struct inst_r {};
+struct inst_s {};
+struct inst_t {};
+struct inst_u {};
 
 // A child that must NOT exit cleanly: the guard under test has to fire.
 template <class Fn>
@@ -54,6 +61,18 @@ bool refuses(Fn body) {
     return !(WIFEXITED(status) && WEXITSTATUS(status) == 0);
 }
 }  // namespace
+
+ALLOY_TEST(claim_the_refusal_idiom_reports_false_when_nothing_traps) {
+    // THE NEGATIVE CONTROL FOR EVERY `refuses(...)` BELOW, and it was missing:
+    // this page's own record claimed one existed and the file had none, so
+    // seventeen death tests rested on an idiom nobody had watched report a
+    // negative. A `refuses()` that returned true unconditionally — a child that
+    // crashed for any reason, or a fork that failed — would make all of them
+    // pass while proving nothing.
+    ALLOY_CHECK(!refuses([] {}));
+    ALLOY_CHECK(!refuses([] { alloy::claim::exclusive<inst_p, personality::uart>(); }));
+    ALLOY_CHECK(!refuses([] { alloy::claim::sub_shared<inst_p, 9u, personality::exti>(3u); }));
+}
 
 ALLOY_TEST(claim_first_exclusive_owner_is_recorded) {
     ALLOY_CHECK(!(alloy::claim::held<inst_a, personality::uart>()));
@@ -198,5 +217,101 @@ ALLOY_TEST(claim_watchdog_refuses_two_different_timeouts) {
     ALLOY_CHECK(refuses([] {
         alloy::claim::shared<inst_o, personality::wdt>(4'000u);
         alloy::claim::shared<inst_o, personality::wdt>(10'000u);
+    }));
+}
+
+// ── A SHARED sub-resource, and the doctrine that said there was no such thing ─
+//
+// claim.hpp used to argue that a sub-resource is a sub-resource *because* it
+// has no config for two claimants to disagree about. The EXTI line refutes it:
+// one line has one EXTICR port-select field, one trigger pair and one callback
+// slot, and the claimants are PINS — PA5 and PB5 are both line 5. The witness
+// is the PORT INDEX, so re-arming the same pin is admitted and a second pin is
+// refused. Proven live under Renode before the fix: PA5 armed, PB5 armed, an
+// edge driven on PB5, and PA5's handle reported it as its own.
+
+ALLOY_TEST(claim_sub_shared_admits_the_same_claimant_twice) {
+    // `on_edge()` then `on_edge()` on ONE pin: legal, and documented — it
+    // replaces the edge and the callback. Same line, same port, no conflict.
+    alloy::claim::sub_shared<inst_p, 5u, personality::exti>(0u);
+    alloy::claim::sub_shared<inst_p, 5u, personality::exti>(0u);
+    ALLOY_CHECK((alloy::claim::sub_held<inst_p, 5u, personality::exti>()));
+}
+
+ALLOY_TEST(claim_sub_shared_refuses_a_second_claimant_of_one_line) {
+    // THE REGRESSION. Port 0 pin 5 and port 1 pin 5 are one EXTI line.
+    ALLOY_CHECK(refuses([] {
+        alloy::claim::sub_shared<inst_q, 5u, personality::exti>(0u);
+        alloy::claim::sub_shared<inst_q, 5u, personality::exti>(1u);
+    }));
+}
+
+ALLOY_TEST(claim_sub_shared_lines_are_independent) {
+    // ...and it must be the LINE that is contested, not the controller: PA5 on
+    // line 5 and PB6 on line 6 are two resources of one EXTI block, and a
+    // claim keyed one level too high would have refused the second.
+    alloy::claim::sub_shared<inst_r, 5u, personality::exti>(0u);
+    alloy::claim::sub_shared<inst_r, 6u, personality::exti>(1u);
+    ALLOY_CHECK((alloy::claim::sub_held<inst_r, 5u, personality::exti>()));
+    ALLOY_CHECK((alloy::claim::sub_held<inst_r, 6u, personality::exti>()));
+}
+
+ALLOY_TEST(claim_sub_release_hands_the_line_over) {
+    // The one release in the mechanism. `pa5.clear_on_edge()` genuinely frees
+    // line 5, so PB5 may take it — refusing it forever would be a new lie in
+    // place of the old one.
+    alloy::claim::sub_shared<inst_s, 5u, personality::exti>(0u);
+    alloy::claim::sub_release<inst_s, 5u, personality::exti>(0u);
+    ALLOY_CHECK(!(alloy::claim::sub_held<inst_s, 5u, personality::exti>()));
+    alloy::claim::sub_shared<inst_s, 5u, personality::exti>(1u);
+    ALLOY_CHECK((alloy::claim::sub_held<inst_s, 5u, personality::exti>()));
+}
+
+ALLOY_TEST(claim_sub_release_of_an_unclaimed_line_is_a_no_op) {
+    // Disarming a pin that was never armed was always harmless, and stays so —
+    // trapping there would break code that clears an interrupt defensively.
+    alloy::claim::sub_release<inst_t, 5u, personality::exti>(0u);
+    ALLOY_CHECK(!(alloy::claim::sub_held<inst_t, 5u, personality::exti>()));
+}
+
+ALLOY_TEST(claim_sub_release_by_the_wrong_claimant_traps) {
+    // The second half of the same defect: `pb5.clear_on_edge()` while PA5 owns
+    // line 5 used to silently disarm PA5's interrupt.
+    ALLOY_CHECK(refuses([] {
+        alloy::claim::sub_shared<inst_u, 5u, personality::exti>(0u);
+        alloy::claim::sub_release<inst_u, 5u, personality::exti>(1u);
+    }));
+}
+
+// ── The cross-TU case: one object, or one per compilation? ───────────────
+//
+// Every test above lives in ONE .cpp, which is precisely the arrangement that
+// cannot tell an `inline` variable template apart from the per-binder `static`
+// it replaced — both look identical inside a single translation unit. These
+// three name instances that tests/test_claim_tu2.cpp also names.
+
+ALLOY_TEST(claim_crosses_translation_units) {
+    // Claimed HERE, observed THERE. If `owner<Inst>` were per-TU this would be
+    // false and the whole repair would be decoration.
+    ALLOY_CHECK(!alloy::test::seen_held_in_tu2());
+    alloy::claim::exclusive<alloy::test::cross_tu_seen, personality::uart>();
+    ALLOY_CHECK(alloy::test::seen_held_in_tu2());
+}
+
+ALLOY_TEST(claim_second_owner_in_another_translation_unit_traps) {
+    // THE CASE THE MECHANISM EXISTS FOR, and the one C++ cannot make a compile
+    // error: a driver in libs/ and an app in main.cpp both opening usart2.
+    ALLOY_CHECK(refuses([] {
+        alloy::test::claim_trap_in_tu2();
+        alloy::claim::exclusive<alloy::test::cross_tu_trap, personality::uart>();
+    }));
+}
+
+ALLOY_TEST(claim_sub_resource_crosses_translation_units) {
+    // ...and the sub scope crosses TUs too: `sub_witness<Inst, Sub>` is one
+    // object, so the second pin is refused from anywhere in the image.
+    ALLOY_CHECK(refuses([] {
+        alloy::test::claim_sub_in_tu2(0u);
+        alloy::claim::sub_shared<alloy::test::cross_tu_sub, 5u, personality::exti>(1u);
     }));
 }

@@ -2,8 +2,9 @@
 // InputPin concepts. Generated boards expose roles as inline constexpr
 // instances of these types.
 //
-// NO CLAIM, and this one is a limit rather than a rule — the honest statement
-// of a THIRD ownership scope that alloy::claim does not model. A pin is not a
+// NO CLAIM ON THE PIN, and this one is a limit rather than a rule — the honest
+// statement of a THIRD ownership scope that alloy::claim does not model. A pin
+// is not a
 // peripheral instance and not a numbered part of one; it is a resource that
 // several peripherals compete for through the mux. The shipped boards prove
 // the contention is real and often INTENTIONAL: on the nucleo_g0b1re PA5 is
@@ -15,6 +16,15 @@
 // DOES enforce here is that a pin reaches a peripheral at all: `routes::route`
 // is a compile error for a pin that has no route (guard #7). Who wins when two
 // routes are both legal is, today, the programmer's problem.
+//
+// ONE CLAIM BEHIND on_edge(), though, and it is not on the pin — it is on the
+// EXTI LINE the pin is wired to, which IS a numbered part of a peripheral. PA5
+// and PB5 are one line with one port-select field, one trigger pair and one
+// callback slot, and arming both used to compile clean and leave the FIRST
+// pin's handle reporting the SECOND pin's edges as its own. The claim lives in
+// the exti driver, where the line number is (alloy/hal/exti/exti_impl.hpp);
+// clear_on_edge() releases it, so handing a line from one pin to another is
+// still allowed as long as the program says so out loud.
 
 #pragma once
 

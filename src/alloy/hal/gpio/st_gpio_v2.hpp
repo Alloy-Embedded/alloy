@@ -113,7 +113,7 @@ struct pin_impl<Pin> {
     static void disable_edge_irq()
         requires requires { typename Port::exti_t; Port::port_index; }
     {
-        exti_impl<typename Port::exti_t>::template disarm<index>();
+        exti_impl<typename Port::exti_t>::template disarm<Port::port_index, index>();
     }
 
     [[nodiscard]] static std::uint32_t edge_count()
