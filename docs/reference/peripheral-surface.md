@@ -19,25 +19,33 @@ a value only where it is reachable, a quantity is a generated number, a
 peripheral has one owner, and everything else is a compile error that names the
 thing you asked for.**
 
-!!! warning "This page is at revision 2, and revision 1 was wrong in three places"
-    The rule below was derived from UART and then applied, adversarially, to
-    three features it had never seen: I2C 10-bit addressing, the ADC analog
-    watchdog, and timer encoder mode. **It failed all three** — confidently,
-    which is worse than failing loudly. The repair is not another paragraph of
-    doctrine: v1 asked *"which layer does this knob live in?"* without first
-    asking *"is it a knob at all?"*, and all three counterexamples are things
-    that are not knobs.
+!!! warning "This page is at revision 3, and the two earlier rules were refuted by being applied"
+    **v1** was derived from UART and then applied, adversarially, to three
+    features it had never seen — I2C 10-bit addressing, the ADC analog watchdog,
+    timer encoder mode. It failed all three, confidently, which is worse than
+    failing loudly: it asked *"which layer does this knob live in?"* without
+    first asking *"is it a knob at all?"*
 
-    What changed: a gate (question 0) and three new categories in front of the
-    layers ([the rule](#the-rule)); Layer 1 now admits VALUES and not only
-    fields; Layer 2 gained a *scope*; and "`alloy::dev::` is the unconditional
-    escape hatch" is retired — it was false, and
-    [the three gates](#question-0-what-does-the-database-already-know) says
-    what is actually true. The three counterexamples are
-    [answered in full](#the-three-counterexamples-answered) and three more
-    features are [stressed against v2](#stressing-v2-on-three-features-it-was-not-built-from),
-    two of which break it. Every v1 claim that did not survive is corrected
-    where it stood, not appended to.
+    **v2** was derived from those three and stressed against five more. Four
+    broke it. The survivor was **question 0** — because it asks a verifiable
+    fact about the chip database rather than a category judgement.
+
+    So the a-priori method was abandoned. **v3 is derived from three
+    peripherals that were built** — a cross-peripheral feature
+    ([`can`](#question-5-cross-peripheral)), a personality
+    ([`encoder`](#personalities-a-block-runs-in-one-mode-at-a-time)) and a
+    sub-resource ([`adc`](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime))
+    — and is nothing but the generalisation of what those builds demanded.
+    Question 0 is kept and now has **five rows**: the FDCAN filters found a
+    curated field whose *encoding* was not curated, which is a magic number
+    wearing an accessor.
+
+    [**The rule is here**](#the-rule); what it refuses to decide, and what the
+    three builds never showed it, is
+    [here](#what-v3-does-not-decide-and-what-it-has-not-seen). The refutations
+    that produced it are kept as
+    [history](#history-how-this-rule-was-refuted-twice), because which claims
+    break is the useful part — but the rule is stated in exactly one place.
 
 ---
 
@@ -52,8 +60,10 @@ thing you asked for.**
 | What happens when you ask for too much of something present? | `static_assert` inside the driver, comparing against the generated number, with both numbers in the message. |
 | What happens when you ask for a value the port cannot reach? | Compile error when the value is a literal, named trap when it is computed. Not opt-in — see [Layer 1 admits values, not only fields](#layer-1-admits-values-not-only-fields). |
 | Is there a generic command door? | **No.** Not now, not under schedule pressure. `alloy::dev::` is the only door below `opts`. |
-| Is `alloy::dev::` always available? | **No, and v1 said it was.** It reaches only what the chip database curates, at [three separate gates](#question-0-what-does-the-database-already-know). |
+| Is `alloy::dev::` always available? | **No, and v1 said it was.** It reaches only what the chip database curates, at [four separate gates](#question-0-what-does-the-database-already-know) — peripheral, register, field, and the field's *encoding*. |
 | What owns a peripheral instance? | Exactly one binder, in exactly one *personality* — enforced at generation time for board roles and at run time for everything else (`alloy::claim`). |
+| Where does a feature live when it needs **two blocks**? | On the facade of the block the user names; the second is an edge on the instance descriptor (`Inst::ram_t`). Curation and the capacity check cross the pair — [question 5](#question-5-cross-peripheral). |
+| Where does a **maximum** come from? | Whichever artefact physically bounds it — a field's own mask, a `feat` count, or *another peripheral's* element count — with a `static_assert` tying them together when more than one names it ([here](#where-a-maximum-comes-from)). |
 
 ---
 
@@ -656,27 +666,48 @@ enable and its own lifetime?* → sub-resource.
 
 And it is a resource, so it is *owned*:
 [`claim::sub_exclusive<Inst, Sub, P>()`](#two-keys-because-a-peripheral-is-not-always-the-contested-resource),
-keyed on the instance and the ordinal. A timer channel and a DMA channel use it
-today; an analog watchdog would be the third the day the handle below exists.
+keyed on the instance and the ordinal. A timer channel, a DMA channel and — since
+`de6e59b` — an analog watchdog use it today.
 
 Where it goes: **its own handle, obtained from the port's handle, with the
-index checked against a generated `feat` count.**
+index checked against a generated `feat` count.** This is shipped code, not a
+sketch:
 
 ```cpp
 auto adc = board::adc::open();
-auto wd  = adc.watchdog<0>({.low = 300, .high = 3600});   // 0 <= feat count
+auto wd  = adc.watchdog<0>({.channel = 3, .low = 1000, .high = 3000});
+...
+if (wd.tripped()) { wd.clear(); }
 ```
 
-The decomposition then falls out of the *existing* questions instead of being
-argued per peripheral — which is the whole point, because v1's failure on the
-analog watchdog was that it had no prescribed decomposition and improvised one:
+`watchdog<3>()` on an ADC with three of them is a compile error carrying **both**
+numbers, because the bound is `Inst::feat::analog_watchdogs` and GCC prints the
+comparison. An ADC whose data records no count at all is a compile error naming
+the instance, never a silent zero.
+
+The decomposition falls out of the *existing* questions rather than being argued
+per peripheral — v1's failure here was that it had no prescribed decomposition
+and improvised one. The build then refuted one of v2's four rows, which is why
+the third column now cites the silicon:
 
 | Part of the feature | Question it answers to | Answer |
 |---|---|---|
-| how many there are | is it a count the database knows? | `Inst::feat::analog_watchdogs`, 0 means absent |
+| how many there are | is it a count the database knows? | `Inst::feat::analog_watchdogs`, 0 means absent — and on the register file, not the chip file, because the IP version fixes it |
 | the thresholds | can every driver that has one program them? | the sub-resource's own Layer-1 `config` |
-| which channels it guards | does it vary per call on one armed watchdog? | an argument of `guard()` |
-| what happens on a trip | — | the interrupt-callback shape alloy already uses |
+| ~~which channels it guards~~ **which channel it guards** | ~~does it vary per call on one armed watchdog?~~ | **part of ARMING, not a later call.** `CFGR1.AWD1CH` sits next to `AWD1EN` and both are writable only with the ADC disabled, so there is no `guard(channel)` a running port could honour. It is a member of `watchdog_config` |
+| what happens on a trip | — | the sticky flag, polled (`tripped()` / `clear()`). The interrupt path exists in silicon and alloy does not arm it: `AWDnIE` is never set |
+
+**Two more things the build made true that the category does not predict**, both
+visible in `src/alloy/adc.hpp`'s own header comment:
+
+- **Arming cycles the port.** The driver stops any conversion, disables the ADC,
+  programs the watchdog and re-enables it. "Its own lifetime" turns out to mean
+  *its own*, not *non-interfering*.
+- **The N are not interchangeable.** AWD1 guards one channel or all of them;
+  AWD2 and AWD3 guard an arbitrary channel *set* through a 19-bit bitmask whose
+  non-zero value is itself the enable — a different register shape, with no
+  `AWDnEN` bit. Layer 1 for a sub-resource is therefore the intersection over
+  the **N** as well as over the drivers.
 
 ---
 
@@ -772,110 +803,263 @@ never reaches a compiler.
 
 ## The rule
 
-This is the load-bearing output, at **revision 2**. v1's five questions are
-questions 5 to 9 below, essentially unchanged and still right — what was
-missing was everything in front of them. For any value on any of the 65
-peripherals, ask these in order and stop at the first yes. Each test is
-mechanical, and each one names a thing a compiler or a generator can check.
+**Revision 3 — derived from three peripherals that were built, not from
+taxonomy.** v1 was derived from UART and failed three features it had never
+seen. v2 was derived from those three and failed four of five more. Both were
+killed the same way: a reviewer applied them. So v3 was not written first. Three
+deliberately different peripherals were **built** — a cross-peripheral feature
+(`can`, `3ef5130`), a personality (`encoder`, `f1f6833`) and a sub-resource
+(`adc`, `de6e59b`) — each commit recording what its own prediction got wrong,
+and this section is the generalisation of that list and nothing more.
 
-### Question 0: what does the database already know?
+Two consequences of deriving it that way, both deliberate:
 
-Not a layer question — a **gate**, and the one whose absence made v1 promise an
-escape hatch that is not there. Ask it first, because the answer decides
-whether the rest of the rule can even run.
+- **Every clause below points at a build.** If a clause has no witness in the
+  tree it is not in the rule; it is in
+  [what v3 has not seen](#what-v3-does-not-decide-and-what-it-has-not-seen).
+- **Where the builds never hit a case, v3 refuses rather than invents.** v1 and
+  v2 died of confident answers to questions they had no evidence about. A named
+  refusal is the only thing that does not have to be retracted later.
 
-| What alloy-devices has | What you can reach | Verified by |
-|---|---|---|
-| nothing — the peripheral is `uncurated` | **nothing.** `alloy::dev::<name>_t` is not emitted at all, and neither are its routes | `emit/device.py::curated_peripherals` drops them; the G0B1RE's generated `device.hpp` has `tim2/3/4` and no `tim1` |
-| the peripheral, but not the register | the base, gate, IRQ and DMA facts. **Not the register**: `IP::regs` has no member for it | the G0B1RE's ADC is `st/adc_v2`, whose curated map stops at `CCR` — there is no `TR1` member to write |
-| the register, but not the field | the register as a typed member. **No named accessor**, so a driver would hand-write bit numbers, which guard #1 forbids | `tim_gp16`'s `SMCR` is a register with zero fields |
-| the field | everything. Layer 2 is open | `i2c_v2`'s `CR2.ADD10` and 10-bit `CR2.SADD` are both in the data |
+For any feature of any of the 65 peripherals, ask these in order and stop at the
+first that fires. Each question names the **artefact** that answers it, and each
+answer is a thing a compiler, a generator or a lint can check.
 
-**28 of the G0B1RE's 65 peripherals are at row 1** — `alloy chip-status
-st/stm32g0b1re` prints `37 of 65 peripherals curated` — including the only
-advanced timer, both LPUARTs, all three comparators and the USB device. For
-those, the rule's output is not a layer at all: it is **"curate first"**, a
-task in `alloy-devices` and not a decision about C++.
-`emit/board.py::_require_curated` already refuses a board role that names one.
+### Question 0: what does the database already know? {#question-0-what-does-the-database-already-know}
 
-!!! warning "Rows 2, 3 and 4 have no tool"
-    `chip-status`'s `REG` column answers row 1 and nothing finer: it says the
-    peripheral has curated register data, not that the data has the register
-    you need or the field inside it. Both of the counterexamples below that are
-    blocked are blocked at rows 2 and 3, and both were found by *opening the
-    IP yaml by hand*. A `chip-status --registers <ip>` that lists which
-    registers and fields a curated IP actually carries is the obvious tool and
-    **is not built**; until it is, question 0 costs a reader one file.
+A **gate**, not a layer — and the one whose absence made v1 promise an escape
+hatch that is not there. It asks a verifiable fact about `alloy-devices`, never
+a category judgement, which is why it is the one part of v2 that survived both
+reviews intact. What it did not survive is the FDCAN build's count: **it has
+five rows, not four.**
+
+| What `alloy-devices` has | What you can reach | Output if you stop here | Witness |
+|---|---|---|---|
+| **nothing** — the peripheral is uncurated | **nothing.** `alloy::dev::<name>_t` is not emitted at all, and neither are its routes | **curate the peripheral** | `emit/device.py::curated_peripherals` drops them; 28 of the G0B1RE's 65, including `tim1`, both LPUARTs and the USB device |
+| the peripheral, **not the register** | base, gate, IRQ, DMA and companion facts. **Not the register**: `IP::regs` has no member for it | **curate the register** | `st/adc_v2`'s curated map stopped at `CCR` — no `TR1`, no `AWD1CR`, no `AWD` flag in `ISR` |
+| the register, **not the field** | the register as a typed member. **No named accessor**, so a driver would hand-write bit numbers — guard #1 | **curate the field** | `st/tim_gp16`'s `SMCR` was a register member with zero fields |
+| the field, **not its ENCODING** | a named accessor you have to feed a bare integer. **A curated field whose encoding is not curated is a magic number wearing an accessor** | **curate the values** | FDCAN `RXGFC.ANFS` was a curated field, and "reject every non-matching frame" was still the literal `2` until `values:` landed (`alloy-devices` `fb46ebb`, `7cc8ff8`) |
+| the field **and** its encoding | everything. The layer questions below can run | — | `st/i2c_v2`'s `CR2.ADD10`; `IP::rxgfc::anfs_reject` |
+
+**Rows 1–4 are not a layer. Their output is a task in `alloy-devices`**, and the
+C++ question has no answer until that task is done. Saying so is the whole value
+of asking question 0 first: three of the four features this page has been
+adversarially tested with stopped at a row, and each time the honest output was
+a data ticket rather than a design argument.
+
+**Ask it of the CLOSURE, not of one block.** This is the FDCAN build's second
+correction. An acceptance filter's elements live in the companion message RAM
+and its list size lives in the controller, so *the controller being curated is
+not enough*. Curation travels across the pair: an FDCAN whose message RAM is
+uncurated is not a working FDCAN, it is a controller whose filters and FIFOs are
+unreachable. Before the build, an uncurated companion produced
+`companion cycle among peripherals: ['fdcan1']` — a true sentence about the
+wrong thing. `emit/device.py` now names the companion and says why:
+
+```
+fdcan1: companion 'ram' names fdcanram1, which this chip does not emit — it is
+uncurated, or absent from the data. A peripheral is only as curated as its
+companions; curate fdcanram1 in alloy-devices, or drop the companion
+```
+
+**And there is one answer that is not a row, because it is not a task.** A field
+the register schema *cannot express* has no curation ticket to file. Two are
+known, both found by mining `st/tim_gp16` for the encoder:
+
+- **Two registers at one address.** `CCMR1`'s input view's `IC1F/IC2F` sit
+  exactly on top of the output view's `OC1PE/OC1M`, and fields of one register
+  may not overlap in `alloy.registers.v1`. The digital input filter is therefore
+  unreachable **at every layer at once, `alloy::dev::` included** — Layer 3 hands
+  out named accessors only for curated fields. Not a layering decision; a limit
+  of the data model.
+- **One field in two places.** `SMS` is `SMS[2:0]` at bits 2:0 *and* `SMS[3]` at
+  bit 16, where a field has one `bit` and one `width`. It is curated as two
+  entries named after the manual's own diagram, because both single-entry
+  spellings lie.
+
+The output there is a **data-model proposal** for the maintainer, not a
+curation ticket and not a C++ workaround. Both are written up in
+[what a data model change would have to say](#what-a-data-model-change-would-have-to-say).
+
+!!! warning "Rows 2, 3 and 4 still have no tool"
+    `alloy chip-status` answers row 1 and nothing finer: it says a peripheral
+    has curated register data, not that the data has the register you need, the
+    field inside it, or that field's encoding. Every row-2/3/4 answer on this
+    page was found by *opening the IP yaml by hand*. A
+    `chip-status --registers <ip>` that lists what a curated IP actually carries
+    is the obvious tool and **is not built**; until it is, question 0 costs a
+    reader one file. Row 4 makes that worse, not better: an encoding is easier
+    to miss than a field, because the accessor you wanted already exists.
 
 The honest unconditional escape is the one
 [escape-hatch.md](../guide/escape-hatch.md) calls **Route C** — a raw literal
 address in *your* code, outside alloy, with no gate, no IRQ number and no route
 check. That is a real door and it is not `alloy::dev::`.
 
-### Questions 1–4: what kind of thing is it?
+### Questions 1–5: what kind of thing is it?
+
+Before "how portable is this value" comes "what kind of thing is this value".
+v1 had only the layer questions, so it answered *confidently and wrongly* for
+everything that is not a knob. Question 5 is new in v3 and is the axis that
+killed v2.
 
 **1. Does it change which OPERATIONS the peripheral offers, and exclude the
 other modes while it is on?**
 *Test: does the handle grow or lose methods? Can two of them run at once?*
-→ A [**personality**](#personalities-a-block-runs-in-one-mode-at-a-time). Its
+→ A [**personality**](#personalities-a-block-runs-in-one-mode-at-a-time): its
 own facade, its own binder type, an exclusive claim on the instance. Not a knob
 at any layer.
+
+The encoder build added three clauses to this answer, all three from things
+that broke:
+
+- **The register data has to DECLARE the personality**, because "one block, one
+  job" was encoded in four separate consumers as an equality test on a
+  single-valued `class`. Codegen included one `hal/<class>/…` header, the role
+  matcher offered an instance to one kind of role, `chip-info` answered with one
+  string, and a fourth copy of the rule was found inline in `chips.py`. All four
+  now ask **membership** through one helper (`roles.ip_classes`), and
+  `alloy.registers.v1` grew an optional `personalities:` key whose first user is
+  `st/tim_gp16`. **A personality that the data does not name is unreachable from
+  any board role**, however good the C++ is.
+- **A personality switch writes whole registers; it does not read-modify-write.**
+  The bits `encoder::open()` does not name in `CCMR1` are the *other*
+  personality's layout of the same word. Preserving them carries a PWM mode
+  field into an input-filter setting. RMW is the wrong default exactly here.
+- **The binder takes only the tags that carry a fact it programs.** This page
+  predicted `encoder::bind<tim3_t, a<>, b<>, board::clock_profile>` because every
+  other binder takes a clock profile. An encoder divides nothing — `PSC` is
+  forced to zero and the counter is clocked by the shaft — so the parameter was
+  dead and is gone. A dead binder parameter is a dependency the peripheral does
+  not have, and the kind that survives for years because nothing ever breaks.
 
 **2. Does it exist N times inside the peripheral, with its own enable and its
 own lifetime?**
 *Test: would you arm it and disarm it independently of `open()`? Is there a
 count that differs by IP version?*
-→ A [**sub-resource**](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime).
-Its own handle, obtained from the port's, indexed against `Inst::feat::<count>`.
+→ A [**sub-resource**](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime):
+its own handle, obtained from the port's, its ordinal checked against
+`Inst::feat::<count>`, and `claim::sub_exclusive<Inst, N, P>()` on the pair.
+
+The watchdog build says the routing is the easy half and adds three questions
+that must be answered *before the handle is designed*, because v2 guessed all
+three and was wrong on two:
+
+| Follow-up | v2's guess | What the silicon said |
+|---|---|---|
+| is the selector a later call or part of arming? | `wd.guard(channel)` — an argument of a later operation | **part of arming.** `CFGR1.AWD1CH` sits next to `AWD1EN` and ST documents both as writable only with the ADC disabled, so `watchdog_config` carries the channel next to the window |
+| is its lifetime really independent of the port's? | yes, that is what makes it a sub-resource | **no.** Arming stops any conversion, disables the ADC, programs the watchdog and re-enables it. A sub-resource can interrupt the port it lives in |
+| are the N interchangeable? | assumed yes | **no.** AWD1 guards one channel or all; AWD2/AWD3 guard an arbitrary channel *set*, through a 19-bit bitmask whose non-zero value IS the enable. Layer 1 for a sub-resource is the intersection **over the N as well as over the drivers** — one channel — because a portable field that only works at ordinal 0 is the lie this surface exists to remove |
 
 **3. Does it vary from one transfer to the next on a port nobody reopened?**
 *Test: could two consecutive calls legitimately want different values?*
-→ **An argument of the operation** — and if a bus is shared by devices that
-each want their own, a *device* type that carries the bus plus that device's
+→ **An argument of the operation** — and if a bus is shared by devices that each
+want their own, a *device* type that carries the bus plus that device's
 settings. See [the transfer axis](#the-transfer-axis-and-the-zephyr-answer).
 
 **4. Does honouring it require a pin?**
 *Test: does it need a route or an AF programmed?*
-→ A **binder tag**, not a field. `uart::de<pb1_t>`, `spi::nss<pa4_t>`.
+→ A **binder tag**, not a field. `uart::de<pb1_t>`, `spi::nss<pa4_t>`,
+`encoder::a<pa6_t>`.
 
-### Questions 5–9: which layer does the knob live in?
+**5. Does honouring it require programming a SECOND BLOCK?** {#question-5-cross-peripheral}
+*Test: does the feature's data live at an address the facade's own `Inst::base`
+does not cover?*
+→ **Cross-peripheral.** This is the shape that killed v2, and the FDCAN build is
+exactly it: one line of user code, two peripherals with different curation
+states, one of which states the other's capacity.
 
-**5. Is the answer a count, a limit, a width, or a rate the die fixes?**
+The answer has one structural half and four obligations:
+
+**The feature stays on the facade of the block the user names.**
+`board::can.accept_only(match(0x123), match_masked(0x200, 0x7F0))` is a CAN call.
+The second block is reached through an **edge on the instance descriptor**
+(`Inst::ram_t`, generated from the chip file's `companions:`), never through a
+second handle the user has to hold and never through a second facade. A user who
+must own two objects to configure one feature has been handed the datasheet's
+decomposition instead of a surface.
+
+Then four things no layer states, so the **driver** states them, where the
+driver is:
+
+1. **Curation is a closure** — question 0, above.
+2. **The capacity may be stated by the OTHER block.** Read a maximum from the
+   block that physically stores the things, and pin the relationship to the
+   block that counts them; see
+   [where a maximum comes from](#where-a-maximum-comes-from).
+3. **Order is part of the feature.** Elements first, size second, always: the
+   core scans `LSS` elements the instant `LSS` is non-zero, so a size published
+   before its elements exist is a core scanning garbage. Nothing in the type
+   system can say this; it is a comment and a code shape.
+4. **A config window shapes the API.** `RXGFC` takes writes only while
+   `CCCR.INIT` and `CCCR.CCE` are set — which means the node is off the bus —
+   so the call is variadic and *singular* rather than a builder: every extra
+   call would be another window and another moment off the bus, and
+   `sizeof...(F)` is also the compile-time count the capacity check needs.
+
+### Questions 6–10: which layer does the knob live in?
+
+Only reached by things that really are knobs, on a peripheral question 0 cleared.
+
+**6. Is the answer a count, a limit, a width, or a rate the die fixes?**
 *Test: is it a number the chip database knows, rather than something the app
 chooses?*
-→ Not a field at all. **`Inst::feat::<name>`**, generated, 0 means absent.
+→ Not a field at all. **`Inst::feat::<name>`**, generated, **0 means absent**.
+Two clauses the builds added:
 
-**6. Can every driver alloy ships program it, with the same semantics, the same
+- **`feat` has two homes and they may not disagree.** A number that differs
+  between two instances on one die (a FIFO depth) lives on the **instance**, in
+  the chip file. A number the **IP version** fixes — how many analog watchdogs
+  an `st/adc_v2` has — lives on the register file, or it is the same integer
+  copied into every chip that names the IP and free to drift in any of them.
+  Both land in `Inst::feat`. The same name in both places with *different*
+  values is an error, not an override.
+- **"Not reachable from here" needs ONE answer.** Portable code must not have to
+  ask two questions — "does the data carry a count?" and "does this driver have
+  the hooks?" — to decide whether to compile a branch.
+  `alloy::adc::watchdog_count<Inst>` is a `consteval` that folds both into `0`,
+  and one `if constexpr` on it then serves three *different* board outcomes:
+  three watchdogs (`nucleo_g0b1re`, `nucleo_g071rb`), an ADC with none reachable
+  (`same70_xplained`'s `afec0_t`), and no ADC at all. `board::caps::` can only
+  express two of those three, which is the clearest demonstration on this page
+  of why degree is a number and not a bool.
+
+**7. Can every driver alloy ships program it, with the same semantics, the same
 unit, over its whole value domain?**
 *Test: would adding it force any current driver to trap, reject, or silently
 ignore — for any value it can take? Is its unit free of vendor register
 artefacts?*
 → **Layer 1**, `alloy::<periph>::config`. And the values it accepts are
-[admitted, not assumed](#layer-1-admits-values-not-only-fields).
+[admitted, not assumed](#layer-1-admits-values-not-only-fields) — with the
+FDCAN caveat that an admission diagnostic must say what the hardware actually
+does: an identifier above eleven bits does not produce a filter matching
+*nothing*, it produces one matching a *different* identifier, because no
+controller compares the twelfth bit. `match(0x800)` is `match(0x000)` under
+another name, and the first draft of that message said the opposite.
 
-**7. Is there a register field that means exactly this, on some IPs?**
+**8. Is there a register field that means exactly this, on some IPs?**
 *Test: can you name the register field it programs — **in curated data**, which
 question 0 already told you?*
-→ **Layer 2**, `alloy::<periph>::opts<Inst>`, declared only in the drivers
-whose IP has it, under the same name and unit everywhere it appears — and
-**state its [scope](#every-layer-2-knob-has-a-scope-and-v1-never-asked)**, block
-or channel.
+→ **Layer 2**, `alloy::<periph>::opts<Inst>`, declared only in the drivers whose
+IP has it, under the same name and unit everywhere it appears — and **state its
+[scope](#every-layer-2-knob-has-a-scope-and-v1-never-asked)**, block or channel.
 
-**8. Is the register curated but the field not?**
-→ Not a C++ question. **Mine the field**, in `alloy-devices`, and go back to 7.
-The compiler will have told you: a Layer-2 member can only exist where a
-generated field backs it, which is how `usart_v4`'s missing `DEAT/DEDT` turned
-into a data task with an error pointing at it.
+**9. Is the register curated but the field, or the field's encoding, not?**
+→ Not a C++ question. **Mine it** in `alloy-devices` and come back to 8. The
+compiler will have told you: a Layer-2 member can only exist where a generated
+field backs it, which is how `usart_v4`'s missing `DEAT/DEDT` became a data task
+with an error pointing at it. This is question 0's rows 3 and 4 arriving late,
+and it arrives late often enough to be worth a number of its own.
 
-**9. Nothing above fits** — an erratum poke, a one-off, a block alloy models
+**10. Nothing above fits** — an erratum poke, a one-off, a block alloy models
 but this feature is not worth a driver for.
-→ **Layer 3**, `alloy::dev::` — *if question 0 said the peripheral is curated*.
-And **no generic command door, ever**: no `drv_cmd(dev, uint32_t, uint32_t)`,
-no `ioctl`, no `cr1/cr2/cr3` words inside a config struct. An untyped command
-pair is invisible to review, to grep, to the contract gate and to the compiler;
-it is strictly worse than a typed register on a named peripheral. Zephyr's own
-Kconfig help for its version says *"Says no if not sure"* — a framework warning
-you about its own escape hatch.
+→ **Layer 3**, `alloy::dev::` — *if question 0 said the peripheral is curated,
+down to the field*. And **no generic command door, ever**: no
+`drv_cmd(dev, uint32_t, uint32_t)`, no `ioctl`, no `cr1/cr2/cr3` words inside a
+config struct. An untyped command pair is invisible to review, to grep, to the
+contract gate and to the compiler; it is strictly worse than a typed register on
+a named peripheral. Zephyr's own Kconfig help for its version says *"Says no if
+not sure"* — a framework warning you about its own escape hatch.
 
 **Promotion and demotion, so the layers are not a one-way ratchet:**
 
@@ -886,13 +1070,50 @@ you about its own escape hatch.
 - Nothing is ever demoted silently; a Layer-1 field that a new vendor cannot
   honour is a deprecation, on the [stability](stability.md) window.
 
+### Where a maximum comes from {#where-a-maximum-comes-from}
+
+This page has now been wrong about this twice in opposite directions, so v3
+states it as its own clause with three witnesses rather than a preference.
+
+Revision 1 said a maximum belongs in `feat`
+(`de_time_max_16ths = 31`). The UART conversion refuted that: the generated
+field accessor already knows its own width, so one fewer number in the database
+is one fewer thing that can disagree with the registers. Revision 2 replaced it
+with *"a maximum programmable value must be read from the field's `raw_mask`"*.
+**The FDCAN build refuted that in turn**, and the honest rule is neither:
+
+> **A maximum comes from whichever artefact physically bounds the quantity —
+> and when more than one artefact names it, the driver `static_assert`s the
+> relationship between them.**
+
+Three witnesses, all in the tree:
+
+| The bound is really… | Read it from | Witness |
+|---|---|---|
+| how wide the field is | the field's own mask | `st_tim_gp16.hpp`: `max_period = IP::arr.wide_raw_mask + 1u` |
+| a count the IP version fixes, that no register states | `feat`, on the register file | `Inst::feat::analog_watchdogs` — a register map cannot say "there are three of these" |
+| **how much room another peripheral has** | that peripheral | `st_fdcan_v1.hpp`: `filter_capacity = RAM::FLSSA_count`. `RXGFC.LSS` is five bits, so `raw_mask` says **31**; the real capacity is **28**, because a standard filter element is one word of the companion's message RAM |
+
+And the pinning, which is the part that makes it safe to read a number from a
+block other than the one that counts it:
+
+```cpp
+static_assert(filter_capacity <= IP::lss.raw_mask,
+              "this instance's message RAM holds more standard filters than "
+              "the controller's RXGFC.LSS field can count — the chip data "
+              "has the controller and its companion from different dies");
+```
+
+A future die that widens one and not the other fails to build, which is the only
+form of "these two facts agree" that survives a data update nobody reviews.
+
 ### The transfer axis, and the Zephyr answer
 
 Question 3 is the one v1 did not have, and the counterexample that found the
 gap was I2C 10-bit addressing: **a 10-bit address is a property of the
 TRANSFER, not of the port.** One bus talks to a 7-bit sensor and a 10-bit
 sensor in consecutive calls, and no amount of layering a *port* config can
-express that. v1 routed it through question 6, decided "every I2C driver can
+express that. v1 routed it through today's question 7, decided "every I2C driver can
 program an address width, therefore Layer 1", and produced a `config` field
 that would be wrong on the next line of user code.
 
@@ -955,6 +1176,147 @@ a TOML, and `main.cpp` writes `board::rs485::open()`.
     generated from the `eeprom` role today). *Which of them this call is
     talking to* is a **call-site** fact. The contradiction came from v1 forcing
     a per-transfer value through a per-port question, not from the axis.
+
+---
+
+## What v3 does not decide, and what it has not seen {#what-v3-does-not-decide-and-what-it-has-not-seen}
+
+A rule that needs a human argument per peripheral is not a rule. A rule that
+pretends to decide what it cannot is worse — that is exactly how v1 produced a
+confident wrong answer on I2C, and how v2 produced four more. So this section is
+part of the rule, not an apology for it, and it has two halves: **questions the
+page asks and does not answer**, and **cases the three builds never showed it**.
+
+### Open questions, unchanged by the three builds
+
+**1. Sub-resources that interact.** v3 says where a sub-resource lives and says
+nothing about what happens when two of them contend for the same silicon. The
+watchdog build made this *sharper* rather than solving it: the G0B1RE has three
+analog watchdogs, and AWD2/AWD3 guard an arbitrary channel *set*, so two
+watchdogs guarding overlapping channels is a shape the lead chip can express
+today. So is an injected conversion preempting a regular one, and a DMA channel
+serving a timer's update and its capture events.
+
+> **The question the page asks:** *does arming this sub-resource change the
+> observable behaviour of an operation whose call site does not mention it?* If
+> yes, the sub-resource may not be added until the answer to "and what tells the
+> user" is written down. There is no default.
+
+Note that the ADC build had to answer a *weaker* version of this for itself —
+arming cycles the port — and answered it in a header comment. That is the honest
+state: prose, in the one place a driver author will read it, and no mechanism.
+
+**2. A "mode" whose operations do not change shape.** Question 1 is mechanical
+when the handle gains or loses methods — PWM versus encoder, master versus
+slave. It is **not** mechanical when both modes offer the same calls with
+different meanings: a timer counting up versus down, an ADC in single versus
+continuous mode, a UART half-duplex on one wire.
+
+> **The question the page asks:** *can the two modes be swapped on a live block
+> without re-binding a pin and without invalidating a handle already handed
+> out?* If yes it is a knob; if no it is a personality. The tie-breaker is not
+> mechanical enough to be a test — a maintainer states the answer, in the
+> driver, with the reason, and the reason is the direction the pins point.
+
+**3. A block-scoped Layer-2 knob under a channel-scoped binder.** Timer dead
+time (`BDTR.DTG`) is the case, `pwm::bind` is per channel, and
+`claim::shared`'s witness covers the block-scoped *Layer-1* value (`freq_hz`)
+only. The two candidate repairs — widen the witness, or give the timer a block
+handle that channels are opened from — are
+[stated in full below](#3-timer-complementary-outputs-with-dead-time-breaks-v2)
+and v3 does not choose between them, because no shipped timer driver has a
+block-scoped Layer-2 knob yet and choosing would be inventing again.
+
+### Not yet seen — and therefore not decided
+
+Each row is a case v3 has **no evidence about**. They are listed so that the
+next feature that hits one knows it is off the map, rather than finding a
+confident sentence that was never tested. This list is the difference between v3
+and its two predecessors.
+
+| Case | Nearest thing that WAS built | Why the built thing does not answer it |
+|---|---|---|
+| a cross-peripheral feature whose **second block has its own facade** and its own user-visible handle | FDCAN + `fdcanram1` | the message RAM has no facade, no driver and no role. "The second block is an edge on the descriptor" is proven for a companion that is *pure storage*, and for nothing else |
+| a companion **shared by two controllers**, or one whose two owners disagree | one controller, one RAM | `companions:` is a per-peripheral map and the emitter's ordering assumes it is acyclic; nothing has tested two owners |
+| a personality **switched at run time** on a live block | `pwm` vs `encoder` on `tim3` | both are chosen by naming a binder, and the claim is taken at `open()`. Alloy has no `release` at instance scope at all, so "switch back" is untypeable rather than decided |
+| **three or more** personalities on one block | two (`pwm`, `encoder`) | `personalities:` is a list and the membership test is general, but nothing has exercised a third |
+| a sub-resource whose **interrupt** alloy arms | the watchdog's sticky flag | `AWDnIE` is never set; the trip path is polled. The callback half of the sub-resource shape is unwitnessed in code and in emulation |
+| a sub-resource ordinal that can do **more** than the intersection | AWD2/AWD3's channel-set | the driver offers the intersection (one channel) and there is no mechanism that says "ordinal 2 can do more". A product that needs the set has Layer 3 or nothing, and v3 does not decide which |
+| `feat`'s two homes, or `personalities:`, on **non-ST data** | `st/adc_v2`, `st/tim_gp16` | both mechanisms were designed and exercised against ST register files only. Alloy ships six non-ST drivers |
+| a peripheral chosen at **run time** | — | `Inst` is a type. Already true before this page; not changed and not intended to change |
+| **auto-baud** and other hardware-writes-config-back paths | — | a read-back path, not a knob. No home in this shape yet |
+
+**What is NOT on this list, deliberately.** "Which layer" is decidable, and so is
+"is the database ready" — question 0 is five rows of fact, each readable straight
+out of `alloy-devices`. If a future feature makes either of those require a
+judgement call, that is a defect in the rule and belongs here, not in a driver's
+comment.
+
+---
+
+## What a data-model change would have to say {#what-a-data-model-change-would-have-to-say}
+
+The encoder build hit three limits that are not layering decisions and not
+curation tickets: the register schema **cannot express** the fact. v3 cannot fix
+them, because a rule about where a knob lives does not get to change
+`alloy.registers.v1`. So they are stated here as **proposals for the maintainer,
+not changes made** — with what each buys, what it costs, and the concrete field
+that is unreachable until it lands.
+
+One of the four *was* made, additively, by the encoder build, and is described
+first so the proposals are read against what already exists.
+
+**LANDED (`f1f6833` + `alloy-devices`): a register file may declare
+`personalities:`.** `class` stays, single-valued, as the primary; the new
+optional list carries the others; `roles.ip_classes()` returns the tuple and
+four consumers ask membership instead of equality. First user: `st/tim_gp16`
+declares `personalities: [encoder]`. Without it, the encoder personality was
+unreachable from any board role no matter how good the C++ was.
+
+**PROPOSAL 1 — collapse `class` + `personalities:` into one ordered list.**
+Every consumer now asks membership; the primary is only needed by `chip-info`,
+which wants "what is this block called". Two keys that together mean one ordered
+list can drift in a way one key cannot — a value in both, or a `personalities:`
+on a file with no `class`. *Buys:* one fact in one place, and a schema test that
+is a `len()` rather than a set comparison. *Costs:* every register yaml in
+`alloy-devices` and a schema major. *Why not made here:* it is a repo-wide data
+migration with no user-visible symptom today, and this page's job was the rule.
+
+**PROPOSAL 2 — two register views at one address.** `CCMR1` is two registers at
+one offset and which one it is depends on a field inside it; the input view's
+`IC1F/IC2F` sit exactly on top of the output view's `OC1PE/OC1M`, and fields of
+one register may not overlap. **Concretely unreachable today: the encoder's
+digital input filter, at every layer at once including `alloy::dev::`** — a
+bouncing mechanical encoder will feel it, and there is no workaround inside
+alloy that is not a hand-written bit number. A `views:` map keyed by personality
+would let the same offset carry both field sets, and the personality the binder
+already knows would select one. *Costs:* the emitter's register struct becomes a
+union, and every consumer of `IP::regs` has to name a view.
+
+**PROPOSAL 3 — a field in two places.** `SMS` is `SMS[2:0]` at bits 2:0 and
+`SMS[3]` at bit 16, where `alloy.registers.v1` gives a field one `bit` and one
+`width`. It is curated today as two entries named after the manual's own
+diagram, because both single-entry spellings lie — one claims bits `SMS` does
+not own, the other hides a bit it does. A field with a list of `bits:` segments
+would let the accessor shift and mask correctly and let a driver write
+`sms.set(encoder_mode)` once. *Costs:* accessor codegen, and every `raw_mask`
+consumer has to mean "the value domain" rather than "the mask at one position".
+
+**PROPOSAL 4 — make an enumerated field's encoding non-optional.** Question 0's
+fifth row exists because `values:` is optional: `RXGFC.ANFS` was a curated field
+whose encoding was not curated, and the driver wrote the integer `2`. A lint
+that fails when a field's upstream source carries an enumeration and the yaml
+does not would close the row instead of documenting it. There is a second half:
+the IP emitter **accepted `values:` on fields of ARRAY registers and silently
+dropped them** until `3ef5130` — schema-accepted, emitter-ignored, no
+diagnostic. A schema-vs-emitter round-trip test is the cheaper half of this
+proposal and would have caught it.
+
+**PROPOSAL 5 (a tool, not a schema change) — `alloy chip-status --registers
+<ip>`.** Rows 2, 3 and 4 of question 0 have no tool: every row-2/3/4 answer on
+this page was found by opening a yaml by hand. Row 4 is the worst of the three
+to find that way, because the accessor you wanted already exists and reads
+perfectly well at the call site.
 
 ---
 
@@ -1500,7 +1862,7 @@ map runs `ISR, IER, CR, CFGR1, CFGR2, SMPR, CHSELR, DR, CCR` — **there is no
 `TR1` and no `AWD1CR` at all**, and `ISR` carries no `AWD` flag. So this is not
 "Layer 2 or Layer 3": Layer 2 cannot name a field, and Layer 3's typed route
 cannot name the *register* either, because `IP::regs` has no member for it. The
-rule's output is **curate `adc_v2.yaml` first** — then question 7 answers, and
+rule's output is **curate `adc_v2.yaml` first** — then question 8 answers, and
 the driver becomes ordinary work.
 
 **Why v1 got it wrong.** It half-decided (correctly identifying the count as
@@ -1651,7 +2013,7 @@ advanced timer, `tim1` on the G0B1RE is uncurated, and there is no
 `alloy::dev::tim1_t`. Suppose it were curated. Then v2 routes the parts
 cleanly — CH1N is a pin (question 4, a binder tag `pwm::outn<>`), the break
 input is a pin (`pwm::brk<>`), and the dead time is a register field in a
-vendor-shaped unit (`BDTR.DTG`'s piecewise encoding), so question 7, Layer 2.
+vendor-shaped unit (`BDTR.DTG`'s piecewise encoding), so question 8, Layer 2.
 
 **Where it breaks: dead time is BLOCK-scoped and `pwm::bind` is CHANNEL-scoped.**
 Two channel binds on one timer, each carrying
@@ -1672,50 +2034,6 @@ Two candidate repairs, and v2 does not choose between them:
 Naming the choice is a maintainer's call, and the argument for (2) is that the
 *same* structural defect is live in shipped code today for `freq_hz` — the
 claim makes it loud, it does not make it impossible.
-
----
-
-## What v2 deliberately does not decide {#what-v2-deliberately-does-not-decide}
-
-A rule that needs a human argument per peripheral is not a rule. A rule that
-pretends to decide what it cannot is worse — that is exactly how v1 produced a
-confident wrong answer on I2C. So these two are stated as **questions the page
-asks**, not answers it guesses, and each one is a decision record a maintainer
-owes before the driver that needs it is written.
-
-**1. Sub-resources that interact.** v2 says where a sub-resource lives and says
-nothing about what happens when two of them contend for the same silicon — ADC
-injected preempting regular, two analog watchdogs on overlapping channels, one
-DMA channel serving a timer's update and its capture. Every option is bad in a
-different way: a runtime claim (like `alloy::claim`, but per sub-resource, and
-paying RAM per instance), a type-level exclusion (unusable once the set is
-three or more), or documenting the interaction and checking nothing.
-
-> **The question the page asks:** *does arming this sub-resource change the
-> observable behaviour of an operation whose call site does not mention it?* If
-> yes, the sub-resource may not be added until the answer to "and what tells
-> the user" is written down. There is no default.
-
-**2. A "mode" whose operations do not change shape.** Question 1 is mechanical
-when the handle gains or loses methods — PWM versus encoder, master versus
-slave. It is **not** mechanical when both modes offer the same calls with
-different meanings: a timer counting up versus down, an ADC in single versus
-continuous mode, a UART in half-duplex versus full-duplex on one wire. Calling
-each of those a personality would multiply facades until the framework is
-unreadable; calling each of them a knob puts mutually exclusive silicon states
-behind a field.
-
-> **The question the page asks:** *can the two modes be swapped on a live block
-> without re-binding a pin and without invalidating a handle already handed
-> out?* If yes it is a knob; if no it is a personality. The tie-breaker is not
-> mechanical enough to be a test — a maintainer states the answer, in the
-> driver, with the reason, and the reason is the direction the pins point.
-
-**What is NOT on this list, deliberately.** "Which layer" is decidable, and so
-is "is the database ready" — question 0 is four rows of fact, each one readable
-straight out of `alloy-devices`. If a future feature makes either of those
-require a judgement call, that is a defect in the rule and belongs here, not in
-a driver's comment.
 
 ---
 
