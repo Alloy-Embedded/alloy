@@ -16,6 +16,8 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | `irq_echo` | interrupt-driven UART RX |
 | `pin_irq` | a button that reports its own edges — [pin interrupts](peripherals.md), never polled |
 | `dma_probe` | ADC burst + PWM waveform streamed by DMA, zero CPU |
+| `encoder` | the same timer as a *position counter* — a [personality](../reference/peripheral-surface.md#personalities-a-block-runs-in-one-mode-at-a-time), not a second knob on `pwm_fade` |
+| `adc_watchdog` | an analog window comparator armed *after* `open()` — a [sub-resource](../reference/peripheral-surface.md#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime) with its own handle |
 | `pwm_fade`, `services` | the cooperative scheduler + control loop |
 | `async_blink`, `async_heartbeat` | two concurrent coroutine tasks, no heap, no RTOS |
 | `async_sensor` | a [vendored driver](libraries.md) read inside an async task |
@@ -31,7 +33,13 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 The examples ending in `_read` (`i2c_read`, `spi_read`, `adc_read`, `dma_uart`) are the ones CI
 asserts on under [emulation](emulation.md) — they print a value that only a correct driver
 sequence can produce. `async_io` is asserted the same way, on a number only a coroutine that
-actually suspended and was woken by an interrupt can print.
+actually suspended and was woken by an interrupt can print. So is `adc_watchdog`, on four
+lines that contradict each other unless the window comparator is real.
+
+`encoder` and `can` have **no** emulation leg and cannot have one: Renode's `Timers.STM32_Timer`
+refuses both register writes the encoder personality is made of, and it maps the G0's `fdcan1`
+to a bxCAN model that does not answer M_CAN's registers at all. Both build for every board;
+neither is executed anywhere but hardware, which has not run them.
 
 ## Running an example
 

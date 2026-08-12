@@ -1905,3 +1905,45 @@ on classic ESP32 silicon, a register alloy does not model. `st_usart_v2`'s
 frame programming is likewise compile-checked only (no F4 board), as that
 driver already was. Renode models no parity, so no leg asserts a parity bit on
 a wire.
+
+## Added by the three BUILT peripherals {#added-by-the-three-built-peripherals}
+
+Two versions of the layer rule were written from a chair and both were killed by
+a reviewer who applied them. The third attempt started by building three
+deliberately different peripherals — a cross-peripheral feature (`can`), a
+personality (`encoder`) and a sub-resource (`adc`) — so the rule would be
+derived from what a build actually demanded. Those three landed at `3ef5130`,
+`f1f6833` and `de6e59b`, each naming what its own prediction got wrong.
+
+Each of those commits also listed proofs it had not run. This section is those
+proofs, run.
+
+### Portability: all three examples, all eight boards
+
+`examples/can`, `examples/encoder` and `examples/adc_watchdog` are one
+`main.cpp` each with no preprocessor conditional. Built for every board on CI's
+`build` matrix — `nucleo_g071rb`, `nucleo_g0b1re`, `nucleo_f722ze`,
+`same70_xplained`, `rp2040_zero`, `raspberry_pi_pico`, `esp_wrover_kit`,
+`esp32_devkit` — plus `nucleo_f767zi`, which rides the `build-net` job instead:
+**27 of 27 green**, no `requires` guard added and no source changed.
+
+The interesting column is not the pass, it is *which branch* each board takes,
+because "it builds everywhere" is worth nothing if everywhere took the same
+empty road:
+
+| Example | boards on the REAL branch | boards on the honest fallback |
+|---|---|---|
+| `can` | `nucleo_g0b1re` (`caps::can`) | 8 — `"this board declares no can role"` |
+| `encoder` | `nucleo_g0b1re` (`caps::encoder`) | 8 — `"no encoder role on this board"` |
+| `adc_watchdog` | `nucleo_g0b1re` **and** `nucleo_g071rb` (`feat::analog_watchdogs == 3`) | 7 — of which `same70_xplained` is the informative one: it HAS an ADC (`afec0_t`) and no reachable watchdog, so `Adc::watchdogs` is 0 and the same `if constexpr` that serves a board with no ADC at all serves it |
+
+`adc_watchdog` is the one that shows the degree mechanism doing work rather than
+`caps` doing it: three different board outcomes (three watchdogs, an ADC with
+none, no ADC) from one `if constexpr` on a generated number.
+
+That the fallback branch is genuinely empty is measurable, not a matter of
+reading the source. On `esp32_devkit` the three examples have **the same
+`.text` to the byte — 1188** — and differ only in `.rodata` (248, 256, 264
+bytes for `encoder`, `adc_watchdog`, `can`), which is the length of their
+banners and their one "not available" line. Three different peripherals, three
+discarded branches, and not one instruction between them.
