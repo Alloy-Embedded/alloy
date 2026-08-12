@@ -81,6 +81,22 @@ ROLES: dict[str, RoleSpec] = {
     "led_pwm": RoleSpec(
         kind="peripheral", ip_class="pwm", pin_fields=("pin",),
         required=("peripheral", "channel", "pin"), optional=("label",)),
+    # The timer's OTHER personality. `a`/`b` are PIN FIELDS and not `signals`
+    # for the same reason led_pwm's `pin` is: the route they must satisfy is
+    # not a signal of their own name. A quadrature counter is wired to the
+    # timer's channels 1 and 2 or it is not one, so `a` must route on ch1 and
+    # `b` on ch2 — a constraint with no spelling in this table, and one that
+    # `encoder::bind`'s static_assert states precisely, by pin and by signal,
+    # at compile time. `alloy chip-info` already reports each timer's ch1/ch2
+    # pins under `channels`, which is where a picker gets the candidates.
+    #
+    # `period` and `reverse` are PROJECT fields: the same board with the same
+    # wiring serves a 400-count and a 4096-count encoder, and which one is
+    # plugged in is the application's fact, not the PCB's.
+    "encoder": RoleSpec(
+        kind="peripheral", ip_class="encoder", pin_fields=("a", "b"),
+        required=("peripheral", "a", "b"), optional=("period", "reverse", "label"),
+        project_fields=("period", "reverse")),
     "adc": RoleSpec(
         kind="peripheral", ip_class="adc",
         required=("peripheral",), optional=("label",)),
@@ -131,12 +147,31 @@ def routes_by_peripheral(chip: dict[str, Any]) -> dict[str, dict[str, list[str]]
 
 
 def ip_classes(chip: dict[str, Any],
-               registers: dict[str, dict[str, Any]]) -> dict[str, str | None]:
-    """{peripheral instance: IP class}, resolved through the register files."""
-    return {
-        name: registers.get(spec.get("ip") or "", {}).get("class")
-        for name, spec in (chip.get("peripherals") or {}).items()
-    }
+               registers: dict[str, dict[str, Any]]) -> dict[str, tuple[str, ...]]:
+    """{peripheral instance: the IP classes it can be driven as}, resolved
+    through the register files.
+
+    A TUPLE, NOT A STRING, and that change is the whole of this function's
+    history. `class` is single-valued in the register data and every consumer
+    used to compare it for equality, which quietly encoded "a block has one
+    job". A general-purpose timer has two: it is a PWM generator or a
+    quadrature encoder counter — same registers, same instance, mutually
+    exclusive — and the second one was unreachable from any board role while
+    the answer here was one string. The IP data now says so
+    (`personalities:`), and asking "is this class among its classes" is the
+    only question that has an answer.
+
+    The PRIMARY class stays first, so a caller that wants "what is this
+    block called" can still take element 0. Empty for an uncurated
+    peripheral, which has no register file to ask.
+    """
+    out: dict[str, tuple[str, ...]] = {}
+    for name, spec in (chip.get("peripherals") or {}).items():
+        doc = registers.get(spec.get("ip") or "", {})
+        primary = doc.get("class")
+        out[name] = () if primary is None else (
+            primary, *(doc.get("personalities") or []))
+    return out
 
 
 def role_pin_fields(spec: RoleSpec) -> tuple[str, ...]:

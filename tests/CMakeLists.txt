@@ -107,6 +107,11 @@ add_executable(alloy_unit_tests
     test_async.cpp
     test_units.cpp
     test_claim.cpp
+    # A second TU that names the same instances as test_claim.cpp — the only
+    # arrangement that can tell an inline variable template apart from a
+    # per-compilation static. It holds no ALLOY_TESTs of its own.
+    test_claim_tu2.cpp
+    test_encoder.cpp
     test_nvm.cpp
     test_gpio_bus.cpp
     test_dsp.cpp

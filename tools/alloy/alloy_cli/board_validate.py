@@ -40,11 +40,14 @@ def _issue(level: str, message: str, *, role: str | None = None,
 
 
 def _check_peripheral(role: str, cfg: dict[str, Any], spec, chip: dict[str, Any],
-                      classes: dict[str, str | None]) -> tuple[str | None, list[dict[str, Any]]]:
+                      classes: dict[str, tuple[str, ...]]) -> tuple[str | None, list[dict[str, Any]]]:
     """Resolve the role's peripheral, reporting why it can't be used."""
     peripherals = chip.get("peripherals") or {}
     name = cfg.get("peripheral")
-    alternatives = sorted(p for p, c in classes.items() if c == spec.ip_class
+    # MEMBERSHIP, NOT EQUALITY: a block can be driven as more than one class
+    # (a timer is a PWM generator or an encoder counter), so `classes` maps an
+    # instance to every class it can fill. See roles.ip_classes.
+    alternatives = sorted(p for p, c in classes.items() if spec.ip_class in c
                           and not peripherals[p].get("uncurated", False))
     if not isinstance(name, str):
         return None, [_issue("error", f"{role}: no peripheral chosen",
@@ -62,10 +65,11 @@ def _check_peripheral(role: str, cfg: dict[str, Any], spec, chip: dict[str, Any]
             f"be selected for it",
             role=role, field="peripheral",
             suggestions=alternatives[:MAX_SUGGESTIONS])]
-    if classes.get(name) != spec.ip_class:
+    if spec.ip_class not in classes.get(name, ()):
         return name, [_issue(
             "warning",
-            f"{role}: '{name}' is a '{classes.get(name)}' peripheral, not "
+            f"{role}: '{name}' is a "
+            f"{' / '.join(classes.get(name) or ['classless'])} peripheral, not "
             f"'{spec.ip_class}' — the driver may not match",
             role=role, field="peripheral",
             suggestions=alternatives[:MAX_SUGGESTIONS])]

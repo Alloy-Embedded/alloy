@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from .emit.common import EmitError
-from .roles import ROLES, routes_by_peripheral
+from .roles import ROLES, ip_classes, routes_by_peripheral
 
 _FAMILY = re.compile(r"^family:\s*(\S+)", re.M)
 _CORE = re.compile(r"name:\s*(cm0plus|cm0|cm3|cm4|cm7|cm33|lx6|lx7)\b")
@@ -65,7 +65,7 @@ def chip_clock(devices_root: Path, chip_id: str) -> tuple[list[str], str]:
     return profiles, profiles[0]
 
 
-def _role_catalogue(data: dict[str, Any], classes: dict[str, str | None],
+def _role_catalogue(data: dict[str, Any], classes: dict[str, tuple[str, ...]],
                     routes: dict[str, dict[str, list[str]]]) -> dict[str, Any]:
     """Every role the framework knows, with this chip's candidates for it."""
     peripherals = data.get("peripherals") or {}
@@ -94,7 +94,9 @@ def _role_catalogue(data: dict[str, Any], classes: dict[str, str | None],
             entry["reason"] = None
         else:
             for name in sorted(peripherals):
-                if classes.get(name) != spec.ip_class:
+                # MEMBERSHIP, NOT EQUALITY — one block can fill roles of
+                # several classes, one at a time (roles.ip_classes).
+                if spec.ip_class not in classes.get(name, ()):
                     continue
                 signals = routes.get(name, {})
                 candidate: dict[str, Any] = {
@@ -141,10 +143,12 @@ def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
 
     data = load_chip(devices_root, chip_id)
     registers = load_registers(devices_root)
-    classes = {
-        name: registers.get(spec.get("ip") or "", {}).get("class")
-        for name, spec in (data.get("peripherals") or {}).items()
-    }
+    # A FOURTH COPY OF THIS RULE USED TO LIVE HERE, inline, and it is exactly
+    # the drift roles.py's own docstring warns about: "a third copy was one
+    # commit away from disagreeing with the emitter". It was — resolving an
+    # IP to ONE class, while board_validate and the emitter had learned that a
+    # block can have several. Ask the shared helper.
+    classes = ip_classes(data, registers)
 
     clk = data.get("clock") or {}
     profiles = [
@@ -220,7 +224,12 @@ def chip_info(devices_root: Path, chip_id: str) -> dict[str, Any]:
             "i2c": instances(("i2c",), ["scl", "sda"]),
             "spi": instances(("spi",), ["sck", "mosi", "miso"]),
             "all": [
-                {"name": name, "ip": spec.get("ip"), "class": classes.get(name),
+                {"name": name, "ip": spec.get("ip"),
+                 # `class` stays the PRIMARY one so this field keeps its
+                 # meaning for every existing consumer; `classes` is the full
+                 # set, and the IDE needs it to know a timer can be an encoder.
+                 "class": (classes.get(name) or (None,))[0],
+                 "classes": list(classes.get(name) or ()),
                  "curated": not spec.get("uncurated", False)}
                 for name, spec in sorted((data.get("peripherals") or {}).items())
             ],

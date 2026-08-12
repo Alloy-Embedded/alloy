@@ -28,6 +28,13 @@
       "pin": "pa5",
       "label": "LD4 via TIM2_CH1 (AF2)"
     },
+    "encoder": {
+      "peripheral": "tim3",
+      "a": "pa6",
+      "b": "pa7",
+      "period": 1440,
+      "label": "TIM3_CH1/CH2 on PA6/PA7 (Arduino D12/D11, AF1) — header expectation, no encoder is fitted on the Nucleo. A DIFFERENT timer from led_pwm's TIM2 on purpose: one block cannot be both."
+    },
     "adc": {
       "peripheral": "adc1",
       "label": "internal vref/temp channels"

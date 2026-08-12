@@ -881,7 +881,7 @@ jobs:
         run: |
           set -u
           failed=()
-          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade analog_probe i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs; do
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs; do
             echo "::group::$ex"
             if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
               failed+=("$ex")

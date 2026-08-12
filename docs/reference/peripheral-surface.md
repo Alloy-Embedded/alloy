@@ -519,12 +519,25 @@ second variable template, keyed on the instance **and the ordinal**:
 ```cpp
 template <class Inst, unsigned Sub> inline claim::personality sub_owner = …;
 
-claim::sub_exclusive<Inst, Sub, P>();   // one owner of one channel, full stop
+claim::sub_exclusive<Inst, Sub, P>();     // one owner of one channel, full stop
+claim::sub_shared<Inst, Sub, P>(w);       // several claimants, one witness
+claim::sub_release<Inst, Sub, P>(w);      // …and the one resource with a disarm
 ```
 
-There is deliberately no `sub_shared`. A sub-resource is a sub-resource
-*because* it has no block-scoped register for two claimants to disagree about;
-the block-scoped values live at the other key, where `shared` already is.
+!!! warning "`sub_shared` was argued away when this scope was built, and the EXTI line refuted the argument"
+    The first version of this section said, in as many words: *"There is
+    deliberately no `sub_shared`. A sub-resource is a sub-resource because it
+    has no block-scoped register for two claimants to disagree about."* That
+    was derived from the two sub-resources alloy had — a timer channel and a
+    DMA channel — and it is false of the third. An **EXTI line** has its own
+    port-select field, its own trigger pair and its own callback slot, and the
+    claimants competing for it are *pins*: PA5 and PB5 are one line. The witness
+    is the port index, so re-arming one pin is admitted and a second pin traps.
+    [Hole (A3)](#a3-the-exti-line) has the measurement.
+
+    The same feature refuted *"claims are never released"*. `clear_on_edge()`
+    is a shipped call that genuinely frees a line, so `sub_release` exists — at
+    this scope only, because nothing at block scope in alloy can be given back.
 
 **The ordinal, and nothing else, is the key.** That is the whole lesson of this
 scope, and getting it wrong is how the defect survived the first repair:
@@ -540,10 +553,17 @@ fix is the same one: move the key off the binder.
 
 ### Which facade claims what {#which-facade-claims-what}
 
-Twelve facades, two scopes, and the rule that decides is one line: **a facade
+Thirteen rows, two scopes, and the rule that decides is one line: **a facade
 claims at its CONFIGURING entry point — the call that programs the block — and
 never on a call that only moves data.** `uart::write`, `pwm::set_duty`,
 `can::send` and `wdt::feed` are on the hot path and claim nothing.
+
+**This table is a test.** `tools/alloy/tests/test_claim_surface.py` parses it
+and checks each row against the file it describes: a facade that claims *less*
+than its row says fails, a facade that claims something the row does not
+mention fails, and a peripheral class with a driver directory and no row at all
+fails. That is not decoration — hole (A2) below is exactly a row this page
+asserted and the code did not have, twice, and prose cannot catch that.
 
 | Facade | Entry point | Instance scope | Sub-resource scope | What the claim catches |
 |---|---|---|---|---|
@@ -557,11 +577,13 @@ never on a call that only moves data.** `uart::write`, `pwm::set_duty`,
 | `dac` | `enable` | `shared(0)` | — | personality only (see below) |
 | `can` | `enable` | `shared(0)` | — | personality only |
 | `rtc` | `set` | `shared(0)` | — | personality only |
+| `encoder` | `open` | `exclusive` | — | a timer already generating PWM |
+| `exti` (a line) | driver `arm` / `disarm` | — | `sub_shared(port)` | **two pins on one interrupt line** |
 | `flash` | *none* | — | — | nothing; deliberately (see below) |
-| `gpio` | *none* | — | — | nothing; a third scope, not modelled |
+| `gpio` | *none* | — | — | the pin, nothing; its EXTI *line*, the row above |
 | ethernet | *no facade* | — | — | nothing at run time; generation time only |
 
-There is no thirteenth row for `encoder` or `spi::slave`: those personalities
+There is no row for `spi::slave` or `capture`: those personalities
 are named in the enum and have no facade yet. **Ethernet has the opposite
 shape** — a role, a `ROLE_PERSONALITY` entry and a generated `board::eth`, but
 no `alloy::eth` facade: the board exposes the HAL MAC type directly, so there
@@ -735,6 +757,7 @@ them at compile time was inconvenient.
 | sub-resource ownership | `sub_resource_owned` | a second binder opens one *channel* already open |
 | personality | `personality_conflict` | one block, two mutually exclusive modes |
 | block config | `block_config_conflict` | two channels of one timer, two frequencies; two `wdt::start` deadlines |
+| sub-resource config | `sub_config_conflict` | two *pins* on one EXTI line; a line disarmed by a pin that does not hold it |
 | Layer-1 value | `impossible_config` | a *computed* value no divisor can reach |
 | port state | `not_open` / `opts_mismatch` | `reconfigure<Opts>` on a port nobody opened, or with `Opts` that disagree with `open()`'s |
 
@@ -1291,6 +1314,81 @@ on this platform, so the fixed image wedges at the `udf` instead of reaching a
 fault handler, which is the same limitation `crash_report.robot` documents for
 organic faults. A wedge is not a pass and is not reported as one.
 
+<a id="a3-the-exti-line"></a>
+**(A3) …and the scope the repair invented was itself derived from two examples.
+NOW CLOSED.**
+(A2) closed the sub-resource scope and, in the same commit, wrote down what a
+sub-resource *is*: *"There is deliberately no `sub_shared`. A sub-resource is a
+sub-resource because it has no block-scoped register for two claimants to
+disagree about."* Both sub-resources alloy had — a timer channel and a DMA
+channel — agreed with that. **The EXTI line does not**, and it was in the tree
+the whole time.
+
+An EXTI line has its own port-select field, its own trigger pair, its own
+pending bits and its own callback slot, and the claimants competing for it are
+*pins*: on every ST part the same index on every port is one line. PA5 and PB5
+are EXTI line 5. Nothing claimed it, so:
+
+```cpp
+const alloy::gpio::input<alloy::dev::pa5_t> a{};
+const alloy::gpio::input<alloy::dev::pb5_t> b{};
+a.on_edge(alloy::gpio::edge::rising, cb_a);
+b.on_edge(alloy::gpio::edge::rising, cb_b);   // takes line 5 from a
+```
+
+Both compiled, both "armed", and the *first* handle was left in the worst
+possible state — not dead, **wrong**. Built for `nucleo_g071rb` and booted in
+Renode, driving a rising edge on **PA5** produced nothing (`a_edges=00000000`),
+and driving one on **PB5** made `a.edges()` answer `00000001`: PA5's handle
+reporting PB5's edge as its own, because the counter is keyed on the line.
+`cb_a` never ran again. **9.1 s**, exact counters asserted, no polling anywhere.
+
+The key is `sub_owner<exti_t, Line>` with `sub_witness<exti_t, Line>` holding
+the **port index**: re-arming one pin is admitted (the driver documents that it
+replaces the edge and the callback), a second pin traps `sub_config_conflict`.
+The claim lives in `hal/exti/exti_impl.hpp` and not in `gpio.hpp`, because the
+line number only exists down there — `gpio::input` knows about a pin, and a pin
+is [still an unmodelled scope](#which-facade-claims-what).
+
+**And it needed a release, which is the second thing this feature refuted.**
+"Claims are never released" was true of every claim made by an `open()` with no
+`close()`. `clear_on_edge()` is a shipped call that genuinely frees a line, so
+refusing PB5 forever because PA5 had once been armed would have replaced a
+silent wrong answer with a loud wrong one. `claim::sub_release<Inst, Sub, P>(w)`
+is the one release in the mechanism, offered at the sub scope only — and it
+catches the mirror-image bug on the way: `pb5.clear_on_edge()` while PA5 holds
+line 5 used to silently disarm PA5's interrupt, and now traps.
+
+*What is and is not proven.* The **defect** is proven on emulated silicon —
+`exti_probe`, the counters above. The **handover** is proven the same way and
+positively: PA5 arms, releases, PB5 arms, and PB5's edge fires
+(`cb_a=00000000 cb_b=00000001`) in 7.8 s, so the claim does not over-refuse.
+The **refusal** is read out of the linked image, where
+`claim::sub_shared<dev::exti_t, 5u, personality::exti>` loads `sub_owner`,
+branches to `movs r3, #2` (`personality_conflict`) on a foreign owner and to
+`movs r3, #8` (`sub_config_conflict`) on a disagreeing witness, both into the
+shared `udf #255` — plus six host tests in `tests/test_claim.cpp`, three of them
+death tests. On silicon the refusal is a **wedge**: the fixed `exti_probe`
+never prints its second banner and `renode-test` runs out its 180 s timeout,
+because Renode does not vector an undefined instruction on this platform. That
+is the same limitation (A2) recorded, and a wedge is still not a pass.
+
+**The inventory is a test now, because prose was what failed twice.** (A2) was
+found by hand, by asking each facade whether it had the claim this page said it
+had. `tools/alloy/tests/test_claim_surface.py` asks mechanically: it parses the
+[table](#which-facade-claims-what), checks each row against the file it names
+in both directions, and fails if a peripheral class has a driver directory and
+no row at all. Negative control: deleting `pwm`'s `sub_exclusive` call fails the
+`pwm` row; `src/alloy/hal/encoder/` arriving mid-flight failed the row-coverage
+test until the encoder got a row.
+
+**And the claim is now shown to cross translation units, which is the entire
+point of it.** Every test written for (A) and (A2) lived in one `.cpp` — the
+one arrangement in which an `inline` variable template and the per-binder
+`static` it replaced are indistinguishable. `tests/test_claim_tu2.cpp` is a
+second TU naming the same instances: a claim made there is `held()` here, and a
+second owner across the TU boundary traps, at both scopes.
+
 **(B) Layer 1 admitted values it could not reach. CLOSED.**
 `open({.baud = 0})` compiled with no diagnostic; `baud_div()` divided by it,
 GCC folded the constant division to unreachable, and the emitted code fell into
@@ -1415,12 +1513,34 @@ binder, not by setting a field:
 ```cpp
 using Enc = alloy::encoder::bind<alloy::dev::tim3_t,
                                  alloy::encoder::a<alloy::dev::pa6_t>,
-                                 alloy::encoder::b<alloy::dev::pa7_t>,
-                                 board::clock_profile>;
+                                 alloy::encoder::b<alloy::dev::pa7_t>>;
 
-auto enc = Enc::open({.counts_per_rev = 2048});
-std::int32_t pos = enc.count();
+auto enc = Enc::open({.period = 1'440});
+std::uint32_t pos = enc.count();     // 0 .. period-1, wraps in hardware
+std::int32_t  moved = enc.delta();   // signed, wrap-aware, since last call
 ```
+
+!!! note "This block was predicted with a clock profile and `counts_per_rev`. The shipped code has neither."
+    It was then BUILT (`src/alloy/encoder.hpp`, `src/alloy/hal/encoder/`,
+    `examples/encoder/`), and two of the three lines above changed:
+
+    * **no `Clock` parameter.** Every other binder takes one because its
+      peripheral divides a kernel clock to reach the rate asked for. An
+      encoder divides nothing — the driver forces `PSC = 0` because the
+      counter is clocked by the shaft — so a `Clock` here would have been a
+      dependency the peripheral does not have, and the sort that survives for
+      years because nothing ever breaks. The one thing that would bring it
+      back is the input filter, whose sampling rate IS derived from the
+      kernel clock, and that field is not curatable (below).
+    * **`period`, not `counts_per_rev`.** The field is a counter modulo. Its
+      most common value is the encoder's counts per revolution, and naming it
+      after the most common use would have made a linear axis with a 10 000
+      count travel read as a lie.
+
+    `count()` is unsigned because the hardware counter is; the signed number
+    a caller actually wants is `delta()`, which is a separate operation
+    because it consumes state (see hole (D) — "how far since I last looked"
+    is a property of the looker, so it lives in the handle).
 
 and if the same program also opens `alloy::pwm::bind<alloy::dev::tim3_t, …>`,
 the second `open()` traps with `trap_code::personality_conflict` — because both
@@ -1443,6 +1563,22 @@ exactly the hex-literal-silicon-fact that guard #1 exists to forbid inside
 `src/`. So: **mine `SMCR.SMS` and `CCMR1.CC1S/CC2S` into `tim_gp16.yaml`
 first.** (`tim1`, the advanced timer, is at row 1 — uncurated, no
 `alloy::dev::tim1_t` at all.)
+
+That mining was done, and it hit two walls the layer question cannot see,
+both now recorded in `registers/st/tim_gp16.yaml` itself:
+
+* **`SMS` is one field in two places** — `SMS[2:0]` at bits 2:0 and `SMS[3]`
+  at bit 16 — and a field in `alloy.registers.v1` has one `bit` and one
+  `width`. It is curated as two entries named after the manual's own diagram,
+  because both single-entry spellings lie (one claims bits SMS does not own,
+  the other hides a bit it does).
+* **`CCMR1` is two registers at one address**, and which one it is depends on
+  a field inside it. The input view's `ICxF` (bits 7:4 / 15:12) sits exactly
+  on top of the output view's `OCxPE`/`OCxM`, fields of one register may not
+  overlap, so the digital input filter is **unreachable at every layer at
+  once — `alloy::dev::` included**, because Layer 3 gives a named accessor
+  only to a curated field. Not a layering decision; a limit of the data
+  model. A bouncing mechanical encoder will feel it.
 
 **Why v1 got it wrong.** It decided in one step — "needs a pin mux → binder
 tag" — which conflates the pins with the mode. The pins *are* binder tags and

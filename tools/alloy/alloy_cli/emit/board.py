@@ -102,6 +102,7 @@ ROLE_PERSONALITY = {
     "dac": "dac",
     "can": "can",
     "led_pwm": "pwm",
+    "encoder": "encoder",
     "watchdog": "wdt",
     "rtc": "rtc",
     "nvm": "flash",
@@ -139,8 +140,9 @@ def _polarity(active: str) -> str:
 # the emission order below; `alloy board-info` reports the SAME set, so the IDE
 # can never disagree with the generated board::caps.
 PRESENCE_ROLES = (
-    "led", "button", "debug_uart", "led_pwm", "adc", "i2c", "spi", "eeprom",
-    "watchdog", "nvm", "fs", "rtc", "dac", "can", "gpio_bus", "ethernet",
+    "led", "button", "debug_uart", "led_pwm", "encoder", "adc", "i2c", "spi",
+    "eeprom", "watchdog", "nvm", "fs", "rtc", "dac", "can", "gpio_bus",
+    "ethernet",
 )
 
 
@@ -475,6 +477,51 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "};"
         )
 
+    # THE SAME BLOCK'S OTHER PERSONALITY, and it is emitted right after
+    # led_pwm on purpose: these two aliases are what _check_role_personalities
+    # above refuses to emit together for one peripheral.
+    encoder_role = roles.get("encoder")
+    if encoder_role:
+        for key in ("peripheral", "a", "b"):
+            _require(key in encoder_role,
+                     f"board {board['id']}: encoder role missing '{key}'")
+        _require(encoder_role["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: encoder peripheral "
+                 f"'{encoder_role['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, encoder_role["peripheral"], "encoder")
+        # No clock_profile: an encoder divides no kernel clock, so its binder
+        # does not take one (see src/alloy/encoder.hpp).
+        decls.append(
+            f"using encoder = alloy::encoder::bind<alloy::dev::{encoder_role['peripheral']}_t,\n"
+            f"                                     alloy::encoder::a<alloy::dev::{encoder_role['a']}_t>,\n"
+            f"                                     alloy::encoder::b<alloy::dev::{encoder_role['b']}_t>>;"
+        )
+        decls.append(
+            "// What THIS PROJECT plugged into the connector — an application\n"
+            "// fact, overridable from alloy.toml, not a property of the PCB.\n"
+            "inline constexpr alloy::encoder::config encoder_defaults{\n"
+            f"    .period = {int(encoder_role.get('period', 65536))}u,\n"
+            f"    .reverse = {'true' if encoder_role.get('reverse') else 'false'},\n"
+            "};"
+        )
+    else:
+        decls.append(
+            "// No encoder declared; stub keeps caps-guarded code compiling.\n"
+            "struct encoder {\n"
+            "    struct null_handle {\n"
+            "        [[nodiscard]] std::uint32_t count() const { return 0u; }\n"
+            "        [[nodiscard]] alloy::encoder::direction direction() const {\n"
+            "            return alloy::encoder::direction::up;\n"
+            "        }\n"
+            "        [[nodiscard]] std::int32_t delta() { return 0; }\n"
+            "        void reset() {}\n"
+            "        [[nodiscard]] std::uint32_t period() const { return 0u; }\n"
+            "    };\n"
+            "    static null_handle open(alloy::encoder::config = {}) { return {}; }\n"
+            "};\n"
+            "inline constexpr alloy::encoder::config encoder_defaults{};"
+        )
+
     i2c_role = roles.get("i2c")
     if i2c_role:
         for key in ("peripheral", "scl", "sda"):
@@ -604,10 +651,16 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     else:
         decls.append(
             "// No ADC role declared; stub keeps caps-guarded code compiling.\n"
+            "// It carries the SAME SHAPE as a real bind, degree included: a\n"
+            "// program that branches on `board::adc::watchdogs` must compile on\n"
+            "// the boards that have no ADC at all, which is exactly the set that\n"
+            "// branch was written to survive. Zero means absent, here as\n"
+            "// everywhere else.\n"
             "struct adc {\n"
             "    struct null_handle {\n"
             "        std::uint16_t read(std::uint8_t) const { return 0u; }\n"
             "    };\n"
+            "    static constexpr unsigned watchdogs = 0u;\n"
             "    static null_handle open(alloy::adc::config = {}) { return {}; }\n"
             "};\n"
             "inline constexpr bool adc_has_vref = false;\n"
@@ -779,6 +832,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
 
 #include "alloy/adc.hpp"
 #include "alloy/device.hpp"
+#include "alloy/encoder.hpp"
 #include "alloy/gpio.hpp"
 #include "alloy/i2c.hpp"
 #include "alloy/pwm.hpp"

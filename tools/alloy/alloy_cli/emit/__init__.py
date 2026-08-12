@@ -179,10 +179,20 @@ def _emit_chip_sources(gen: Path, chip: dict[str, Any],
                emit_ip_header(registers[ip_key]), written)
         # Data-driven driver selection: include the HAL driver for this IP
         # when the framework ships one (alloy/hal/<class>/<vendor>_<ip>.hpp).
-        cls = registers[ip_key]["class"]
-        driver = f"alloy/hal/{cls}/{vendor}_{ip}.hpp"
-        if (alloy_root / "src" / driver).exists():
-            driver_includes.append(driver)
+        #
+        # ONE IP CAN HAVE SEVERAL DRIVERS, because a block can have several
+        # PERSONALITIES — a general-purpose timer is a PWM generator or a
+        # quadrature encoder counter, same registers, one at a time. The
+        # register data names them (`class` plus the optional `personalities`
+        # list); a peripheral runs in exactly one, and which one is a claim
+        # the program makes at bind time, not something codegen decides. So
+        # every driver the block COULD be gets included and the unused ones
+        # are uninstantiated templates that cost nothing.
+        for cls in [registers[ip_key]["class"],
+                    *(registers[ip_key].get("personalities") or [])]:
+            driver = f"alloy/hal/{cls}/{vendor}_{ip}.hpp"
+            if (alloy_root / "src" / driver).exists():
+                driver_includes.append(driver)
 
     _write(gen / "alloy" / "device.hpp",
            emit_device_header(chip, registers, driver_includes), written)
