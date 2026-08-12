@@ -26,9 +26,12 @@ thing you asked for.**
     failing loudly: it asked *"which layer does this knob live in?"* without
     first asking *"is it a knob at all?"*
 
-    **v2** was derived from those three and stressed against five more. Four
-    broke it. The survivor was **question 0** — because it asks a verifiable
-    fact about the chip database rather than a category judgement.
+    **v2** was derived from those three and stressed against features it had
+    not seen; the review that retired it reported **four of five broke it**,
+    and [three of those trials are recorded below](#stressing-v2-on-three-features-it-was-not-built-from)
+    — one survival, two breaks, both breaks still open. The part that survived
+    both reviews is **question 0**, because it asks a verifiable fact about the
+    chip database rather than a category judgement.
 
     So the a-priori method was abandoned. **v3 is derived from three
     peripherals that were built** — a cross-peripheral feature
@@ -839,8 +842,9 @@ never reaches a compiler.
 
 **Revision 3 — derived from three peripherals that were built, not from
 taxonomy.** v1 was derived from UART and failed three features it had never
-seen. v2 was derived from those three and failed four of five more. Both were
-killed the same way: a reviewer applied them. So v3 was not written first. Three
+seen. v2 was derived from those three and, by the count of the review that
+retired it, failed four of five more. Both were killed the same way: a reviewer
+applied them. So v3 was not written first. Three
 deliberately different peripherals were **built** — a cross-peripheral feature
 (`can`, `3ef5130`), a personality (`encoder`, `f1f6833`) and a sub-resource
 (`adc`, `de6e59b`) — each commit recording what its own prediction got wrong,
@@ -1217,7 +1221,7 @@ a TOML, and `main.cpp` writes `board::rs485::open()`.
 
 A rule that needs a human argument per peripheral is not a rule. A rule that
 pretends to decide what it cannot is worse — that is exactly how v1 produced a
-confident wrong answer on I2C, and how v2 produced four more. So this section is
+confident wrong answer on I2C, and how v2 produced more of them. So this section is
 part of the rule, not an apology for it, and it has two halves: **questions the
 page asks and does not answer**, and **cases the three builds never showed it**.
 
@@ -1689,6 +1693,39 @@ frame programming is likewise compile-checked only (no F4 board), as that
 driver already was. Renode models no parity, so no leg asserts a parity bit on
 a wire.
 
+### Added at revision 3 — where each clause of the rule comes from {#added-at-revision-3}
+
+v3 is not a design; it is a generalisation of three build reports. This table is
+the audit trail, so a reader can attack any clause at its source — including the
+four clauses whose witness is a comment rather than a test.
+
+| Clause of [the rule](#the-rule) | From | What witnesses it |
+|---|---|---|
+| question 0 has a **fifth row** — a curated field whose encoding is not curated | `3ef5130` | `RXGFC.ANFS`'s `values:` in `alloy-devices` (`fb46ebb`, `7cc8ff8`), and `emit/ip.py` learning to emit `values:` for fields of ARRAY registers — which it had been accepting and silently dropping |
+| curation is a **closure over companions** | `3ef5130` | `emit/device.py` raises naming the companion and why; the message it replaced said `companion cycle among peripherals: ['fdcan1']` |
+| **where a maximum comes from** | `3ef5130`, and `st_tim_gp16.hpp` for the contrast | `filter_capacity = RAM::FLSSA_count` with two `static_assert`s tying it to `IP::lss.raw_mask` and to the element format; `max_period = IP::arr.wide_raw_mask + 1u` |
+| the second block is an **edge on the descriptor**, not a second facade | `3ef5130` | `Inst::ram_t` in `st_fdcan_v1.hpp`; there is no `fdcanram` facade, driver or role |
+| **order** (elements before size) and the **config window** are the driver's obligation | `3ef5130` | **a comment and a code shape, and nothing else.** No test asserts the order; Renode maps `fdcan1` to a bxCAN model, so no leg can exist, and the host suite is board-free — it pins what a filter *means*, not how it is spelled |
+| a personality must be **declared in the data** | `f1f6833` | `personalities:` in `alloy.registers.v1`, `roles.ip_classes()`, and `tools/alloy/tests/test_encoder_role.py` with the lead board as its negative control |
+| a personality switch writes **whole registers** | `f1f6833` | the driver, plus the programmed sequence read out of the built image's disassembly in that commit (`SMCR = 3`, `CCMR1 = 0x101`, …). **Not re-measured since**, and no silicon or emulator has run it |
+| a binder takes **only tags carrying a fact it programs** | `f1f6833` | `encoder::bind<Inst, A, B>` — three parameters where every other binder has four |
+| a sub-resource's ordinal is checked against a **generated count** | `de6e59b` | `static_assert(N < Inst::feat::analog_watchdogs)` in `alloy/adc.hpp`; GCC prints the comparison |
+| the selector is part of **arming**; arming **cycles the port**; the N are **not interchangeable** | `de6e59b` | `hal/adc/st_adc_v2.hpp`'s `awd_arm<N>`, and `tests/emulation/adc_watchdog.robot` (`75be7ad`) — which exercises **ordinal 0 only**, because Renode's model is built with `watchdogCount: 1`. Ordinals 1 and 2, and `AWDnIE`, are unexercised |
+| `feat` has **two homes** and they may not disagree | `3ef5130`'s `emit/device.py` | the merge raises on a conflicting name. Exercised on ST register files only |
+| "**not reachable from here**" is one number | `de6e59b` + `03fde66` | `alloy::adc::watchdog_count<Inst>`; the matrix shows `same70_xplained` taking the ADC-with-no-reachable-watchdog branch, which `caps::` cannot express |
+| an unused feature **costs zero** | `fccaec5` | twelve byte-identical `.text` comparisons with a positive control that moves — [the measurement](#cost-zero-for-unused-features-measured-to-the-byte) |
+
+!!! danger "The one thing revision 3 has NOT survived"
+    v1 and v2 both looked right until a reviewer **applied** them to a feature
+    they were not derived from. v3 has been applied to exactly the three
+    features it was derived from, which is not a test — it is a restatement.
+    The first honest trial is the next peripheral somebody builds with it, and
+    the places it is most likely to break are already named in
+    [what it has not seen](#what-v3-does-not-decide-and-what-it-has-not-seen).
+    A rule's credibility is the list of cases it refuses to answer, not the
+    length of the ones it does.
+
+
 ## Added by the three BUILT peripherals {#added-by-the-three-built-peripherals}
 
 Two versions of the layer rule were written from a chair and both were killed by
@@ -1696,7 +1733,9 @@ a reviewer who applied them. The third attempt started by building three
 deliberately different peripherals — a cross-peripheral feature (`can`), a
 personality (`encoder`) and a sub-resource (`adc`) — so the rule would be
 derived from what a build actually demanded. Those three landed at `3ef5130`,
-`f1f6833` and `de6e59b`, each naming what its own prediction got wrong.
+`f1f6833` and `de6e59b`, each naming what its own prediction got wrong; the
+generalisation of those three lists is [the rule](#the-rule), and every clause
+of it points back into this section or into one of those commits.
 
 Each of those commits also listed proofs it had not run. This section is those
 proofs, run.
