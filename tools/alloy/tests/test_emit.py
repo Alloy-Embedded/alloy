@@ -478,3 +478,70 @@ def test_the_lead_boards_adc_reports_three_watchdogs_from_real_data() -> None:
     chip = load_chip(devices_root, "st/stm32g0b1re")
     registers = load_registers(devices_root)
     assert registers[chip["peripherals"]["adc1"]["ip"]]["feat"]["analog_watchdogs"] == 3
+
+
+# ── CURATION IS A CLOSURE OVER COMPANIONS ───────────────────────────────────
+#
+# A feature can live in two blocks: an FDCAN acceptance filter's ELEMENTS are
+# words in the companion message RAM and its LIST SIZE is a controller
+# register. So "is this peripheral curated" is the wrong question — the right
+# one is asked of every block the feature touches. An uncurated companion used
+# to surface as `companion cycle among peripherals: ['fdcan1']`, which is a
+# true sentence about the wrong thing: the cycle detector was reporting a
+# dangling edge because the target had already been dropped as uncurated.
+#
+# Rule v3, question 0: docs/reference/peripheral-surface.md#question-0-what-does-the-database-already-know
+
+
+def _companion_chip(ram_uncurated: bool) -> tuple[dict, dict]:
+    ram: dict = ({"uncurated": True, "ip_hint": "fdcanram:v1"}
+                 if ram_uncurated else {"ip": "st/fdcanram_v1"})
+    ram["base"] = "0x4000B400"
+    chip = {
+        "vendor": "st",
+        "part": "TEST",
+        "cores": [{"name": "cm0plus", "arch": "armv6m"}],
+        "peripherals": {
+            "fdcan1": {"ip": "st/fdcan_x", "base": "0x40006400",
+                       "companions": {"ram": "fdcanram1"}},
+            "fdcanram1": ram,
+        },
+        "interrupts": [],
+    }
+    registers = {
+        "st/fdcan_x": {"vendor": "st", "ip": "fdcan_x", "class": "can",
+                       "registers": [{"name": "CCCR", "offset": "0x18",
+                                      "access": "rw"}]},
+        "st/fdcanram_v1": {"vendor": "st", "ip": "fdcanram_v1", "class": "canram",
+                           "registers": [{"name": "FLSSA", "offset": "0x00",
+                                          "access": "rw"}]},
+    }
+    return chip, registers
+
+
+def test_a_curated_controller_with_an_uncurated_companion_names_the_companion() -> None:
+    """The diagnostic must name the block that is actually missing, and must
+    NOT be the cycle message — which is what a reader used to get."""
+    from alloy_cli.emit.common import EmitError
+    from alloy_cli.emit.device import emit_device_header
+
+    chip, registers = _companion_chip(ram_uncurated=True)
+    with pytest.raises(EmitError) as e:
+        emit_device_header(chip, registers, [])
+    msg = str(e.value)
+    assert "fdcanram1" in msg, "the message must name the companion, not the owner"
+    assert "only as curated as its companions" in msg
+    assert "cycle" not in msg, "the old message blamed the dependency loop"
+
+
+def test_a_curated_pair_emits_the_companion_alias() -> None:
+    """The negative control, without which 'refuse everything' would pass: the
+    same chip with the companion curated generates, and the controller reaches
+    its RAM through the generated alias rather than through a literal base."""
+    from alloy_cli.emit.device import emit_device_header
+
+    chip, registers = _companion_chip(ram_uncurated=False)
+    out = emit_device_header(chip, registers, [])
+    assert "using ram_t = alloy::dev::fdcanram1_t;" in out
+    assert out.index("struct fdcanram1_t {") < out.index("struct fdcan1_t {"), \
+        "the companion has to be declared before the block that aliases it"
