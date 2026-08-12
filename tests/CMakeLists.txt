@@ -117,6 +117,7 @@ add_executable(alloy_unit_tests
     test_ota_signed.cpp
     test_ota_transport.cpp
     test_provision.cpp
+    test_can.cpp
     test_net.cpp
     ${ALLOY_LIB_TESTS}
     ${ALLOY_LFS}
