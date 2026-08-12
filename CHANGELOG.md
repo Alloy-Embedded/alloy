@@ -14,6 +14,26 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **The ADC analog watchdog (`alloy/adc.hpp`), a SUB-RESOURCE with its own
+  handle — and the emulation leg that was written for it, now executed.**
+  `adc.watchdog<0>({.channel = 3, .low = 1000, .high = 3000})` arms one of the
+  three watchdogs this IP carries, long after `open()`; the handle answers
+  `tripped()`, `clear()`, `rearm()` and `disarm()`. The ordinal is checked
+  against the GENERATED `Inst::feat::analog_watchdogs`, so `watchdog<3>()` is a
+  compile error carrying both numbers rather than three registers nobody owns —
+  and the ordinal has to be a template parameter because the silicon says so:
+  watchdog 1's enable and channel are CFGR1 fields, watchdogs 2 and 3 own a
+  19-bit channel bitmask each where a non-zero mask IS the enable, and the three
+  threshold registers sit at 0x20, 0x24 and 0x2C, which is not a stride.
+  `tests/emulation/adc_watchdog.robot` runs it on `nucleo_g0b1re` against
+  Renode's own `Analog.STM32G0_ADC`: **PASS in 1.61 s** on pinned Renode 1.16.1,
+  four lines that contradict each other unless the watchdog works. It is
+  load-bearing, not decorative — with `AWD1EN` deleted from the driver the suite
+  FAILS in 31.73 s on the "out-of-window ... TRIPPED" line. What it does NOT
+  prove is written in the robot's own documentation: Renode's model is built
+  with `watchdogCount: 1`, so ordinals 1 and 2 — which this die has and this
+  driver programs — are never exercised, and neither is the AWD interrupt. No
+  silicon has run any of it.
 - **An EXTI line gets an owner, and the sub-resource scope gets the `shared`
   shape it was argued out of (`alloy/core/claim.hpp`,
   `alloy/hal/exti/exti_impl.hpp`).** The two entries below closed instance

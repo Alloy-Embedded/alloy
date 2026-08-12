@@ -24,6 +24,16 @@ Documentation     ADC ANALOG WATCHDOG conformance in emulation, against Renode's
 ...               exercised, because the model's ADEN reads back the enable state and
 ...               the firmware would hang in the ADRDY poll otherwise. No hardware.
 ...               RESC and UART come from `alloy emulate` via --variable.
+...
+...               EXECUTED, and shown to be load-bearing. First run: PASS in 1.61 s
+...               against pinned Renode 1.16.1 — fast, so no line was reached by a
+...               timeout expiring rather than by the firmware printing it. NEGATIVE
+...               CONTROL, run once and not kept: delete `IP::awd1en.set(r())` from
+...               `awd_arm<0>` in alloy/hal/adc/st_adc_v2.hpp and this suite FAILS in
+...               31.73 s, hanging on the "out-of-window ... TRIPPED" line — which is
+...               the one assertion that cannot be satisfied by a watchdog that was
+...               never enabled. So the four lines are not printed by a program that
+...               would print them anyway.
 Suite Setup       Setup
 Suite Teardown    Teardown
 Resource          ${RENODEKEYWORDS}
