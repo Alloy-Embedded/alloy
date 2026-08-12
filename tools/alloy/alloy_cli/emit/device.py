@@ -116,6 +116,21 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
 
     irq_numbers = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
 
+    # A companion that is UNCURATED was dropped above, and the dependency loop
+    # below would then never resolve its owner and report a cycle — a message
+    # about the wrong thing entirely. Curation state travels ACROSS the pair:
+    # an FDCAN whose message RAM is uncurated is not a working FDCAN, it is a
+    # controller whose filters and FIFOs are unreachable. Say that, here, where
+    # the fact is known.
+    for name, periph in sorted(chip["peripherals"].items()):
+        for role, target in sorted((periph.get("companions") or {}).items()):
+            if target not in chip["peripherals"]:
+                raise EmitError(
+                    f"{name}: companion '{role}' names {target}, which this chip "
+                    f"does not emit — it is uncurated, or absent from the data. A "
+                    f"peripheral is only as curated as its companions; curate "
+                    f"{target} in alloy-devices, or drop the companion")
+
     # Companion aliases require their target struct to be declared first:
     # emit in dependency order (companions are acyclic by lint).
     ordered: list[str] = []
@@ -217,7 +232,24 @@ def emit_device_header(chip: dict[str, Any], registers: dict[str, dict[str, Any]
         # hand-written silicon claim. Nested so a driver reads
         # `Inst::feat::rx_fifo_depth` and a missing fact is a compile error
         # naming the instance, never a zero that was never written down.
-        feat = periph.get("feat") or {}
+        #
+        # TWO HOMES, ONE BLOCK. A FIFO depth differs between two instances on
+        # one die, so it lives on the instance (chip file). A count the IP
+        # VERSION fixes — how many analog watchdogs an st/adc_v2 has — lives on
+        # the IP register file, or it would be the same integer copied into
+        # every chip that names the IP and free to drift in any of them. Both
+        # land here. A name in both places with DIFFERENT values is an error,
+        # not an override: an instance quietly contradicting its own IP is the
+        # exact drift the second home exists to prevent.
+        ip_feat = registers[periph["ip"]].get("feat") or {}
+        inst_feat = periph.get("feat") or {}
+        for fname, value in inst_feat.items():
+            if fname in ip_feat and ip_feat[fname] != value:
+                raise EmitError(
+                    f"{name}: feat '{fname}' is {value} on the instance and "
+                    f"{ip_feat[fname]} on its IP {periph['ip']} — one of the two "
+                    f"is wrong, and the emitter will not pick")
+        feat = {**ip_feat, **inst_feat}
         if feat:
             lines.append("    struct feat {")
             for fname in sorted(feat):

@@ -14,6 +14,43 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **CAN acceptance filters (`alloy/can.hpp`), and what a two-peripheral
+  feature demanded.** `board::can.accept_only(alloy::can::match(0x123),
+  alloy::can::match_masked(0x200, 0x7F0))` tells the controller to drop
+  everything else in hardware; `accept_all()` restores the bring-up default.
+  One line of user code, two blocks of silicon: the match ELEMENTS are words
+  in the FDCAN's **companion message RAM**, the list size and the
+  unmatched-frame policy are a register in the **controller** that only accepts
+  writes inside a config window. The driver writes the elements first — a size
+  published before its elements exist is a core scanning garbage — and takes
+  the window exactly once, which is why the call is variadic rather than a
+  builder.
+
+  Three things a caller can see:
+
+  - **Capacity is not where the register that counts it is.** `RXGFC.LSS` is
+    five bits and would admit 31; the real number is 28 and it is the
+    companion's `FLSSA_count`. `accept_only` static_asserts against the
+    companion's number, and both numbers appear in the diagnostic because they
+    are template arguments (`filters_fit<29, 28>`).
+  - **An identifier wider than eleven bits is refused**, and not for the
+    reason the first draft gave: such a filter does not match *nothing*, it
+    matches a *different* identifier — `match(0x800)` is `match(0x000)` under
+    another name. Constant at the call site, it is a compile error; computed,
+    it traps.
+  - **It costs nothing if you do not use it.** `.text` for the pre-existing
+    `examples/can` main is byte-identical before and after (1467 B, `-Os`,
+    Cortex-M0+, disassembly diffed); adding the two-filter call costs 112 B.
+
+  **Not proven in emulation, and it cannot be**: Renode's own `stm32g0.repl`
+  maps FDCAN to `CAN.STMCAN`, a bxCAN model whose register map differs — a
+  write of M_CAN's `CCCR.INIT` reads back 0 (measured), so the driver's
+  init handshake would spin forever, and the message RAM at the companion's
+  base is not a peripheral in that platform at all. Alloy's own platform
+  emitter models no CAN and emits neither block. The loopback self-check in
+  `examples/can` is a real witness on real silicon and nothing weaker
+  substitutes for it.
+
 - **Instance ownership gets its second scope, and the other seven facades
   (`alloy/core/claim.hpp`).** The entry below closed the double-open hole for
   five of alloy's twelve peripheral facades and for one of the defect's two

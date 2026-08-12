@@ -138,6 +138,23 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
                 accessors.append(
                     f"    static constexpr alloy::raw_field {name}{{{f['bit']}u, {width}u}};"
                 )
+                # …and their enumerated VALUES, which until now had nowhere to
+                # go: the flags-enum block below skips array registers (there
+                # is no struct member to name), so a `values:` map on an array
+                # field was accepted by the schema and silently dropped, and
+                # every driver spelled the encoding as a bare integer. Emitted
+                # UNSHIFTED, because `raw_field::write` does the shifting —
+                # the shifted spelling of the same fact would be a second,
+                # disagreeable one.
+                for vname, val in (f.get("values") or {}).items():
+                    cname = f"{name}_{vname.lower()}"
+                    if cname in seen:
+                        raise EmitError(
+                            f"{vendor}/{ip}: value constant '{cname}' from {reg['name']} "
+                            f"collides with {seen[cname]} — rename one in the data")
+                    seen[cname] = reg["name"]
+                    accessors.append(
+                        f"    static constexpr std::uint32_t {cname} = {val}u;")
             elif rep:
                 accessors.append(
                     f"    template <unsigned I>\n"

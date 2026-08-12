@@ -61,4 +61,35 @@ void spi_clock();
     "or above the timer's own kernel clock")]]
 void pwm_freq();
 
+[[gnu::error(
+    "alloy::encoder::open: this period is impossible on this timer — it is "
+    "below 2, or wider than the instance's own counter (the bound is derived "
+    "from the curated width of ARR, not written by hand), or wider than the "
+    "signed count delta() returns")]]
+void encoder_period();
+
+[[gnu::error(
+    "alloy::adc::handle::watchdog: this window cannot exist — its low threshold "
+    "is above its high threshold, so no conversion can ever fall inside it. An "
+    "analog watchdog with an empty window is not a tighter watchdog, it is one "
+    "that trips on every sample")]]
+void adc_watchdog_window();
+
+[[gnu::error(
+    "alloy::adc::handle::watchdog: a threshold is wider than this ADC's watchdog "
+    "threshold field — the value would be truncated and the watchdog would guard "
+    "a window nobody asked for. The field width comes from the chip database, so "
+    "the bound is the silicon's, not this driver's")]]
+void adc_watchdog_threshold();
+
+[[gnu::error(
+    "alloy::can::accept_only: this acceptance filter cannot exist — a classic-CAN "
+    "standard identifier and its match mask are eleven bits "
+    "(alloy::can::standard_id_mask), and this one is wider. The bits above the "
+    "eleventh are not compared by any controller, so such a filter does not match "
+    "NOTHING, it matches a DIFFERENT identifier: match(0x800) is match(0x000) "
+    "under another name, and a port that receives the wrong traffic is worse "
+    "than one that receives none")]]
+void can_filter_id();
+
 }  // namespace alloy::core::admit
