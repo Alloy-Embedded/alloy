@@ -1308,7 +1308,7 @@ and its two predecessors.
 | Case | Nearest thing that WAS built | Why the built thing does not answer it |
 |---|---|---|
 | a cross-peripheral feature whose **second block has its own facade** and its own user-visible handle | FDCAN + `fdcanram1` | the message RAM has no facade, no driver and no role. "The second block is an edge on the descriptor" is proven for a companion that is *pure storage*, and for nothing else |
-| a companion **shared by two controllers**, or one whose two owners disagree | one controller, one RAM | `companions:` is a per-peripheral map and the emitter's ordering assumes it is acyclic; nothing has tested two owners |
+| a companion whose two owners **disagree** about how to program it | `dmamux1`, shared by `dma1` and `dma2` — see the box below | sharing is *built*; what is unseen is a shared companion whose owners want contradictory settings in one word. `ch_mux_offset` gives the two DMA controllers disjoint index ranges, so they never write the same register |
 | a personality **switched at run time** on a live block | `pwm` vs `encoder` on `tim3` | both are chosen by naming a binder, and the claim is taken at `open()`. Alloy has no `release` at instance scope at all, so "switch back" is untypeable rather than decided |
 | **three or more** personalities on one block | two (`pwm`, `encoder`) | `personalities:` is a list and the membership test is general, but nothing has exercised a third |
 | a sub-resource whose **interrupt** alloy arms | the watchdog's sticky flag | `AWDnIE` is never set; the trip path is polled. The callback half of the sub-resource shape is unwitnessed in code and in emulation |
@@ -1316,6 +1316,25 @@ and its two predecessors.
 | `feat`'s two homes, or `personalities:`, on **non-ST data** | `st/adc_v2`, `st/tim_gp16` | both mechanisms were designed and exercised against ST register files only. Alloy ships six non-ST drivers |
 | a peripheral chosen at **run time** | — | `Inst` is a type. Already true before this page; not changed and not intended to change |
 | **auto-baud** and other hardware-writes-config-back paths | — | a read-back path, not a knob. No home in this shape yet |
+
+!!! warning "One row of this table used to be false, and the counter-evidence is the oldest cross-peripheral driver in the tree"
+    It said *"a companion shared by two controllers … nothing has tested two
+    owners"*. `chips/st/stm32g0b1re.yaml` gives **both** `dma1` and `dma2`
+    `companions: {mux: dmamux1}`; the generated `device.hpp` emits
+    `using mux_t = alloy::dev::dmamux1_t;` on both, with
+    `ch_mux_offset = 0` and `= 7` to keep their index spaces apart; and
+    `hal/dma/st_dma_v1.hpp` has reached the router through that edge since
+    `145f05e`, long before the FDCAN build.
+
+    Which means the structural half of [question 5](#question-5-cross-peripheral)
+    — *the second block is an edge on the instance descriptor, never a second
+    handle* — was **not** derived from the FDCAN build. It was already
+    shipped, for a companion that is not storage at all but an active request
+    router with its own register map, and the FDCAN build reproduced it. The
+    clause is stronger than v3 claimed for it and its audit trail named the
+    wrong witness. What FDCAN genuinely added is the rest of question 5: the
+    curation closure, the capacity stated by the other block, the ordering
+    obligation and the config window — none of which `mux_t` had to face.
 
 **What is NOT on this list, deliberately.** "Which layer" is decidable, and so is
 "is the database ready" — question 0 is five rows of fact, each readable straight
