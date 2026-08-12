@@ -173,7 +173,37 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   Zero bytes when the value is constant, 20 when it is not. Accuracy stays
   `open_checked<Baud>`'s job, deliberately — a tolerance applied silently to a
   runtime value is a policy, not a check.
-- **The rule that routes a knob to a layer is at revision 2**
+- **The rule that routes a knob to a layer is at revision 3, and this time it
+  was derived from three peripherals that were BUILT**
+  ([docs/reference/peripheral-surface.md](docs/reference/peripheral-surface.md)).
+  Two a-priori rules were written and both were killed by a reviewer who simply
+  applied them, so the method changed: `can` (a cross-peripheral feature),
+  `encoder` (a personality) and `adc` (a sub-resource) were built first, and v3
+  is the generalisation of what those three builds demanded — nothing else.
+  **Question 0 survives and now has five rows**: the FDCAN filters found that a
+  curated FIELD whose *encoding* is not curated is a magic number wearing an
+  accessor (`RXGFC.ANFS`), and each row's OUTPUT is stated — for four of the
+  five it is a task in `alloy-devices`, not a layer. **Question 5 is new** and is
+  the axis that killed v2: a feature living in two blocks stays on the facade of
+  the block the user names, the other block is an edge on the instance
+  descriptor, curation is a closure over the pair, and the ordering and
+  config-window obligations are the driver's because no layer can state them.
+  **Where a maximum comes from** is restated with three witnesses, because the
+  page had been wrong in both directions (v1 put it in `feat`; v2 said "always
+  the field's `raw_mask`", and `RXGFC.LSS` says 31 where the capacity is 28 —
+  stated by the *companion*). Personality gains three clauses from the encoder
+  build (the data must declare it; whole-register writes, never RMW;
+  a binder takes only tags carrying a fact it programs), sub-resource gains the
+  three the watchdog answered differently from v2's guesses, and `feat` gains
+  its second home. What v3 **refuses to decide** is a table of nine cases it has
+  no evidence about, plus three open questions it inherits; five data-model
+  changes are stated as **proposals for the maintainer, not made**. The page
+  ends with an audit trail from each clause to the commit that demanded it —
+  including the four clauses whose witness is a comment rather than a test — and
+  with the one thing revision 3 has not survived: nobody has yet applied it to a
+  feature it was not derived from.
+
+- **Revision 2 of the same page, superseded and kept for the record**
   ([docs/reference/peripheral-surface.md](docs/reference/peripheral-surface.md)).
   v1 was derived from UART and failed all three of the features an adversarial
   pass tried on it — I2C 10-bit addressing, the ADC analog watchdog, timer
