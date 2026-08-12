@@ -91,19 +91,21 @@ pokes — *in their own code*, where nothing checks them.
     value. That is a real question and this is a real answer to it.
 
     It is not the *first* question. Before "how portable is this value" comes
-    "what kind of thing is this value" — and there are four kinds, only one of
+    "what kind of thing is this value" — and there are five kinds, only one of
     which is a knob on an open port:
 
     | Kind | Example | Where it goes |
     |---|---|---|
-    | a **personality** | timer as PWM vs as encoder | a different **binder**, in its own namespace |
+    | a **personality** | timer as PWM vs as encoder | a different **binder**, in its own namespace — and the register data has to name it |
     | a **sub-resource** | one of the ADC's three analog watchdogs | its own **handle**, claimed against a `feat` count |
     | a **per-transfer** value | this transfer's I2C address width | an **argument** of the operation |
+    | a **cross-peripheral** feature | a CAN acceptance filter: elements in the companion RAM, size in the controller | the facade of the block the **user names**; the other block is an edge on the descriptor |
     | a **knob** | baud, parity, DE lead time | Layer 1 / `feat` / Layer 2 / Layer 3 |
 
-    v1 routed all four through the layer questions, so it answered
-    *confidently and wrongly* for the first three. The repaired rule asks the
-    kind question first.
+    v1 had only the last row, so it answered *confidently and wrongly* for the
+    first three; v2 added three of them and still had no row for the fourth,
+    which is what the FDCAN build found. The rule asks the kind question first,
+    and asks it in [five steps](#questions-15-what-kind-of-thing-is-it).
 
 ---
 
@@ -126,7 +128,7 @@ struct config {
 !!! note "This block was written with four fields. The code says three."
     Word length did not survive the admission test, and neither did two of the
     four `stop_bits` values. Both are measured, both are in the tree, and the
-    reasoning is in [What the code changed about this page](#what-the-code-changed-about-this-page).
+    reasoning is in [the history section](#history-how-this-rule-was-refuted-twice).
     The rule survived; two of its example answers did not.
 
 Three fields, and the admission test is mechanical: **a field is Layer 1 only
@@ -399,14 +401,20 @@ struct usart1_t {
 };
 ```
 
-Four rules, and they matter more than the syntax:
+Five rules, and they matter more than the syntax:
 
 1. **Zero means absent.** There is no `has_fifo` beside `rx_fifo_depth`. A bool
    and a count that can disagree is a bug class; deleting the bool deletes the
    class. A bool appears only where the fact is genuinely ungraded.
-2. **It is per instance, not per IP.** Alloy's descriptors already are, so this
-   rides for free — and it is the axis that matters. `usart1` and `lpuart1` on
-   the G0B1 share an IP tag and differ in oversampling and flow control.
+2. **It has two homes, and they may not disagree.** A number that differs
+   between two instances on one die lives on the **instance**, in the chip file
+   — `usart1` and `lpuart1` on the G0B1 share an IP tag and differ in
+   oversampling and flow control. A number the **IP version** fixes lives on the
+   register file, or it is the same integer copied into every chip that names
+   the IP and free to drift in any of them: `st/adc_v2` carries
+   `analog_watchdogs: 3` once. Both land in `Inst::feat`; the same name in both
+   places with *different* values is an error, not an override
+   (`emit/device.py`).
 3. **`feat` numbers are only ever generated.** A hand-written header asserting a
    silicon quantity is guard #1 with a different literal. `check_contract.sh`
    gains one grep: `struct feat` may not appear under `src/`. Concretely,
@@ -441,9 +449,13 @@ time. `tim3` on the G0B1RE is one IP, one instance, and it is a PWM generator
 *or* an encoder counter, never both. The IP tag has nothing to say about that.
 
 The right category is a [personality](#personalities-a-block-runs-in-one-mode-at-a-time),
-below. What survives of v1's paragraph is the data half: `st/tim_gp16` is
-under-curated for any of those modes and needs mining before the first timer
-driver beyond PWM is written, not after the seventh. Seven of the 28 uncurated
+below. What survives of v1's paragraph is the data half: `st/tim_gp16` was
+under-curated for any of those modes and needed mining before the first timer
+driver beyond PWM was written, not after the seventh. **For encoder mode that
+mining is done** — `SMCR.SMS` and `CCMR1.CC1S/CC2S` landed in `alloy-devices`
+and `f1f6833` consumes them — and it hit two limits the layer question cannot
+see, both now [data-model proposals](#what-a-data-model-change-would-have-to-say).
+Input capture and dead time are still unmined. Seven of the 28 uncurated
 peripherals on the G0B1 are timers.
 
 ---
@@ -477,6 +489,28 @@ rather than ignore them. That is the `uart::frame` shape again: an SPI slave is
 clocked by the master, so `spi::slave::config` has no `clock_hz`, and asking
 for one is a compile error naming the member instead of a value that goes
 nowhere.
+
+!!! note "Three things the encoder build added, because a personality is not only a C++ shape"
+    Building the timer's second personality (`f1f6833`) found that the two
+    tests above are necessary and not sufficient. In full, with the reasons, in
+    [question 1 of the rule](#questions-15-what-kind-of-thing-is-it); in short:
+
+    1. **The register data must DECLARE it.** `class` is single-valued and four
+       separate consumers read it as "a block has one job" — codegen, the role
+       matcher, `chip-info`, and a fourth copy of the rule found inline in
+       `chips.py`. All four ask **membership** now, through `roles.ip_classes`,
+       and `alloy.registers.v1` gained an optional `personalities:` list whose
+       first user is `st/tim_gp16`. A personality the data does not name cannot
+       be reached from a board role at all.
+    2. **Program it with whole-register writes.** The bits `encoder::open()`
+       does not name in `CCMR1` are the *other* personality's layout of the same
+       word — the input view's `ICxPSC/ICxF` are the output view's `OCxPE/OCxM`.
+       A read-modify-write carries a PWM mode field into an input-filter
+       setting. This is the one place where RMW is the wrong default.
+    3. **The binder takes only tags that carry a fact it programs.** This page
+       predicted a `Clock` parameter on `encoder::bind` because every other
+       binder has one. An encoder divides nothing, so it was dead, and it is
+       gone.
 
 ### What stops a program binding two personalities to one block
 
@@ -1468,575 +1502,6 @@ than at driver 22.
 
 ---
 
-## What the code changed about this page
-
-Everything above was decided before a line of it was written. UART has now been
-converted — six drivers, four vendors, the facade, the binder, the emitter, the
-chip data and a portable example — and five claims on this page did not survive
-contact with the tree. They are recorded here rather than quietly edited out,
-because which claims break is the useful part.
-
-### 1. Word length is not a Layer-1 field, and `stop_bits` has two values, not four
-
-The admission test as written asks about a FIELD. The real unit is the
-(field, **value domain**) pair, and word length is where that bites. Read off
-the register data, the character-length domains are:
-
-| driver | data bits it can program | why |
-|---|---|---|
-| `st_usart_v2` | 8, 9 | one `M` bit, no `M1` |
-| `st_usart_v3` / `st_usart_v4` | 7, 8, 9 | `M1:M0` |
-| `microchip_usart_v1` | 5, 6, 7, 8 | `MR.CHRL` is 2 bits |
-| `raspberrypi_uart_pl011` | 5, 6, 7, 8 | `LCR_H.WLEN` is 2 bits |
-| `espressif_uart_v1` | — | ROM-configured; alloy programs no character length |
-
-The intersection is **{8}**. A Layer-1 `word_len` would therefore be a runtime
-field that some driver must trap on, reject, or ignore for most of its values —
-the exact defect being removed. So data bits is a **Layer-2** knob named
-`data_bits` in each driver that has one, with that IP's own domain enforced by
-a `static_assert`. `stop_bits::half` and `stop_bits::one_and_half` fail the same
-way (ST smartcard/IrDA encodings that no other vendor has) and are gone.
-
-**This is the rule working, not the rule failing.** Teaching six drivers is
-what Layer 1 costs, and two of the four fields could not be taught.
-
-### 2. Layer 2 is a DESCRIPTION, not a contract — the falsification test came back negative
-
-The test this page named was: implement RS-485 DE on `st_usart_v3` **and**
-`microchip_usart_v1`, and see whether `de_assert_16ths` survives with the same
-meaning and unit. **It does not, and the reason is silicon rather than naming.**
-The SAM USART has no DE assert/deassert time at all — RS-485 mode drives RTS
-around the frame automatically and the only tunable is `US_TTGR`, a transmitter
-time *guard* in whole bit periods. There is no name under which the ST knob
-could appear on Microchip.
-
-So the honest fallback this page pre-committed to is the one in force:
-`libs/` code may probe a Layer-2 member by name, but it may not assume a
-feature present on one vendor appears under any name on another. The
-three-layer naming still holds.
-
-### 3. `usart_v4` has *fewer* Layer-2 knobs than `usart_v3`, which is backwards from the sketch
-
-The sketch above hung DE and inversion on `uart_opts<usart_v4>`. The G0 silicon
-does have them — and alloy's curated `usart_v4` register data does **not**
-(`usart_v3.yaml` carries `DEAT/DEDT/DEM/DEP` and `TXINV/RXINV/SWAP`;
-`usart_v4.yaml` carries none of them, and does carry `FIFOEN`, which v3 lacks).
-Declaring Layer 2 beside the driver is what forced this to surface: a knob can
-only be a member where a generated register field backs it. The consequence is
-stated by a compiler, not a README —
-
-```
-error: static assertion failed: this USART's driver has no hardware
-driver-enable: alloy's curated usart_v4 register data carries no DEM/DEAT/DEDT
-(the silicon has them; the database has not mined them). Drive DE from a GPIO,
-or reach the registers through alloy::dev::
-```
-
-— and mining those fields into `alloy-devices` is now a data task with a
-compile error pointing at it.
-
-### 4. A maximum programmable value should come from the register data, not from `feat`
-
-This page proposed `Inst::feat::de_time_max_16ths = 31`. It is not needed and
-it should not exist: the generated field accessor already knows its own width,
-so the driver writes
-
-```cpp
-static_assert(O.de_assert_16ths <= IP::deat.raw_mask,
-              "DE assertion time exceeds this USART's DEAT field width");
-```
-
-and GCC prints `the comparison reduces to '(40 <= 31)'`. One fewer number in
-the chip database, one fewer thing that can disagree with the registers.
-`feat` keeps what a register map genuinely cannot state — a FIFO **depth**, a
-transfer cap, a resolution.
-
-### 5. One combination neither layer can reject
-
-Layer 1 is runtime and Layer 2 is compile-time, so `opts{.data_bits = 9}` plus
-a runtime `parity::even` asks an ST USART for a 10-bit word. No `static_assert`
-can see a runtime parity, and silently programming 8 bits would be the lie.
-The drivers `__builtin_trap()`, guarded by `if constexpr (O.data_bits == 9)`
-so it costs nothing otherwise — the same honest runtime guard the double-open
-check already uses. **A mixed compile-time/runtime surface has a seam, and this
-is where it is.**
-
-Measured on the G0B1RE: with a compile-time-constant parity the trap folds,
-GCC merges it into the double-open `udf #255`, and everything after `open()`
-is deleted as unreachable — including the string the program meant to print.
-So the build is silent, the binary is *correct* (it refuses), and the failure
-arrives at run time on the first boot. No warning is emitted.
-
-### 6. The holes, three now closed {#the-three-holes-two-now-closed}
-
-Found by trying combinations this page did not anticipate, all on the G0B1RE
-unless noted. None of them was a new defect introduced by the layers — they
-were the shape's blind spots. Three are closed in code; the last is the seam
-above and stays.
-
-**(A2) is here because the repair for (A) was itself incomplete**, and it was
-found the same way the holes were: by asking the shipped code, one facade at a
-time, whether it actually had the claim the page said it had. Five of twelve
-facades did, and one of two scopes.
-
-**(A) The double-open guard was per *binder type*, not per instance. CLOSED.**
-Two different `uart::bind<>` specialisations naming the same `usart2_t` — a
-second, legitimately-routed pin pair — each carried their own `detail_opened`.
-Opening both compiled clean, with *contradictory* Layer 1 and Layer 2
-(`data_bits = 8` then `7`; `115'200/none` then `9'600/odd`), no error and no
-warning; the second `open()` reprogrammed the peripheral under the first
-handle, which stayed usable. Layer 2 makes a *call site* impossible to lie in
-and said nothing about **who owns the instance**.
-
-The flag lives on the instance now — `alloy::claim::owner<Inst>`, an inline
-variable template, so one object per instance across the whole image — and it
-carries the [personality](#personalities-a-block-runs-in-one-mode-at-a-time),
-so the same mechanism refuses `pwm` and `encoder` on one timer. `uart`, `i2c`,
-`spi` and `adc` claim exclusively; `pwm` claims *shared* with the block-scoped
-frequency as a witness, because four channels on one timer are legitimate and
-four channels asking for different frequencies are not. `reconfigure<Opts>()`
-grew the two checks it was missing: it refuses a port nobody opened, and it
-refuses `Opts` that disagree with the ones `open()` programmed — Layer 2
-belongs to the port now, not to the call. Proven by seven death tests in
-`tests/test_claim.cpp`, and at generation time by
-`emit/board.py::_check_role_personalities` plus its three tests in
-`tools/alloy/tests/test_emit.py`.
-
-*Measured cost:* **+8 bytes of `.text`** on every ARM board's `uart_echo`
-(1812→1820 on the G071RB and the same delta on six more), **all of it in the
-cold path** — the disassembly's success path is the identical
-`ldrb / cmp / beq` it was before, and the eight bytes are the second comparison
-and the `movs r3, #2` that distinguishes the two failures. RAM is unchanged for
-an exclusive claim: one byte per instance where it was one byte per binder.
-
-**(A2) …and that repair was itself keyed one level too high. NOW CLOSED.**
-The paragraph above described five of alloy's twelve facades and one of the
-defect's two scopes, and the identical bug was still live in shipped code where
-it was not looking. `pwm::bind` kept its own `static bool
-detail_channel_opened` for the CHANNEL — and `bind` is templated on the pin, so
-one channel had one flag per route. On the `nucleo_g0b1re`, TIM2 channel 1 is
-routed to PA0, PA5, PA15 and PC4:
-
-```cpp
-auto a = board::led_pwm::open({.freq_hz = 1'000});      // TIM2_CH1 via PA5
-using other = alloy::pwm::bind<alloy::dev::tim2_t, 1u, alloy::dev::pa0_t,
-                               alloy::signal::ch1, board::clock_profile>;
-auto b = other::open({.freq_hz = 1'000});               // TIM2_CH1 via PA0
-```
-
-Both compiled, both opened, both muxed their pin onto one output compare, and
-the `claim::shared` block claim admitted them because they agreed on the
-frequency — which they do. Built for `nucleo_g0b1re` and booted in Renode, the
-pre-fix image printed its "second bind also opened" banner **in 1.4 s**.
-
-The key is now `sub_owner<Inst, Sub>` — instance and ordinal, nothing else
-([two keys](#two-keys-because-a-peripheral-is-not-always-the-contested-resource))
-— and the same claim replaced `dma::channel`'s private `claimed_`, which was
-correctly scoped but was a *third* ownership mechanism whose bare
-`__builtin_trap()` a fault report could not tell from the transfer-size traps
-in the same class. `wdt::start` gained the `shared` claim it never had (two
-`start()` calls with different timeouts silently kept the last one), and `dac`,
-`can` and `rtc` claim their personality; `flash` and `gpio` deliberately claim
-nothing, for the reasons in
-[which facade claims what](#which-facade-claims-what).
-
-*Measured on `nucleo_g0b1re`, `arm-none-eabi-g++ 14.2.1 -Os`:*
-
-| Example | `.text` | `.bss` | why |
-|---|---|---|---|
-| `blink`, `hello`, `uart_echo`, `nvm`, `fs`, `adc_read`, `i2c_read`, `spi_read`, `gpio_bus` | **unchanged** | unchanged | nothing they do claims anything new |
-| `pwm_fade` | **unchanged** (3652) | **−8** (3256→3248) | a per-binder `bool` became a per-(instance, channel) byte |
-| `dma_uart` / `dma_probe` | +8 / +36 | unchanged | the trap codes that tell the two DMA failures apart |
-| `watchdog` | +48 | +8 | a claim the facade did not have at all |
-| `dac` / `can` / `rtc` | +44 / +40 / +44 | +8 each | ditto — and these buy personality only |
-
-The nine unchanged examples are the control: code that claims nothing pays
-nothing. The `pwm_fade` row is the fix's own row — strictly better coverage at
-strictly negative cost, because the flag it deleted was bigger than the one it
-added.
-
-**One half of this scope IS a compile error, and it was missing.** `pwm::bind`
-states the channel twice — as the ordinal the driver programs and the claim
-owns, and as the route signal that picks the pin mux — and nothing tied them
-together. `bind<tim2_t, 2u, pa5_t, signal::ch1, …>` muxed PA5 onto CH1 while
-programming and owning CH2, so two binds genuinely contesting CH1 would hold
-two different keys and the runtime claim would never see them. That is a
-compile-time fact and is now a `static_assert`, with an eighth case in
-`scripts/check_compile_errors.py` holding the diagnostic.
-
-*What is and is not proven.* Seven more tests in `tests/test_claim.cpp` — three
-of them death tests, four asserting the claims that must be *admitted* — cover
-the new scope and the watchdog, with a negative control confirming the
-fork-based idiom reports *false* when nothing traps and *false* for a single,
-legitimate claim. The refusal itself is read directly out of
-the linked image: `sub_exclusive<dev::tim2_t, 1u, personality::pwm>` loads
-`sub_owner` and, on a non-zero owner, puts `#7` (`sub_resource_owned`) or `#2`
-(`personality_conflict`) in `r3` before the shared `udf #255`. The **defect**
-is proven on emulated silicon (the 1.4 s above); the **trap** is not, and
-cannot be with this tooling — Renode does not vector an undefined instruction
-on this platform, so the fixed image wedges at the `udf` instead of reaching a
-fault handler, which is the same limitation `crash_report.robot` documents for
-organic faults. A wedge is not a pass and is not reported as one.
-
-<a id="a3-the-exti-line"></a>
-**(A3) …and the scope the repair invented was itself derived from two examples.
-NOW CLOSED.**
-(A2) closed the sub-resource scope and, in the same commit, wrote down what a
-sub-resource *is*: *"There is deliberately no `sub_shared`. A sub-resource is a
-sub-resource because it has no block-scoped register for two claimants to
-disagree about."* Both sub-resources alloy had — a timer channel and a DMA
-channel — agreed with that. **The EXTI line does not**, and it was in the tree
-the whole time.
-
-An EXTI line has its own port-select field, its own trigger pair, its own
-pending bits and its own callback slot, and the claimants competing for it are
-*pins*: on every ST part the same index on every port is one line. PA5 and PB5
-are EXTI line 5. Nothing claimed it, so:
-
-```cpp
-const alloy::gpio::input<alloy::dev::pa5_t> a{};
-const alloy::gpio::input<alloy::dev::pb5_t> b{};
-a.on_edge(alloy::gpio::edge::rising, cb_a);
-b.on_edge(alloy::gpio::edge::rising, cb_b);   // takes line 5 from a
-```
-
-Both compiled, both "armed", and the *first* handle was left in the worst
-possible state — not dead, **wrong**. Built for `nucleo_g071rb` and booted in
-Renode, driving a rising edge on **PA5** produced nothing (`a_edges=00000000`),
-and driving one on **PB5** made `a.edges()` answer `00000001`: PA5's handle
-reporting PB5's edge as its own, because the counter is keyed on the line.
-`cb_a` never ran again. **9.1 s**, exact counters asserted, no polling anywhere.
-
-The key is `sub_owner<exti_t, Line>` with `sub_witness<exti_t, Line>` holding
-the **port index**: re-arming one pin is admitted (the driver documents that it
-replaces the edge and the callback), a second pin traps `sub_config_conflict`.
-The claim lives in `hal/exti/exti_impl.hpp` and not in `gpio.hpp`, because the
-line number only exists down there — `gpio::input` knows about a pin, and a pin
-is [still an unmodelled scope](#which-facade-claims-what).
-
-**And it needed a release, which is the second thing this feature refuted.**
-"Claims are never released" was true of every claim made by an `open()` with no
-`close()`. `clear_on_edge()` is a shipped call that genuinely frees a line, so
-refusing PB5 forever because PA5 had once been armed would have replaced a
-silent wrong answer with a loud wrong one. `claim::sub_release<Inst, Sub, P>(w)`
-is the one release in the mechanism, offered at the sub scope only — and it
-catches the mirror-image bug on the way: `pb5.clear_on_edge()` while PA5 holds
-line 5 used to silently disarm PA5's interrupt, and now traps.
-
-*What is and is not proven.* The **defect** is proven on emulated silicon —
-`exti_probe`, the counters above. The **handover** is proven the same way and
-positively: PA5 arms, releases, PB5 arms, and PB5's edge fires
-(`cb_a=00000000 cb_b=00000001`) in 7.8 s, so the claim does not over-refuse.
-The **refusal** is read out of the linked image, where
-`claim::sub_shared<dev::exti_t, 5u, personality::exti>` loads `sub_owner`,
-branches to `movs r3, #2` (`personality_conflict`) on a foreign owner and to
-`movs r3, #8` (`sub_config_conflict`) on a disagreeing witness, both into the
-shared `udf #255` — plus six host tests in `tests/test_claim.cpp`, three of them
-death tests. On silicon the refusal is a **wedge**: the fixed `exti_probe`
-never prints its second banner and `renode-test` runs out its 180 s timeout,
-because Renode does not vector an undefined instruction on this platform. That
-is the same limitation (A2) recorded, and a wedge is still not a pass.
-
-**The inventory is a test now, because prose was what failed twice.** (A2) was
-found by hand, by asking each facade whether it had the claim this page said it
-had. `tools/alloy/tests/test_claim_surface.py` asks mechanically: it parses the
-[table](#which-facade-claims-what), checks that each row's claims are really in
-the file it names, and fails if a peripheral class has a driver directory and
-no row at all. Negative control: deleting `pwm`'s `sub_exclusive` call fails the
-`pwm` row. It has already caught two things it was not written for — a new
-`hal/encoder/` directory with no row, and an `adc` that had grown a
-sub-resource claim the table did not know about.
-
-**And the claim is now shown to cross translation units, which is the entire
-point of it.** Every test written for (A) and (A2) lived in one `.cpp` — the
-one arrangement in which an `inline` variable template and the per-binder
-`static` it replaced are indistinguishable. `tests/test_claim_tu2.cpp` is a
-second TU naming the same instances: a claim made there is `held()` here, and a
-second owner across the TU boundary traps, at both scopes.
-
-**(B) Layer 1 admitted values it could not reach. CLOSED.**
-`open({.baud = 0})` compiled with no diagnostic; `baud_div()` divided by it,
-GCC folded the constant division to unreachable, and the emitted code fell into
-the same `udf` as the double-open guard, so the *diagnosis* named the wrong
-bug. With a run-time baud there was no fold and no trap at all. And
-`open_checked<115'200_baud>({.baud = 9'600})` compiled clean and ran at
-115 200, the loser never mentioned.
-
-Both are closed, and not opt-in:
-[Layer 1 admits values, not only fields](#layer-1-admits-values-not-only-fields).
-Zero bytes for a constant value, 20 bytes for a computed one, a compile error
-naming the instance for the literal case, and `.baud` is not a member of the
-type `open_checked` takes. Two new cases in
-`scripts/check_compile_errors.py` (now 8 with the channel case below, all
-green) hold both.
-
-**(C) The compile-time/runtime seam stays open.** Item 5 above — a
-compile-time `opts{.data_bits = 9}` plus a runtime `parity::even` — is not
-closed and is not closable by either mechanism here: it is the price of a
-surface that is deliberately half compile-time. The runtime trap it produces
-now carries `trap_code::impossible_config` in a register like the others, which
-is a better diagnosis and not a fix.
-
-!!! warning "What the trap codes do and do not buy"
-    Each guard puts its own `alloy::trap_code` in a register immediately before
-    the trap, so a disassembly or a fault report that stacks the register set
-    can tell them apart. **It does not give each guard its own PC**: GCC
-    tail-merges the `udf` itself, and measurement on the G071RB confirms it
-    does. What is no longer shared is the basic block and the register value —
-    which is enough to stop a baud-rate bug reading as a double-open, and less
-    than "every guard has its own fault address" would be.
-
----
-
-## The three counterexamples, answered {#the-three-counterexamples-answered}
-
-The method that produced rule v2: for each feature, write down what a user
-should be able to type **first**, then find the rule that produces it. A rule
-derived from desired outcomes beats a rule derived from taxonomy — v1 was
-derived from UART, which is why it broke on the three peripherals that are not
-UART-shaped.
-
-Everything below is on the **STM32G0B1RE**, the lead chip.
-
-### 1. I2C 10-bit addressing
-
-**What the user should write.** The bus is one thing; the devices on it are
-not. Two consecutive calls, two address widths:
-
-```cpp
-auto bus = board::sensors::open({.speed_hz = 400'000});
-
-std::uint8_t temp[2];
-(void)bus.write_read(alloy::i2c::addr7{0x48},  cmd, temp);   // 7-bit part
-(void)bus.write_read(alloy::i2c::addr10{0x21F}, cmd, temp);  // 10-bit part
-```
-
-**The rule that produces it.** Question 0: `i2c1` is curated as `st/i2c_v2`,
-and the data carries `CR2.ADD10` *and* a 10-bit-wide `CR2.SADD` — this is the
-one counterexample where the database is **not** the blocker, and the review's
-blanket "curation blocks all three" is wrong here. Question 1: no, the handle
-keeps every method. Question 2: no. **Question 3: yes** — two consecutive calls
-legitimately differ, so it is an argument of the operation, and since the
-address is already an argument, the fix is to widen its *type*. `addr7` and
-`addr10` are distinct types, so a driver that cannot do 10-bit does not declare
-that overload, and the `static_assert` behind it names the instance and the IP.
-
-**Why v1 got it wrong.** v1's question 2 asked "can every driver program an
-address width?", answered yes, and produced a Layer-1 `config` field — which is
-a property of the *port*, so the second line above would have to reopen the bus
-to talk to the second device. The rule had no step for a value that belongs to
-an operation. Question 3 is that step.
-
-*Status: specified, not built. `alloy::i2c::config` has one field today and the
-handle takes `std::uint8_t addr`. Nothing here is blocked by data.*
-
-### 2. The ADC analog watchdog
-
-**What the user should write.**
-
-```cpp
-auto adc = board::adc::open();
-
-// One of this ADC's analog watchdogs. The index is checked against generated
-// degree, so watchdog<2> on an IP with one of them is a compile error with
-// both numbers in it.
-auto wd = adc.watchdog<0>({.low = 300, .high = 3600});
-wd.guard(board::vbus_channel);
-wd.on_trip(+[](void*) { emergency_stop(); }, nullptr);
-```
-
-**The rule that produces it.** Question 1: no — a watchdog adds `count`-style
-operations without excluding conversion. **Question 2: yes** — there are three
-of them on ST's v3 ADC and one on v2, each with its own enable, thresholds,
-channel selection and interrupt, armed and disarmed independently of `open()`.
-So it is a sub-resource, and its four parts route
-[as tabulated above](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime):
-the count is `Inst::feat::analog_watchdogs` (a genuine `feat` — a number the
-register map cannot state), the thresholds are the sub-resource's own Layer 1,
-the channel selection is an argument, the response is the existing callback
-shape.
-
-**Where it actually stops, and this is the part v1 could not say.** Question 0,
-row 2. The G0B1RE's `adc1` is curated as `st/adc_v2`, and that IP's register
-map runs `ISR, IER, CR, CFGR1, CFGR2, SMPR, CHSELR, DR, CCR` — **there is no
-`TR1` and no `AWD1CR` at all**, and `ISR` carries no `AWD` flag. So this is not
-"Layer 2 or Layer 3": Layer 2 cannot name a field, and Layer 3's typed route
-cannot name the *register* either, because `IP::regs` has no member for it. The
-rule's output is **curate `adc_v2.yaml` first** — then question 8 answers, and
-the driver becomes ordinary work.
-
-**Why v1 got it wrong.** It half-decided (correctly identifying the count as
-degree), improvised the rest of the decomposition, and then routed the
-remainder to a Layer-3 door it had asserted was always open. The door is
-locked, and question 0 is what says so before anyone walks into it.
-
-### 3. Timer encoder mode
-
-**What the user should write.** The personality is chosen by naming a different
-binder, not by setting a field:
-
-```cpp
-using Enc = alloy::encoder::bind<alloy::dev::tim3_t,
-                                 alloy::encoder::a<alloy::dev::pa6_t>,
-                                 alloy::encoder::b<alloy::dev::pa7_t>>;
-
-auto enc = Enc::open({.period = 1'440});
-std::uint32_t pos = enc.count();     // 0 .. period-1, wraps in hardware
-std::int32_t  moved = enc.delta();   // signed, wrap-aware, since last call
-```
-
-!!! note "This block was predicted with a clock profile and `counts_per_rev`. The shipped code has neither."
-    It was then BUILT (`src/alloy/encoder.hpp`, `src/alloy/hal/encoder/`,
-    `examples/encoder/`), and two of the three lines above changed:
-
-    * **no `Clock` parameter.** Every other binder takes one because its
-      peripheral divides a kernel clock to reach the rate asked for. An
-      encoder divides nothing — the driver forces `PSC = 0` because the
-      counter is clocked by the shaft — so a `Clock` here would have been a
-      dependency the peripheral does not have, and the sort that survives for
-      years because nothing ever breaks. The one thing that would bring it
-      back is the input filter, whose sampling rate IS derived from the
-      kernel clock, and that field is not curatable (below).
-    * **`period`, not `counts_per_rev`.** The field is a counter modulo. Its
-      most common value is the encoder's counts per revolution, and naming it
-      after the most common use would have made a linear axis with a 10 000
-      count travel read as a lie.
-
-    `count()` is unsigned because the hardware counter is; the signed number
-    a caller actually wants is `delta()`, which is a separate operation
-    because it consumes state (see hole (D) — "how far since I last looked"
-    is a property of the looker, so it lives in the handle).
-
-and if the same program also opens `alloy::pwm::bind<alloy::dev::tim3_t, …>`,
-the second `open()` traps with `trap_code::personality_conflict` — because both
-claim `tim3_t` and `pwm != encoder`. If the two came from *board roles* instead
-of hand-written binds, `alloy build` refuses the board file and never starts a
-compiler.
-
-**The rule that produces it.** **Question 1: yes.** The handle loses
-`set_duty()` and gains `count()`; the two modes cannot be on at once (`SMS`
-selects one). So it is a personality: a different binder type, an exclusive
-claim. The pins are question 4 — `encoder::a<>` / `encoder::b<>` are binder
-tags on the `ch1`/`ch2` routes, which the G0B1RE's route table already carries.
-
-**Where it actually stops.** Question 0, row 3. `tim3` is curated as
-`st/tim_gp16`, whose `SMCR` **is** a register member but has **zero fields** —
-no `SMS` — and whose `CCMR1` carries only the output-compare fields
-(`OC1M/OC1PE/OC2M/OC2PE`), with no `CC1S/CC2S` input selection. A driver could
-reach `SMCR` through `IP::regs` and write `3` into bits 2:0 by hand, which is
-exactly the hex-literal-silicon-fact that guard #1 exists to forbid inside
-`src/`. So: **mine `SMCR.SMS` and `CCMR1.CC1S/CC2S` into `tim_gp16.yaml`
-first.** (`tim1`, the advanced timer, is at row 1 — uncurated, no
-`alloy::dev::tim1_t` at all.)
-
-That mining was done, and it hit two walls the layer question cannot see,
-both now recorded in `registers/st/tim_gp16.yaml` itself:
-
-* **`SMS` is one field in two places** — `SMS[2:0]` at bits 2:0 and `SMS[3]`
-  at bit 16 — and a field in `alloy.registers.v1` has one `bit` and one
-  `width`. It is curated as two entries named after the manual's own diagram,
-  because both single-entry spellings lie (one claims bits SMS does not own,
-  the other hides a bit it does).
-* **`CCMR1` is two registers at one address**, and which one it is depends on
-  a field inside it. The input view's `ICxF` (bits 7:4 / 15:12) sits exactly
-  on top of the output view's `OCxPE`/`OCxM`, fields of one register may not
-  overlap, so the digital input filter is **unreachable at every layer at
-  once — `alloy::dev::` included**, because Layer 3 gives a named accessor
-  only to a curated field. Not a layering decision; a limit of the data
-  model. A bouncing mechanical encoder will feel it.
-
-**Why v1 got it wrong.** It decided in one step — "needs a pin mux → binder
-tag" — which conflates the pins with the mode. The pins *are* binder tags and
-that part was right; what it missed is that encoder mode **excludes PWM on the
-same block**, and v1 had no category for a mutually exclusive whole-block mode.
-"A different IP tag, therefore a different driver" (v1's other attempt, in the
-degree section) cannot express it either: `tim3` has one IP tag and two
-possible personalities.
-
----
-
-## Stressing v2 on three features it was not built from {#stressing-v2-on-three-features-it-was-not-built-from}
-
-A rule tested only on the counterexamples that produced it has been fitted, not
-validated. Three more, chosen because they look awkward. **One survives with a
-refinement; two break v2**, and the breaks are recorded here rather than
-smoothed over.
-
-### 1. SPI slave mode — survives, with one refinement
-
-Question 1 fires: the operations change (a slave cannot initiate; `xfer()`
-means "load TX and wait to be clocked", with failure modes a master does not
-have), the modes are exclusive (`CR1.MSTR` selects one), and **every pin
-reverses direction** — MISO becomes an output, MOSI and SCK become inputs, NSS
-becomes an input. → personality: `alloy::spi::slave::bind<…>`, exclusive claim.
-
-Two things v2 had to be sharpened to say, both found here:
-
-- **Layer 1 is shared where the wire meaning is shared, and trimmed where it is
-  not.** CPOL/CPHA mean the same thing in both personalities and stay one type;
-  `clock_hz` is meaningless to a slave, so `spi::slave::config` does not have
-  it — the `uart::frame` shape, for the same reason.
-- **The personality vocabulary is one enumerator per FACADE, not per bus.**
-  `claim::personality::spi` cannot cover both, or a master bind and a slave
-  bind on one instance would agree and neither would trap. `spi_slave` becomes
-  its own enumerator the day the facade lands. This is written into
-  `claim.hpp`'s comment so the next facade does not get it wrong.
-
-### 2. ADC injected channels — breaks v2
-
-Routing is easy and v2 gets it right: question 1 no (it adds operations without
-excluding regular conversion), **question 2 yes** — four injected ranks, their
-own trigger, their own `JDR` result registers, their own end-of-conversion,
-armed independently. A sub-resource, count from `Inst::feat::injected_ranks`,
-0 where the IP has none.
-
-**Where it breaks: injected conversions PREEMPT regular ones.** v2 gives each
-sub-resource its own handle and has **no vocabulary at all for sub-resources
-that interact**. After `adc.injected<0>(…)` is armed, a plain `adc.read(ch)`
-can be delayed or aborted by a trigger that is nowhere in its call, and nothing
-in the type system, the `feat` numbers or the claim says so. The same hole
-appears for two analog watchdogs guarding overlapping channels, and for a DMA
-channel shared between a timer's update and its capture events.
-
-This is a **genuine gap in v2**, not a data problem: curating the registers
-would not fix it. It is named in
-[what v2 does not decide](#what-v2-deliberately-does-not-decide).
-
-*(On the lead chip the question is theoretical twice over: the G0B1RE's
-curated `adc_v2` map has no injected registers, and the F767's `adc1` is
-uncurated outright — question 0, row 1.)*
-
-### 3. Timer complementary outputs with dead time — breaks v2 {#3-timer-complementary-outputs-with-dead-time-breaks-v2}
-
-Question 0 answers first and answers row 1: complementary outputs need an
-advanced timer, `tim1` on the G0B1RE is uncurated, and there is no
-`alloy::dev::tim1_t`. Suppose it were curated. Then v2 routes the parts
-cleanly — CH1N is a pin (question 4, a binder tag `pwm::outn<>`), the break
-input is a pin (`pwm::brk<>`), and the dead time is a register field in a
-vendor-shaped unit (`BDTR.DTG`'s piecewise encoding), so question 8, Layer 2.
-
-**Where it breaks: dead time is BLOCK-scoped and `pwm::bind` is CHANNEL-scoped.**
-Two channel binds on one timer, each carrying
-`opts{.dead_time_ns = …}` with different values, is hole (A) in a new dress —
-and the fix that closed (A) does **not** catch it. `claim::shared`'s witness is
-the block-scoped *Layer-1* value (`freq_hz`); a block-scoped *Layer-2* value is
-not in it, because no shipped timer driver has one yet.
-
-Two candidate repairs, and v2 does not choose between them:
-
-1. widen the witness to cover the block-scoped `opts` as well — cheap, and it
-   turns the conflict into a trap rather than preventing it;
-2. give the timer a **block handle** that channels are opened *from*
-   (`auto tim = board::motor::open<opts{...}>({.freq_hz = 20'000}); auto a = tim.channel<1>();`)
-   — structurally right, makes the conflict untypeable, and is a breaking
-   change to `alloy::pwm`.
-
-Naming the choice is a maintainer's call, and the argument for (2) is that the
-*same* structural defect is live in shipped code today for `freq_hz` — the
-claim makes it loud, it does not make it impossible.
-
----
-
 ## What it actually cost
 
 Measured, not modelled: `examples/uart_echo` — the example that configures
@@ -2338,3 +1803,429 @@ byte comparison does not. The +200 figure for `examples/can` is the whole
 example's delta and is *not* the same quantity as `3ef5130`'s "+112 B for the
 two-filter call", which was measured on the function rather than the image; that
 figure was not re-derived here.
+
+---
+
+## History: how this rule was refuted twice {#history-how-this-rule-was-refuted-twice}
+
+Everything from here down is a **record of refutation**, not a rule. Three
+narratives used to sit at the top level of this page and a reader meeting them
+cold could take them for three competing rules; they are one story, told in the
+order it happened. Where anything below disagrees with
+[the rule](#the-rule), **the rule wins** — and the disagreements are marked
+where they occur rather than edited out, because which claims break is the
+useful part.
+
+Most of what follows is not argument. It is measurement: live defects found by
+applying a rule to shipped code and then looking at what came out.
+
+### v1, derived from UART, and the five things the code changed about it
+
+v1 was decided before a line of it was written. UART was then converted — six
+drivers, four vendors, the facade, the binder, the emitter, the chip data and a
+portable example — and five of its claims did not survive contact with the tree.
+
+**1. Word length is not a Layer-1 field, and `stop_bits` has two values, not
+four.** The admission test as written asks about a FIELD; the real unit is the
+(field, **value domain**) pair. Character length domains are 8–9 on
+`st_usart_v2`, 7–9 on `v3`/`v4`, 5–8 on `microchip_usart_v1` and on
+`raspberrypi_uart_pl011`, and nothing at all on `espressif_uart_v1`, which is
+ROM-configured. **The intersection is {8}**, so data bits is a Layer-2 knob with
+each IP's own domain behind a `static_assert`. `stop_bits::half` and
+`one_and_half` (ST smartcard/IrDA encodings) failed the same way and are gone.
+This is the rule working: teaching six drivers is what Layer 1 costs, and two of
+the four proposed fields could not be taught.
+
+**2. Layer 2 is a DESCRIPTION, not a contract.** The falsification test this
+page pre-committed to — implement RS-485 DE on `st_usart_v3` *and*
+`microchip_usart_v1` and see whether `de_assert_16ths` survives with the same
+meaning and unit — **came back negative**, for a reason that is silicon rather
+than naming: the SAM USART has no DE assert/deassert time at all, only
+`US_TTGR`, a transmitter guard time in whole bit periods. So `libs/` code may
+probe a Layer-2 member by name and may **not** assume a feature present on one
+vendor appears under any name on another.
+
+**3. `usart_v4` has *fewer* Layer-2 knobs than `usart_v3`, which is backwards
+from the sketch.** The G0 silicon has DE and inversion; alloy's curated
+`usart_v4` data does not (`usart_v3.yaml` carries `DEAT/DEDT/DEM/DEP` and
+`TXINV/RXINV/SWAP`; `usart_v4.yaml` carries none of them, and does carry
+`FIFOEN`, which v3 lacks). Declaring Layer 2 beside the driver is what forced
+this to surface, and the consequence is stated by a compiler rather than a
+README:
+
+```
+error: static assertion failed: this USART's driver has no hardware
+driver-enable: alloy's curated usart_v4 register data carries no DEM/DEAT/DEDT
+(the silicon has them; the database has not mined them). Drive DE from a GPIO,
+or reach the registers through alloy::dev::
+```
+
+That is question 0's row 3, arriving as a build error with a data ticket
+attached.
+
+**4. A maximum should come from the register data, not from `feat` — and that
+correction was itself over-general.** v1 proposed
+`Inst::feat::de_time_max_16ths = 31`; the generated field accessor already knows
+its own width, so `O.de_assert_16ths <= IP::deat.raw_mask` is one fewer number
+in the database and GCC prints `the comparison reduces to '(40 <= 31)'`. **v2
+then wrote that up as "a maximum must be read from the field's `raw_mask`", and
+the FDCAN build refuted it**: `RXGFC.LSS` is five bits, so `raw_mask` says 31,
+and the real capacity is 28 because the companion message RAM holds 28
+one-word filter elements. The rule now in force is
+[where a maximum comes from](#where-a-maximum-comes-from) — whichever artefact
+physically bounds the quantity, with a `static_assert` between them when more
+than one names it.
+
+**5. One combination neither layer can reject.** Layer 1 is runtime and Layer 2
+is compile-time, so `opts{.data_bits = 9}` plus a runtime `parity::even` asks an
+ST USART for a 10-bit word. No `static_assert` can see a runtime parity, and
+silently programming 8 bits would be the lie, so the drivers `__builtin_trap()`
+under `if constexpr (O.data_bits == 9)`. Measured on the G0B1RE: with a
+compile-time-constant parity the trap folds, GCC merges it into the double-open
+`udf #255`, and everything after `open()` is deleted as unreachable — including
+the string the program meant to print. The build is silent, the binary is
+*correct* (it refuses), and the failure arrives on the first boot. **A mixed
+compile-time/runtime surface has a seam, and this is where it is.**
+
+### The three counterexamples that killed v1 {#the-three-counterexamples-answered}
+
+The method that produced v2: for each feature, write down what a user should be
+able to type **first**, then find the rule that produces it. All three are on the
+STM32G0B1RE, and two of the three have since been **built**, which is how their
+predictions came to be scored rather than argued.
+
+| Feature | What v1 answered | What was actually true | Where it is now |
+|---|---|---|---|
+| I2C 10-bit addressing | "every I2C driver can program an address width → Layer 1 `config`" | a 10-bit address is a property of the **transfer**, not the port: one bus talks to a 7-bit and a 10-bit device in consecutive calls | question 3, [the transfer axis](#the-transfer-axis-and-the-zephyr-answer). **Specified, not built** — `alloy::i2c::config` still has one field and the handle still takes `std::uint8_t addr` |
+| the ADC analog watchdog | count is degree, "and the rest through `alloy::dev::`" | the Layer-3 door was **locked**: `st/adc_v2`'s curated map ran `ISR, IER, CR, CFGR1, CFGR2, SMPR, CHSELR, DR, CCR` — no `TR1`, no `AWD1CR`, no `AWD` flag in `ISR`. Question 0, row 2 | curated, then **BUILT** (`de6e59b`). What the build changed about the prediction is in [sub-resources](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime) |
+| timer encoder mode | "it needs a pin mux → a binder tag" | the pins *are* binder tags; what v1 missed is that encoder mode **excludes PWM on the same block**, and v1 had no category for a mutually exclusive whole-block mode. "A different IP tag, therefore a different driver" cannot express it either: `tim3` has one IP tag and two personalities | curated (question 0, row 3 — `SMCR` was a register with zero fields), then **BUILT** (`f1f6833`) |
+
+Two details worth keeping, because they are the parts a summary loses.
+
+**What the user writes for the two that were built**, and the prediction's score:
+
+```cpp
+// encoder — predicted with a clock profile and `counts_per_rev`; shipped with
+// neither. An encoder divides nothing (PSC is forced to 0, the shaft clocks the
+// counter), so a Clock parameter was a dependency the peripheral does not have;
+// and `period` is a counter modulo, which is only usually a rev.
+using Enc = alloy::encoder::bind<alloy::dev::tim3_t,
+                                 alloy::encoder::a<alloy::dev::pa6_t>,
+                                 alloy::encoder::b<alloy::dev::pa7_t>>;
+auto enc = Enc::open({.period = 1'440});
+std::uint32_t pos   = enc.count();   // unsigned, because the counter is
+std::int32_t  moved = enc.delta();   // signed, wrap-aware, consumes state
+
+// the watchdog — predicted with `wd.guard(channel)` and `wd.on_trip(cb)`;
+// shipped with the channel inside the arming config and a polled sticky flag.
+auto adc = board::adc::open();
+auto wd  = adc.watchdog<0>({.channel = 3, .low = 1000, .high = 3000});
+if (wd.tripped()) { wd.clear(); }
+```
+
+If the same program also opens `alloy::pwm::bind<alloy::dev::tim3_t, …>`, the
+second `open()` traps with `trap_code::personality_conflict`; if the two came
+from *board roles*, `alloy build` refuses the board file and never starts a
+compiler. Both directions have tests, and both have negative controls
+(`tests/test_encoder.cpp`, `tools/alloy/tests/test_encoder_role.py`).
+
+**The two walls the encoder's mining hit**, which no layer question can see and
+which are now [data-model proposals](#what-a-data-model-change-would-have-to-say):
+`SMS` is one field in two places (`SMS[2:0]` at bits 2:0 and `SMS[3]` at bit 16),
+and `CCMR1` is two registers at one address whose views overlap — which is why
+the encoder's digital input filter is unreachable at every layer at once,
+`alloy::dev::` included.
+
+
+### The holes: four combinations this page did not anticipate {#the-three-holes-two-now-closed}
+
+Found by trying combinations this page did not anticipate, all on the G0B1RE
+unless noted. None of them was a new defect introduced by the layers — they
+were the shape's blind spots. Three are closed in code; the last is the seam
+above and stays.
+
+**(A2) is here because the repair for (A) was itself incomplete**, and it was
+found the same way the holes were: by asking the shipped code, one facade at a
+time, whether it actually had the claim the page said it had. Five of twelve
+facades did, and one of two scopes.
+
+**(A) The double-open guard was per *binder type*, not per instance. CLOSED.**
+Two different `uart::bind<>` specialisations naming the same `usart2_t` — a
+second, legitimately-routed pin pair — each carried their own `detail_opened`.
+Opening both compiled clean, with *contradictory* Layer 1 and Layer 2
+(`data_bits = 8` then `7`; `115'200/none` then `9'600/odd`), no error and no
+warning; the second `open()` reprogrammed the peripheral under the first
+handle, which stayed usable. Layer 2 makes a *call site* impossible to lie in
+and said nothing about **who owns the instance**.
+
+The flag lives on the instance now — `alloy::claim::owner<Inst>`, an inline
+variable template, so one object per instance across the whole image — and it
+carries the [personality](#personalities-a-block-runs-in-one-mode-at-a-time),
+so the same mechanism refuses `pwm` and `encoder` on one timer. `uart`, `i2c`,
+`spi` and `adc` claim exclusively; `pwm` claims *shared* with the block-scoped
+frequency as a witness, because four channels on one timer are legitimate and
+four channels asking for different frequencies are not. `reconfigure<Opts>()`
+grew the two checks it was missing: it refuses a port nobody opened, and it
+refuses `Opts` that disagree with the ones `open()` programmed — Layer 2
+belongs to the port now, not to the call. Proven by seven death tests in
+`tests/test_claim.cpp`, and at generation time by
+`emit/board.py::_check_role_personalities` plus its three tests in
+`tools/alloy/tests/test_emit.py`.
+
+*Measured cost:* **+8 bytes of `.text`** on every ARM board's `uart_echo`
+(1812→1820 on the G071RB and the same delta on six more), **all of it in the
+cold path** — the disassembly's success path is the identical
+`ldrb / cmp / beq` it was before, and the eight bytes are the second comparison
+and the `movs r3, #2` that distinguishes the two failures. RAM is unchanged for
+an exclusive claim: one byte per instance where it was one byte per binder.
+
+**(A2) …and that repair was itself keyed one level too high. NOW CLOSED.**
+The paragraph above described five of alloy's twelve facades and one of the
+defect's two scopes, and the identical bug was still live in shipped code where
+it was not looking. `pwm::bind` kept its own `static bool
+detail_channel_opened` for the CHANNEL — and `bind` is templated on the pin, so
+one channel had one flag per route. On the `nucleo_g0b1re`, TIM2 channel 1 is
+routed to PA0, PA5, PA15 and PC4:
+
+```cpp
+auto a = board::led_pwm::open({.freq_hz = 1'000});      // TIM2_CH1 via PA5
+using other = alloy::pwm::bind<alloy::dev::tim2_t, 1u, alloy::dev::pa0_t,
+                               alloy::signal::ch1, board::clock_profile>;
+auto b = other::open({.freq_hz = 1'000});               // TIM2_CH1 via PA0
+```
+
+Both compiled, both opened, both muxed their pin onto one output compare, and
+the `claim::shared` block claim admitted them because they agreed on the
+frequency — which they do. Built for `nucleo_g0b1re` and booted in Renode, the
+pre-fix image printed its "second bind also opened" banner **in 1.4 s**.
+
+The key is now `sub_owner<Inst, Sub>` — instance and ordinal, nothing else
+([two keys](#two-keys-because-a-peripheral-is-not-always-the-contested-resource))
+— and the same claim replaced `dma::channel`'s private `claimed_`, which was
+correctly scoped but was a *third* ownership mechanism whose bare
+`__builtin_trap()` a fault report could not tell from the transfer-size traps
+in the same class. `wdt::start` gained the `shared` claim it never had (two
+`start()` calls with different timeouts silently kept the last one), and `dac`,
+`can` and `rtc` claim their personality; `flash` and `gpio` deliberately claim
+nothing, for the reasons in
+[which facade claims what](#which-facade-claims-what).
+
+*Measured on `nucleo_g0b1re`, `arm-none-eabi-g++ 14.2.1 -Os`:*
+
+| Example | `.text` | `.bss` | why |
+|---|---|---|---|
+| `blink`, `hello`, `uart_echo`, `nvm`, `fs`, `adc_read`, `i2c_read`, `spi_read`, `gpio_bus` | **unchanged** | unchanged | nothing they do claims anything new |
+| `pwm_fade` | **unchanged** (3652) | **−8** (3256→3248) | a per-binder `bool` became a per-(instance, channel) byte |
+| `dma_uart` / `dma_probe` | +8 / +36 | unchanged | the trap codes that tell the two DMA failures apart |
+| `watchdog` | +48 | +8 | a claim the facade did not have at all |
+| `dac` / `can` / `rtc` | +44 / +40 / +44 | +8 each | ditto — and these buy personality only |
+
+The nine unchanged examples are the control: code that claims nothing pays
+nothing. The `pwm_fade` row is the fix's own row — strictly better coverage at
+strictly negative cost, because the flag it deleted was bigger than the one it
+added.
+
+**One half of this scope IS a compile error, and it was missing.** `pwm::bind`
+states the channel twice — as the ordinal the driver programs and the claim
+owns, and as the route signal that picks the pin mux — and nothing tied them
+together. `bind<tim2_t, 2u, pa5_t, signal::ch1, …>` muxed PA5 onto CH1 while
+programming and owning CH2, so two binds genuinely contesting CH1 would hold
+two different keys and the runtime claim would never see them. That is a
+compile-time fact and is now a `static_assert`, with an eighth case in
+`scripts/check_compile_errors.py` holding the diagnostic.
+
+*What is and is not proven.* Seven more tests in `tests/test_claim.cpp` — three
+of them death tests, four asserting the claims that must be *admitted* — cover
+the new scope and the watchdog, with a negative control confirming the
+fork-based idiom reports *false* when nothing traps and *false* for a single,
+legitimate claim. The refusal itself is read directly out of
+the linked image: `sub_exclusive<dev::tim2_t, 1u, personality::pwm>` loads
+`sub_owner` and, on a non-zero owner, puts `#7` (`sub_resource_owned`) or `#2`
+(`personality_conflict`) in `r3` before the shared `udf #255`. The **defect**
+is proven on emulated silicon (the 1.4 s above); the **trap** is not, and
+cannot be with this tooling — Renode does not vector an undefined instruction
+on this platform, so the fixed image wedges at the `udf` instead of reaching a
+fault handler, which is the same limitation `crash_report.robot` documents for
+organic faults. A wedge is not a pass and is not reported as one.
+
+<a id="a3-the-exti-line"></a>
+**(A3) …and the scope the repair invented was itself derived from two examples.
+NOW CLOSED.**
+(A2) closed the sub-resource scope and, in the same commit, wrote down what a
+sub-resource *is*: *"There is deliberately no `sub_shared`. A sub-resource is a
+sub-resource because it has no block-scoped register for two claimants to
+disagree about."* Both sub-resources alloy had — a timer channel and a DMA
+channel — agreed with that. **The EXTI line does not**, and it was in the tree
+the whole time.
+
+An EXTI line has its own port-select field, its own trigger pair, its own
+pending bits and its own callback slot, and the claimants competing for it are
+*pins*: on every ST part the same index on every port is one line. PA5 and PB5
+are EXTI line 5. Nothing claimed it, so:
+
+```cpp
+const alloy::gpio::input<alloy::dev::pa5_t> a{};
+const alloy::gpio::input<alloy::dev::pb5_t> b{};
+a.on_edge(alloy::gpio::edge::rising, cb_a);
+b.on_edge(alloy::gpio::edge::rising, cb_b);   // takes line 5 from a
+```
+
+Both compiled, both "armed", and the *first* handle was left in the worst
+possible state — not dead, **wrong**. Built for `nucleo_g071rb` and booted in
+Renode, driving a rising edge on **PA5** produced nothing (`a_edges=00000000`),
+and driving one on **PB5** made `a.edges()` answer `00000001`: PA5's handle
+reporting PB5's edge as its own, because the counter is keyed on the line.
+`cb_a` never ran again. **9.1 s**, exact counters asserted, no polling anywhere.
+
+The key is `sub_owner<exti_t, Line>` with `sub_witness<exti_t, Line>` holding
+the **port index**: re-arming one pin is admitted (the driver documents that it
+replaces the edge and the callback), a second pin traps `sub_config_conflict`.
+The claim lives in `hal/exti/exti_impl.hpp` and not in `gpio.hpp`, because the
+line number only exists down there — `gpio::input` knows about a pin, and a pin
+is [still an unmodelled scope](#which-facade-claims-what).
+
+**And it needed a release, which is the second thing this feature refuted.**
+"Claims are never released" was true of every claim made by an `open()` with no
+`close()`. `clear_on_edge()` is a shipped call that genuinely frees a line, so
+refusing PB5 forever because PA5 had once been armed would have replaced a
+silent wrong answer with a loud wrong one. `claim::sub_release<Inst, Sub, P>(w)`
+is the one release in the mechanism, offered at the sub scope only — and it
+catches the mirror-image bug on the way: `pb5.clear_on_edge()` while PA5 holds
+line 5 used to silently disarm PA5's interrupt, and now traps.
+
+*What is and is not proven.* The **defect** is proven on emulated silicon —
+`exti_probe`, the counters above. The **handover** is proven the same way and
+positively: PA5 arms, releases, PB5 arms, and PB5's edge fires
+(`cb_a=00000000 cb_b=00000001`) in 7.8 s, so the claim does not over-refuse.
+The **refusal** is read out of the linked image, where
+`claim::sub_shared<dev::exti_t, 5u, personality::exti>` loads `sub_owner`,
+branches to `movs r3, #2` (`personality_conflict`) on a foreign owner and to
+`movs r3, #8` (`sub_config_conflict`) on a disagreeing witness, both into the
+shared `udf #255` — plus six host tests in `tests/test_claim.cpp`, three of them
+death tests. On silicon the refusal is a **wedge**: the fixed `exti_probe`
+never prints its second banner and `renode-test` runs out its 180 s timeout,
+because Renode does not vector an undefined instruction on this platform. That
+is the same limitation (A2) recorded, and a wedge is still not a pass.
+
+**The inventory is a test now, because prose was what failed twice.** (A2) was
+found by hand, by asking each facade whether it had the claim this page said it
+had. `tools/alloy/tests/test_claim_surface.py` asks mechanically: it parses the
+[table](#which-facade-claims-what), checks that each row's claims are really in
+the file it names, and fails if a peripheral class has a driver directory and
+no row at all. Negative control: deleting `pwm`'s `sub_exclusive` call fails the
+`pwm` row. It has already caught two things it was not written for — a new
+`hal/encoder/` directory with no row, and an `adc` that had grown a
+sub-resource claim the table did not know about.
+
+**And the claim is now shown to cross translation units, which is the entire
+point of it.** Every test written for (A) and (A2) lived in one `.cpp` — the
+one arrangement in which an `inline` variable template and the per-binder
+`static` it replaced are indistinguishable. `tests/test_claim_tu2.cpp` is a
+second TU naming the same instances: a claim made there is `held()` here, and a
+second owner across the TU boundary traps, at both scopes.
+
+**(B) Layer 1 admitted values it could not reach. CLOSED.**
+`open({.baud = 0})` compiled with no diagnostic; `baud_div()` divided by it,
+GCC folded the constant division to unreachable, and the emitted code fell into
+the same `udf` as the double-open guard, so the *diagnosis* named the wrong
+bug. With a run-time baud there was no fold and no trap at all. And
+`open_checked<115'200_baud>({.baud = 9'600})` compiled clean and ran at
+115 200, the loser never mentioned.
+
+Both are closed, and not opt-in:
+[Layer 1 admits values, not only fields](#layer-1-admits-values-not-only-fields).
+Zero bytes for a constant value, 20 bytes for a computed one, a compile error
+naming the instance for the literal case, and `.baud` is not a member of the
+type `open_checked` takes. Two new cases in
+`scripts/check_compile_errors.py` (now 8 with the channel case below, all
+green) hold both.
+
+**(C) The compile-time/runtime seam stays open.** Item 5 above — a
+compile-time `opts{.data_bits = 9}` plus a runtime `parity::even` — is not
+closed and is not closable by either mechanism here: it is the price of a
+surface that is deliberately half compile-time. The runtime trap it produces
+now carries `trap_code::impossible_config` in a register like the others, which
+is a better diagnosis and not a fix.
+
+!!! warning "What the trap codes do and do not buy"
+    Each guard puts its own `alloy::trap_code` in a register immediately before
+    the trap, so a disassembly or a fault report that stacks the register set
+    can tell them apart. **It does not give each guard its own PC**: GCC
+    tail-merges the `udf` itself, and measurement on the G071RB confirms it
+    does. What is no longer shared is the basic block and the register value —
+    which is enough to stop a baud-rate bug reading as a double-open, and less
+    than "every guard has its own fault address" would be.
+
+---
+
+
+### v2, and the features it was stressed against {#stressing-v2-on-three-features-it-was-not-built-from}
+
+A rule tested only on the counterexamples that produced it has been fitted, not
+validated. v2 was applied to features it was not built from; **the review that
+retired it reported four of five broke**, and three of those trials are recorded
+here — one survival and two breaks. The breaks are the reason v3 exists, and one
+of them is still open.
+
+#### 1. SPI slave mode — survives, with one refinement
+
+Question 1 fires: the operations change (a slave cannot initiate), the modes are
+exclusive (`CR1.MSTR`), and **every pin reverses direction**. → personality:
+`alloy::spi::slave::bind<…>`, exclusive claim. Two things v2 had to be sharpened
+to say, both found here:
+
+- **Layer 1 is shared where the wire meaning is shared, and trimmed where it is
+  not.** CPOL/CPHA mean the same thing in both personalities and stay one type;
+  `clock_hz` is meaningless to a slave, so `spi::slave::config` does not have it
+  — the `uart::frame` shape, for the same reason.
+- **The personality vocabulary is one enumerator per FACADE, not per bus.**
+  `claim::personality::spi` cannot cover both, or a master bind and a slave bind
+  on one instance would agree and neither would trap. `spi_slave` becomes its own
+  enumerator the day the facade lands; this is written into `claim.hpp`'s comment
+  so the next facade does not get it wrong.
+
+#### 2. ADC injected channels — broke v2, and is still open
+
+Routing is easy and v2 got it right: question 1 no, **question 2 yes** — four
+injected ranks, their own trigger, their own `JDR` registers, their own
+end-of-conversion, armed independently. **Where it breaks: injected conversions
+PREEMPT regular ones**, and v2 had no vocabulary at all for sub-resources that
+interact. After `adc.injected<0>(…)` is armed, a plain `adc.read(ch)` can be
+delayed or aborted by a trigger that is nowhere in its call.
+
+The watchdog build did **not** close this — it sharpened it, because AWD2/AWD3
+guard channel *sets*, so two watchdogs on overlapping channels is the same shape
+on the same converter. It is
+[question 1 of what v3 does not decide](#what-v3-does-not-decide-and-what-it-has-not-seen).
+
+*(On the lead chip the injected question is theoretical twice over: the
+G0B1RE's curated `adc_v2` map has no injected registers, and the F767's `adc1`
+is uncurated outright — question 0, row 1.)*
+
+#### 3. Timer complementary outputs with dead time — broke v2, and is still open {#3-timer-complementary-outputs-with-dead-time-breaks-v2}
+
+Question 0 answers first and answers row 1: complementary outputs need an
+advanced timer, `tim1` on the G0B1RE is uncurated, and there is no
+`alloy::dev::tim1_t`. Suppose it were curated. Then the parts route cleanly —
+CH1N is a pin (question 4, `pwm::outn<>`), the break input is a pin
+(`pwm::brk<>`), and the dead time is a register field in a vendor-shaped unit
+(`BDTR.DTG`'s piecewise encoding), so question 8, Layer 2.
+
+**Where it breaks: dead time is BLOCK-scoped and `pwm::bind` is CHANNEL-scoped.**
+Two channel binds on one timer, each carrying `opts{.dead_time_ns = …}` with
+different values, is hole (A) in a new dress — and the fix that closed (A) does
+not catch it, because `claim::shared`'s witness is the block-scoped *Layer-1*
+value (`freq_hz`) and no shipped timer driver has a block-scoped Layer-2 one.
+
+Two candidate repairs, and v3 still does not choose between them:
+
+1. widen the witness to cover the block-scoped `opts` — cheap, and it turns the
+   conflict into a trap rather than preventing it;
+2. give the timer a **block handle** that channels are opened *from*
+   (`auto tim = board::motor::open<opts{...}>({.freq_hz = 20'000}); auto a = tim.channel<1>();`)
+   — structurally right, makes the conflict untypeable, and is a breaking change
+   to `alloy::pwm`.
+
+Naming the choice is a maintainer's call. The argument for (2) is that the
+*same* structural defect is live in shipped code today for `freq_hz`: the claim
+makes it loud, it does not make it impossible.

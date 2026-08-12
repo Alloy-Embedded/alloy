@@ -130,9 +130,11 @@ yourself writing several, the better fix is usually to add the fact to
     the chip database curates — and 28 of the STM32G0B1RE's 65 peripherals are
     uncurated, which means `alloy::dev::tim1_t` **does not exist**, not that it
     exists and is empty. Curation has
-    [three separate gates](../reference/peripheral-surface.md#question-0-what-does-the-database-already-know)
-    — the peripheral, the register, the field — and a block can pass the first
-    and fail the second (the G0's ADC is curated and its map has no `TR1`).
+    [four separate gates](../reference/peripheral-surface.md#question-0-what-does-the-database-already-know)
+    — the peripheral, the register, the field, and the field's *encoding* — and
+    a block can pass one and fail the next (the G0's ADC was curated with a map
+    that had no `TR1`; FDCAN's `RXGFC.ANFS` was a curated field whose values
+    were not curated, so the only way to write it was the bare integer `2`).
 
     So "you can always drop to registers" is true of Route C and of Route C
     only. That is a real door, and it is the one with no gate address, no IRQ
