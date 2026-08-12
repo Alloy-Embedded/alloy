@@ -1000,7 +1000,8 @@ settings. See [the transfer axis](#the-transfer-axis-and-the-zephyr-answer).
 → A **binder tag**, not a field. `uart::de<pb1_t>`, `spi::nss<pa4_t>`,
 `encoder::a<pa6_t>`.
 
-**5. Does honouring it require programming a SECOND BLOCK?** {#question-5-cross-peripheral}
+<a id="question-5-cross-peripheral"></a>
+**5. Does honouring it require programming a SECOND BLOCK?**
 *Test: does the feature's data live at an address the facade's own `Inst::base`
 does not cover?*
 → **Cross-peripheral.** This is the shape that killed v2, and the FDCAN build is
@@ -1151,9 +1152,9 @@ Question 3 is the one v1 did not have, and the counterexample that found the
 gap was I2C 10-bit addressing: **a 10-bit address is a property of the
 TRANSFER, not of the port.** One bus talks to a 7-bit sensor and a 10-bit
 sensor in consecutive calls, and no amount of layering a *port* config can
-express that. v1 routed it through today's question 7, decided "every I2C driver can
-program an address width, therefore Layer 1", and produced a `config` field
-that would be wrong on the next line of user code.
+express that. v1 routed it through what is now question 7, decided "every I2C
+driver can program an address width, therefore Layer 1", and produced a `config`
+field that would be wrong on the next line of user code.
 
 The value belongs to the operation. There are two shapes, and the choice
 between them is mechanical:
