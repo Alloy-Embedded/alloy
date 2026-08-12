@@ -13,6 +13,14 @@
 // is one inline variable per instance, so it is one object across the whole
 // image however many translation units, binders or roles name that peripheral.
 //
+// TWO SCOPES, because a peripheral is not always the resource being contested:
+//
+//   owner<Inst>            a whole peripheral — usart2, i2c1, tim2.
+//   sub_owner<Inst, N>     one numbered part of it — TIM2 channel 1, DMA1
+//                          channel 3. Keyed on the instance and the ORDINAL
+//                          and nothing else, which is the entire point: see
+//                          the comment on sub_exclusive().
+//
 // TWO SHAPES, because two of them are legitimate:
 //
 //   exclusive<Inst, P>()   one owner, full stop. A UART has one TX pin; a
@@ -62,6 +70,7 @@ enum class trap_code : std::uint32_t {
     impossible_config = 4,      // a Layer-1 value no divisor can reach
     not_open = 5,               // reconfigure() on a port nobody opened
     opts_mismatch = 6,          // reconfigure<Opts> disagreeing with open<Opts>
+    sub_resource_owned = 7,     // a second binder opens one channel of a block
 };
 
 template <trap_code Code>
@@ -85,6 +94,14 @@ namespace claim {
 // read as `spi`, or they agree and neither traps. `spi_slave`, `i2c_slave`
 // and `capture` join this list on the day their facade does.
 //
+// AND THE SAME VOCABULARY THE BOARD GENERATOR USES. `emit/board.py`'s
+// ROLE_PERSONALITY maps each board role to one of these names, and
+// `tools/alloy/tests/test_emit.py` fails if it ever names one that is not in
+// this list — two halves of one rule cannot be allowed to drift apart just
+// because one of them is written in Python. That test is why `ethernet` is
+// here (it was in the generator and nowhere else) and why `dma` is (it was a
+// facade with no enumerator at all).
+//
 // `none` is 0 so the flag lives in .bss and costs no startup code.
 enum class personality : std::uint8_t {
     none = 0,
@@ -100,6 +117,8 @@ enum class personality : std::uint8_t {
     wdt,
     rtc,
     flash,
+    dma,
+    ethernet,
     user_a,
     user_b,
 };
@@ -151,6 +170,47 @@ inline void shared(std::uint32_t w) {
 template <class Inst, personality P>
 [[nodiscard]] inline bool held() {
     return owner<Inst> == P;
+}
+
+// ── The second scope: one numbered part of a block ──────────────────────
+//
+// `owner<Inst>` answers "who owns TIM2". Nothing answered "who owns TIM2
+// CHANNEL 1", and a timer channel is a resource in its own right: it has its
+// own CCR, its own CCMR mode field, and its own output pin.
+//
+// KEYED ON THE INSTANCE AND THE ORDINAL, NOTHING ELSE. That is the whole
+// point. `pwm::bind` is templated on <Inst, Channel, Pin, Signal, Clock>, so a
+// flag stored in the BINDER gives one channel as many flags as there are pins
+// routed to it — the identical defect `owner<>` retired at block scope, one
+// level down and still live in shipped code until this existed. TIM2_CH1 has
+// four routes on the G0B1RE (PA0, PA5, PA15, PC4), so the two binders that
+// defeat a per-binder flag are both legal to write and both compile.
+//
+// The ordinal is `unsigned` and its meaning belongs to the caller: for `pwm`
+// it is the timer channel `bind` already takes, for `dma` the channel index.
+// Nothing here checks it against a `feat` count — that is a DEGREE question
+// the facade answers at compile time, not an ownership question.
+template <class Inst, unsigned Sub>
+inline personality sub_owner = personality::none;
+
+// One owner of one sub-resource, full stop. There is no `shared` twin: a
+// sub-resource has no block-scoped register for two claimants to disagree
+// about — that is what makes it a sub-resource. Two claimants of the same
+// channel are always a bug, so the shape that admits them is not offered.
+template <class Inst, unsigned Sub, personality P>
+inline void sub_exclusive() {
+    if (sub_owner<Inst, Sub> != personality::none) {
+        if (sub_owner<Inst, Sub> == P) {
+            alloy::trap<trap_code::sub_resource_owned>();
+        }
+        alloy::trap<trap_code::personality_conflict>();
+    }
+    sub_owner<Inst, Sub> = P;
+}
+
+template <class Inst, unsigned Sub, personality P>
+[[nodiscard]] inline bool sub_held() {
+    return sub_owner<Inst, Sub> == P;
 }
 
 }  // namespace claim

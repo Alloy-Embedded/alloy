@@ -135,6 +135,22 @@ void probe() {
 }
 """
 
+# SUB-RESOURCE SCOPE, the half of instance ownership that a compiler CAN see.
+# `pwm::bind` states the channel twice: as the ordinal the driver programs and
+# owns, and as the route signal that picks the pin mux. Nothing tied them
+# together, so a bind could mux PA5 onto CH1 while programming CH2 and claiming
+# CH2 — which defeats the sub-resource claim, because two binds genuinely
+# contesting CH1 would then hold two different keys. PA5 has a real CH1 route
+# to TIM2 on the G0B1RE, so the route check passes and the failure left is the
+# one under test.
+PWM_CHANNEL_DISAGREES = """
+#include <alloy/board.hpp>
+using wrong = alloy::pwm::bind<alloy::dev::tim2_t, 2u,
+                               alloy::dev::pa5_t,
+                               alloy::signal::ch1, board::clock_profile>;
+void probe() { (void)sizeof(wrong); }  // force instantiation of the bind body
+"""
+
 
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
@@ -313,11 +329,22 @@ def check_open_checked_conflict() -> int:
         ["alloy::uart::frame", "9600"])
 
 
+def check_pwm_channel_disagrees() -> int:
+    """Sub-resource scope: the ordinal that owns the channel and the signal
+    that routes the pin must be the same channel."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        "a pwm::bind whose channel ordinal and channel signal disagree",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          PWM_CHANNEL_DISAGREES, ["--board", board], board=board),
+        ["names one channel ordinal and a different channel signal"])
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
             check_de_tag_unsupported() | check_baud_zero() |
-            check_open_checked_conflict())
+            check_open_checked_conflict() | check_pwm_channel_disagrees())
 
 
 if __name__ == "__main__":

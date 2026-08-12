@@ -23,6 +23,9 @@ from alloy_cli.emit.common import (
 )
 from alloy_cli.flash import _generate_partition_table
 
+# tools/alloy/tests/ -> tools/alloy -> tools -> alloy
+ALLOY_ROOT = Path(__file__).resolve().parents[3]
+
 
 def test_hex32_is_zero_padded_and_unsigned() -> None:
     assert hex32(0) == "0x00000000u"
@@ -383,3 +386,28 @@ def test_roles_without_a_peripheral_are_not_claimants() -> None:
         "id": "synth",
         "roles": {"led": {"pin": "pa5"}, "button": {"pin": "pc13"}},
     })
+
+
+def test_every_generator_personality_exists_in_the_cpp_vocabulary() -> None:
+    """The two halves of one rule, and nothing until now stopped them drifting.
+
+    `ROLE_PERSONALITY` (Python, generation time) and `claim::personality`
+    (C++, run time) are the SAME closed vocabulary written twice. A name that
+    exists in only one of them is a rule with a hole in it: the generator
+    would refuse a board conflict the firmware cannot express, or worse, a
+    facade would have to spell its personality `user_a` and stop being
+    distinguishable. `ethernet` was exactly that gap when this test was
+    written; `dma` was a facade with no enumerator at all.
+    """
+    import re
+
+    from alloy_cli.emit.board import ROLE_PERSONALITY
+
+    header = (ALLOY_ROOT / "src" / "alloy" / "core" / "claim.hpp").read_text()
+    body = header.split("enum class personality", 1)[1].split("};", 1)[0]
+    cpp_names = set(re.findall(r"^\s*([a-z_][a-z_0-9]*)\s*(?:=\s*\d+\s*)?,", body, re.M))
+    assert "uart" in cpp_names, "the enum body did not parse — fix this test, not the header"
+    missing = sorted(set(ROLE_PERSONALITY.values()) - cpp_names)
+    assert not missing, (
+        f"emit/board.py names personalities the C++ enum does not have: {missing}"
+    )

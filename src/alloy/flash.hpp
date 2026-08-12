@@ -4,6 +4,19 @@
 //
 // This is the low-level seam; most users want the key/value store built on top
 // (alloy/util/nvm_kv.hpp, wired as board::nvm).
+//
+// NO INSTANCE CLAIM, deliberately, and the rule that decides it is the same
+// one every other facade follows: a facade claims at its CONFIGURING entry
+// point — `open()`, `enable()`, `start()` — and never on a call that only
+// moves data. This controller HAS no configuring entry point. The flash array
+// is on at reset and memory-mapped; `erase_page` and `program` are the moral
+// equivalent of `uart::write`, which claims nothing either. Two claimants of
+// one flash controller is not only legal, it is what every board with both an
+// `nvm` and an `fs` role ships (nucleo_g0b1re: two regions, one driver), and
+// `emit/board.py` already admits exactly that pair by giving both roles the
+// `flash` personality. Adding a claim to `program()` would put a load, a
+// compare and a branch inside the innermost loop of every settings write and
+// every OTA image, and buy nothing the generator does not already check.
 
 #pragma once
 

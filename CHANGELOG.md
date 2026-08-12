@@ -14,6 +14,33 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **Instance ownership gets its second scope, and the other seven facades
+  (`alloy/core/claim.hpp`).** The entry below closed the double-open hole for
+  five of alloy's twelve peripheral facades and for one of the defect's two
+  scopes; the identical bug was still live where it was not looking.
+  `pwm::bind` guarded the CHANNEL with a `static bool` of its own — and `bind`
+  is templated on the pin, so one channel had one flag per route. TIM2_CH1 has
+  four routes on the `nucleo_g0b1re`, so two binds on one channel compiled
+  clean, both opened, both muxed a pin onto one output compare, and the block
+  claim admitted them because they agreed on the frequency. Booted in Renode,
+  the pre-fix image printed its "second bind also opened" banner in 1.4 s. New
+  `alloy::claim::sub_exclusive<Inst, Sub, P>()` is keyed on the instance and
+  the ordinal and nothing else; `dma::channel`'s private `claimed_` — correctly
+  scoped but a third mechanism with an untyped trap — now uses it too, and
+  `trap_code::sub_resource_owned` tells a channel conflict from a port
+  conflict. `wdt::start` gained the `shared` claim it never had (two `start()`
+  calls with different timeouts silently kept the last one); `dac`, `can` and
+  `rtc` claim their personality with a constant witness. `flash` and `gpio`
+  deliberately claim nothing — a facade claims at its configuring entry point,
+  and neither has one; `gpio` is a third (pin) scope this mechanism does not
+  model, which
+  [the reference page](docs/reference/peripheral-surface.md#which-facade-claims-what)
+  now states rather than leaves to be discovered. `ROLE_PERSONALITY` and the
+  C++ `personality` enum are checked against each other by a new test, after
+  `ethernet` turned out to exist only in the Python half and `dma` in neither.
+  Cost, measured on `nucleo_g0b1re`: `.text` **unchanged** for nine examples
+  that claim nothing new, **unchanged with 8 bytes of RAM returned** for
+  `pwm_fade`, and +8…+48 bytes for the six that gained a claim.
 - **Peripheral instance ownership (`alloy/core/claim.hpp`).** A peripheral is
   owned by one binder, in one *personality*. `alloy::claim::owner<Inst>` is an
   inline variable template, so it is one byte per instance across the whole

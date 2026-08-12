@@ -10,6 +10,7 @@
 #pragma once
 
 #include "alloy/concepts.hpp"
+#include "alloy/core/claim.hpp"
 // Only the primary template — the concrete per-IP driver is pulled in by the
 // generated device.hpp for the chip that actually has the RTC IP.
 #include "alloy/hal/rtc/rtc_impl.hpp"
@@ -19,7 +20,16 @@ namespace alloy::rtc {
 template <class Inst>
 class rtc {
 public:
-    void set(const datetime& dt) const { hal::rtc_impl<Inst>::set(dt); }
+    // `set()` is where this facade touches the block's init sequence, so it is
+    // where the claim goes — shared with a constant witness, because a wall
+    // clock is DATA and setting it twice (first boot, then an NTP correction)
+    // is the normal thing to do, not a contradiction. As with dac/can, the
+    // claim records the personality; it does not police the value. `now()`
+    // only reads, and claims nothing.
+    void set(const datetime& dt) const {
+        alloy::claim::shared<Inst, alloy::claim::personality::rtc>(0u);
+        hal::rtc_impl<Inst>::set(dt);
+    }
     [[nodiscard]] datetime now() const { return hal::rtc_impl<Inst>::now(); }
     // True once the calendar has been set — lets an app set the clock on first
     // boot only and just read it after (it keeps ticking across resets).

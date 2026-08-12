@@ -4,7 +4,9 @@
 //
 // Honest v1 doctrine (same as irq attach / double-open): claiming an
 // already-claimed (controller, channel) TRAPS at runtime — C++ cannot make
-// cross-TU resource claims a compile error.
+// cross-TU resource claims a compile error. The claim itself is
+// `alloy::claim::sub_exclusive`, shared with the PWM channel: one ownership
+// mechanism for both of alloy's sub-resource scopes.
 //
 // Completion can be POLLED (wait/done) or delivered as a callback
 // (on_complete). Polling is fine when the CPU has nothing else to do; a product
@@ -19,6 +21,7 @@
 #include <span>
 
 #include "alloy/arch/irq.hpp"
+#include "alloy/core/claim.hpp"
 #include "alloy/hal/dma/dma_impl.hpp"
 
 namespace alloy::dma {
@@ -32,12 +35,17 @@ public:
     channel& operator=(const channel&) = delete;
     channel(channel&&) noexcept = default;
 
+    // One token per (controller, channel) per firmware. The flag used to be a
+    // private `claimed_` on this class — correctly scoped, since `channel` is
+    // templated on exactly <Inst, Ch> and nothing else, but a THIRD ownership
+    // mechanism with a bare `__builtin_trap()` that a fault report could not
+    // tell from the transfer-size traps further down. It is the same
+    // sub-resource claim the PWM channel makes now, so it carries
+    // `trap_code::sub_resource_owned` and a foreign personality on one channel
+    // is a different code again.
     static channel claim() {
         const arch::irq_state saved = arch::irq_save();
-        if (claimed_) {
-            __builtin_trap();  // one token per (controller, channel) per firmware
-        }
-        claimed_ = true;
+        alloy::claim::sub_exclusive<Inst, Ch, alloy::claim::personality::dma>();
         arch::irq_restore(saved);
         impl::enable_controller();
         return channel{};
@@ -141,7 +149,6 @@ public:
     }
 
 private:
-    inline static bool claimed_ = false;
     channel() = default;
 };
 

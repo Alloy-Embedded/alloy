@@ -44,6 +44,27 @@ inline void admit_freq(std::uint32_t freq_hz, std::uint32_t kernel) {
         alloy::trap<alloy::trap_code::impossible_config>();
     }
 }
+
+// ONE FACT, STATED TWICE, so make the two spellings agree at compile time.
+// `bind` carries the channel ORDINAL (which the driver programs, and which is
+// the key of the sub-resource claim) and the route SIGNAL (which picks the pin
+// mux). Nothing tied them together: `bind<tim2_t, 2u, pa5_t, signal::ch1, …>`
+// muxed PA5 onto CH1 while programming CH2 and claiming ownership of CH2, so
+// two binds that genuinely contest CH1 could both be admitted. The generator
+// always emits them consistently; a hand-written bind had no such promise.
+//
+// A signal that is NOT a numbered channel is left alone on purpose:
+// funcsel-style backends name the slice through the instance and the pin
+// rather than the signal, so there is no ordinal in it to disagree with.
+constexpr bool channel_matches_signal(unsigned channel, alloy::signal sig) {
+    switch (sig) {
+        case alloy::signal::ch1: return channel == 1u;
+        case alloy::signal::ch2: return channel == 2u;
+        case alloy::signal::ch3: return channel == 3u;
+        case alloy::signal::ch4: return channel == 4u;
+        default: return true;
+    }
+}
 }  // namespace detail
 
 template <class Inst, unsigned Channel>
@@ -99,6 +120,11 @@ private:
 
 template <class Inst, unsigned Channel, class Pin, alloy::signal Sig, class Clock>
 struct bind {
+    static_assert(detail::channel_matches_signal(Channel, Sig),
+                  "PWM bind names one channel ordinal and a different channel "
+                  "signal — the ordinal is what the driver programs and what "
+                  "owns the channel, the signal is what routes the pin, and "
+                  "they have to be the same channel");
     static_assert(routes::routable<Pin, Inst, Sig>,
                   "pin has no route to this PWM channel on the selected chip "
                   "(check the chip's route table in alloy-devices)");
@@ -122,20 +148,21 @@ struct bind {
         // is that value; a mismatch traps with its own code.
         detail::admit_freq(c.freq_hz, kernel_hz());
         // The CHANNEL is still exclusive — sharing the block does not mean
-        // opening one channel twice is suddenly fine.
-        if (detail_channel_opened) {
-            alloy::trap<alloy::trap_code::instance_owned>();
-        }
-        detail_channel_opened = true;
+        // opening one channel twice is suddenly fine. This claim is per
+        // (INSTANCE, CHANNEL), not per binder type: `detail_channel_opened`
+        // used to live here as a `static` member of `bind`, which is templated
+        // on the PIN too, so `bind<tim2_t, 1, pa5_t, ...>` and
+        // `bind<tim2_t, 1, pa0_t, ...>` — two of TIM2_CH1's four legal routes
+        // on the G0B1RE — got one flag EACH. Both opened, both muxed their pin
+        // onto the same output compare, and neither said a word. That is hole
+        // (A) exactly, one scope down.
+        alloy::claim::sub_exclusive<Inst, Channel, alloy::claim::personality::pwm>();
         alloy::claim::shared<Inst, alloy::claim::personality::pwm>(c.freq_hz);
         using pin_route = routes::route<Pin, Inst, Sig>;
         hal::pin_impl<Pin>::make_af(routes::mux_value<pin_route>());
         hal::pwm_impl<Inst>::enable(kernel_hz(), c.freq_hz, Channel);
         return handle<Inst, Channel>{};
     }
-
-private:
-    inline static bool detail_channel_opened = false;
 };
 
 }  // namespace alloy::pwm

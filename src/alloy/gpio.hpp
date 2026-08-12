@@ -1,6 +1,20 @@
 // User-facing GPIO wrappers. Stateless, zero-size, satisfy the OutputPin /
 // InputPin concepts. Generated boards expose roles as inline constexpr
 // instances of these types.
+//
+// NO CLAIM, and this one is a limit rather than a rule — the honest statement
+// of a THIRD ownership scope that alloy::claim does not model. A pin is not a
+// peripheral instance and not a numbered part of one; it is a resource that
+// several peripherals compete for through the mux. The shipped boards prove
+// the contention is real and often INTENTIONAL: on the nucleo_g0b1re PA5 is
+// both the `led` role (GPIO output) and the `led_pwm` role (TIM2_CH1 via AF),
+// and PB3/PB4/PB5 are both `gpio_bus` and `spi` — the board offers the
+// alternatives and the application picks one. A pin claim that fired on those
+// would refuse a board alloy ships on purpose, and putting it in `set()` or
+// `read()` would tax the hottest path in the framework. What the type system
+// DOES enforce here is that a pin reaches a peripheral at all: `routes::route`
+// is a compile error for a pin that has no route (guard #7). Who wins when two
+// routes are both legal is, today, the programmer's problem.
 
 #pragma once
 

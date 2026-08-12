@@ -32,6 +32,14 @@ struct inst_d {};
 struct inst_e {};
 struct inst_f {};
 struct inst_g {};
+struct inst_h {};
+struct inst_i {};
+struct inst_j {};
+struct inst_k {};
+struct inst_l {};
+struct inst_m {};
+struct inst_n {};
+struct inst_o {};
 
 // A child that must NOT exit cleanly: the guard under test has to fire.
 template <class Fn>
@@ -110,5 +118,85 @@ ALLOY_TEST(claim_shared_refuses_a_foreign_personality) {
     ALLOY_CHECK(refuses([] {
         alloy::claim::shared<inst_g, personality::pwm>(20'000u);
         alloy::claim::exclusive<inst_g, personality::encoder>();
+    }));
+}
+
+// ── The SECOND scope: a numbered part of one block ───────────────────────
+//
+// Hole (A) had two scopes and only one of them was closed. `owner<Inst>` says
+// who owns TIM2; nothing said who owns TIM2 CHANNEL 1, and the flag that
+// pretended to was a `static` member of `pwm::bind<Inst, Channel, Pin, Sig,
+// Clock>` — templated on the PIN, so one channel got one flag per route. On
+// the G0B1RE, TIM2_CH1 has four (PA0, PA5, PA15, PC4).
+
+ALLOY_TEST(claim_sub_resources_of_one_instance_are_independent) {
+    // Four channels of one timer are four resources. A claim on one must not
+    // read as a claim on its neighbour, or opening ch1 would lock out ch2.
+    alloy::claim::sub_exclusive<inst_h, 1u, personality::pwm>();
+    ALLOY_CHECK((alloy::claim::sub_held<inst_h, 1u, personality::pwm>()));
+    ALLOY_CHECK(!(alloy::claim::sub_held<inst_h, 2u, personality::pwm>()));
+    alloy::claim::sub_exclusive<inst_h, 2u, personality::pwm>();
+    ALLOY_CHECK((alloy::claim::sub_held<inst_h, 1u, personality::pwm>()));
+    ALLOY_CHECK((alloy::claim::sub_held<inst_h, 2u, personality::pwm>()));
+}
+
+ALLOY_TEST(claim_sub_resource_of_one_instance_is_not_the_instance) {
+    // ...and the two scopes are genuinely separate variables: claiming the
+    // block does not claim its channels, nor the other way round. If they
+    // shared storage, `pwm::open()` — which does BOTH — would trap on itself.
+    alloy::claim::shared<inst_i, personality::pwm>(1'000u);
+    ALLOY_CHECK(!(alloy::claim::sub_held<inst_i, 1u, personality::pwm>()));
+    alloy::claim::sub_exclusive<inst_i, 1u, personality::pwm>();
+    ALLOY_CHECK((alloy::claim::held<inst_i, personality::pwm>()));
+}
+
+ALLOY_TEST(claim_second_binder_on_one_sub_resource_traps) {
+    // THE REGRESSION FOR THIS SCOPE. Two binders, same instance, same channel,
+    // different pin — both legally routed, both compiling, and until now both
+    // opening: the second muxed its pin onto the same output compare and said
+    // nothing. The two claims here are what those two open() calls reduce to.
+    ALLOY_CHECK(refuses([] {
+        alloy::claim::sub_exclusive<inst_j, 1u, personality::pwm>();
+        alloy::claim::sub_exclusive<inst_j, 1u, personality::pwm>();
+    }));
+}
+
+ALLOY_TEST(claim_two_personalities_on_one_sub_resource_trap) {
+    // A DMA channel handed out twice, once to the DMA facade and once to a
+    // facade that drives it itself. Distinct trap code from the case above,
+    // because the two bugs have different fixes.
+    ALLOY_CHECK(refuses([] {
+        alloy::claim::sub_exclusive<inst_k, 3u, personality::dma>();
+        alloy::claim::sub_exclusive<inst_k, 3u, personality::adc>();
+    }));
+}
+
+ALLOY_TEST(claim_sub_resources_of_different_instances_are_independent) {
+    // Channel 1 of DMA1 is not channel 1 of DMA2. The key is the pair.
+    alloy::claim::sub_exclusive<inst_l, 1u, personality::dma>();
+    ALLOY_CHECK(!(alloy::claim::sub_held<inst_m, 1u, personality::dma>()));
+    alloy::claim::sub_exclusive<inst_m, 1u, personality::dma>();
+    ALLOY_CHECK((alloy::claim::sub_held<inst_l, 1u, personality::dma>()));
+}
+
+// ── The watchdog's block-scoped timeout ──────────────────────────────────
+
+ALLOY_TEST(claim_watchdog_admits_two_claimants_of_one_timeout) {
+    // A bootloader arming 2 s and the app it starts arming 2 s is not a
+    // conflict — the same deadline stated twice.
+    alloy::claim::shared<inst_n, personality::wdt>(2'000u);
+    alloy::claim::shared<inst_n, personality::wdt>(2'000u);
+    ALLOY_CHECK((alloy::claim::held<inst_n, personality::wdt>()));
+}
+
+ALLOY_TEST(claim_watchdog_refuses_two_different_timeouts) {
+    // ...and a live defect in the shipped wdt facade until now: `start()`
+    // programs one prescaler and one reload for the block, there is no
+    // close(), and nothing recorded that it had been called. The second
+    // start() silently replaced the first and the program went on believing
+    // in a deadline the silicon had stopped enforcing.
+    ALLOY_CHECK(refuses([] {
+        alloy::claim::shared<inst_o, personality::wdt>(4'000u);
+        alloy::claim::shared<inst_o, personality::wdt>(10'000u);
     }));
 }

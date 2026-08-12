@@ -509,6 +509,113 @@ Run time and not compile time, for the reason NORTH_STAR guard #7 already
 concedes: C++ cannot see across translation units while compiling. What is new
 is not the mechanism, it is the *key* — instance, not binder.
 
+### Two keys, because a peripheral is not always the contested resource
+
+A whole peripheral is one scope. A **numbered part** of it is another, and
+`owner<Inst>` cannot express it: it answers "who owns TIM2" and there is no
+value it can hold that answers "who owns TIM2 **channel 1**". So there is a
+second variable template, keyed on the instance **and the ordinal**:
+
+```cpp
+template <class Inst, unsigned Sub> inline claim::personality sub_owner = …;
+
+claim::sub_exclusive<Inst, Sub, P>();   // one owner of one channel, full stop
+```
+
+There is deliberately no `sub_shared`. A sub-resource is a sub-resource
+*because* it has no block-scoped register for two claimants to disagree about;
+the block-scoped values live at the other key, where `shared` already is.
+
+**The ordinal, and nothing else, is the key.** That is the whole lesson of this
+scope, and getting it wrong is how the defect survived the first repair:
+`pwm::bind` is templated on `<Inst, Channel, Pin, Signal, Clock>`, so the
+`static bool detail_channel_opened` that used to guard the channel was keyed on
+the PIN as well — one channel, one flag per route. TIM2_CH1 has four routes on
+the G0B1RE (PA0, PA5, PA15, PC4), so two binds on one channel were legal to
+write, compiled clean, both opened, both muxed their pin onto the same output
+compare, and neither said a word. Measured: the pre-fix `nucleo_g0b1re` image
+printed its "second bind also opened" banner under Renode in 1.4 s. It is
+[hole (A)](#the-three-holes-two-now-closed) exactly, one level down, and the
+fix is the same one: move the key off the binder.
+
+### Which facade claims what {#which-facade-claims-what}
+
+Twelve facades, two scopes, and the rule that decides is one line: **a facade
+claims at its CONFIGURING entry point — the call that programs the block — and
+never on a call that only moves data.** `uart::write`, `pwm::set_duty`,
+`can::send` and `wdt::feed` are on the hot path and claim nothing.
+
+| Facade | Entry point | Instance scope | Sub-resource scope | What the claim catches |
+|---|---|---|---|---|
+| `uart` | `open`, `rom_bind::open` | `exclusive` | — | a second pin pair on one port |
+| `i2c` | `open` | `exclusive` | — | a second pin pair on one bus |
+| `spi` | `open` | `exclusive` | — | a second pin trio on one bus |
+| `adc` | `open` | `exclusive` | — | two claimants of one converter |
+| `pwm` | `open` | `shared(freq_hz)` | `sub_exclusive(Channel)` | two frequencies on one timer; **two pins on one channel** |
+| `dma` | `channel::claim` | — | `sub_exclusive(Ch)` | one channel handed out twice |
+| `wdt` | `start` | `shared(timeout_ms)` | — | **two deadlines on one watchdog** |
+| `dac` | `enable` | `shared(0)` | — | personality only (see below) |
+| `can` | `enable` | `shared(0)` | — | personality only |
+| `rtc` | `set` | `shared(0)` | — | personality only |
+| `flash` | *none* | — | — | nothing; deliberately (see below) |
+| `gpio` | *none* | — | — | nothing; a third scope, not modelled |
+| ethernet | *no facade* | — | — | nothing at run time; generation time only |
+
+There is no thirteenth row for `encoder` or `spi::slave`: those personalities
+are named in the enum and have no facade yet. **Ethernet has the opposite
+shape** — a role, a `ROLE_PERSONALITY` entry and a generated `board::eth`, but
+no `alloy::eth` facade: the board exposes the HAL MAC type directly, so there
+is no portable entry point for a claim to live in. Generation time is the only
+half it has, and the `ethernet` enumerator exists for the day that changes.
+
+**`shared(0)` is not ceremony and not a fix.** `dac`, `can` and `rtc` carry no
+configuration — `enable()` takes no arguments, and a wall clock is data — so
+the "contradictory config, last writer wins" half of hole (A) genuinely cannot
+happen there: two `can::controller<fdcan1_t>` objects are indistinguishable.
+What the claim buys is the *other* half. The block goes on record in its
+personality, so an `alloy::dev::`-level driver or an out-of-tree facade
+claiming `user_a` on the same instance traps instead of quietly coexisting —
+which is a supported path (`examples/escape_hatch`), not a hypothetical. A
+constant witness is what keeps `enable()` safe to call twice; `exclusive` there
+would invent a bug that does not exist. The honest cost of reusing `shared`
+rather than inventing a third shape: `witness<Inst>` is instantiated for these
+three, so they pay 4 bytes of `.bss` for a value that can only ever be zero.
+Four bytes on a peripheral the program is already using was judged cheaper than
+a fourth entry point in a Tier-1 header.
+
+**`flash` claims nothing, by the same rule that exempts `uart::write`.** The
+flash controller has no configuring entry point at all: the array is on at
+reset and memory-mapped, and `erase_page`/`program` only move data. Two
+claimants of one controller is not merely legal, it is what every board with
+both an `nvm` and an `fs` role ships — and `ROLE_PERSONALITY` already gives
+both roles the `flash` personality so the generator admits exactly that pair.
+
+**`gpio` is a third scope this mechanism does not model, and that is a limit,
+not a rule.** A pin is neither an instance nor a numbered part of one; it is a
+resource several peripherals compete for through the mux. On the
+`nucleo_g0b1re`, PA5 is both the `led` role and the `led_pwm` role, and
+PB3/PB4/PB5 are both `gpio_bus` and `spi`: the board offers alternatives and
+the application picks one. A pin claim would refuse boards alloy ships on
+purpose. What the type system does enforce is that a pin reaches the peripheral
+at all — `routes::route` is a compile error otherwise (guard #7). Who wins when
+two routes are both legal is, today, the programmer's problem.
+
+### The two halves cannot drift
+
+`ROLE_PERSONALITY` (Python, generation time) and `claim::personality` (C++, run
+time) are one closed vocabulary written twice, and until now nothing checked
+that they agreed. `ethernet` was in the generator and not in the enum; `dma`
+was a facade with no enumerator at all. `test_emit.py` now parses the enum out
+of `claim.hpp` and fails if the generator names a personality the firmware
+cannot express.
+
+The generator half covers **instance** scope only, and completely: all twelve
+board roles that name a peripheral are in `ROLE_PERSONALITY`. It cannot cover
+sub-resource scope because no board file can express the conflict — `led_pwm`
+names a `channel`, but a board has exactly one `led_pwm` role, so there is no
+second claimant for the generator to see. At that scope the runtime claim is
+the only half there is.
+
 ---
 
 ## Sub-resources: a thing inside the peripheral with its own lifetime
@@ -522,6 +629,11 @@ filter bank, a DMA stream.
 
 **Mechanical test:** *does it exist N times inside one peripheral, with its own
 enable and its own lifetime?* → sub-resource.
+
+And it is a resource, so it is *owned*:
+[`claim::sub_exclusive<Inst, Sub, P>()`](#two-keys-because-a-peripheral-is-not-always-the-contested-resource),
+keyed on the instance and the ordinal. A timer channel and a DMA channel use it
+today; an analog watchdog would be the third the day the handle below exists.
 
 Where it goes: **its own handle, obtained from the port's handle, with the
 index checked against a generated `feat` count.**
@@ -620,8 +732,9 @@ them at compile time was inconvenient.
 | Guard | `trap_code` | Fires when |
 |---|---|---|
 | instance ownership | `instance_owned` | a second binder opens a port already open |
+| sub-resource ownership | `sub_resource_owned` | a second binder opens one *channel* already open |
 | personality | `personality_conflict` | one block, two mutually exclusive modes |
-| block config | `block_config_conflict` | two channels of one timer, two frequencies |
+| block config | `block_config_conflict` | two channels of one timer, two frequencies; two `wdt::start` deadlines |
 | Layer-1 value | `impossible_config` | a *computed* value no divisor can reach |
 | port state | `not_open` / `opts_mismatch` | `reconfigure<Opts>` on a port nobody opened, or with `Opts` that disagree with `open()`'s |
 
@@ -1067,12 +1180,17 @@ is deleted as unreachable — including the string the program meant to print.
 So the build is silent, the binary is *correct* (it refuses), and the failure
 arrives at run time on the first boot. No warning is emitted.
 
-### 6. The three holes, two now closed {#the-three-holes-two-now-closed}
+### 6. The holes, three now closed {#the-three-holes-two-now-closed}
 
 Found by trying combinations this page did not anticipate, all on the G0B1RE
 unless noted. None of them was a new defect introduced by the layers — they
-were the shape's blind spots. Two are closed in code; the third is the seam
+were the shape's blind spots. Three are closed in code; the last is the seam
 above and stays.
+
+**(A2) is here because the repair for (A) was itself incomplete**, and it was
+found the same way the holes were: by asking the shipped code, one facade at a
+time, whether it actually had the claim the page said it had. Five of twelve
+facades did, and one of two scopes.
 
 **(A) The double-open guard was per *binder type*, not per instance. CLOSED.**
 Two different `uart::bind<>` specialisations naming the same `usart2_t` — a
@@ -1104,6 +1222,75 @@ cold path** — the disassembly's success path is the identical
 and the `movs r3, #2` that distinguishes the two failures. RAM is unchanged for
 an exclusive claim: one byte per instance where it was one byte per binder.
 
+**(A2) …and that repair was itself keyed one level too high. NOW CLOSED.**
+The paragraph above described five of alloy's twelve facades and one of the
+defect's two scopes, and the identical bug was still live in shipped code where
+it was not looking. `pwm::bind` kept its own `static bool
+detail_channel_opened` for the CHANNEL — and `bind` is templated on the pin, so
+one channel had one flag per route. On the `nucleo_g0b1re`, TIM2 channel 1 is
+routed to PA0, PA5, PA15 and PC4:
+
+```cpp
+auto a = board::led_pwm::open({.freq_hz = 1'000});      // TIM2_CH1 via PA5
+using other = alloy::pwm::bind<alloy::dev::tim2_t, 1u, alloy::dev::pa0_t,
+                               alloy::signal::ch1, board::clock_profile>;
+auto b = other::open({.freq_hz = 1'000});               // TIM2_CH1 via PA0
+```
+
+Both compiled, both opened, both muxed their pin onto one output compare, and
+the `claim::shared` block claim admitted them because they agreed on the
+frequency — which they do. Built for `nucleo_g0b1re` and booted in Renode, the
+pre-fix image printed its "second bind also opened" banner **in 1.4 s**.
+
+The key is now `sub_owner<Inst, Sub>` — instance and ordinal, nothing else
+([two keys](#two-keys-because-a-peripheral-is-not-always-the-contested-resource))
+— and the same claim replaced `dma::channel`'s private `claimed_`, which was
+correctly scoped but was a *third* ownership mechanism whose bare
+`__builtin_trap()` a fault report could not tell from the transfer-size traps
+in the same class. `wdt::start` gained the `shared` claim it never had (two
+`start()` calls with different timeouts silently kept the last one), and `dac`,
+`can` and `rtc` claim their personality; `flash` and `gpio` deliberately claim
+nothing, for the reasons in
+[which facade claims what](#which-facade-claims-what).
+
+*Measured on `nucleo_g0b1re`, `arm-none-eabi-g++ 14.2.1 -Os`:*
+
+| Example | `.text` | `.bss` | why |
+|---|---|---|---|
+| `blink`, `hello`, `uart_echo`, `nvm`, `fs`, `adc_read`, `i2c_read`, `spi_read`, `gpio_bus` | **unchanged** | unchanged | nothing they do claims anything new |
+| `pwm_fade` | **unchanged** (3652) | **−8** (3256→3248) | a per-binder `bool` became a per-(instance, channel) byte |
+| `dma_uart` / `dma_probe` | +8 / +36 | unchanged | the trap codes that tell the two DMA failures apart |
+| `watchdog` | +48 | +8 | a claim the facade did not have at all |
+| `dac` / `can` / `rtc` | +44 / +40 / +44 | +8 each | ditto — and these buy personality only |
+
+The nine unchanged examples are the control: code that claims nothing pays
+nothing. The `pwm_fade` row is the fix's own row — strictly better coverage at
+strictly negative cost, because the flag it deleted was bigger than the one it
+added.
+
+**One half of this scope IS a compile error, and it was missing.** `pwm::bind`
+states the channel twice — as the ordinal the driver programs and the claim
+owns, and as the route signal that picks the pin mux — and nothing tied them
+together. `bind<tim2_t, 2u, pa5_t, signal::ch1, …>` muxed PA5 onto CH1 while
+programming and owning CH2, so two binds genuinely contesting CH1 would hold
+two different keys and the runtime claim would never see them. That is a
+compile-time fact and is now a `static_assert`, with an eighth case in
+`scripts/check_compile_errors.py` holding the diagnostic.
+
+*What is and is not proven.* Seven more tests in `tests/test_claim.cpp` — three
+of them death tests, four asserting the claims that must be *admitted* — cover
+the new scope and the watchdog, with a negative control confirming the
+fork-based idiom reports *false* when nothing traps and *false* for a single,
+legitimate claim. The refusal itself is read directly out of
+the linked image: `sub_exclusive<dev::tim2_t, 1u, personality::pwm>` loads
+`sub_owner` and, on a non-zero owner, puts `#7` (`sub_resource_owned`) or `#2`
+(`personality_conflict`) in `r3` before the shared `udf #255`. The **defect**
+is proven on emulated silicon (the 1.4 s above); the **trap** is not, and
+cannot be with this tooling — Renode does not vector an undefined instruction
+on this platform, so the fixed image wedges at the `udf` instead of reaching a
+fault handler, which is the same limitation `crash_report.robot` documents for
+organic faults. A wedge is not a pass and is not reported as one.
+
 **(B) Layer 1 admitted values it could not reach. CLOSED.**
 `open({.baud = 0})` compiled with no diagnostic; `baud_div()` divided by it,
 GCC folded the constant division to unreachable, and the emitted code fell into
@@ -1117,7 +1304,8 @@ Both are closed, and not opt-in:
 Zero bytes for a constant value, 20 bytes for a computed one, a compile error
 naming the instance for the literal case, and `.baud` is not a member of the
 type `open_checked` takes. Two new cases in
-`scripts/check_compile_errors.py` (now 7, all green) hold both.
+`scripts/check_compile_errors.py` (now 8 with the channel case below, all
+green) hold both.
 
 **(C) The compile-time/runtime seam stays open.** Item 5 above — a
 compile-time `opts{.data_bits = 9}` plus a runtime `parity::even` — is not

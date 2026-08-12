@@ -12,6 +12,7 @@
 #pragma once
 
 #include "alloy/concepts.hpp"
+#include "alloy/core/claim.hpp"
 // Only the primary template — the concrete per-IP driver is pulled in by the
 // generated device.hpp for the chip that actually has the CAN IP.
 #include "alloy/hal/can/can_impl.hpp"
@@ -21,7 +22,14 @@ namespace alloy::can {
 template <class Inst>
 class controller {
 public:
-    void enable() const { hal::can_impl<Inst>::enable(); }
+    // Shared with a constant witness, for the reason spelled out in
+    // alloy/dac.hpp: `enable()` takes no configuration, so there is nothing
+    // for two claimants to contradict, and the claim exists to put the block
+    // on record in its CAN personality. `send`/`receive` claim nothing.
+    void enable() const {
+        alloy::claim::shared<Inst, alloy::claim::personality::can>(0u);
+        hal::can_impl<Inst>::enable();
+    }
     [[nodiscard]] bool send(const can_frame& f) const { return hal::can_impl<Inst>::send(f); }
     [[nodiscard]] bool receive(can_frame& f) const { return hal::can_impl<Inst>::receive(f); }
 };
