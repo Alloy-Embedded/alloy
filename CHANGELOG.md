@@ -97,6 +97,12 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   - **It costs nothing if you do not use it.** `.text` for the pre-existing
     `examples/can` main is byte-identical before and after (1467 B, `-Os`,
     Cortex-M0+, disassembly diffed); adding the two-filter call costs 112 B.
+    Re-measured at the IMAGE level since, against a `git archive` of the parent
+    commit with its matching `alloy-devices`: the old `main.cpp` built against
+    the new headers gives `.text` 4044 bytes, MD5-identical to the old tree, and
+    `blink`, `uart_echo`, `pwm_fade` and `adc_read` are unmoved to the byte —
+    see [the surface page](docs/reference/peripheral-surface.md#cost-zero-for-unused-features-measured-to-the-byte),
+    which does the same for the encoder and the analog watchdog.
 
   **Not proven in emulation, and it cannot be**: Renode's own `stm32g0.repl`
   maps FDCAN to `CAN.STMCAN`, a bxCAN model whose register map differs — a

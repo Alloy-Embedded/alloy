@@ -1918,7 +1918,7 @@ derived from what a build actually demanded. Those three landed at `3ef5130`,
 Each of those commits also listed proofs it had not run. This section is those
 proofs, run.
 
-### Portability: all three examples, all eight boards
+### Portability: all three examples, every board {#portability-all-three-examples-every-board}
 
 `examples/can`, `examples/encoder` and `examples/adc_watchdog` are one
 `main.cpp` each with no preprocessor conditional. Built for every board on CI's
@@ -1947,3 +1947,76 @@ reading the source. On `esp32_devkit` the three examples have **the same
 bytes for `encoder`, `adc_watchdog`, `can`), which is the length of their
 banners and their one "not available" line. Three different peripherals, three
 discarded branches, and not one instruction between them.
+
+### Cost: "zero for unused features", measured to the byte {#cost-zero-for-unused-features-measured-to-the-byte}
+
+The claim under every layer decision on this page is that a feature nobody calls
+costs a program nothing. It was asserted by all three of these commits and
+measured by one of them. It is measured for all three now, the same way each
+time.
+
+**Method**, so it can be re-run or attacked. For each landing, `git archive` the
+PARENT commit of `alloy` and pair it with the `alloy-devices` commit that was
+`alloy-devices` HEAD at that moment — the register data is half of the change,
+and comparing a new emitter against old data would measure the wrong thing.
+Then `git archive` the landing itself with its own data commit. Build four
+examples that never mention the new feature — `blink`, `uart_echo`, `pwm_fade`,
+`adc_read` — for `nucleo_g0b1re`, same host toolchain (xPack
+`arm-none-eabi-gcc` 14.2.1, `-Os`). Compare `size`, then extract `.text` with
+`objcopy -O binary --only-section=.text` and compare the bytes.
+
+| Landing | before (alloy + alloy-devices) | after |
+|---|---|---|
+| `can` — FDCAN acceptance filters | `b353304` + `70b288f` | `3ef5130` + `7cc8fff` |
+| `encoder` — the timer's second personality | `16cbae9` + `7cc8fff` | `f1f6833` + `2ec8c99` |
+| `adc` — the analog watchdog | `f1f6833` + `2ec8c99` | `de6e59b` + `14b6976` |
+
+**Result: `.text` byte-identical in all twelve comparisons.** Not "the same
+size" — the same bytes, same MD5:
+
+| Example | `size` text/data/bss | `.text` bytes | MD5, all six trees |
+|---|---|---|---|
+| `blink` | 3396 / 8 / 3240 | 3208 | `565f5cfc7db6ac62dfe235fc9b1c30d2` |
+| `uart_echo` | 2744 / 8 / 3240 | 2556 | `b27dfa7f10226bf7be0c9b527c721da6` |
+| `pwm_fade` | 3652 / 8 / 3248 | 3464 | `e06d3af5ab1969a9fdeff053fc9d2854` |
+| `adc_read` | 3996 / 8 / 3240 | 3808 | `312fb5e06c50c394bf49dd9c317b4e18` |
+
+Two of those four rows are the ones that could actually have moved, and they are
+the reason the set is not just `blink` four times:
+
+- **`pwm_fade` is the encoder's exposure.** It binds the same `st_tim_gp16` IP
+  the encoder personality binds, and `f1f6833` changed how `class` is matched
+  across four consumers *and* added an encoder role to
+  `boards/nucleo_g0b1re/board.json`, so the board codegen that produced this
+  image is a different program than the one before it. Same bytes out.
+- **`adc_read` is the watchdog's exposure.** `de6e59b` added `awd_arm`,
+  `awd_tripped`, `awd_clear` and `awd_disarm` to the very header `adc_read`
+  compiles (`hal/adc/st_adc_v2.hpp`) and a `watchdog<N>()` member to
+  `alloy::adc::handle`. Same bytes out — and also on `nucleo_g071rb`, the other
+  board with `analog_watchdogs == 3` (`.text` 2880 before and after,
+  `83869ae2e8971b986abb96467f122068`; `blink` 2280, `c79f1b0ecb9b6482fd8f7bb62b76024d`).
+
+**The controls, because twelve identical hashes are equally consistent with a
+broken measurement.**
+
+- *Positive control on the harness.* The same before/after pair applied to
+  `examples/can`, which DOES use the feature, moves: `.text` 4044 → 4244 bytes
+  and a different MD5. The comparison can see a change; it saw none in the four
+  above.
+- *The header cost, isolated from the example rewrite.* `3ef5130` rewrote
+  `examples/can/src/main.cpp` as well as adding the filters, so the +200 above
+  is not the price of `accept_only` — it is the price of the whole new main.
+  Building the OLD `main.cpp` against the NEW headers gives `.text` 4044 and
+  `83236c5ad8ba3495116bfdddba9f486e`, byte-identical to the old tree. So the
+  filter machinery costs a program that does not call it exactly zero, which is
+  what `3ef5130` claimed from a disassembly diff and what this reproduces from
+  the image.
+
+**What this does not say.** Every figure above is `-Os`, one toolchain, and
+Cortex-M0+ only — `nucleo_g0b1re` and `nucleo_g071rb`. No `-O2`, no other
+compiler, no other ISA, and no RAM-at-runtime claim beyond the `bss` column.
+The 27-build sweep in the section above covers the other architectures; the
+byte comparison does not. The +200 figure for `examples/can` is the whole
+example's delta and is *not* the same quantity as `3ef5130`'s "+112 B for the
+two-filter call", which was measured on the function rather than the image; that
+figure was not re-derived here.
