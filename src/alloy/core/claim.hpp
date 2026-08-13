@@ -129,6 +129,13 @@ enum class personality : std::uint8_t {
     // would AGREE and neither would trap — and what the tick actually did was
     // reprogram the period of a running PWM channel.
     tick,
+    // A THIRD personality of the same timer block, and it is separate from
+    // `pwm` for the reason this list already states about `spi_slave`: if a
+    // complementary bridge and a plain PWM channel on one TIM1 both read as
+    // `pwm`, they AGREE and neither traps — while what the second one would
+    // actually do is take a channel out of the bridge's dead-time-paired set
+    // and drive it single-ended.
+    bridge,
     capture,
     can,
     wdt,

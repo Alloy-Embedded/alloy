@@ -50,6 +50,7 @@ ROW_SOURCE = {
     "flash": "src/alloy/flash.hpp",
     "gpio": "src/alloy/gpio.hpp",
     "encoder": "src/alloy/encoder.hpp",
+    "bridge": "src/alloy/bridge.hpp",
     "exti": "src/alloy/hal/exti/exti_impl.hpp",
     "ethernet": None,  # a role and a generated board::eth, no portable facade
 }
@@ -62,6 +63,7 @@ HAL_DIR_TO_ROW = {
     "can": "can",
     "dac": "dac",
     "dma": "dma",
+    "bridge": "bridge",
     "encoder": "encoder",
     "exti": "exti",
     "flash": "flash",

@@ -103,6 +103,7 @@ ROLE_PERSONALITY = {
     "can": "can",
     "led_pwm": "pwm",
     "encoder": "encoder",
+    "bridge": "bridge",
     "watchdog": "wdt",
     "window_watchdog": "wwdt",
     "tick": "tick",
@@ -142,7 +143,7 @@ def _polarity(active: str) -> str:
 # the emission order below; `alloy board-info` reports the SAME set, so the IDE
 # can never disagree with the generated board::caps.
 PRESENCE_ROLES = (
-    "led", "button", "debug_uart", "led_pwm", "encoder", "adc", "i2c", "spi",
+    "led", "button", "debug_uart", "led_pwm", "encoder", "bridge", "adc", "i2c", "spi",
     "eeprom", "watchdog", "window_watchdog", "nvm", "fs", "rtc", "dac", "can",
     "gpio_bus",
     "ethernet", "tick",
@@ -607,6 +608,103 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "inline constexpr alloy::encoder::config encoder_defaults{};"
         )
 
+    # THE TIMER'S THIRD PERSONALITY, and the one whose board file can destroy
+    # hardware. Emitted right after the other two on purpose: these three
+    # aliases are what _check_role_personalities refuses to emit together for
+    # one peripheral.
+    bridge_role = roles.get("bridge")
+    if bridge_role:
+        for key in ("peripheral", "ah", "al", "dead_time_ns"):
+            _require(key in bridge_role,
+                     f"board {board['id']}: bridge role missing '{key}'")
+        _require(bridge_role["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: bridge peripheral "
+                 f"'{bridge_role['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, bridge_role["peripheral"], "bridge")
+        # A PHASE IS A PAIR, AND HALF A PAIR IS THE DANGEROUS SHAPE. A board
+        # that names `bh` without `bl` has declared a high side whose low side
+        # is driven by something this program does not know about — and the
+        # dead time it configures then protects nothing. Refused here, where
+        # the message can name the board file, rather than at the C++ level
+        # where it would be a missing template argument.
+        phase_pins: list[tuple[str, str]] = []
+        for ordinal, (hi, lo) in enumerate((("ah", "al"), ("bh", "bl"), ("ch", "cl")), 1):
+            if hi not in bridge_role and lo not in bridge_role:
+                break
+            _require(hi in bridge_role and lo in bridge_role,
+                     f"board {board['id']}: bridge phase {ordinal} names "
+                     f"'{hi if hi in bridge_role else lo}' and not "
+                     f"'{lo if hi in bridge_role else hi}' — a bridge phase is "
+                     "a PAIR of pins, and half of one is a half-bridge whose "
+                     "other transistor nothing here controls")
+            phase_pins.append((bridge_role[hi], bridge_role[lo]))
+        _require(bool(phase_pins),
+                 f"board {board['id']}: bridge role declares no phase pins")
+        _require(bridge_role.get("break_active", "low") in ("low", "high"),
+                 f"board {board['id']}: bridge break_active must be 'low' or "
+                 f"'high' — it is the level that MEANS fault")
+        if "brk" in bridge_role:
+            polarity = ("alloy::bridge::break_polarity::active_high"
+                        if bridge_role.get("break_active", "low") == "high"
+                        else "alloy::bridge::break_polarity::active_low")
+            break_tag = (f"alloy::bridge::brk<alloy::dev::{bridge_role['brk']}_t,\n"
+                         f"                    {polarity}>")
+        else:
+            # No fault line on this board. The tag is named `unprotected` and
+            # it is generated in full, in the bind, because "this inverter has
+            # no hardware protection" is a sentence somebody should have to
+            # read.
+            break_tag = "alloy::bridge::unprotected"
+        phase_tags = ",\n".join(
+            f"    alloy::bridge::phase<{i}, alloy::dev::{hi}_t, alloy::dev::{lo}_t>"
+            for i, (hi, lo) in enumerate(phase_pins, 1))
+        decls.append(
+            f"using bridge = alloy::bridge::bind<\n"
+            f"    alloy::dev::{bridge_role['peripheral']}_t, clock_profile,\n"
+            f"    {break_tag},\n{phase_tags}>;"
+        )
+        decls.append(
+            "// What THIS PROJECT's power stage needs — the switching rate and\n"
+            "// the gate driver's dead time. The FREQUENCY is an application\n"
+            "// fact and is overridable from alloy.toml. The DEAD TIME is not:\n"
+            "// it is the gate driver's turn-off delay plus the transistors'\n"
+            "// fall time, both soldered to this PCB, and letting a project\n"
+            "// LOWER it from a toml file is the one edit that destroys a\n"
+            "// bridge. A different dead time means a different power stage.\n"
+            "//\n"
+            "// THE DEAD TIME HAS NO DEFAULT ANYWHERE IN THIS CHAIN. board.json\n"
+            "// must state it (roles.py lists it as required), and\n"
+            "// alloy::bridge::config's own default is the `unstated` value,\n"
+            "// which is a compile error at open(). A number invented by a\n"
+            "// generator is exactly the number that would be wrong on the next\n"
+            "// board.\n"
+            "inline constexpr alloy::bridge::config bridge_defaults{\n"
+            f"    .freq_hz = {int(bridge_role.get('freq_hz', 20000))}u,\n"
+            f"    .dead_time = alloy::bridge::dead_time::ns({int(bridge_role['dead_time_ns'])}u),\n"
+            "};"
+        )
+    else:
+        decls.append(
+            "// No bridge declared; stub keeps caps-guarded code compiling.\n"
+            "struct bridge {\n"
+            "    struct null_handle {\n"
+            "        static constexpr unsigned phases = 0;\n"
+            "        template <unsigned N>\n"
+            "        void set_duty(std::uint16_t) const {}\n"
+            "        void enable_outputs() const {}\n"
+            "        void disable_outputs() const {}\n"
+            "        [[nodiscard]] bool outputs_enabled() const { return false; }\n"
+            "        [[nodiscard]] bool faulted() const { return false; }\n"
+            "        void acknowledge_fault() const {}\n"
+            "        void emergency_stop() const {}\n"
+            "        [[nodiscard]] std::uint32_t period_ticks() const { return 0u; }\n"
+            "        [[nodiscard]] std::uint32_t dead_time_ns() const { return 0u; }\n"
+            "    };\n"
+            "    static null_handle open(alloy::bridge::config = {}) { return {}; }\n"
+            "};\n"
+            "inline constexpr alloy::bridge::config bridge_defaults{};"
+        )
+
     i2c_role = roles.get("i2c")
     if i2c_role:
         for key in ("peripheral", "scl", "sda"):
@@ -916,6 +1014,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
 #include <span>
 
 #include "alloy/adc.hpp"
+#include "alloy/bridge.hpp"
 #include "alloy/device.hpp"
 #include "alloy/encoder.hpp"
 #include "alloy/gpio.hpp"

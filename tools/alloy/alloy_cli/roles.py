@@ -97,6 +97,43 @@ ROLES: dict[str, RoleSpec] = {
         kind="peripheral", ip_class="encoder", pin_fields=("a", "b"),
         required=("peripheral", "a", "b"), optional=("period", "reverse", "label"),
         project_fields=("period", "reverse")),
+    # A THIRD personality of a timer, and the one where getting the board file
+    # wrong destroys hardware. Six pin fields, in high/low pairs, because a
+    # bridge phase is a PAIR — `ah`/`al` is phase 1's high and low side. Only
+    # the first pair is required, so a half-bridge board declares two pins and
+    # a three-phase inverter declares six.
+    #
+    # PIN FIELDS AND NOT `signals`, for the same reason as `encoder`'s a/b:
+    # the route each must satisfy is not a signal of its own name. `ah` has to
+    # route on CH1 and `al` on CH1N, and that constraint has no spelling in
+    # this table — `bridge::bind`'s static_asserts state it precisely, by pin
+    # and by signal, at compile time.
+    #
+    # `brk` is OPTIONAL and its absence is generated as
+    # `alloy::bridge::unprotected`, which is a loud thing to read in a bind.
+    #
+    # `dead_time_ns` IS REQUIRED AND IS NOT A PROJECT FIELD, and the first
+    # draft of this entry had it as both — which the project/board split
+    # refuted in one line: a project field is one the same HARDWARE supports
+    # many values of. A dead time is not. It is the gate driver's turn-off
+    # delay plus the transistors' fall time, and those are soldered to the
+    # PCB. Making it overridable from alloy.toml would let an application
+    # LOWER it, which is the exact edit that destroys a bridge, and it would
+    # let it do so without touching a board file anybody reviews. A product
+    # that needs a different dead time has a different power stage.
+    #
+    # `freq_hz` IS a project field: the same PCB switches at 16 or 20 kHz and
+    # which one is an application trade (audible noise against switching
+    # loss). `break_active` is a board fact — how the fault comparator is
+    # wired — so it is neither required nor overridable, just optional with a
+    # safe default of active-low.
+    "bridge": RoleSpec(
+        kind="peripheral", ip_class="bridge",
+        pin_fields=("ah", "al", "bh", "bl", "ch", "cl", "brk"),
+        required=("peripheral", "ah", "al", "dead_time_ns"),
+        optional=("bh", "bl", "ch", "cl", "brk", "break_active",
+                  "freq_hz", "label"),
+        project_fields=("freq_hz",)),
     "adc": RoleSpec(
         kind="peripheral", ip_class="adc",
         required=("peripheral",), optional=("label",)),

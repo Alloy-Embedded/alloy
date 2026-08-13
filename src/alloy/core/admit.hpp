@@ -128,4 +128,52 @@ void can_filter_id();
     "backstop, the peripheral you wanted is alloy::wdt (the IWDG)")]]
 void wwdt_window();
 
+// ── The bridge, where an admitted value that is wrong destroys hardware ──
+//
+// Four separate functions rather than one, because these are the four ways a
+// three-phase bridge is misconfigured and telling them apart is the entire
+// value of the diagnostic. The message has to be readable by someone holding
+// a smoking inverter.
+
+[[gnu::error(
+    "alloy::bridge::open: this configuration states NO DEAD TIME. A "
+    "complementary pair with no dead time turns both transistors of a "
+    "half-bridge on at once during every switching transition, which is a "
+    "short across the DC link through the bridge — the failure is immediate "
+    "and it is not recoverable. Say what you mean: "
+    "`.dead_time = alloy::bridge::dead_time::ns(500)` for the gate driver's "
+    "turn-off time plus margin, or "
+    "`alloy::bridge::dead_time::inserted_by_the_gate_driver()` if the "
+    "hardware between this pin and the gate already does it")]]
+void bridge_dead_time_unstated();
+
+[[gnu::error(
+    "alloy::bridge::open: `dead_time::ns(0)` is a shoot-through spelled as a "
+    "number. Zero is not a dead time; if the gate driver inserts it, say so "
+    "with `alloy::bridge::dead_time::inserted_by_the_gate_driver()`, which is "
+    "greppable and reviewable and does not read as an oversight")]]
+void bridge_dead_time_zero();
+
+[[gnu::error(
+    "alloy::bridge::open: this dead time cannot be programmed on this timer. "
+    "The dead-time generator counts in ticks of the timer's own clock and its "
+    "encoding has a longest value; asking for more than that would program "
+    "the widest code and silently give you LESS dead time than you asked for. "
+    "The bound comes from the curated DTG field width and the instance's "
+    "kernel clock, not from a constant written here")]]
+void bridge_dead_time_too_long();
+
+[[gnu::error(
+    "alloy::bridge::open: the dead time does not fit inside the switching "
+    "period. Both edges of every pair carry it, so 2 x dead_time must be less "
+    "than one period — at this frequency it is not, and the bridge would "
+    "spend the whole period with both transistors off (or, on a timer that "
+    "wraps the compare, with neither of them where the duty says)")]]
+void bridge_dead_time_vs_period();
+
+[[gnu::error(
+    "alloy::bridge::open: this switching frequency is impossible on this "
+    "timer — it is zero, or above the timer's own kernel clock")]]
+void bridge_freq();
+
 }  // namespace alloy::core::admit

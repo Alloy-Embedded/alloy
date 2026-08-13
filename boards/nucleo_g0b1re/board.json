@@ -35,6 +35,20 @@
       "period": 1440,
       "label": "TIM3_CH1/CH2 on PA6/PA7 (Arduino D12/D11, AF1) — header expectation, no encoder is fitted on the Nucleo. A DIFFERENT timer from led_pwm's TIM2 on purpose: one block cannot be both."
     },
+    "bridge": {
+      "peripheral": "tim1",
+      "ah": "pa8",
+      "al": "pb13",
+      "bh": "pa9",
+      "bl": "pb14",
+      "ch": "pa10",
+      "cl": "pb15",
+      "brk": "pb12",
+      "break_active": "low",
+      "freq_hz": 20000,
+      "dead_time_ns": 500,
+      "label": "TIM1 three-phase complementary outputs on the CN10 morpho header: CH1/CH1N PA8/PB13, CH2/CH2N PA9/PB14, CH3/CH3N PA10/PB15, BKIN PB12 (all AF2). HEADER EXPECTATION, NOT A FITTED POWER STAGE — no inverter is on a Nucleo. The dead time is what an IR2110-class gate driver wants and is a PLACEHOLDER until a real board states its own; nothing here has driven a transistor. A DIFFERENT timer from led_pwm's TIM2 and encoder's TIM3 on purpose: one block runs one personality."
+    },
     "adc": {
       "peripheral": "adc1",
       "label": "internal vref/temp channels"
