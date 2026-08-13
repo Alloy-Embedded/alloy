@@ -57,6 +57,12 @@
       "timeout_ms": 4000,
       "label": "IWDG (LSI ~32 kHz, runtime-configured, ~32 s max)"
     },
+    "window_watchdog": {
+      "peripheral": "wwdg",
+      "deadline_us": 20000,
+      "earliest_us": 5000,
+      "label": "WWDG on PCLK/4096 — a SECOND dog alongside the IWDG, not a replacement: it also resets on a feed that arrives too EARLY. At the 64 MHz profile it counts to ~524 ms at most, so the window is a loop-rate check and the IWDG stays the long backstop."
+    },
     "nvm": {
       "peripheral": "flash",
       "bytes": 2048,

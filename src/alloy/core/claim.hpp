@@ -125,6 +125,12 @@ enum class personality : std::uint8_t {
     capture,
     can,
     wdt,
+    // The WINDOW watchdog, and separate from `wdt` for the reason stated
+    // above about spi/spi_slave: they are two different blocks with two
+    // different contracts, and a board that runs both (an IWDG backstop plus
+    // a WWDG rate monitor) is the normal case, not the conflict. Sharing one
+    // enumerator would make the two agree and neither trap.
+    wwdt,
     rtc,
     flash,
     dma,

@@ -14,6 +14,7 @@ SIGNALS = {
     "sck", "miso", "mosi", "cs",
     "scl", "sda",
     "ch1", "ch2", "ch3", "ch4",
+    "ch1n", "ch2n", "ch3n", "bk",
     "in", "out",
 }
 

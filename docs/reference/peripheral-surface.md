@@ -663,6 +663,7 @@ is exactly a row this page asserted and the code did not have, twice.
 | `pwm` | `open` | `shared(freq_hz)` | `sub_exclusive(Channel)` | two frequencies on one timer; **two pins on one channel** |
 | `dma` | `channel::claim` | — | `sub_exclusive(Ch)` | one channel handed out twice |
 | `wdt` | `start` | `shared(timeout_ms)` | — | **two deadlines on one watchdog** |
+| `wwdt` | `start` | `shared(window)` | — | **two windows on one WINDOW watchdog**, and it is a SEPARATE row from `wdt` on purpose: the IWDG and the WWDG are two blocks with two contracts, so one enumerator for both would make them agree and neither trap |
 | `dac` | `enable` | `shared(0)` | — | personality only (see below) |
 | `can` | `enable` | `shared(0)` | — | personality only |
 | `rtc` | `set` | `shared(0)` | — | personality only |

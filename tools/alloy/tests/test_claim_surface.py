@@ -43,6 +43,7 @@ ROW_SOURCE = {
     "pwm": "src/alloy/pwm.hpp",
     "dma": "src/alloy/dma.hpp",
     "wdt": "src/alloy/wdt.hpp",
+    "wwdt": "src/alloy/wwdt.hpp",
     "dac": "src/alloy/dac.hpp",
     "can": "src/alloy/can.hpp",
     "rtc": "src/alloy/rtc.hpp",
@@ -72,6 +73,7 @@ HAL_DIR_TO_ROW = {
     "spi": "spi",
     "uart": "uart",
     "watchdog": "wdt",
+    "window_watchdog": "wwdt",
 }
 
 # Column text -> the call that must appear in the source. `—` and *none* mean

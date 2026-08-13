@@ -78,6 +78,14 @@ enum class signal : std::uint8_t {
     sck, miso, mosi, cs,
     scl, sda,
     ch1, ch2, ch3, ch4,
+    // The COMPLEMENTARY halves of the first three channels, and the break
+    // input. Only an advanced-control timer has them, which is why they were
+    // not here until a driver needed them: a pin routed to TIM1_CH1N is a
+    // different route from the same pin routed to TIM1_CH1, and without an
+    // enumerator of its own it could not be told apart at compile time.
+    // ch4n, bk2 and etr stay unmodelled — the routes are in the chip database
+    // and alloy/routes_gen.hpp lists what it skipped.
+    ch1n, ch2n, ch3n, bk,
     in, out,
 };
 

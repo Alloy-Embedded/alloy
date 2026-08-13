@@ -1,0 +1,408 @@
+// User-facing complementary bridge: N half-bridges driven from one advanced
+// timer, with hardware dead time and a break input.
+//
+//   using inverter = alloy::bridge::bind<
+//       alloy::dev::tim1_t, board::clock_profile,
+//       alloy::bridge::brk<alloy::dev::pb12_t>,
+//       alloy::bridge::phase<1, alloy::dev::pa8_t,  alloy::dev::pb13_t>,
+//       alloy::bridge::phase<2, alloy::dev::pa9_t,  alloy::dev::pb14_t>,
+//       alloy::bridge::phase<3, alloy::dev::pa10_t, alloy::dev::pb15_t>>;
+//
+//   auto inv = inverter::open({
+//       .freq_hz   = 20'000,
+//       .dead_time = alloy::bridge::dead_time::ns(500),
+//   });
+//   inv.set_duty<1>(0x8000);        // 50 %
+//   inv.enable_outputs();           // …and only NOW does a pin move
+//
+// ── THE THREE THINGS THIS FACADE EXISTS TO MAKE IMPOSSIBLE ──────────────
+//
+// ONE: A COMPLEMENTARY PAIR WITH NO DEAD TIME. `config::dead_time` is not a
+// number, it is a three-state type (`hal::bridge_dead_time`) whose default
+// state is "unstated" and whose only zero is spelled
+// `dead_time::inserted_by_the_gate_driver()`. Leaving it out is a COMPILE
+// ERROR at every literal call site, and `dead_time::ns(0)` is a different
+// compile error, so "I forgot" and "I meant zero" never produce the same
+// diagnostic. Both fall back to a named trap when the value is genuinely
+// computed at run time. The messages are in alloy/core/admit.hpp.
+//
+// TWO: TWO CALL SITES DISAGREEING ABOUT A BLOCK-SCOPED VALUE. This is the
+// defect docs/reference/peripheral-surface.md has had open since revision 2:
+// dead time is BLOCK-scoped and `pwm::bind` is CHANNEL-scoped, so two PWM
+// channels on one timer, each carrying `opts{.dead_time_ns = …}`, is hole (A)
+// in a new dress and `claim::shared`'s witness does not catch it. The page
+// listed two candidate repairs and declined to choose. This is the second one
+// — a BLOCK handle that phases are opened FROM — taken without the breaking
+// change to `alloy::pwm` the page feared, because a bridge is a different
+// personality and therefore a different facade. There is exactly one
+// `open()`, it states the frequency, the dead time and the off-state once,
+// and `set_duty<N>()` cannot restate any of them because it does not take
+// them.
+//
+// THREE: OUTPUTS THAT COME UP LIVE. `open()` programs everything with MOE
+// clear and returns a handle whose pins are off. `enable_outputs()` is a
+// separate call the application makes after it has decided what the duties
+// are. The break input, if the board has one, is armed before that happens.
+//
+// ── WHAT IS NOT PROVEN ──────────────────────────────────────────────────
+//
+// No silicon has run this. Renode has no model of BDTR, so no emulation leg
+// exists either — see the driver header. The dead-time arithmetic is pinned
+// by host tests at every boundary of the DTG encoding; the register writes
+// are pinned by nothing.
+
+#pragma once
+
+#include <cstdint>
+
+#include "alloy/core/admit.hpp"
+#include "alloy/core/claim.hpp"
+#include "alloy/core/routes.hpp"
+#include "alloy/core/types.hpp"
+#include "alloy/hal/bridge/bridge_impl.hpp"
+#include "alloy/hal/gpio/pin_impl.hpp"
+
+namespace alloy::bridge {
+
+// LAYER 1 — see hal::bridge_config for the admission test and for what is
+// deliberately NOT a field.
+using config = hal::bridge_config;
+using dead_time = hal::bridge_dead_time;
+using alignment = hal::bridge_alignment;
+using off_state = hal::bridge_off_state;
+using break_polarity = hal::bridge_break_polarity;
+
+// LAYER 2 — the vendor knobs, keyed by INSTANCE. Surfaced on the binder as
+// `Role::opts`; naming the type at the call site is what buys the good
+// diagnostic.
+template <class Inst>
+using opts = hal::bridge_opts<Inst>;
+
+// ── Binder tags ─────────────────────────────────────────────────────────
+
+// One half-bridge: the high-side pin, the low-side pin, and which of the
+// timer's channel pairs drives them.
+//
+// BOTH PINS ARE MANDATORY, and that is the type system carrying the safety
+// rule. A `phase` with only a high-side pin would be a single-ended PWM
+// output, which is a thing this timer can do and a thing alloy::pwm is for.
+// Here it would be a half-bridge whose low side is driven by something this
+// program does not know about, with a dead time that therefore protects
+// nothing. If you want one pin, you do not want a bridge.
+template <unsigned Index, class HighPin, class LowPin>
+struct phase {
+    static constexpr unsigned index = Index;
+    using high = HighPin;
+    using low = LowPin;
+};
+
+// The fault input. `Active` is the level that MEANS fault, and it lives on
+// the tag rather than in `config` because it is a property of how the
+// comparator is wired to this pin — a board fact, fixed at design time, and
+// meaningless on a board with no fault line at all.
+//
+// active_low is the default because a fault line that idles high and is
+// pulled down by the comparator ALSO trips when the connector falls off. An
+// active-high line reads "healthy" when it is disconnected.
+template <class Pin, break_polarity Active = break_polarity::active_low>
+struct brk {
+    using pin = Pin;
+    static constexpr bool present = true;
+    static constexpr break_polarity active = Active;
+};
+
+// A bridge with NO hardware fault input. Spelled out, in the bind, where a
+// reviewer reads it — because a three-phase inverter whose only protection is
+// software is a decision somebody made, and it should look like one.
+struct unprotected {
+    static constexpr bool present = false;
+    static constexpr break_polarity active = break_polarity::active_low;
+};
+
+namespace detail {
+
+// A phase ordinal maps to two route signals. The mapping is the silicon's,
+// not a choice: channel 1's complementary output is CH1N or the chip has
+// none.
+[[nodiscard]] constexpr alloy::signal high_signal(unsigned index) {
+    switch (index) {
+        case 1: return alloy::signal::ch1;
+        case 2: return alloy::signal::ch2;
+        case 3: return alloy::signal::ch3;
+        default: return alloy::signal::ch4;
+    }
+}
+[[nodiscard]] constexpr alloy::signal low_signal(unsigned index) {
+    switch (index) {
+        case 1: return alloy::signal::ch1n;
+        case 2: return alloy::signal::ch2n;
+        default: return alloy::signal::ch3n;
+    }
+}
+
+// One phase's routes, checked in a type of its own so the failing
+// static_assert names the phase that failed rather than reporting one
+// combined "some phase is unroutable".
+template <class Inst, class P>
+struct check_phase {
+    static_assert(P::index >= 1u,
+                  "a bridge phase is numbered from 1 — phase<0, …> names no "
+                  "channel of any timer");
+    static_assert(
+        routes::routable<typename P::high, Inst, high_signal(P::index)>,
+        "this bridge phase's HIGH-side pin has no route to that channel of "
+        "this timer on the selected chip (check the chip's route table in "
+        "alloy-devices; phase<N, high, low> needs `high` on CHN)");
+    static_assert(
+        routes::routable<typename P::low, Inst, low_signal(P::index)>,
+        "this bridge phase's LOW-side pin has no route to that channel's "
+        "COMPLEMENTARY output on this timer (check the chip's route table in "
+        "alloy-devices; phase<N, high, low> needs `low` on CHNN — an ordinary "
+        "PWM pin is not a complementary output and driving one as if it were "
+        "gives a half-bridge with no dead time)");
+    static constexpr bool ok = true;
+};
+
+// The phases must be 1..N with nothing skipped: the driver enables channel
+// pairs 1..count, so `phase<1, …>, phase<3, …>` would enable CH2's pair —
+// whose pins nobody muxed and whose duty nobody sets — alongside them.
+template <class... Ps>
+[[nodiscard]] constexpr bool numbered_from_one() {
+    constexpr unsigned n = sizeof...(Ps);
+    const unsigned idx[] = {Ps::index...};
+    for (unsigned i = 0; i < n; ++i) {
+        if (idx[i] != i + 1u) { return false; }
+    }
+    return true;
+}
+
+// Layer 1's VALUE admission — see alloy/core/admit.hpp. Compile error when
+// the value is a constant (which every literal call site is), named trap when
+// it is not.
+inline void admit_freq(std::uint32_t freq_hz, std::uint32_t kernel) {
+    const bool ok = freq_hz != 0u && kernel != 0u && freq_hz <= kernel;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::bridge_freq();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+
+// FOUR CHECKS, FOUR MESSAGES, and the separation is the point: "you said
+// nothing", "you said zero", "this timer cannot make one that long" and
+// "it does not fit in a period" are four different mistakes with four
+// different fixes, and a single "bad dead time" diagnostic would send a
+// reader looking in the wrong place with an inverter on the bench.
+inline void admit_dead_time(bridge::dead_time dt, std::uint32_t max_ns,
+                            std::uint32_t period_ns) {
+    const bool unstated = dt.stated() == dead_time::kind::unstated;
+    if (__builtin_constant_p(unstated) && unstated) {
+        alloy::core::admit::bridge_dead_time_unstated();
+    }
+    if (unstated) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+
+    const bool zero =
+        dt.stated() == dead_time::kind::nanoseconds && dt.requested_ns() == 0u;
+    if (__builtin_constant_p(zero) && zero) {
+        alloy::core::admit::bridge_dead_time_zero();
+    }
+    if (zero) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+
+    const bool too_long = dt.requested_ns() > max_ns;
+    if (__builtin_constant_p(too_long) && too_long) {
+        alloy::core::admit::bridge_dead_time_too_long();
+    }
+    if (too_long) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+
+    // Both edges of every pair carry the dead time, so two of them have to
+    // fit inside one switching period with room left for the pulse.
+    const bool swallows_period = dt.requested_ns() * 2u >= period_ns;
+    if (__builtin_constant_p(swallows_period) && swallows_period) {
+        alloy::core::admit::bridge_dead_time_vs_period();
+    }
+    if (swallows_period) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+
+[[nodiscard]] constexpr std::uint32_t period_ns_of(std::uint32_t freq_hz) {
+    return freq_hz == 0u ? 0u : static_cast<std::uint32_t>(1'000'000'000ull / freq_hz);
+}
+
+}  // namespace detail
+
+// THE BLOCK HANDLE. Phases are reached THROUGH it and cannot be opened
+// separately, which is what makes the block-scoped values untypeable at a
+// second call site.
+template <class Inst, unsigned Phases>
+class handle {
+public:
+    handle(const handle&) = delete;
+    handle& operator=(const handle&) = delete;
+    handle(handle&&) noexcept = default;
+    handle& operator=(handle&&) noexcept = default;
+
+    //: How many half-bridges this handle drives.
+    static constexpr unsigned phases = Phases;
+
+    //: Duty of one phase's HIGH side: 0 = the low side is on for the whole
+    //: period, 0xFFFF = the high side is. The complementary output is the
+    //: inverse, minus the dead time at both edges, in hardware.
+    //:
+    //: The phase is a TEMPLATE argument, so asking for a phase this bridge
+    //: does not have is a compile error rather than a silently ignored write
+    //: to a channel nobody muxed.
+    template <unsigned N>
+    void set_duty(std::uint16_t duty) const {
+        static_assert(N >= 1u && N <= Phases,
+                      "this bridge does not have that phase — the phases are "
+                      "numbered 1..N for the N phase<> tags the bind declares");
+        hal::bridge_impl<Inst>::set_duty(N, duty);
+    }
+
+    //: Let the outputs reach the pins. Everything is programmed before this;
+    //: nothing moves until it. Calling it again after a fault is how a bridge
+    //: is re-armed, and it is deliberately a separate call from
+    //: acknowledge_fault().
+    void enable_outputs() const { hal::bridge_impl<Inst>::outputs_on(); }
+
+    //: Outputs off, immediately, in hardware. What the pins then do is what
+    //: `config::when_off` selected.
+    void disable_outputs() const { hal::bridge_impl<Inst>::outputs_off(); }
+
+    [[nodiscard]] bool outputs_enabled() const {
+        return hal::bridge_impl<Inst>::outputs_enabled();
+    }
+
+    //: Has the break fired since this was last acknowledged? The flag is set
+    //: by the HARDWARE — this is reading the fault, not reading back a
+    //: setting — and the outputs are already off by the time a program can
+    //: observe it.
+    [[nodiscard]] bool faulted() const { return hal::bridge_impl<Inst>::faulted(); }
+
+    //: Clear the fault flag. Does NOT re-enable the outputs, and could not:
+    //: while the fault line is still asserted the hardware holds the outputs
+    //: off and the flag comes straight back. Re-arming is
+    //: acknowledge_fault() then enable_outputs(), in that order, when the
+    //: application has decided the fault is over.
+    void acknowledge_fault() const { hal::bridge_impl<Inst>::acknowledge_fault(); }
+
+    //: Raise a break in software — the same hardware path as the pin, so the
+    //: outputs go off without depending on this code running again.
+    void emergency_stop() const { hal::bridge_impl<Inst>::force_break(); }
+
+    //: Counter ticks in one period. The resolution `set_duty` actually has.
+    [[nodiscard]] std::uint32_t period_ticks() const {
+        return hal::bridge_impl<Inst>::period_ticks;
+    }
+
+    //: The dead time the hardware is ACTUALLY inserting, in nanoseconds —
+    //: the requested figure rounded UP to what the generator's encoding can
+    //: represent. Reported rather than assumed because above 127 ticks the
+    //: encoding's steps are 2, 8 and 16 ticks wide and an exact request
+    //: usually cannot be met.
+    [[nodiscard]] std::uint32_t dead_time_ns() const { return dead_time_ns_; }
+
+private:
+    template <class, class, class, class...>
+    friend struct bind;
+    explicit handle(std::uint32_t dead_ns) : dead_time_ns_(dead_ns) {}
+    std::uint32_t dead_time_ns_ = 0;
+};
+
+// `Break` is `brk<pin[, polarity]>` or `unprotected`; `Phases...` are one to
+// N `phase<index, high, low>` tags, numbered from 1.
+template <class Inst, class Clock, class Break, class... Phases>
+struct bind {
+    static_assert(sizeof...(Phases) >= 1u,
+                  "a bridge with no phases drives nothing — declare at least "
+                  "one phase<index, high_pin, low_pin>");
+    static_assert(detail::numbered_from_one<Phases...>(),
+                  "bridge phases must be numbered 1..N in order, with none "
+                  "skipped: the driver enables channel pairs 1..N, so a gap "
+                  "would enable a pair whose pins nobody routed");
+    // DEGREE, and the number is generated. `complementary_channels` is a
+    // `feat` of the IP in the chip database; 0 means this timer has no
+    // complementary outputs at all, and then this static_assert is the whole
+    // diagnostic a user gets for pointing a bridge at a general-purpose
+    // timer.
+    static_assert(sizeof...(Phases) <= hal::bridge_impl<Inst>::phases,
+                  "this timer has fewer complementary channel pairs than the "
+                  "bind declares phases (the count comes from the IP's `feat` "
+                  "in alloy-devices, not from this header) — a general-purpose "
+                  "timer has none at all and cannot drive a bridge");
+    static_assert((detail::check_phase<Inst, Phases>::ok && ...));
+
+    using opts = hal::bridge_opts<Inst>;
+
+    static constexpr std::uint32_t kernel_hz() {
+        switch (Inst::kernel) {
+            case clock_node::ahb: return Clock::ahb_hz;
+            case clock_node::apb: return Clock::apb_hz;
+            case clock_node::apb2: return Clock::apb2_hz;
+            case clock_node::sysclk: return Clock::sysclk_hz;
+        }
+        return Clock::sysclk_hz;
+    }
+
+    template <opts Opts = {}>
+    static handle<Inst, sizeof...(Phases)> open(config c = {}) {
+        detail::admit_freq(c.freq_hz, kernel_hz());
+        detail::admit_dead_time(
+            c.dead_time,
+            hal::bridge_impl<Inst>::max_dead_time_ns(kernel_hz()),
+            detail::period_ns_of(c.freq_hz));
+
+        // EXCLUSIVE, and the contrast with `pwm::bind` is the personality
+        // rule in one line. PWM claims the block as `shared` because four
+        // channels are four legitimate co-owners that merely have to agree
+        // about a frequency. A bridge has no co-owner: dead time, the break
+        // input, the off-state selection and MOE are one register for the
+        // whole block, and a second claimant — a PWM channel on CH4 of the
+        // same TIM1, say — would be a pin whose safety envelope is the
+        // bridge's and whose configuration is not.
+        alloy::claim::exclusive<Inst, alloy::claim::personality::bridge>();
+
+        (mux_phase<Phases>(), ...);
+        if constexpr (Break::present) {
+            static_assert(
+                routes::routable<typename Break::pin, Inst, alloy::signal::bk>,
+                "this pin has no route to this timer's BREAK input on the "
+                "selected chip (check the chip's route table in "
+                "alloy-devices). A break input is not an ordinary GPIO "
+                "interrupt: it switches the outputs off in hardware, with no "
+                "software in the path, which is the entire reason to use it");
+            using brk_route =
+                routes::route<typename Break::pin, Inst, alloy::signal::bk>;
+            hal::pin_impl<typename Break::pin>::make_af(
+                routes::mux_value<brk_route>());
+        }
+
+        hal::bridge_impl<Inst>::template enable<Opts>(
+            kernel_hz(), c, sizeof...(Phases), Break::present, Break::active);
+
+        return handle<Inst, sizeof...(Phases)>{
+            hal::bridge_impl<Inst>::achieved_dead_time_ns(
+                c.dead_time.requested_ns(), kernel_hz())};
+    }
+
+private:
+    template <class P>
+    static void mux_phase() {
+        using high_route =
+            routes::route<typename P::high, Inst, detail::high_signal(P::index)>;
+        using low_route =
+            routes::route<typename P::low, Inst, detail::low_signal(P::index)>;
+        hal::pin_impl<typename P::high>::make_af(routes::mux_value<high_route>());
+        hal::pin_impl<typename P::low>::make_af(routes::mux_value<low_route>());
+    }
+};
+
+}  // namespace alloy::bridge

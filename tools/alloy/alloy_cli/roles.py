@@ -114,6 +114,25 @@ ROLES: dict[str, RoleSpec] = {
         kind="peripheral", ip_class="watchdog",
         required=("peripheral",), optional=("timeout_ms", "label"),
         project_fields=("timeout_ms",)),
+    # The OTHER watchdog, and a SECOND role rather than a mode of the first.
+    # `ip_class` is the substitutability gate — it is what lets a board name
+    # any peripheral of that class for a role — and the two watchdogs are not
+    # substitutable in either direction. An IWDG has no early bound to program;
+    # a WWDG resets on a feed that arrives too soon, which is a promise the
+    # `watchdog` role's facade explicitly does not make. So st/wwdg_v2's class
+    # is `window_watchdog`, and naming an `iwdg` here (or a `wwdg` there) is a
+    # validation error that says which class it found. A board may declare
+    # BOTH: two blocks, two clocks, two independent safety properties.
+    #
+    # The window is PROJECT data, like the encoder's period: the same PCB
+    # serves a 1 ms loop and a 10 ms one, and which is plugged in is the
+    # application's fact. Unlike `watchdog`'s `timeout_ms`, these two reach
+    # generated code — they are the defaults `start()` programs.
+    "window_watchdog": RoleSpec(
+        kind="peripheral", ip_class="window_watchdog",
+        required=("peripheral",),
+        optional=("deadline_us", "earliest_us", "label"),
+        project_fields=("deadline_us", "earliest_us")),
     "nvm": RoleSpec(
         kind="peripheral", ip_class="flash",
         required=("peripheral",), optional=("bytes",),

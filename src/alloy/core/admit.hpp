@@ -92,4 +92,17 @@ void adc_watchdog_threshold();
     "than one that receives none")]]
 void can_filter_id();
 
+[[gnu::error(
+    "alloy::wwdt::window_watchdog::start: this window cannot exist on this "
+    "board. Either the deadline is zero, or the early bound is not BELOW the "
+    "deadline (a window that opens after it closes admits no feed at all and "
+    "resets the part on the first one), or the deadline is longer than this "
+    "WWDG can count. That last bound is the board's, not this driver's: a "
+    "window watchdog counts its own bus clock through a fixed /4096 and a "
+    "seven-bit counter, so on a 64 MHz APB it tops out near half a SECOND — "
+    "three orders of magnitude short of the independent watchdog's ~32 s. "
+    "Read `board::window_watchdog.longest` and, if you wanted a long "
+    "backstop, the peripheral you wanted is alloy::wdt (the IWDG)")]]
+void wwdt_window();
+
 }  // namespace alloy::core::admit

@@ -104,6 +104,7 @@ ROLE_PERSONALITY = {
     "led_pwm": "pwm",
     "encoder": "encoder",
     "watchdog": "wdt",
+    "window_watchdog": "wwdt",
     "rtc": "rtc",
     "nvm": "flash",
     "fs": "flash",
@@ -141,7 +142,8 @@ def _polarity(active: str) -> str:
 # can never disagree with the generated board::caps.
 PRESENCE_ROLES = (
     "led", "button", "debug_uart", "led_pwm", "encoder", "adc", "i2c", "spi",
-    "eeprom", "watchdog", "nvm", "fs", "rtc", "dac", "can", "gpio_bus",
+    "eeprom", "watchdog", "window_watchdog", "nvm", "fs", "rtc", "dac", "can",
+    "gpio_bus",
     "ethernet",
 )
 
@@ -270,6 +272,38 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         )
     else:
         decls.append("inline constexpr alloy::wdt::null_watchdog watchdog{};")
+
+    # The WINDOW watchdog, and a role of its own — see src/alloy/wwdt.hpp for
+    # the argument. A board may declare this AND `watchdog`: two blocks, two
+    # clocks, two different safety properties, and neither implies the other.
+    # The declared window reaches generated code as the template defaults, so
+    # `board::window_watchdog.start()` programs what the board file says.
+    extra_includes.append("alloy/wwdt.hpp")
+    wwdg = roles.get("window_watchdog")
+    if wwdg:
+        _require("peripheral" in wwdg,
+                 f"board {board['id']}: window_watchdog missing 'peripheral'")
+        _require(wwdg["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: window_watchdog peripheral "
+                 f"'{wwdg['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, wwdg["peripheral"], "window_watchdog")
+        deadline_us = int(wwdg.get("deadline_us", 0))
+        earliest_us = int(wwdg.get("earliest_us", 0))
+        # The one relation the emitter can check without knowing the clock
+        # tree. Everything else — is this deadline reachable at this PCLK? —
+        # is the facade's admit check, which HAS the clock and says so.
+        _require(earliest_us < deadline_us or deadline_us == 0,
+                 f"board {board['id']}: window_watchdog earliest_us ({earliest_us}) "
+                 f"must be below deadline_us ({deadline_us}) — a window that opens "
+                 "after it closes admits no feed at all")
+        decls.append(
+            f"inline constexpr alloy::wwdt::window_watchdog<"
+            f"alloy::dev::{wwdg['peripheral']}_t, clock_profile, "
+            f"{deadline_us}u, {earliest_us}u> window_watchdog{{}};"
+        )
+    else:
+        decls.append(
+            "inline constexpr alloy::wwdt::null_window_watchdog window_watchdog{};")
 
     # Flash-backed persistent regions (board::nvm, board::fs) are carved from the
     # TOP of flash so a small app never collides with them. A board may declare
