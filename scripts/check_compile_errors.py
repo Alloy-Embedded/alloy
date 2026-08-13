@@ -214,6 +214,99 @@ void probe() {
 """
 
 
+# ── The bridge, where the compile-time net is the safety argument ────────
+#
+# WHY THESE SIX CASES EXIST AND WHY THEY ARE NOT `optimize=True`. The bridge's
+# five admissions used to be `__builtin_constant_p` + [[gnu::error]], like the
+# baud and window cases above, and src/alloy/bridge.hpp promised they were "a
+# COMPILE ERROR at every literal call site". Measured on arm-none-eabi-g++
+# 14.2.1 that was false in two directions: nothing fired at -O0, -Og or -O1,
+# and even at -Os nothing fired when one function contained two calls to
+# open() (neither constant gets propagated, so `__builtin_constant_p` is 0 at
+# both sites). A user debugging a bridge at -O0 had no compile-time protection
+# at all, and the runtime trap was the entire net.
+#
+# `open_checked<Config>()` puts the config in a TEMPLATE PARAMETER and the
+# five checks become static_asserts, which is why every case below compiles
+# with -fsyntax-only — no optimizer, no inlining, nothing to fold. If a future
+# edit turns one back into something the optimizer has to find, the case here
+# goes red rather than the promise going quietly false again.
+#
+# ONE MISTAKE, ONE DIAGNOSTIC, which is the half a reader with a smoking
+# inverter needs: "I forgot", "I meant zero", "this timer cannot make one that
+# long", "it does not fit in a period" and "that frequency is impossible" have
+# five different fixes, so each needle below is unique to its own case.
+
+BRIDGE_DEAD_TIME_UNSTATED = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge::config{.freq_hz = 20'000}>();
+}
+"""
+
+BRIDGE_DEAD_TIME_ZERO = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 20'000,
+        .dead_time = alloy::bridge::dead_time::ns(0)}>();
+}
+"""
+
+# The bound is the DEGREE fact: the curated DTG field width against this
+# instance's kernel clock. On the G0B1RE's 64 MHz TIM1 it is 15750 ns, and both
+# numbers have to reach the reader.
+BRIDGE_DEAD_TIME_TOO_LONG = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 1'000,
+        .dead_time = alloy::bridge::dead_time::ns(15'751)}>();
+}
+"""
+
+# 3000 ns of dead time at 200 kHz (a 5000 ns period) leaves nothing for a
+# pulse — and 3000 is comfortably inside the generator, so the case that fires
+# is this one and not "too long".
+BRIDGE_DEAD_TIME_VS_PERIOD = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 200'000,
+        .dead_time = alloy::bridge::dead_time::ns(3'000)}>();
+}
+"""
+
+BRIDGE_FREQ_IMPOSSIBLE = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 0,
+        .dead_time = alloy::bridge::dead_time::ns(500)}>();
+}
+"""
+
+# THE POSITIVE CONTROL, and without it the five above pass on a facade that
+# refuses everything. Three configurations that MUST compile:
+#   * the board's own defaults, which is what the example calls;
+#   * exactly max_dead_time_ns — the boundary the "too long" bound rounds to,
+#     and the one a rounding bug in dtg_max_dead_time_ns already broke once;
+#   * the gate-driver spelling, which is a legitimate zero at the timer and
+#     must NOT take the ns(0) path.
+BRIDGE_ADMITTED = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::bridge::open_checked<board::bridge_defaults>();
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 1'000,
+        .dead_time = alloy::bridge::dead_time::ns(15'750)}>();
+    (void)board::bridge::open_checked<board::bridge::config{
+        .freq_hz = 20'000,
+        .dead_time = alloy::bridge::dead_time::inserted_by_the_gate_driver()}>();
+}
+"""
+
+
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
     toks = shlex.split(cc_entry["command"])
@@ -336,6 +429,19 @@ def _expect_failure(name: str, result, needles: list[str]) -> int:
     return 0
 
 
+def _expect_success(name: str, result) -> int:
+    """A positive control: this one MUST compile. Without it a check that
+    rejects everything looks identical to a check that works."""
+    if result is None:
+        return 1
+    if result.returncode != 0:
+        print(f"FAIL: {name} did NOT compile — the check is refusing valid "
+              f"configurations:\n" + result.stderr[:1500])
+        return 1
+    print(f"OK: {name} — compiles, as it must")
+    return 0
+
+
 def check_opts_absent_field() -> int:
     """Layer 2: a knob this IP's driver does not have is not a member."""
     return _expect_failure(
@@ -447,13 +553,83 @@ def check_wwdt_window_impossible() -> int:
         ["alloy::core::admit::wwdt_window", "this window cannot exist"])
 
 
+def _bridge_case(name: str, source: str, needles: list[str]) -> int:
+    """A bridge admission, compiled with -fsyntax-only. The absence of an
+    optimizer here is the claim under test."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        name,
+        _compile_wrong_tu(ALLOY / "examples" / "bridge", board, source, [],
+                          board=board),
+        needles)
+
+
+def check_bridge_dead_time_unstated() -> int:
+    """The one that matters: `config{}` has an `unstated` dead time, and a
+    complementary pair with no dead time is a short across the DC link."""
+    return _bridge_case(
+        "a bridge opened with NO stated dead time",
+        BRIDGE_DEAD_TIME_UNSTATED,
+        ["states NO DEAD TIME", "inserted_by_the_gate_driver",
+         "open_checked"])
+
+
+def check_bridge_dead_time_zero() -> int:
+    """…and "I meant zero" is a DIFFERENT diagnostic from "I forgot". Two
+    mistakes, two fixes; a shared message would send a reader to the wrong
+    one."""
+    return _bridge_case(
+        "a bridge opened with dead_time::ns(0)",
+        BRIDGE_DEAD_TIME_ZERO,
+        ["shoot-through spelled as a number"])
+
+
+def check_bridge_dead_time_too_long() -> int:
+    """Degree, from the curated DTG width and this instance's kernel clock —
+    15750 ns on a 64 MHz TIM1 — with both numbers in the diagnostic."""
+    return _bridge_case(
+        "a dead time longer than this timer's generator can encode",
+        BRIDGE_DEAD_TIME_TOO_LONG,
+        ["cannot be programmed on this timer", "(15751 <= 15750)"])
+
+
+def check_bridge_dead_time_vs_period() -> int:
+    """Both edges of every pair carry the dead time, so 2 x dead_time has to
+    fit inside one switching period with room left for a pulse."""
+    return _bridge_case(
+        "a dead time that swallows the switching period",
+        BRIDGE_DEAD_TIME_VS_PERIOD,
+        ["does not fit inside the switching period"])
+
+
+def check_bridge_freq_impossible() -> int:
+    return _bridge_case(
+        "a bridge switching frequency of zero",
+        BRIDGE_FREQ_IMPOSSIBLE,
+        ["switching frequency is impossible"])
+
+
+def check_bridge_admitted() -> int:
+    """The positive control for all five above."""
+    board = "nucleo_g0b1re"
+    return _expect_success(
+        "the board defaults, the longest programmable dead time, and the "
+        "gate-driver spelling",
+        _compile_wrong_tu(ALLOY / "examples" / "bridge", board,
+                          BRIDGE_ADMITTED, [], board=board))
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
             check_de_tag_unsupported() | check_baud_zero() |
             check_open_checked_conflict() | check_pwm_channel_disagrees() |
             check_adc_watchdog_ordinal() | check_can_filters_over_capacity() |
-            check_wwdt_wrong_block() | check_wwdt_window_impossible())
+            check_wwdt_wrong_block() | check_wwdt_window_impossible() |
+            check_bridge_dead_time_unstated() | check_bridge_dead_time_zero() |
+            check_bridge_dead_time_too_long() |
+            check_bridge_dead_time_vs_period() |
+            check_bridge_freq_impossible() | check_bridge_admitted())
 
 
 if __name__ == "__main__":

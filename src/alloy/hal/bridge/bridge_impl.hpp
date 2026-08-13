@@ -82,9 +82,12 @@ enum class bridge_break_polarity : std::uint8_t { active_low, active_high };
 // So the field's type has THREE states, not one number, and only two of them
 // are admitted:
 //
-//   unstated       what `config{}` gives you. A hard compile error at open(),
-//                  naming this member. There is no way to reach it by
-//                  accident because there is no way to write it on purpose.
+//   unstated       what `config{}` gives you, and what the field's declared
+//                  default is. It is trivially REACHABLE — that is the whole
+//                  design — and it is the one state `open_checked<>()` will
+//                  not compile. The number a careless config yields is not a
+//                  dangerous dead time; it is no dead time at all, spelled in
+//                  a way a compiler can see.
 //   nanoseconds    a real dead time. `ns(0)` is refused separately, with its
 //                  own message, so "I wrote zero" and "I wrote nothing" are
 //                  never the same diagnostic.
@@ -119,11 +122,34 @@ public:
 
     friend constexpr bool operator==(bridge_dead_time, bridge_dead_time) = default;
 
+    // ── THESE TWO ARE PUBLIC FOR ONE REASON, AND IT IS THE SAFETY NET ───
+    //
+    // `bridge::bind::open_checked<Config>()` puts the whole config in a
+    // TEMPLATE PARAMETER, which is what makes its five static_asserts fire
+    // under -fsyntax-only, at every optimization level, whether or not
+    // anything is inlined. C++ requires a non-type template parameter of class
+    // type to be a STRUCTURAL type ([temp.param]/7), and a structural type's
+    // non-static data members must all be public. Private members here would
+    // buy an encapsulation that nothing could check and cost the only
+    // compile-time protection this facade has.
+    //
+    // The three-state discipline does NOT rest on these being private:
+    //
+    //   * the class has user-declared constructors, so it is not an aggregate
+    //     — `bridge_dead_time{kind::nanoseconds, 0}` does not compile;
+    //   * the only constructor that sets a state is private, so ns() and
+    //     inserted_by_the_gate_driver() remain the only ways to BUILD one;
+    //   * the default is `unstated`, and open_checked() refuses it.
+    //
+    // What is now writable that was not: reaching into an existing value and
+    // assigning a member. That is not a mistake anyone makes by accident, and
+    // it is not what the type was ever defending against.
+    bridge_dead_time::kind kind_ = kind::unstated;
+    std::uint32_t ns_ = 0;
+
 private:
     constexpr bridge_dead_time(bridge_dead_time::kind k, std::uint32_t n)
         : kind_(k), ns_(n) {}
-    bridge_dead_time::kind kind_ = kind::unstated;
-    std::uint32_t ns_ = 0;
 };
 
 // The portable bridge shape.

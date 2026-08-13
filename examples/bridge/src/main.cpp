@@ -84,11 +84,19 @@ int main() {
         // facts, overridable from alloy.toml. There is no default dead time
         // anywhere in this chain: leaving it out is a compile error.
         //
+        // open_checked<>, not open(): the config goes in the TEMPLATE
+        // parameter, which is what turns the five admissions into
+        // static_asserts that fire at every optimization level rather than
+        // [[gnu::error]]s that need the optimizer to have folded the constant.
+        // `bridge_defaults` is `inline constexpr`, so it is already a usable
+        // template argument and nothing about the call site had to change but
+        // the brackets.
+        //
         // Layer 2 (`opts`) is left at its default: no break filter (the
         // conservative direction — an unfiltered break trips on noise, a
         // filtered one can ride through a real fault), center-aligned
         // variant 1, no configuration lock.
-        auto inv = board::bridge::open(board::bridge_defaults);
+        auto inv = board::bridge::open_checked<board::bridge_defaults>();
 
         uart.write("phases: ");
         write_u32(uart, decltype(inv)::phases);

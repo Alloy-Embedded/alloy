@@ -40,6 +40,7 @@
 #include <unistd.h>
 
 #include <cstdint>
+#include <type_traits>
 
 #include "alloy/bridge.hpp"
 #include "alloy/hal/bridge/st_tim_adv_dtg.hpp"
@@ -549,9 +550,16 @@ ALLOY_TEST(emergency_stop_takes_the_hardware_break_path) {
 // ── Layer 1's value admission ────────────────────────────────────────────
 //
 // Every case below is written through a `volatile` so the value is not a
-// constant. That is the RUNTIME arm of each admission; the COMPILE-TIME arm is
-// a [[gnu::error]] in alloy/core/admit.hpp that fires at any literal call site
-// and cannot be tested from inside a test suite that has to compile.
+// constant. That is the RUNTIME arm of each admission, and it is the arm that
+// is unconditional.
+//
+// THE COMPILE-TIME ARM CANNOT BE TESTED FROM A SUITE THAT HAS TO COMPILE, so
+// it is tested from outside: scripts/check_compile_errors.py compiles five
+// rejected `open_checked<>` calls with -fsyntax-only and asserts on the
+// diagnostic text, plus one positive control. What CAN be pinned from here is
+// the mechanism those five rest on — see
+// `the_config_is_a_usable_template_parameter` below — and the positive
+// controls, which are the compile-time cases that must NOT fail.
 
 ALLOY_TEST(a_bridge_with_no_stated_dead_time_is_refused) {
     // The whole reason `config::dead_time` is a three-state type instead of a
@@ -654,6 +662,74 @@ ALLOY_TEST(the_dead_time_type_has_exactly_three_states) {
     static_assert(alloy::bridge::dead_time::inserted_by_the_gate_driver() !=
                   alloy::bridge::dead_time::ns(0u));
     ALLOY_CHECK(true);
+}
+
+// ── The compile-time net's load-bearing mechanism ────────────────────────
+
+namespace {
+
+// The whole of `open_checked<>` rests on `alloy::bridge::config` being a
+// STRUCTURAL type ([temp.param]/7): a non-type template parameter of class
+// type needs every non-static data member public and non-mutable, all the way
+// down. `bridge_dead_time`'s two members are public FOR THIS REASON and
+// nothing else, and the comment saying so is not a check. This is.
+//
+// If someone re-privatises them, every static_assert in open_checked()
+// vanishes along with the overload — silently, because open(config) still
+// exists and still compiles. This alias fails to instantiate instead.
+template <alloy::bridge::config C>
+struct needs_a_structural_config {
+    static constexpr std::uint32_t freq = C.freq_hz;
+};
+using structural_witness = needs_a_structural_config<alloy::bridge::config{
+    .freq_hz = 20'000u,
+    .dead_time = alloy::bridge::dead_time::ns(500u)}>;
+
+}  // namespace
+
+ALLOY_TEST(the_config_is_a_usable_template_parameter) {
+    static_assert(structural_witness::freq == 20'000u);
+    // …and the members that had to become public did not become a second way
+    // to BUILD one: the class has user-declared constructors, so it is not an
+    // aggregate, and the only state-setting constructor is still private.
+    static_assert(!std::is_aggregate_v<alloy::bridge::dead_time>);
+    static_assert(!std::is_constructible_v<alloy::bridge::dead_time,
+                                           alloy::bridge::dead_time::kind,
+                                           std::uint32_t>);
+    ALLOY_CHECK(true);
+}
+
+ALLOY_TEST(open_checked_is_open_with_the_config_moved_into_the_template) {
+    // The positive control for the five negative compile cases in
+    // scripts/check_compile_errors.py: the checked call must still program the
+    // block, still come up dark, and still report the same dead time. If this
+    // ever diverged from open(), the checked path would be checking a
+    // configuration the driver does not receive.
+    const unsigned before = alloy::hal::log.enables;
+    auto inv = inverter<30>::open_checked<good>();
+    ALLOY_CHECK_EQ(alloy::hal::log.enables, before + 1u);
+    ALLOY_CHECK_EQ(alloy::hal::log.cfg.freq_hz, 20'000u);
+    ALLOY_CHECK(alloy::hal::log.cfg.dead_time == good.dead_time);
+    ALLOY_CHECK(!inv.outputs_enabled());
+    ALLOY_CHECK_EQ(inv.dead_time_ns(), 500u);
+}
+
+ALLOY_TEST(open_checked_admits_the_gate_driver_spelling_and_the_longest_one) {
+    // Two boundaries that a wrong static_assert would reject rather than
+    // accept, which is the failure a suite of negative cases cannot see.
+    // `external` is a legitimate zero at the timer and must not take the
+    // ns(0) path; 15750 ns is exactly max_dead_time_ns at 64 MHz.
+    auto ext = inverter<31>::open_checked<alloy::bridge::config{
+        .freq_hz = 20'000u,
+        .dead_time = alloy::bridge::dead_time::inserted_by_the_gate_driver()}>();
+    ALLOY_CHECK(alloy::hal::log.cfg.dead_time.stated() ==
+                alloy::bridge::dead_time::kind::external);
+    ALLOY_CHECK(!ext.outputs_enabled());
+
+    auto longest = inverter<32>::open_checked<alloy::bridge::config{
+        .freq_hz = 1'000u,
+        .dead_time = alloy::bridge::dead_time::ns(15'750u)}>();
+    ALLOY_CHECK_EQ(longest.dead_time_ns(), 15'750u);
 }
 
 // ── The personality rule ─────────────────────────────────────────────────

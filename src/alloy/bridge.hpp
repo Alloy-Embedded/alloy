@@ -8,10 +8,10 @@
 //       alloy::bridge::phase<2, alloy::dev::pa9_t,  alloy::dev::pb14_t>,
 //       alloy::bridge::phase<3, alloy::dev::pa10_t, alloy::dev::pb15_t>>;
 //
-//   auto inv = inverter::open({
+//   auto inv = inverter::open_checked<alloy::bridge::config{
 //       .freq_hz   = 20'000,
 //       .dead_time = alloy::bridge::dead_time::ns(500),
-//   });
+//   }>();
 //   inv.set_duty<1>(0x8000);        // 50 %
 //   inv.enable_outputs();           // …and only NOW does a pin move
 //
@@ -21,10 +21,34 @@
 // number, it is a three-state type (`hal::bridge_dead_time`) whose default
 // state is "unstated" and whose only zero is spelled
 // `dead_time::inserted_by_the_gate_driver()`. Leaving it out is a COMPILE
-// ERROR at every literal call site, and `dead_time::ns(0)` is a different
-// compile error, so "I forgot" and "I meant zero" never produce the same
-// diagnostic. Both fall back to a named trap when the value is genuinely
-// computed at run time. The messages are in alloy/core/admit.hpp.
+// ERROR, and `dead_time::ns(0)` is a DIFFERENT compile error, so "I forgot"
+// and "I meant zero" never produce the same diagnostic.
+//
+// WHICH open() YOU CALL DECIDES WHICH NET YOU GET, and the difference was
+// measured rather than assumed:
+//
+//   open_checked<Config>()  the config is a TEMPLATE PARAMETER, so the five
+//                           checks are static_asserts. They fire under
+//                           -fsyntax-only, at -O0 and at -Os alike, whether or
+//                           not anything is inlined. This is the call to
+//                           write; the five acceptance cases in
+//                           scripts/check_compile_errors.py are on it.
+//
+//   open(config)            for a config that is genuinely computed at run
+//                           time. Its guarantee is the RUNTIME trap, which is
+//                           unconditional. It also carries the older
+//                           `__builtin_constant_p` + [[gnu::error]] admissions
+//                           (messages in alloy/core/admit.hpp), and those are
+//                           a bonus, not a promise: on arm-none-eabi-g++ 14.2.1
+//                           they fire at -O2/-O3/-Os for a single literal call
+//                           site, and NOT at -O0, -Og or -O1, and not even at
+//                           -Os when one function contains two calls to open()
+//                           and the optimizer therefore propagates neither
+//                           constant. That page of measurements is why
+//                           open_checked() exists.
+//
+// Both paths keep the trap: a value computed at run time is not something a
+// template can check, and belt and braces is the correct answer on a bridge.
 //
 // TWO: TWO CALL SITES DISAGREEING ABOUT A BLOCK-SCOPED VALUE. This is the
 // defect docs/reference/peripheral-surface.md has had open since revision 2:
@@ -351,6 +375,10 @@ struct bind {
     static_assert((detail::check_phase<Inst, Phases>::ok && ...));
 
     using opts = hal::bridge_opts<Inst>;
+    // Nameable at the call site, which is what `open_checked<>` needs: a
+    // non-type template argument of class type has to be spelled with its
+    // type, exactly like `Role::opts{…}` on every other facade.
+    using config = hal::bridge_config;
 
     static constexpr std::uint32_t kernel_hz() {
         switch (Inst::kernel) {
@@ -360,6 +388,91 @@ struct bind {
             case clock_node::sysclk: return Clock::sysclk_hz;
         }
         return Clock::sysclk_hz;
+    }
+
+    // THE CHECKED CALL, AND THE ONE TO WRITE. The block-scoped values ride in
+    // a template parameter, so every one of the five admissions below is a
+    // static_assert on a constant the compiler already has. That is the whole
+    // difference from open(): a static_assert does not depend on the inliner,
+    // on the optimization level, or on how many call sites share a function.
+    //
+    //     auto inv = board::bridge::open_checked<board::bridge_defaults>();
+    //     auto inv = board::bridge::open_checked<board::bridge::config{
+    //         .freq_hz = 20'000,
+    //         .dead_time = alloy::bridge::dead_time::ns(500)}>();
+    //
+    // FIVE CHECKS, FIVE MESSAGES, and the separation is the point: "you said
+    // nothing", "you said zero", "this timer cannot make one that long", "it
+    // does not fit in a period" and "that switching frequency is impossible"
+    // are five different mistakes with five different fixes. A single "bad
+    // dead time" would send a reader looking in the wrong place with an
+    // inverter on the bench. Each condition is written so that exactly ONE of
+    // them fires for each mistake — a refused frequency does not also drag the
+    // period check down with it.
+    //
+    // The messages are twins of the [[gnu::error]] strings in
+    // alloy/core/admit.hpp. They are spelled out here rather than shared
+    // because static_assert takes a string LITERAL until C++26; if you edit
+    // one, edit the other.
+    template <config C, opts Opts = {}>
+    static handle<Inst, sizeof...(Phases)> open_checked() {
+        constexpr std::uint32_t kernel = kernel_hz();
+        constexpr std::uint32_t period_ns = detail::period_ns_of(C.freq_hz);
+        constexpr std::uint32_t longest_ns =
+            hal::bridge_impl<Inst>::max_dead_time_ns(kernel);
+        constexpr std::uint32_t asked_ns = C.dead_time.requested_ns();
+
+        static_assert(C.freq_hz != 0u && kernel != 0u && C.freq_hz <= kernel,
+                      "alloy::bridge::open_checked: this switching frequency is "
+                      "impossible on this timer — it is zero, or above the "
+                      "timer's own kernel clock");
+
+        static_assert(
+            C.dead_time.stated() != dead_time::kind::unstated,
+            "alloy::bridge::open_checked: this configuration states NO DEAD "
+            "TIME. A complementary pair with no dead time turns both "
+            "transistors of a half-bridge on at once during every switching "
+            "transition, which is a short across the DC link through the "
+            "bridge — the failure is immediate and it is not recoverable. Say "
+            "what you mean: `.dead_time = alloy::bridge::dead_time::ns(500)` "
+            "for the gate driver's turn-off time plus margin, or "
+            "`alloy::bridge::dead_time::inserted_by_the_gate_driver()` if the "
+            "hardware between this pin and the gate already does it");
+
+        static_assert(
+            !(C.dead_time.stated() == dead_time::kind::nanoseconds &&
+              asked_ns == 0u),
+            "alloy::bridge::open_checked: `dead_time::ns(0)` is a "
+            "shoot-through spelled as a number. Zero is not a dead time; if "
+            "the gate driver inserts it, say so with "
+            "`alloy::bridge::dead_time::inserted_by_the_gate_driver()`, which "
+            "is greppable and reviewable and does not read as an oversight");
+
+        static_assert(
+            asked_ns <= longest_ns,
+            "alloy::bridge::open_checked: this dead time cannot be programmed "
+            "on this timer. The dead-time generator counts in ticks of the "
+            "timer's own clock and its encoding has a longest value; asking "
+            "for more than that would program the widest code and silently "
+            "give you LESS dead time than you asked for. The bound comes from "
+            "the curated DTG field width and the instance's kernel clock, not "
+            "from a constant written here");
+
+        // `period_ns == 0` only when the frequency was already refused above;
+        // letting it through here keeps one mistake to one diagnostic.
+        static_assert(
+            period_ns == 0u || asked_ns * 2u < period_ns,
+            "alloy::bridge::open_checked: the dead time does not fit inside "
+            "the switching period. Both edges of every pair carry it, so 2 x "
+            "dead_time must be less than one period — at this frequency it is "
+            "not, and the bridge would spend the whole period with both "
+            "transistors off (or, on a timer that wraps the compare, with "
+            "neither of them where the duty says)");
+
+        // …and then the ordinary path, which still runs the runtime trap. A
+        // second, independent mechanism on the same five facts is not
+        // redundancy here, it is the belt beside the braces.
+        return open<Opts>(C);
     }
 
     template <opts Opts = {}>
