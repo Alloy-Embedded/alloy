@@ -63,6 +63,25 @@ def _dma_controller(chip: dict[str, Any], registers: dict[str, dict[str, Any]]) 
     return None
 
 
+def _chip_singleton(chip: dict[str, Any], registers: dict[str, dict[str, Any]],
+                    ip_class: str) -> str | None:
+    """First CURATED peripheral of `ip_class` (alphabetical for determinism), or
+    None when the chip has none.
+
+    For blocks a board never has to wire up, so there is no role and no
+    board.json entry: a CRC accelerator, a factory-programmed device ID. The
+    presence of the block is a DIE fact, exactly like `caps["dma"]`, and putting
+    it in `roles.py` would ask every board on a chip to repeat something none of
+    them can disagree about. Uncurated peripherals are invisible here because
+    they carry no `ip` — question 0 row 1, arriving at the emitter.
+    """
+    for name in sorted(chip["peripherals"]):
+        ip = chip["peripherals"][name].get("ip")
+        if ip and registers.get(ip, {}).get("class") == ip_class:
+            return name
+    return None
+
+
 def _eth_mac_names(ip_key: str) -> tuple[str, str]:
     """(HAL include stem, HAL type name) for a MAC IP version, so a MAC is picked
     by data like every other peripheral: microchip/gmac_v1 ->
@@ -177,6 +196,13 @@ def role_caps(board: dict[str, Any], chip: dict[str, Any],
     # DMA: the chip declares a controller whose IP is class "dma" (st dma1,
     # microchip xdmac, ...).
     caps["dma"] = _dma_controller(chip, registers) is not None
+    # Blocks with no wiring and therefore no role: the die either has one or it
+    # does not, and no board on that die can disagree. `crc` says the checksum
+    # is computed in silicon rather than by alloy::ota::crc::crc32 — the VALUE
+    # is the same either way, so this is a speed fact, not a correctness one.
+    # `uid` says the part carries a factory identifier.
+    caps["crc"] = _chip_singleton(chip, registers, "crc") is not None
+    caps["uid"] = _chip_singleton(chip, registers, "uid") is not None
     # Can the low-power UART actually be woken by traffic while the core sleeps?
     # A SECOND cap and not a refinement of the first, because the two are
     # genuinely independent: the role says a board has a spare serial link, this
@@ -996,6 +1022,39 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "// No DMA controller in this chip's data yet; the tag keeps\n"
             "// caps-guarded generic lambdas compiling (never instantiated).\n"
             "struct dma_t {};"
+        )
+
+    # --- CRC unit and factory device ID: no role, no pins, no board.json. ---
+    #
+    # Both are emitted for EVERY board, present or not, because both facades
+    # answer with something real when the silicon has nothing. `board::crc` on a
+    # chip without the block opens the SOFTWARE CRC-32 — provably the same
+    # number (tests/test_crc.cpp), so the substitution is invisible and allowed
+    # to be. `board::uid` on a chip without one reads an identifier of ZERO
+    # words, which is the framework's "0 means absent" degree rule applied to a
+    # whole value rather than to a count. Neither needs `if constexpr` at the
+    # call site; `caps::crc` / `caps::uid` are there for a program that wants to
+    # SAY which it got.
+    extra_includes.append("alloy/crc.hpp")
+    crc_name = _chip_singleton(chip, registers, "crc")
+    if crc_name:
+        decls.append(f"inline constexpr alloy::crc::engine<alloy::dev::{crc_name}_t> crc{{}};")
+    else:
+        decls.append(
+            "// No CRC block on this chip; open() returns the software CRC-32,\n"
+            "// which is the same function and the same value.\n"
+            "inline constexpr alloy::crc::software_engine crc{};"
+        )
+
+    extra_includes.append("alloy/uid.hpp")
+    uid_name = _chip_singleton(chip, registers, "uid")
+    if uid_name:
+        decls.append(f"inline constexpr alloy::uid::reader<alloy::dev::{uid_name}_t> uid{{}};")
+    else:
+        decls.append(
+            "// No factory device ID on this chip; read() returns the empty\n"
+            "// identifier (zero words), never a fabricated one.\n"
+            "inline constexpr alloy::uid::null_reader uid{};"
         )
 
     # --- ethernet role (M0: records facts + sets caps; the NetDevice bind

@@ -128,6 +128,8 @@ add_executable(alloy_unit_tests
     test_can.cpp
     test_net.cpp
     test_wwdt.cpp
+    test_crc.cpp
+    test_uid.cpp
     ${ALLOY_LIB_TESTS}
     ${ALLOY_LFS}
     ${ALLOY_LWIP}

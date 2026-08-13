@@ -38,13 +38,25 @@ public:
     }
     void update(std::span<const std::uint8_t> b) { update(b.data(), b.size()); }
     [[nodiscard]] std::uint32_t value() const { return s_ ^ 0xFFFF'FFFFu; }
+
+    // One-shot over a whole buffer: reset, feed, read. Not a convenience — it
+    // is the method that makes this class SUBSTITUTABLE for the hardware handle
+    // in alloy/crc.hpp, which hands this class out verbatim on a chip with no
+    // CRC block. A fallback missing one method is a different API wearing one
+    // name, and the program that finds out is the one being ported to the chip
+    // that lacks the unit. alloy::crc::Checksum32 pins the shape for both.
+    [[nodiscard]] std::uint32_t checksum(std::span<const std::uint8_t> b) {
+        reset();
+        update(b);
+        return value();
+    }
 };
 
-// One-shot over a whole buffer.
+// One-shot over a whole buffer. Spelled through checksum() so the method the
+// facade depends on is the one every OTA path already exercises.
 [[nodiscard]] inline std::uint32_t crc32_of(std::span<const std::uint8_t> b) {
     crc32 c;
-    c.update(b);
-    return c.value();
+    return c.checksum(b);
 }
 
 }  // namespace alloy::ota::crc
