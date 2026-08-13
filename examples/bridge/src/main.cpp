@@ -9,10 +9,11 @@
 //
 // A bare Nucleo-G0B1RE has NO POWER STAGE. This example drives six morpho-
 // header pins with a slow sine and prints what it programmed; nothing here
-// has ever switched a transistor, no silicon has run this driver, and there
-// is no emulation leg either — Renode's timer model has no BDTR at all, so
-// the dead time, the break input and the main output enable are unmodelled.
-// The register sequence is read from the reference data.
+// has ever switched a transistor and no silicon has run this driver. There is
+// no emulation leg either, and the reason is checked: alloy's generated
+// platform does not instantiate TIM1 for Renode, so the dead time, the break
+// input and the main output enable are unmodelled — running this under Renode
+// logs the register writes and simulates none of their effects.
 //
 // If you are attaching this to a real bridge: put a scope on CH1 and CH1N
 // first and measure the gap at both edges. `dead_time_ns()` below reports

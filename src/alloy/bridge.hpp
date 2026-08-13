@@ -46,10 +46,15 @@
 //
 // ── WHAT IS NOT PROVEN ──────────────────────────────────────────────────
 //
-// No silicon has run this. Renode has no model of BDTR, so no emulation leg
-// exists either — see the driver header. The dead-time arithmetic and this
-// facade's admission, claim and MOE ordering are pinned by
-// tests/test_bridge.cpp; the register WRITES are pinned by nothing.
+// No silicon has run this. The dead-time arithmetic and this facade's
+// admission, claim and MOE ordering are pinned by tests/test_bridge.cpp.
+//
+// The register WRITES are pinned by less than that, and exactly this much:
+// alloy's generated platform does not instantiate TIM1 for Renode, so nothing
+// MODELS a dead time, a break or an output pin, and there is no emulation leg
+// — but Renode's sysbus logs the accesses, so their ORDER and VALUES are
+// witnessed (see the driver header for the trace). What the silicon then DOES
+// with them is witnessed by nothing.
 //
 // That sentence used to be here with no test file behind it. When one was
 // finally written it found a live defect in the very bound the sentence was

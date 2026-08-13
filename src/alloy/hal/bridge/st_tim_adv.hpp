@@ -11,14 +11,35 @@
 //
 // BEHAVIOR only: bases, gates and fields come from generated headers.
 //
-// NOT SILICON-VALIDATED, and it CANNOT be validated in emulation either.
-// Renode 1.16.1's Timers.STM32_Timer has no BDTR at all — no dead-time
-// generator, no MOE, no break input, no complementary outputs. There is no
-// model in which the register sequence below can be observed to insert a
-// dead time or to switch the outputs off on a fault. Every statement about
-// the hardware in this file is read from the reference data (the pinned
-// stm32-data timer_v3.json, and RM0444 section 21 for the DTG encoding),
-// not witnessed. No board is on hand.
+// NOT SILICON-VALIDATED. No board is on hand, and every statement about what
+// the HARDWARE does with these writes is read from the reference data (the
+// pinned stm32-data timer_v3.json, and RM0444 section 21 for the DTG
+// encoding), not witnessed.
+//
+// WHAT EMULATION CAN AND CANNOT SAY, checked rather than assumed. alloy's
+// generated nucleo_g0b1re.repl does not instantiate TIM1 at all — `alloy
+// chip-status st/stm32g0b1re` prints no Renode model for it, and Renode
+// 1.16.1 answers every access to that base with "WriteDoubleWord to non
+// existing peripheral". So there is no model in which a dead time can be
+// measured, a break can be asserted, or an output pin can be observed, and
+// there is no emulation leg for any of the three mechanisms this driver
+// exists for. A run that did not hang would be proving nothing.
+//
+// It does, however, mean Renode's sysbus logs every access this driver makes,
+// in order, with its value — and that IS a witness of the ORDER and the
+// VALUES, which is the half of the programming sequence that lives in this
+// file. Run examples/bridge with `logLevel 0 sysbus` and the whole of the
+// numbered sequence below appears: CR1's CEN cleared, CR2 = 0, the timebase,
+// CCMR1/2 = 0x6868 (PWM mode 1 + preload on both channels of each word),
+// CCER = 0x555 (three pairs, both halves), CR1 = 0xA0 (ARPE + center mode 1,
+// CKD = 0), AF1 = 1, then BDTR = 0x1C20 LAST — DTG = 0x20, which is 32 ticks
+// and therefore 500 ns at 64 MHz, OSSI and OSSR set, BKE set, BKP clear for
+// an active-low break, AOE clear, and MOE CLEAR — then EGR = UG and CEN = 1.
+// The duties are written next, still dark, and only then does BDTR get 0x8000
+// from enable_outputs().
+//
+// So: the sequence is witnessed, its EFFECT is not. Put a scope on CH1 and
+// CH1N before you connect a DC link.
 //
 // WHAT THAT MEANS FOR A READER WITH AN INVERTER: the arithmetic is covered by
 // tests/test_bridge.cpp, which sweeps every boundary of the DTG encoding

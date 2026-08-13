@@ -29,11 +29,12 @@
 // WHAT IT DOES NOT PROVE, AND IT IS THE HALF THAT MATTERS TO SOMEBODY WITH AN
 // INVERTER ON THE BENCH: that the register sequence in st_tim_adv.hpp inserts
 // a dead time, that MOE keeps the pins dark, or that the break input switches
-// six outputs off. Nothing available to this project can prove those. Renode
-// 1.16.1's Timers.STM32_Timer has no BDTR at all — no dead-time generator, no
-// MOE, no break input, no complementary outputs — so there is no model to run
-// them in, and no board is on hand. Put a scope on CH1 and CH1N before you
-// connect a DC link.
+// six outputs off. Nothing available to this project can prove those — no
+// board is on hand, and alloy's generated Renode platform does not instantiate
+// TIM1, so no model responds to any of those writes. What emulation DOES give
+// is a bus-level log of the writes in order, which pins the sequence and not
+// its effect; the driver header carries that trace. Put a scope on CH1 and
+// CH1N before you connect a DC link.
 
 #include <sys/wait.h>
 #include <unistd.h>
