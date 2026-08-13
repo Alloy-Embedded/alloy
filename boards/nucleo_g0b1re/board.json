@@ -52,6 +52,11 @@
       "mosi": "pb5",
       "label": "SPI1 on PB3/PB4/PB5 (morpho CN10) — keeps LD4/PA5 free"
     },
+    "tick": {
+      "peripheral": "tim6",
+      "hz": 5,
+      "label": "TIM6 as a bare periodic time base — no pins. TIM6 rather than a general-purpose timer on purpose: TIM2/TIM3 are already spoken for by led_pwm and encoder, and a basic timer has nothing else to be. It is also one of only three blocks on this die whose CR2 has an MMS field, so it can drive TRGO for the DAC or the ADC."
+    },
     "watchdog": {
       "peripheral": "iwdg",
       "timeout_ms": 4000,

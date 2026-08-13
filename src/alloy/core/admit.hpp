@@ -77,6 +77,14 @@ void spi_clock();
 void pwm_freq();
 
 [[gnu::error(
+    "alloy::tick::open: this rate is impossible on this timer. Both ends of the "
+    "window are real: the rate is zero or above the timer's own kernel clock, or "
+    "it is so slow that dividing down to it needs more than the 2^32 that a "
+    "16-bit prescaler and a 16-bit reload hold together. On a 64 MHz kernel that "
+    "floor is about 0.015 Hz")]]
+void tick_hz();
+
+[[gnu::error(
     "alloy::encoder::open: this period is impossible on this timer — it is "
     "below 2, or wider than the instance's own counter (the bound is derived "
     "from the curated width of ARR, not written by hand), or wider than the "

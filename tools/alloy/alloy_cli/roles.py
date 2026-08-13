@@ -133,6 +133,16 @@ ROLES: dict[str, RoleSpec] = {
         required=("peripheral",),
         optional=("deadline_us", "earliest_us", "label"),
         project_fields=("deadline_us", "earliest_us")),
+    # A timer used as a bare periodic time base. NO PINS AT ALL, which is what
+    # makes it a role worth having rather than a `dev::tim6_t` written into the
+    # application: nothing about the board constrains it except WHICH block is
+    # free, and that is exactly a board fact. `hz` is a project field — the
+    # same PCB serves a 10 Hz housekeeping tick and a 20 kHz control loop, and
+    # which one is running is the application's business.
+    "tick": RoleSpec(
+        kind="peripheral", ip_class="tick",
+        required=("peripheral",), optional=("hz", "label"),
+        project_fields=("hz",)),
     "nvm": RoleSpec(
         kind="peripheral", ip_class="flash",
         required=("peripheral",), optional=("bytes",),

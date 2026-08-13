@@ -105,6 +105,7 @@ ROLE_PERSONALITY = {
     "encoder": "encoder",
     "watchdog": "wdt",
     "window_watchdog": "wwdt",
+    "tick": "tick",
     "rtc": "rtc",
     "nvm": "flash",
     "fs": "flash",
@@ -144,7 +145,7 @@ PRESENCE_ROLES = (
     "led", "button", "debug_uart", "led_pwm", "encoder", "adc", "i2c", "spi",
     "eeprom", "watchdog", "window_watchdog", "nvm", "fs", "rtc", "dac", "can",
     "gpio_bus",
-    "ethernet",
+    "ethernet", "tick",
 )
 
 
@@ -304,6 +305,56 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     else:
         decls.append(
             "inline constexpr alloy::wwdt::null_window_watchdog window_watchdog{};")
+
+    # A timer as a bare periodic time base (board::tick). NO PINS: the only
+    # board fact is which block is free, and the rate is a project field. The
+    # stub carries the SAME SHAPE as a real bind — including an `inst::feat`
+    # block of zeroes — because `feat::trgo` is what portable code branches on,
+    # and a board with no tick must still compile that branch.
+    extra_includes.append("alloy/tick.hpp")
+    tick = roles.get("tick")
+    if tick:
+        _require("peripheral" in tick, f"board {board['id']}: tick missing 'peripheral'")
+        _require(tick["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: tick peripheral "
+                 f"'{tick['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, tick["peripheral"], "tick")
+        decls.append(
+            f"using tick = alloy::tick::bind<alloy::dev::{tick['peripheral']}_t,\n"
+            f"                               clock_profile>;")
+        decls.append(
+            "// What THIS PROJECT wants the tick to run at — an application\n"
+            "// fact, overridable from alloy.toml, not a property of the PCB.\n"
+            "inline constexpr alloy::tick::config tick_defaults{\n"
+            f"    .hz = {int(tick.get('hz', 1000))}u,\n"
+            "};")
+    else:
+        decls.append(
+            "// No tick timer declared; stub keeps caps-guarded code compiling.\n"
+            "struct tick {\n"
+            "    struct null_handle {\n"
+            "        [[nodiscard]] bool expired() const { return false; }\n"
+            "        [[nodiscard]] std::uint16_t count() const { return 0u; }\n"
+            "        void restart() const {}\n"
+            "        void stop() const {}\n"
+            "        void start() const {}\n"
+            "        [[nodiscard]] std::uint32_t achieved_hz() const { return 0u; }\n"
+            "        [[nodiscard]] std::uint32_t period_ticks() const { return 0u; }\n"
+            "        void irq_on_update(bool = true) const {}\n"
+            "        void dma_on_update(bool = true) const {}\n"
+            "    };\n"
+            "    struct inst {\n"
+            "        struct feat {\n"
+            "            static constexpr std::uint32_t channels = 0u;\n"
+            "            static constexpr std::uint32_t complementary = 0u;\n"
+            "            static constexpr std::uint32_t trgo = 0u;\n"
+            "            static constexpr std::uint32_t moe = 0u;\n"
+            "        };\n"
+            "    };\n"
+            "    static null_handle open(alloy::tick::config = {}) { return {}; }\n"
+            "};\n"
+            "inline constexpr alloy::tick::config tick_defaults{};")
+
 
     # Flash-backed persistent regions (board::nvm, board::fs) are carved from the
     # TOP of flash so a small app never collides with them. A board may declare

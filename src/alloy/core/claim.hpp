@@ -122,6 +122,13 @@ enum class personality : std::uint8_t {
     dac,
     pwm,
     encoder,
+    // A timer used only as a time base (alloy::tick). Separate from `pwm` for
+    // the reason this list already gives about spi/spi_slave: `tick::open`
+    // owns PSC and ARR outright, while `pwm::open` shares them among four
+    // channels that must agree on a frequency. If both read as `pwm` they
+    // would AGREE and neither would trap — and what the tick actually did was
+    // reprogram the period of a running PWM channel.
+    tick,
     capture,
     can,
     wdt,

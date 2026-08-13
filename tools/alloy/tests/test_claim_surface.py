@@ -71,6 +71,7 @@ HAL_DIR_TO_ROW = {
     "pwm": "pwm",
     "rtc": "rtc",
     "spi": "spi",
+    "tick": "tick",
     "uart": "uart",
     "watchdog": "wdt",
     "window_watchdog": "wwdt",

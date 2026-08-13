@@ -86,9 +86,17 @@ def test_a_timer_reports_both_of_its_classes() -> None:
     )
     # And a block with one job still reports one, so nothing else moved.
     assert classes["usart2"] == ("uart",)
+    # A curated timer with exactly one job reports exactly one. TIM6 is a
+    # basic timer: no capture/compare unit at all, so it is a time base and
+    # nothing else, and it does NOT get `pwm` by association with the word
+    # "timer".
+    assert classes["tim6"] == ("tick",)
     # An uncurated peripheral has no register file to ask, and says so by
-    # being empty rather than by claiming a class it cannot back up.
-    assert classes["tim6"] == ()
+    # being empty rather than by claiming a class it cannot back up. This used
+    # to be `tim6`, which was uncurated until the basic and small timers landed
+    # — the negative control has to name a peripheral that is still a stub, or
+    # it stops being one.
+    assert classes["lptim1"] == ()
 
 
 @pytest.mark.skipif(not DEVICES_ROOT.exists(), reason="alloy-devices not checked out")

@@ -668,6 +668,7 @@ is exactly a row this page asserted and the code did not have, twice.
 | `can` | `enable` | `shared(0)` | — | personality only |
 | `rtc` | `set` | `shared(0)` | — | personality only |
 | `encoder` | `open` | `exclusive` | — | a timer already generating PWM |
+| `tick` | `open` | `exclusive` | — | **a timer already generating PWM, and a second time base on one block.** `exclusive` and not `shared(hz)` like `pwm`: PWM shares a timer because four channels are four legitimate owners of one personality, while a time base has no channels to share — a second opener is not a co-owner asking for the same rate, it is a second program overwriting PSC and ARR |
 | `exti` (a line) | driver `arm` / `disarm` | — | `sub_shared(port)` | **two pins on one interrupt line** |
 | `flash` | *none* | — | — | nothing; deliberately (see below) |
 | `gpio` | *none* | — | — | the pin, nothing; its EXTI *line*, the row above |
