@@ -2,11 +2,14 @@
 // specialization per CRC IP version, constrained on the instance's IP tag type
 // (data-driven driver selection).
 //
-// Plus the one piece of shared vocabulary a CRC driver actually has: the rule
-// for turning a byte stream into data-register writes. It lives here rather
-// than inside a vendor driver because it is the part a host test must be able
-// to run — see tests/test_crc.cpp, which drives THIS function into a model of
-// the silicon instead of into the silicon.
+// Plus the two pieces of shared vocabulary a CRC driver actually has: the rule
+// for turning a byte stream into data-register writes, and the last step that
+// turns the register's contents into the answer. Both live here rather than
+// inside a vendor driver because they are the parts a host test must be able to
+// run — see tests/test_crc.cpp, which drives THESE functions into a model of
+// the silicon instead of into the silicon. This is the same split as
+// hal/window_watchdog/st_wwdg_detail.hpp and hal/bridge/st_tim_adv_dtg.hpp:
+// arithmetic on this side of the register access, where a test can reach it.
 
 #pragma once
 
@@ -52,6 +55,30 @@ struct iso_hdlc {
     //: cannot silently become something else.
     static constexpr std::uint32_t seed = 0xFFFF'FFFFu;
 };
+
+// The LAST STEP of a checksum, and the sixth parameter of the algorithm: the
+// xorout, which no STM32 CRC block has a register for. REV_OUT has already
+// reflected the remainder in silicon; this is the part the driver still owes.
+//
+// IT IS A FUNCTION, AND THAT IS THE POINT. It used to be `r().DR ^ spec::seed`
+// written once inside st_crc_v3.hpp::value(), and a host test cannot include
+// that file — it needs the generated IP header, which host tests do not have.
+// So the line was untested: deleting it left all 390 host tests green while
+// the driver computed CRC-32/JAMCRC, a stable and respectable checksum that
+// agrees with ISO-HDLC on no input at all, and that a bootloader would use to
+// reject every image the updater ever wrote. Moved here it is reachable, and
+// tests/test_crc.cpp both calls it directly and routes the whole silicon model
+// through it, so deleting the XOR now fails the suite.
+//
+// What this seam still cannot prove — and the same is true of st_wwdg_detail
+// and st_tim_adv_dtg — is that the DRIVER calls it. A value() rewritten as
+// `return r().DR;` type-checks and no host test would notice. The coupling is
+// one line, it is in st_crc_v3.hpp under a comment that says so, and closing it
+// would need either the generated headers on the host or a grep in the contract
+// gate; neither was judged worth it for one line, but the gap is real.
+[[nodiscard]] constexpr std::uint32_t finalize(std::uint32_t dr) {
+    return dr ^ iso_hdlc::seed;
+}
 
 // Feed `n` bytes at `p` to `sink`, as whole 32-bit writes while four or more
 // remain and single-byte writes for the rest.

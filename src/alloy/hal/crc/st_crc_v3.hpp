@@ -20,11 +20,14 @@
 //   xorout       *** NOT IN THIS SILICON ***                  software, below
 //
 // The sixth is the one that matters. There is no XOR register anywhere in the
-// block, so value() applies it to what it reads out of DR. Omitting that line
-// would produce CRC-32/JAMCRC: a stable, respectable checksum that agrees with
-// ISO-HDLC on no input at all, and that a bootloader would use to reject every
-// image the updater ever wrote. It is one instruction and it is the difference
-// between this driver and a silent corruption.
+// block, so value() applies it to what it reads out of DR — by calling
+// crc_detail::finalize(), which is where the arithmetic lives so a host test
+// can run it. Omitting that step would produce CRC-32/JAMCRC: a stable,
+// respectable checksum that agrees with ISO-HDLC on no input at all, and that a
+// bootloader would use to reject every image the updater ever wrote. It is one
+// instruction and it is the difference between this driver and a silent
+// corruption — and for one release it was one instruction that nothing tested,
+// because it was written inline in a file the host suite cannot include.
 //
 // NOT SILICON-WITNESSED. No STM32 was on hand, and Renode 1.16.1 does not model
 // this block — its stm32g0 platform carries a bare address Tag for the CRC
@@ -116,10 +119,17 @@ struct crc_impl<Inst> {
         crc_detail::feed(dr_sink{}, p, n);
     }
 
-    // REV_OUT has already reflected the remainder; this is the xorout the
-    // silicon does not have. See the header comment — this line is the
+    // REV_OUT has already reflected the remainder; finalize() is the xorout the
+    // silicon does not have. See the header comment — that step is the
     // difference between ISO-HDLC and JAMCRC.
-    [[nodiscard]] static std::uint32_t value() { return r().DR ^ spec::seed; }
+    //
+    // THE XOR IS NOT SPELLED HERE ON PURPOSE. Written inline it was one
+    // character of arithmetic in a file no host test can include, and deleting
+    // it left the suite green. It now lives in crc_impl.hpp's crc_detail, which
+    // tests/test_crc.cpp does include and does drive; the only thing left in
+    // this file is the register read and the call. Keep it that way: an
+    // arithmetic step re-inlined here is an arithmetic step nothing tests.
+    [[nodiscard]] static std::uint32_t value() { return crc_detail::finalize(r().DR); }
 };
 
 }  // namespace alloy::hal

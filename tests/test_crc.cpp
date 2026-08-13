@@ -18,8 +18,19 @@
 // WHAT THAT PROVES: the CONFIGURATION alloy chose is the configuration that
 // computes CRC-32/ISO-HDLC. If REV_IN were set to the wrong granularity, or the
 // words were assembled in the wrong order, or the final XOR were forgotten,
-// these tests fail — and the three negative controls at the bottom show they
-// fail, rather than being three ways of writing `assert(true)`.
+// these tests fail — and the negative controls at the bottom show they fail,
+// rather than being ways of writing `assert(true)`.
+//
+// "OR THE FINAL XOR WERE FORGOTTEN" WAS NOT TRUE WHEN IT WAS FIRST WRITTEN, and
+// that is worth recording next to the claim it corrects. The xorout was one
+// expression inside st_crc_v3.hpp::value(), which this file cannot include, so
+// the only thing the negative control below tested was the MODEL's copy of it:
+// deleting the driver's left all 390 tests green. It now lives in
+// crc_detail::finalize() — same split as st_wwdg_detail.hpp and
+// st_tim_adv_dtg.hpp — the model routes through it, the driver calls it, and
+// crc_finalize_is_the_xorout_the_silicon_has_no_register_for tests it head-on.
+// The gap that remains is that nothing here can prove the DRIVER still calls
+// it; see crc_impl.hpp's note on finalize.
 //
 // WHAT IT DOES NOT PROVE: that the silicon behaves as its manual describes.
 // Nothing available to this project proves that, and the driver header says so
@@ -133,7 +144,10 @@ std::uint32_t model_crc(std::span<const std::uint8_t> data,
     m.reverse_output = reverse_output;
     m.reset();
     alloy::hal::crc_detail::feed(model_sink{&m}, data.data(), data.size());
-    return apply_xorout ? (m.read_dr() ^ spec::seed) : m.read_dr();
+    // finalize() is the SHIPPED xorout — the same function st_crc_v3.hpp's
+    // value() calls — so every equivalence check below runs through the line
+    // the driver runs through, instead of through a copy of it.
+    return apply_xorout ? alloy::hal::crc_detail::finalize(m.read_dr()) : m.read_dr();
 }
 
 // A deterministic pseudo-random blob — no <random>, so the bytes are the same
@@ -179,6 +193,28 @@ ALLOY_TEST(crc_hardware_configuration_produces_the_published_check_value) {
     ALLOY_CHECK_EQ(alloy::ota::crc::crc32_of(s), 0xCBF43926u);
 }
 
+ALLOY_TEST(crc_finalize_is_the_xorout_the_silicon_has_no_register_for) {
+    // The driver's LAST STEP, tested directly rather than only through an
+    // equivalence that happens to route past it. Until this function existed
+    // the xorout was `^ spec::seed` inside st_crc_v3.hpp::value(), a file the
+    // host suite cannot include (it needs the generated IP header) — so
+    // deleting it left every one of these tests green while the driver computed
+    // a different, respectable, useless checksum.
+    using alloy::hal::crc_detail::finalize;
+    static_assert(finalize(0u) == 0xFFFF'FFFFu, "an untouched remainder is not zero");
+    static_assert(finalize(0xFFFF'FFFFu) == 0u);
+    static_assert(finalize(finalize(0x1234'5678u)) == 0x1234'5678u, "xorout is an involution");
+
+    // And the load-bearing shape: what the silicon leaves in DR is NOT the
+    // answer, and finalize is exactly the distance between the two.
+    static constexpr std::uint8_t check[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    const std::span<const std::uint8_t> s{check, sizeof check};
+    const std::uint32_t in_dr = model_crc(s, spec::reverse_input_bits, spec::reverse_output,
+                                          /*apply_xorout=*/false);
+    ALLOY_CHECK(in_dr != 0xCBF43926u);
+    ALLOY_CHECK_EQ(finalize(in_dr), 0xCBF43926u);
+}
+
 ALLOY_TEST(crc_incremental_feeding_matches_one_shot_at_every_chunk_size) {
     // The reason CR.REV_IN is BYTE and not WORD. Under BYTE the driver never
     // has to carry a partial word between update() calls, so feeding the same
@@ -197,7 +233,7 @@ ALLOY_TEST(crc_incremental_feeding_matches_one_shot_at_every_chunk_size) {
             const std::size_t n = (at + chunk > sizeof data.b) ? sizeof data.b - at : chunk;
             alloy::hal::crc_detail::feed(model_sink{&m}, data.b + at, n);
         }
-        ALLOY_CHECK_EQ(m.read_dr() ^ spec::seed,
+        ALLOY_CHECK_EQ(alloy::hal::crc_detail::finalize(m.read_dr()),
                        alloy::ota::crc::crc32_of({data.b, sizeof data.b}));
     }
 }
@@ -276,7 +312,7 @@ struct crc_impl<fake_crc> {
     static void update(const std::uint8_t* p, std::size_t n) {
         crc_detail::feed(model_sink{&g_model}, p, n);
     }
-    [[nodiscard]] static std::uint32_t value() { return g_model.read_dr() ^ spec::seed; }
+    [[nodiscard]] static std::uint32_t value() { return crc_detail::finalize(g_model.read_dr()); }
 };
 }  // namespace alloy::hal
 
