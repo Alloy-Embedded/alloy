@@ -20,10 +20,12 @@
 // stm32-data timer_v3.json, and RM0444 section 21 for the DTG encoding),
 // not witnessed. No board is on hand.
 //
-// WHAT THAT MEANS FOR A READER WITH AN INVERTER: the arithmetic below is
-// covered by host tests that pin every boundary of the DTG encoding, and the
-// register WRITES are covered by nothing. Put a scope on CH1 and CH1N before
-// you connect a DC link.
+// WHAT THAT MEANS FOR A READER WITH AN INVERTER: the arithmetic is covered by
+// tests/test_bridge.cpp, which sweeps every boundary of the DTG encoding
+// exhaustively (that is why it lives in st_tim_adv_dtg.hpp — a host test
+// cannot include this file, which needs a generated IP header). The register
+// WRITES below are covered by nothing. Put a scope on CH1 and CH1N before you
+// connect a DC link.
 
 #pragma once
 
@@ -32,6 +34,7 @@
 
 #include "alloy/core/types.hpp"
 #include "alloy/hal/bridge/bridge_impl.hpp"
+#include "alloy/hal/bridge/st_tim_adv_dtg.hpp"
 #include "alloy/ip/st/tim_adv.hpp"
 
 namespace alloy::hal {
@@ -111,56 +114,26 @@ struct bridge_impl<Inst> {
 
     // ── The dead-time generator's encoding ───────────────────────────────
     //
-    // DTG IS NOT A NUMBER OF TICKS. It is four ranges selected by its own top
-    // bits (RM0444 section 21, the BDTR description), each with a different
-    // step:
-    //
-    //   DTG[7:5] = 0xx    DT = DTG[7:0]        x  1 x t_DTS   (0 .. 127)
-    //   DTG[7:5] = 10x    DT = (64 + DTG[5:0]) x  2 x t_DTS   (128 .. 254)
-    //   DTG[7:5] = 110    DT = (32 + DTG[4:0]) x  8 x t_DTS   (256 .. 504)
-    //   DTG[7:5] = 111    DT = (32 + DTG[4:0]) x 16 x t_DTS   (512 .. 1008)
-    //
-    // Two consequences the portable layer above depends on:
-    //
-    //   NOT EVERY TICK COUNT IS REPRESENTABLE. Above 127 ticks the steps are
-    //   2, then 8, then 16, so an exact request usually cannot be met — which
-    //   is why the facade reports the ACHIEVED dead time and does not pretend
-    //   the requested one was programmed.
-    //
-    //   THE ROUNDING DIRECTION IS A SAFETY DECISION, and it is up. Rounding
-    //   to nearest would, for a request of 129 ticks, program 128 — 15 ns
-    //   less dead time than the gate driver was measured to need, on every
-    //   edge, forever. Too much dead time distorts the output voltage; too
-    //   little destroys the bridge. These are not comparable errors, so this
-    //   function never returns less than it was asked for.
+    // The arithmetic ITSELF is in alloy/hal/bridge/st_tim_adv_dtg.hpp — the
+    // piecewise DTG encoding, the three roundings and their directions, and
+    // the argument for each — so that tests/test_bridge.cpp can sweep it. It
+    // could not, from here: this file needs a generated `alloy/ip/st/tim_adv.hpp`
+    // that exists only inside a built project, and host tests do not read
+    // generated headers. What stays here is the BINDING of that arithmetic to
+    // this IP's curated field widths, which is the part that is about ST.
 
-    //: Ticks of t_DTS that a given DTG code actually produces. The inverse of
-    //: dtg_code(), and the function the facade uses to report reality.
+    //: The DTG field's curated width, as a mask. Every function below is
+    //: parameterised on it rather than on the number 1008.
+    static constexpr std::uint32_t dtg_mask = IP::dtg.wide_raw_mask;
+
     [[nodiscard]] static constexpr std::uint32_t dtg_ticks(std::uint32_t code) {
-        code &= IP::dtg.wide_raw_mask;
-        if ((code & 0x80u) == 0u) { return code; }
-        if ((code & 0xC0u) == 0x80u) { return (64u + (code & 0x3Fu)) * 2u; }
-        if ((code & 0xE0u) == 0xC0u) { return (32u + (code & 0x1Fu)) * 8u; }
-        return (32u + (code & 0x1Fu)) * 16u;
+        return detail::dtg_ticks(code, dtg_mask);
     }
 
-    //: The longest dead time this generator can produce, in ticks. DERIVED
-    //: from the curated width of DTG — the widest code, decoded — rather than
-    //: written as 1008, so an IP with a wider field needs no edit here.
-    static constexpr std::uint32_t max_dtg_ticks = dtg_ticks(IP::dtg.wide_raw_mask);
+    static constexpr std::uint32_t max_dtg_ticks = detail::dtg_max_ticks(dtg_mask);
 
-    //: Smallest DTG code whose dead time is >= `ticks`, or a value above the
-    //: field's mask when `ticks` cannot be reached at all (the facade admits
-    //: that case before ever calling this).
     [[nodiscard]] static constexpr std::uint32_t dtg_code(std::uint32_t ticks) {
-        const auto ceil_div = [](std::uint32_t a, std::uint32_t b) {
-            return (a + b - 1u) / b;
-        };
-        if (ticks <= 127u) { return ticks; }
-        if (ticks <= 254u) { return 0x80u | (ceil_div(ticks, 2u) - 64u); }
-        if (ticks <= 504u) { return 0xC0u | (ceil_div(ticks, 8u) - 32u); }
-        if (ticks <= 1008u) { return 0xE0u | (ceil_div(ticks, 16u) - 32u); }
-        return IP::dtg.wide_raw_mask + 1u;  // out of range, by construction
+        return detail::dtg_code(ticks, dtg_mask);
     }
 
     // t_DTS = t_CK_INT << CKD, and this driver programs CKD = 0, so the
@@ -171,64 +144,44 @@ struct bridge_impl<Inst> {
         return kernel_hz;
     }
 
-    //: Nanoseconds -> ticks of t_DTS, rounded UP (see above).
+    //: Nanoseconds -> ticks of t_DTS, rounded UP (a request).
     [[nodiscard]] static constexpr std::uint32_t ns_to_ticks(std::uint32_t ns,
                                                              std::uint32_t kernel_hz) {
-        const std::uint64_t num =
-            static_cast<std::uint64_t>(ns) * static_cast<std::uint64_t>(dts_hz(kernel_hz));
-        return static_cast<std::uint32_t>((num + 999'999'999u) / 1'000'000'000u);
+        return detail::dtg_ns_to_ticks(ns, dts_hz(kernel_hz));
     }
 
-    //: Ticks -> nanoseconds, rounded up, so the number a program reports back
-    //: is never smaller than the dead time it actually gets.
+    //: Ticks -> nanoseconds, rounded DOWN (a report — never overstate the
+    //: protection the silicon is actually inserting).
     [[nodiscard]] static constexpr std::uint32_t ticks_to_ns(std::uint32_t ticks,
                                                              std::uint32_t kernel_hz) {
-        const std::uint32_t hz = dts_hz(kernel_hz);
-        if (hz == 0u) { return 0u; }
-        const std::uint64_t num =
-            static_cast<std::uint64_t>(ticks) * 1'000'000'000u + (hz - 1u);
-        return static_cast<std::uint32_t>(num / hz);
+        return detail::dtg_ticks_to_ns(ticks, dts_hz(kernel_hz));
     }
 
     //: The longest dead time programmable on this instance, in nanoseconds.
+    //: Rounds DOWN, which is not the same conversion as the report — see the
+    //: detail header, where getting that wrong is a fixed bug with a sweep.
     [[nodiscard]] static constexpr std::uint32_t max_dead_time_ns(std::uint32_t kernel_hz) {
-        return ticks_to_ns(max_dtg_ticks, kernel_hz);
+        return detail::dtg_max_dead_time_ns(dtg_mask, dts_hz(kernel_hz));
     }
 
     //: What the hardware will actually insert for a requested nanosecond
     //: figure. Reported by the handle; never assumed equal to the request.
     [[nodiscard]] static constexpr std::uint32_t achieved_dead_time_ns(
         std::uint32_t requested_ns, std::uint32_t kernel_hz) {
-        return ticks_to_ns(dtg_ticks(dtg_code(ns_to_ticks(requested_ns, kernel_hz))),
-                           kernel_hz);
+        return detail::dtg_achieved_ns(requested_ns, dtg_mask, dts_hz(kernel_hz));
     }
 
     // ── The timebase ─────────────────────────────────────────────────────
     //
-    // PSC = 0 whenever the period fits, which is the opposite of what
-    // alloy/hal/pwm/st_tim_gp16.hpp does (a fixed 1 MHz tick). A 1 MHz tick
-    // at 20 kHz leaves 50 counts of duty resolution — under 6 bits — which is
-    // fine for an LED and not fine for a motor: 2% duty granularity is 2% of
-    // the DC link on every phase. At the full kernel clock the same 20 kHz
-    // has 3200 counts, and the prescaler only appears when the period would
-    // otherwise not fit in ARR.
-    //
-    // CENTER-ALIGNED COUNTS BOTH WAYS, so its period is 2 x ARR ticks and its
-    // ARR is half the edge-aligned one for the same frequency.
-    struct timebase {
-        std::uint32_t psc;
-        std::uint32_t arr;
-    };
+    // Also in the detail header, and for the same reason — the argument for
+    // PSC = 0 (duty resolution, not LED convenience) is written there.
+    using timebase = detail::tim_adv_timebase;
 
     [[nodiscard]] static constexpr timebase timebase_for(std::uint32_t kernel_hz,
                                                          std::uint32_t freq_hz,
                                                          bool center) {
-        if (freq_hz == 0u) { return {0u, 0u}; }
-        const std::uint32_t total = (kernel_hz / freq_hz) / (center ? 2u : 1u);
-        std::uint32_t psc = 0u;
-        while ((total / (psc + 1u)) > max_period_ticks) { ++psc; }
-        const std::uint32_t arr = total / (psc + 1u);
-        return {psc, arr == 0u ? 0u : arr - 1u};
+        return detail::tim_adv_timebase_for(kernel_hz, freq_hz, center,
+                                            max_period_ticks);
     }
 
     static inline std::uint32_t period_ticks = 0;

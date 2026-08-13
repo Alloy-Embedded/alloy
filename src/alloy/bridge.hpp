@@ -47,9 +47,14 @@
 // ── WHAT IS NOT PROVEN ──────────────────────────────────────────────────
 //
 // No silicon has run this. Renode has no model of BDTR, so no emulation leg
-// exists either — see the driver header. The dead-time arithmetic is pinned
-// by host tests at every boundary of the DTG encoding; the register writes
-// are pinned by nothing.
+// exists either — see the driver header. The dead-time arithmetic and this
+// facade's admission, claim and MOE ordering are pinned by
+// tests/test_bridge.cpp; the register WRITES are pinned by nothing.
+//
+// That sentence used to be here with no test file behind it. When one was
+// finally written it found a live defect in the very bound the sentence was
+// bragging about — see `dtg_max_dead_time_ns` in
+// alloy/hal/bridge/st_tim_adv_dtg.hpp.
 
 #pragma once
 
