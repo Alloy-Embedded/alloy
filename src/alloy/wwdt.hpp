@@ -105,6 +105,17 @@ constexpr std::uint32_t kernel_hz_of(alloy::clock_node node, std::uint32_t ahb,
     }
     return sysclk;
 }
+// MEASURED, and it is the reason this concept exists. The claim made in
+// roles.py and in st/wwdg_v2's own commit body — "naming an iwdg for the
+// window_watchdog role is a validation error that says which class it found" —
+// was tried, and it is not true. `board_validate._check_peripheral` grades an
+// ip_class mismatch as a WARNING ("the driver may not match"), so `alloy build`
+// carries on, emits the header, and the failure lands in C++ as seven cascading
+// errors about an incomplete `alloy::hal::wwdt_impl<alloy::dev::iwdg_t>` in a
+// nested-name-specifier. That names the instance, which is something, but it
+// does not name the mistake. This does.
+template <class T>
+concept has_a_window_watchdog_driver = requires { sizeof(T); };
 }  // namespace detail
 
 // `DefaultDeadlineUs`/`DefaultEarliestUs` come from the board file's role, so
@@ -116,6 +127,22 @@ template <class Inst, class Clock, std::uint32_t DefaultDeadlineUs = 0u,
           std::uint32_t DefaultEarliestUs = 0u>
 class window_watchdog {
     using impl = hal::wwdt_impl<Inst>;
+
+    // FIRST, so the diagnostic that names the mistake is printed before the
+    // cascade of consequences. `wwdt_impl` is the WINDOW watchdog's template;
+    // an IWDG specializes `wdt_impl` and nothing else, so an instance with no
+    // specialization here is a peripheral that is not this kind of watchdog.
+    static_assert(detail::has_a_window_watchdog_driver<impl>,
+                  "alloy::wwdt::window_watchdog: this peripheral has no WINDOW "
+                  "watchdog driver. The commonest cause is a board file naming "
+                  "an INDEPENDENT watchdog (an iwdg) for the `window_watchdog` "
+                  "role: the two are different blocks with different contracts "
+                  "— an IWDG has no early bound to program and no early-wakeup "
+                  "interrupt — so they are two roles, not two spellings of one. "
+                  "Name the wwdg here and the iwdg under `watchdog`; a board "
+                  "may declare both. If the chip really has a window watchdog "
+                  "that alloy cannot drive yet, its IP needs a wwdt_impl<> "
+                  "specialization");
 
 public:
     static constexpr std::uint32_t kernel_hz =

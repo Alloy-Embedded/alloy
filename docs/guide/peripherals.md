@@ -221,6 +221,41 @@ if constexpr (board::caps::rtc)  { /* board::rtc  */ }
 if constexpr (board::caps::nvm)  { /* board::nvm — key/value over a flash page */ }
 ```
 
+### Two watchdogs, and they are not interchangeable
+
+`board::watchdog` (an IWDG) asks *is anybody still running?* A loop that has lost its timebase
+and spins ten times too fast answers yes, and is never reset. `board::window_watchdog` (a WWDG)
+asks the harder question — *is anybody running at the right rate?* — by resetting the part on a
+feed that arrives **before** the window opens as readily as on one that never arrives.
+
+```cpp
+const auto w = board::window_watchdog.start();  // the window the board file declares
+// w.earliest .. w.deadline — what the counter could actually land on
+for (;;) { control_step(); board::window_watchdog.feed(); }
+```
+
+They are **two roles**, not two modes of one, and a board may declare both — that is the normal
+safety shape, an IWDG as the long backstop and a WWDG as the loop-rate monitor. The chip
+database records the split at its own gate — `st/wwdg_v2`'s IP class is `window_watchdog`, not
+`watchdog` — so getting the two the wrong way round fails rather than quietly changing what
+`feed()` means. It fails in two different places, and only one of them is a validator error:
+naming a `wwdg` for the `watchdog` role while `window_watchdog` also claims it is rejected by
+the personality guard (*"a block runs in one personality at a time"*); naming an `iwdg` for
+`window_watchdog` only *warns* at validation — an `ip_class` mismatch is a warning for every
+role — and is stopped by a `static_assert` in `alloy/wwdt.hpp` that names the confusion.
+Three more consequences worth knowing before you reach for it:
+
+- **it is short.** A WWDG counts its own bus clock through a fixed /4096 and a seven-bit
+  counter, so on a 64 MHz APB it tops out near half a *second* — three orders of magnitude
+  under the IWDG's ~32 s. Ask for more and you get a compile error that names
+  `board::window_watchdog.longest`, not a silent clamp.
+- **there is no `stop()`.** The activation bit is cleared only by a reset, so the facade offers
+  no method that would have to lie about switching it off.
+- `on_early_wakeup(fn)` installs the last-gasp hook — an interrupt one counter tick *before* the
+  reset, on a machine that is still running. It pairs with the
+  [crash report](crash-reports.md): same rule for the handler (touch nothing that could itself
+  fail), same reader (the next boot). Install it before `start()`.
+
 ---
 
 Need something the HAL doesn't expose yet? The generated register overlays are typed and

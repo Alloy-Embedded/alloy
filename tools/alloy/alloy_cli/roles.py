@@ -191,9 +191,19 @@ ROLES: dict[str, RoleSpec] = {
     # substitutable in either direction. An IWDG has no early bound to program;
     # a WWDG resets on a feed that arrives too soon, which is a promise the
     # `watchdog` role's facade explicitly does not make. So st/wwdg_v2's class
-    # is `window_watchdog`, and naming an `iwdg` here (or a `wwdg` there) is a
-    # validation error that says which class it found. A board may declare
-    # BOTH: two blocks, two clocks, two independent safety properties.
+    # is `window_watchdog`. A board may declare BOTH: two blocks, two clocks,
+    # two independent safety properties.
+    #
+    # WHAT THE MISMATCH ACTUALLY COSTS — measured, because the first version of
+    # this comment asserted it instead and was wrong. Naming an `iwdg` here is
+    # NOT a validation error: `board_validate._check_peripheral` grades an
+    # ip_class mismatch as a WARNING ("the driver may not match"), by design and
+    # for every role, so `alloy build` proceeds. What stops it is a
+    # `static_assert` in src/alloy/wwdt.hpp, added after this was measured,
+    # which fires on the absent `wwdt_impl<>` specialization and names the
+    # confusion. Naming a `wwdg` under `watchdog` while `window_watchdog` also
+    # claims it is caught earlier and harder, by the personality guard, which
+    # IS an error: "a block runs in one personality at a time".
     #
     # The window is PROJECT data, like the encoder's period: the same PCB
     # serves a 1 ms loop and a 10 ms one, and which is plugged in is the

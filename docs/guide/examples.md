@@ -26,6 +26,7 @@ compiles each one for every board. Copy any of them into a project's `src/`.
 | `tcp_echo`, `udp_echo`, `dhcp_echo`, `http_server` | the TCP/IP stack |
 | `fs` | a filesystem on on-chip or external storage |
 | `watchdog` | the independent watchdog |
+| `window_watchdog` | the *other* watchdog — it also resets on a feed that arrives too **early**, so it catches a loop that has lost its timebase. A second [role](peripherals.md), not a mode of `watchdog`; the two run together |
 | `nvm`, `rtc`, `dac`, `can` | on-chip flash key/value, RTC, DAC, CAN |
 | `crash_report` | a device that crashes, reboots, and explains itself — the [crash report](crash-reports.md) loop |
 | `bootloader_uart` + `ota_app` | the [field-update](firmware-update.md) pair: update over UART, trial boot, confirm |
@@ -40,6 +41,14 @@ lines that contradict each other unless the window comparator is real.
 refuses both register writes the encoder personality is made of, and it maps the G0's `fdcan1`
 to a bxCAN model that does not answer M_CAN's registers at all. Both build for every board;
 neither is executed anywhere but hardware, which has not run them.
+
+`window_watchdog` has none either, for a blunter reason: Renode 1.16.1 has **no WWDG model at
+all**. `platforms/cpus/stm32g0.repl` covers the block with `Tag <0x40002C00, 0x40002FFF>
+"WWDG"` — an address range with no device behind it — and asking the monitor for the class
+directly answers `Error E04: Could not resolve type: 'Timers.STM32_WindowWatchdog'`. Under
+emulation the peripheral would swallow every write and never bite, so a green leg would prove
+the opposite of what it claimed to. The arithmetic and the register sequence are checked on the
+host instead (`tests/test_wwdt.cpp`); that the silicon resets is unwitnessed.
 
 ## Running an example
 
