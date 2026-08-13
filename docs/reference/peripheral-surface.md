@@ -668,11 +668,13 @@ is exactly a row this page asserted and the code did not have, twice.
 | `can` | `enable` | `shared(0)` | — | personality only |
 | `rtc` | `set` | `shared(0)` | — | personality only |
 | `encoder` | `open` | `exclusive` | — | a timer already generating PWM |
-| `bridge` | `open` | `exclusive` | — | **a timer already generating PWM, or a PWM channel stolen out of a dead-time pair** |
 | `tick` | `open` | `exclusive` | — | **a timer already generating PWM, and a second time base on one block.** `exclusive` and not `shared(hz)` like `pwm`: PWM shares a timer because four channels are four legitimate owners of one personality, while a time base has no channels to share — a second opener is not a co-owner asking for the same rate, it is a second program overwriting PSC and ARR |
+| `bridge` | `open` | `exclusive` | — | **a timer already generating PWM, or a PWM channel stolen out of a dead-time pair** |
 | `exti` (a line) | driver `arm` / `disarm` | — | `sub_shared(port)` | **two pins on one interrupt line** |
+| `crc` | `open` | `exclusive` | — | **two owners of one shift register.** Not "last writer wins" — interleaved `update()`s arithmetically corrupt each other and both callers read back a plausible 32-bit number that nothing downstream can question |
 | `flash` | *none* | — | — | nothing; deliberately (see below) |
 | `gpio` | *none* | — | — | the pin, nothing; its EXTI *line*, the row above |
+| `uid` | `read` | — | — | nothing, and this is the ONLY row where "nothing" is a property of the SILICON rather than a decision: every register is read-only, there is no gate to enable and no mode to select, so a second reader cannot disturb a first. `flash` and `gpio` claim nothing by choice; this one has nothing to claim |
 | ethernet | *no facade* | — | — | nothing at run time; generation time only |
 
 There is no row for `spi::slave` or `capture`: those personalities
@@ -1107,6 +1109,55 @@ driver is:
    so the call is variadic and *singular* rather than a builder: every extra
    call would be another window and another moment off the bus, and
    `sizeof...(F)` is also the compile-time count the capacity check needs.
+
+<a id="the-sixth-kind"></a>
+##### The kind the five questions have no row for: a second BLOCK that would fill a role alloy already has
+
+Found by the **WWDG** build, and reported here because it is the fourth
+consecutive time the kind question was the one that mattered and the checklist
+was the wrong instrument for it.
+
+The feature: the STM32's *window* watchdog, on a chip whose *independent*
+watchdog alloy has driven since the OTA rollback work. Both are watchdogs, both
+are fed, both reset the part. The question the build had to answer first was not
+which layer anything lives in — it was **is this a second role, a personality of
+the first, or an option on it?**
+
+Questions 1–5 answer it **wrongly, and confidently, in two different
+directions**:
+
+| Question | What it says for this feature | Why that is wrong |
+|---|---|---|
+| **1 — personality?** *"changes which operations the peripheral offers, and excludes the other modes while it is on"* | the strongest match in the table. Two watchdogs, one abstraction, and each one's contract excludes the other's — that reads as textbook mutual exclusion | a personality is **one block in one of several modes**. These are **two blocks, at two addresses, on two different clocks**, and they run **at the same time** — which is the configuration a safety product actually wants: the IWDG as the coarse *the core is alive* backstop, the WWDG as the tight *the loop runs at its rate* monitor. Modelling them as one block's two modes makes the useful case **unrepresentable** |
+| **5 — cross-peripheral?** *"does honouring it require programming a SECOND BLOCK?"* | yes, literally: the feature lives at an address `iwdg_t::base` does not cover | question 5's answer is for a block the feature **needs** (a companion). This is a block that is an **alternative**. Its prescription — keep the feature on the facade of the block the user names, reach the other through `Inst::ram_t` — would produce `board::watchdog.feed_within_window()`, which is exactly the lie the split exists to prevent |
+
+**What actually decided it was not on the checklist at all.** It was the `class:`
+key in the register file — the substitutability gate, which is Question 0's own
+artefact. `st/wwdg_v2` is `class: window_watchdog`, not `class: watchdog`, and
+once the data says that, the role table, the codegen and the personality
+enumerator all follow without anybody making a taxonomy judgement. So this is
+one more data point for the conclusion this page already reached: **Question 0
+plus the manual decides, and the kinds are a checklist.** The novelty is only
+that the trap was in the *kind* column rather than the *layer* column, and that
+the correct answer was reachable by reading two `class:` lines.
+
+!!! danger "And the gate is softer than three separate places said it was"
+    roles.py, `st/wwdg_v2`'s commit body and the first draft of the guide all
+    said the same sentence: naming the wrong watchdog for the role is *"a
+    validation error that says which class it found."* Tried, on a real board
+    file, and it is **not**: `board_validate._check_peripheral` grades an
+    `ip_class` mismatch as a **warning** — *"the driver may not match"* — for
+    every role in the table, so `alloy build` proceeds and the failure lands as
+    an incomplete-type cascade in C++.
+
+    Two consequences, and the second is the general one. Locally, `alloy/wwdt.hpp`
+    now carries a `static_assert` on the absent `wwdt_impl<>` specialization that
+    names the confusion, and `scripts/check_compile_errors.py` compiles it.
+    Generally: **this page's `ip_class` column describes an advisory check.**
+    Every argument on this page that leans on a role refusing a peripheral of the
+    wrong class is leaning on a warning plus whatever the driver's own C++
+    happens to say. Promoting it is one branch shared by every role and was not
+    changed here.
 
 #### Questions 6–10: which layer does the knob live in?
 
