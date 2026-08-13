@@ -2014,10 +2014,12 @@ which is what <code>[devices]</code> below pins.</p>
 <p>One more header is Tier 1 by intent rather than by the examples using it:</p>
 <ul>
 <li><code>alloy/core/claim.hpp</code> — <code>alloy::claim::exclusive/shared/held</code>,
-  <code>alloy::claim::personality</code>, <code>alloy::trap_code</code>. A facade written outside
-  this repo has to be able to participate in
-  <a href="../peripheral-surface/#personalities-a-block-runs-in-one-mode-at-a-time">instance ownership</a>,
-  so these are public names and not a <code>detail</code> namespace. <code>personality</code> gains
+  <code>alloy::claim::sub_exclusive/sub_held</code>, <code>alloy::claim::personality</code>,
+  <code>alloy::trap_code</code>. A facade written outside this repo has to be able to
+  participate in
+  <a href="../peripheral-surface/#personalities-a-block-runs-in-one-mode-at-a-time">instance ownership</a>
+  at both scopes — a whole peripheral and one numbered part of it — so these
+  are public names and not a <code>detail</code> namespace. <code>personality</code> gains
   enumerators as alloy ships facades — additive, and it carries <code>user_a</code>/
   <code>user_b</code> so an out-of-tree facade never has to patch the header.</li>
 </ul>

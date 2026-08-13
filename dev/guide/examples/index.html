@@ -1670,6 +1670,14 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <td>ADC burst + PWM waveform streamed by DMA, zero CPU</td>
 </tr>
 <tr>
+<td><code>encoder</code></td>
+<td>the same timer as a <em>position counter</em> — a <a href="../../reference/peripheral-surface/#personalities-a-block-runs-in-one-mode-at-a-time">personality</a>, not a second knob on <code>pwm_fade</code></td>
+</tr>
+<tr>
+<td><code>adc_watchdog</code></td>
+<td>an analog window comparator armed <em>after</em> <code>open()</code> — a <a href="../../reference/peripheral-surface/#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime">sub-resource</a> with its own handle</td>
+</tr>
+<tr>
 <td><code>pwm_fade</code>, <code>services</code></td>
 <td>the cooperative scheduler + control loop</td>
 </tr>
@@ -1718,7 +1726,12 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <p>The examples ending in <code>_read</code> (<code>i2c_read</code>, <code>spi_read</code>, <code>adc_read</code>, <code>dma_uart</code>) are the ones CI
 asserts on under <a href="../emulation/">emulation</a> — they print a value that only a correct driver
 sequence can produce. <code>async_io</code> is asserted the same way, on a number only a coroutine that
-actually suspended and was woken by an interrupt can print.</p>
+actually suspended and was woken by an interrupt can print. So is <code>adc_watchdog</code>, on four
+lines that contradict each other unless the window comparator is real.</p>
+<p><code>encoder</code> and <code>can</code> have <strong>no</strong> emulation leg and cannot have one: Renode's <code>Timers.STM32_Timer</code>
+refuses both register writes the encoder personality is made of, and it maps the G0's <code>fdcan1</code>
+to a bxCAN model that does not answer M_CAN's registers at all. Both build for every board;
+neither is executed anywhere but hardware, which has not run them.</p>
 <h2 id="running-an-example">Running an example<a class="headerlink" href="#running-an-example" title="Permanent link">&para;</a></h2>
 <p>The examples live in the framework tree under <code>examples/</code>. Build one for any board:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/dma_probe
