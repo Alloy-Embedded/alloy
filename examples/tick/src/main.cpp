@@ -59,8 +59,19 @@ int main() {
 
         // DEGREE, not a family name. `trgo` is 1 on TIM6/TIM7/TIM15 and 0 on
         // TIM14/TIM16/TIM17, and it comes from the curated IP data — so this
-        // branch is a fact about the block, and calling trigger_on_update() in
-        // the other branch would not even compile.
+        // branch is a fact about the block rather than a chip name in an
+        // #ifdef. On a real instance the guard is ALSO enforced by the type:
+        // `handle::trigger_on_update()` carries `requires (feat::trgo != 0)`,
+        // so calling it on a TIM16 is a compile error naming the instance.
+        //
+        // A GCC 14 FINDING, recorded because it cost a matrix run: `if
+        // constexpr` in a NON-TEMPLATE function does not save you here. The
+        // discarded branch is still checked, and the usual escape — hide the
+        // call in a generic lambda so it becomes dependent — does not work
+        // either, because GCC instantiates that lambda anyway. Which is why
+        // the generated stub for a board with no tick role carries a no-op
+        // `trigger_on_update()`: the branch below has to COMPILE on every
+        // board even where it can never run.
         if constexpr (board::tick::inst::feat::trgo != 0u) {
             tick.trigger_on_update();
             uart.write("trgo: update event is on this timer's trigger output\r\n");

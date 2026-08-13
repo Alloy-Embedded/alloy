@@ -14,6 +14,53 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **`alloy::tick` — a hardware timer as a periodic time base, over four ST IP
+  versions with one driver.** The STM32G0's TIM6, TIM7, TIM14, TIM15, TIM16 and
+  TIM17 were `uncurated` and unreachable; they are curated in `alloy-devices`
+  now, and this is what reaches them.
+
+      auto t = board::tick::open({.hz = 10});
+      while (true) { if (t.expired()) { led.toggle(); } }
+
+  The handle answers `expired()` (consuming, so a polling loop counts periods),
+  `count()`, `restart()`, `stop()`, `start()`, `irq_on_update()`,
+  `dma_on_update()`, and `achieved_hz()` — the rate the block ACTUALLY runs at,
+  which is rarely the requested one because the division is integer.
+
+  `trigger_on_update()` — point the timer's TRGO at the update event, the
+  standard way to clock an ADC or a DAC — is constrained on
+  `Inst::feat::trgo`, a GENERATED number that is 0 on TIM14, TIM16 and TIM17
+  (those blocks have no MMS field: no CR2 at all, or a CR2 whose bits 6:4 are
+  the output-idle state). Calling it there is a compile error naming the
+  instance; the hardware's answer would have been a trigger that never fires.
+
+  **A new `tick` board role**, with no pins — the only board fact is which
+  block is free — and `hz` as a project field, overridable from `alloy.toml`.
+  `nucleo_g0b1re` binds it to TIM6. **A new `personality::tick`**, so a tick
+  and a PWM channel on one timer trap instead of silently agreeing; `pwm`
+  claims a timer SHARED on a frequency because four channels are four owners
+  of one personality, and `tick` claims it EXCLUSIVE because a time base has
+  no channels to share.
+
+  `examples/tick` builds on **9 of 9 boards** with no preprocessor, and a
+  program that never opens a tick pays nothing: `examples/blink` on
+  `nucleo_g0b1re` is byte-identical before and after (3396 text / 8 data /
+  3240 bss), measured rather than asserted.
+
+  **Not witnessed on silicon.** Renode 1.16.1 binds no model to any of these
+  instances on this die, so there is no emulation leg to add and none is
+  claimed; no board was attached. The 11 new host tests cover the divisor
+  arithmetic and the ownership rule, and nothing executes the register
+  sequence.
+
+### Fixed
+
+- **`alloy::tick` admitted rates ABOVE the timer's kernel clock**, found by its
+  own test sweep before the facade shipped. The divider is rounded to nearest,
+  so a request of `kernel_hz + 1` came back as a divider of one: a legal
+  register pair, a timer running at the kernel clock, and a reported success.
+  Every rate between 1x and 2x the kernel had that shape.
+
 - **The ADC analog watchdog (`alloy/adc.hpp`), a SUB-RESOURCE with its own
   handle — and the emulation leg that was written for it, now executed.**
   `adc.watchdog<0>({.channel = 3, .low = 1000, .high = 3000})` arms one of the

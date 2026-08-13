@@ -40,6 +40,24 @@ struct st_tick_timebase {
     //: the block runs at rather than the one that was asked for.
     static inline tick_divisor programmed{0u, 0u};
 
+    // THE FACADE ASKS THE DRIVER, not the arithmetic. `alloy::tick` is
+    // portable and this file is not, so the admission test and the achieved
+    // rate are members here rather than free functions the facade names —
+    // which is also what makes them DEPENDENT names, the difference between a
+    // header that compiles on a board with no ST timer and one that does not.
+    [[nodiscard]] static constexpr bool representable(std::uint32_t kernel_hz,
+                                                      std::uint32_t hz) {
+        return tick_representable(kernel_hz, hz);
+    }
+
+    [[nodiscard]] static std::uint32_t achieved_hz(std::uint32_t kernel_hz) {
+        return tick_achieved_hz(kernel_hz, programmed);
+    }
+
+    [[nodiscard]] static std::uint32_t period_ticks() {
+        return static_cast<std::uint32_t>(programmed.arr) + 1u;
+    }
+
     static void enable(std::uint32_t kernel_hz, std::uint32_t hz) {
         alloy::gate_on(Inst::gate);
         programmed = tick_pick(kernel_hz, hz);

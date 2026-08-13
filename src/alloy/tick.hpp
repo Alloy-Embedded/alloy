@@ -52,8 +52,9 @@ namespace detail {
 // and a named trap otherwise. BOTH ENDS ARE REAL and neither is exotic on a
 // 64 MHz G0: 100 MHz is above the clock, and 0.9 Hz needs more than the
 // 2^32 of division two 16-bit registers hold.
+template <class Inst>
 inline void admit_hz(std::uint32_t hz, std::uint32_t kernel_hz) {
-    const bool ok = alloy::hal::tick_representable(kernel_hz, hz);
+    const bool ok = alloy::hal::tick_impl<Inst>::representable(kernel_hz, hz);
     if (__builtin_constant_p(ok) && !ok) {
         alloy::core::admit::tick_hz();
     }
@@ -88,10 +89,10 @@ public:
     // division is integer, so 64 MHz / 3 Hz is not 3 Hz. A caller that cares
     // reads this instead of assuming it got what it asked for.
     [[nodiscard]] std::uint32_t achieved_hz() const {
-        return hal::tick_achieved_hz(kernel_hz_, hal::tick_impl<Inst>::programmed);
+        return hal::tick_impl<Inst>::achieved_hz(kernel_hz_);
     }
     [[nodiscard]] std::uint32_t period_ticks() const {
-        return static_cast<std::uint32_t>(hal::tick_impl<Inst>::programmed.arr) + 1u;
+        return hal::tick_impl<Inst>::period_ticks();
     }
 
     // Raise the instance's interrupt on every update. The vector is
@@ -137,7 +138,7 @@ struct bind {
     }
 
     static handle<Inst> open(config c = {}) {
-        detail::admit_hz(c.hz, kernel_hz());
+        detail::admit_hz<Inst>(c.hz, kernel_hz());
         // EXCLUSIVE, unlike alloy::pwm's claim on the same kind of block. PWM
         // shares a timer because four channels of one block are four
         // legitimate owners of one personality; a time base has no channels to

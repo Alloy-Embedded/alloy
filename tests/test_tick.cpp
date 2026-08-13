@@ -88,6 +88,15 @@ namespace alloy::hal {
 template <int N>
 struct tick_impl<fake_timer<N>> {
     static inline alloy::hal::tick_divisor programmed{0u, 0u};
+    static constexpr bool representable(std::uint32_t kernel_hz, std::uint32_t hz) {
+        return alloy::hal::tick_representable(kernel_hz, hz);
+    }
+    static std::uint32_t achieved_hz(std::uint32_t kernel_hz) {
+        return alloy::hal::tick_achieved_hz(kernel_hz, programmed);
+    }
+    static std::uint32_t period_ticks() {
+        return static_cast<std::uint32_t>(programmed.arr) + 1u;
+    }
     static void enable(std::uint32_t kernel_hz, std::uint32_t hz) {
         programmed = alloy::hal::tick_pick(kernel_hz, hz);
     }
