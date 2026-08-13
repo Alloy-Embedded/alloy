@@ -38,6 +38,22 @@
 // string instead of failing to build. `board::caps::uid` is the boolean to
 // branch on when you need to say something about it.
 //
+// AND "NO UID" MEANS "THIS BOARD'S CHIP FILE DECLARES NONE", WHICH IS NOT THE
+// SAME AS "THE DIE HAS NONE" — read that sentence before you conclude anything
+// about silicon from a `null_reader`. Counted across the nine boards alloy's
+// matrix builds: exactly one, the Nucleo-G0B1RE, gets `reader`. Two of the
+// eight that do not are STM32s whose die certainly has the block.
+// nucleo_g071rb names `st/stm32g071rb`, a 433-line hand-mined chip file, while
+// its twelve bulk-generated siblings on the same die — stm32g071c8 and the
+// rest, 1400-2200 lines each — every one of them declares `uid`.
+// nucleo_f767zi names `st/stm32f767`, and `st/stm32f767zi`, which is the
+// package that board actually carries, declares it in alloy-devices today.
+// So `board::caps::uid` answers "does THIS build have one", which is the only
+// question a program can act on; it is not a datasheet, and an absent reader
+// is a curation gap at least as often as it is a chip fact. Repointing a board
+// at a fuller chip file is an alloy-devices change with the release-ordering
+// pin dance attached, and it is not this header's to make.
+//
 // WHICH IS WHY THE BUFFER IS `hex_buffer` AND NOT A C ARRAY. That claim was
 // false when it was first written, and the compiler said so on eight of nine
 // boards: `char text[hex_chars]` with zero words is `char text[0]`, which does

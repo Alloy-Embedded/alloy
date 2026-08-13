@@ -34,6 +34,12 @@
 // says which one you got, for a program whose decision depends on the speed
 // rather than the value.
 //
+// `board::caps::crc` false means THIS BUILD has no block, not that the die has
+// none: crc and uid travel together through the same chip files, so the count
+// and the caveat in alloy/uid.hpp are this facade's too — one board of the
+// nine in alloy's matrix gets the silicon, and two of the other eight are
+// STM32s whose die has the unit and whose chip FILE does not say so.
+//
 // WHAT THERE IS NO KNOB FOR, deliberately. The ST v3 block can also do CRC-16,
 // CRC-8 and the 7-bit SD/MMC polynomial, with a programmable seed and a
 // programmable polynomial, and none of that is offered here. There is no
