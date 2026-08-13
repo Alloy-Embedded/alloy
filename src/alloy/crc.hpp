@@ -11,9 +11,13 @@
 // CRC-32/ISO-HDLC every alloy on-flash format already uses — returns exactly
 // this value for the same bytes. That is not a coincidence to be maintained by
 // care; it is checked in tests/test_crc.cpp against a model of the silicon, for
-// every length from 0 to 64 bytes, and it is the ONLY reason this facade
-// exists. A hardware CRC that computed a different polynomial or a different
-// bit order would be a faster way to reject every image the updater ever wrote.
+// every length from 0 to 64 bytes at four alignments, and it is the ONLY reason
+// this facade exists. A hardware CRC that computed a different polynomial or a
+// different bit order would be a faster way to reject every image the updater
+// ever wrote. What that check reaches is everything on the host side of the
+// register access — the parameters, the byte-to-DR feed order and the xorout
+// the silicon has no register for (alloy/hal/crc/crc_impl.hpp). What it cannot
+// reach is the silicon; hal/crc/st_crc_v3.hpp says so in the same words.
 //
 // THIS COMPILES ON EVERY BOARD, and on a chip with no CRC block `open()` hands
 // back the SOFTWARE crc32 instead. Same number, and the same four methods —
@@ -44,8 +48,9 @@
 //     defect that motivated the layered surface in the first place.
 //   * the door is not closed. `alloy::dev::crc_t` and `alloy::ip::st::crc_v3`
 //     are emitted, with POL, INIT and CR.POLYSIZE's encodings all curated, so
-//     a program that wants CRC-16 writes five register lines at Layer 3 — with
-//     the escape hatch's warnings, which is where an unshared choice belongs.
+//     a program that wants CRC-16 writes its own CR, INIT and POL at Layer 3
+//     and feeds DR itself — with the escape hatch's warnings, which is where
+//     an unshared choice belongs.
 //
 // This is the encoder build's finding applied to a facade instead of a binder:
 // a parameter that carries no fact the driver programs is a dependency the
@@ -102,7 +107,12 @@ public:
     void update(const std::uint8_t* p, std::size_t n) { hal::crc_impl<Inst>::update(p, n); }
     [[nodiscard]] std::uint32_t value() const { return hal::crc_impl<Inst>::value(); }
 
-    // One-shot over a whole buffer, the shape ota/image.hpp's call sites want.
+    // One-shot over a whole buffer. This is the shape the OTA paths already
+    // write — ota/image.hpp verifies a header and a payload with
+    // `crc::crc32_of(span)`, one call over one buffer — so a bootloader that
+    // wants the block instead of the shift loop swaps this handle in and
+    // changes nothing else. The software class has the same method for that
+    // reason and Checksum32 requires it of both.
     [[nodiscard]] std::uint32_t checksum(std::span<const std::uint8_t> b) {
         reset();
         update(b);

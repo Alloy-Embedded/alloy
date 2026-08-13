@@ -3,10 +3,17 @@
 //
 //     #include <alloy/uid.hpp>
 //
-//     const auto id = board::uid.read();      // 96 bits on an STM32
-//     decltype(id)::hex_buffer text;          // exactly the right size, always
-//     const std::size_t n = id.to_hex(text);
-//     uart.write({text.data(), n});           // "0033002E-31385105-20393443"
+//     const auto id = board::uid.read();          // 96 bits on an STM32
+//     decltype(id)::hex_buffer text;              // right size on every chip
+//     const std::size_t n = id.to_hex(text);      // 0 on a chip with no UID
+//     for (std::size_t i = 0; i < n; ++i) {       // "0033002E-31385105-20393443"
+//         uart.write(static_cast<std::uint8_t>(text[i]));
+//     }
+//
+// The loop is not decoration: `alloy::uart::handle::write` takes a byte or a
+// zero-terminated string, and `to_hex` writes no terminator (see below), so
+// there is no one-call spelling of this and a worked example that showed one
+// would not compile. examples/device_id/src/main.cpp is this loop, verbatim.
 //
 // THE COMPANION TO `alloy provision`, FROM THE OTHER DIRECTION. Provisioning
 // writes a serial number and a MAC through the debug probe at production time,
@@ -33,9 +40,9 @@
 //
 // WHICH IS WHY THE BUFFER IS `hex_buffer` AND NOT A C ARRAY. That claim was
 // false when it was first written, and the compiler said so on eight of nine
-// boards: `char text[hex_chars]` with zero words is `char text[0]`, which is
-// not a type — it does not convert to a span, and under -Wpedantic it is not
-// even a declaration. The size that a portable program must be allowed to write
+// boards: `char text[hex_chars]` with zero words is `char text[0]`, which does
+// not convert to a span (the error the eight boards reported) and is a GNU
+// extension to begin with. The size that a portable program must be allowed to write
 // is zero, so the buffer has to be a thing that can BE zero-sized;
 // `std::array<char, 0>` is, a C array is not. Sizing from `hex_buffer` is the
 // difference between "compiles on every board" as a sentence and as a fact.
@@ -55,14 +62,21 @@ namespace alloy::uid {
 
 // A device identifier of `Words` 32-bit words. The COUNT is a template
 // parameter and not a constant because it is silicon degree: 3 on every STM32
-// (96 bits), 2 on an RP2040's flash id, 4 on a SAM E70. Code that sizes its
-// buffer from `hex_chars` is portable across all of them with no #if.
+// (96 bits), and an RP2040's 64-bit flash id would be 2 and a SAM E70's 128-bit
+// signature 4 — neither of which alloy's chip data declares today, so those two
+// are what the parameter is FOR and not something this framework reads yet.
+// Code that sizes its buffer from `hex_buffer` is portable across all of them
+// with no #if; code that sizes it from `hex_chars` is portable only until the
+// count is zero, which is the whole story below.
 template <unsigned Words>
 struct device_id {
     static constexpr unsigned words = Words;
     static constexpr unsigned bits = Words * 32u;
-    //: Exactly the buffer `to_hex` needs. No terminator — alloy's byte sinks
-    //: take a span, and a caller who wants a C string adds one byte itself.
+    //: Exactly the buffer `to_hex` needs. No terminator: the count comes back
+    //: from `to_hex`, and a caller who wants a C string declares one more char
+    //: and writes the NUL itself. (`hex_buffer` is exactly this many chars, so
+    //: it is NOT big enough to hold a terminated string — deliberately: the
+    //: size that is always right for the write is the size of the write.)
     static constexpr std::size_t hex_chars = Words == 0u ? 0u : Words * 8u + (Words - 1u);
     //: The buffer to declare for `to_hex`, and the ONLY portable way to declare
     //: it: `char[hex_chars]` is `char[0]` on a chip with no UID block, which is
