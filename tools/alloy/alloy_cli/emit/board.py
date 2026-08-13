@@ -96,6 +96,14 @@ def _require_curated(board_id: str, chip: dict[str, Any], periph: str, role: str
 #: across translation units, where a compiler cannot.
 ROLE_PERSONALITY = {
     "debug_uart": "uart",
+    #: Same personality as debug_uart, which makes this table SILENT about the
+    #: one board error it looks like it would catch: a board that names one
+    #: peripheral for both UART roles agrees on the personality, so the check
+    #: below passes it. That is the same allowance nvm/fs get above, and here it
+    #: is not benign — two binds on one block are two owners. What catches it is
+    #: the runtime half, alloy::claim::exclusive<Inst, personality::uart>, which
+    #: traps on the second open. Stated rather than left to be discovered.
+    "low_power_uart": "uart",
     "i2c": "i2c",
     "spi": "spi",
     "adc": "adc",
@@ -169,6 +177,23 @@ def role_caps(board: dict[str, Any], chip: dict[str, Any],
     # DMA: the chip declares a controller whose IP is class "dma" (st dma1,
     # microchip xdmac, ...).
     caps["dma"] = _dma_controller(chip, registers) is not None
+    # Can the low-power UART actually be woken by traffic while the core sleeps?
+    # A SECOND cap and not a refinement of the first, because the two are
+    # genuinely independent: the role says a board has a spare serial link, this
+    # says the block behind it keeps its receiver clocked in Stop mode. Decided
+    # by the backing IP, never by the peripheral's NAME — `lpuart1` on an
+    # STM32L4 is a usart:v3 block and cannot do this, and its name would have
+    # said it could.
+    #
+    # A note the honest reader is owed: TRUE here means the SILICON has the
+    # feature and the driver programs CR1.UESM + CR3.WUS for it. It does not
+    # mean alloy can put the core into Stop — there is no low-power entry API
+    # yet, so the WFI that would prove any of this is the application's.
+    lp = roles.get("low_power_uart")
+    lp_ip = ""
+    if lp and lp.get("peripheral") in chip.get("peripherals", {}):
+        lp_ip = str(chip["peripherals"][lp["peripheral"]].get("ip", ""))
+    caps["low_power_uart_wake"] = lp_ip.rsplit("/", 1)[-1].startswith("lpuart_")
     # Vendor-blob radio: no supported family yet, but portable
     # `if constexpr (caps::wifi)` code must still compile.
     caps["wifi"] = False
@@ -537,6 +562,108 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "};\n"
             "inline constexpr std::uint32_t debug_uart_baud = 0u;"
         )
+
+    # ── The UART that outlives the core's clock ──────────────────────────────
+    #
+    # Same bind, same handle, same alloy::uart::config as debug_uart: an LPUART
+    # is DRIVEN as a UART and the role says nothing else. Three things make it
+    # worth emitting separately.
+    #
+    #   * `de`, an OPTIONAL routed pin, appended as an `alloy::uart::de<>` tag
+    #     AFTER clock_profile — the binder's parameter order — so RS-485
+    #     driver-enable is one board fact rather than an application's bool.
+    #
+    #   * `low_power_uart_wake`, a vocabulary that ALWAYS EXISTS. Portable code
+    #     names `board::low_power_uart_wake::start_bit` inside an `if constexpr`
+    #     and that name is looked up even on boards where the branch is
+    #     discarded, so a board with no LPUART still has to spell it. The real
+    #     alias is emitted only when the backing IP actually carries the Stop-
+    #     mode receiver; otherwise this is a same-shaped enum and the cap below
+    #     is false, which is the honest pair — the name resolves, the capability
+    #     does not claim to be there.
+    #
+    #   * The stub, which must carry the SAME SHAPE as a real bind for the same
+    #     reason debug_uart's does, plus `open_checked` — the entry point whose
+    #     whole purpose here is the compile-time divisor window.
+    lp_uart = roles.get("low_power_uart")
+    lp_wake_real = False
+    if lp_uart:
+        _require("peripheral" in lp_uart,
+                 f"board {board['id']}: low_power_uart missing 'peripheral'")
+        _require(lp_uart["peripheral"] in chip["peripherals"],
+                 f"board {board['id']}: low_power_uart peripheral "
+                 f"'{lp_uart['peripheral']}' not in chip data")
+        _require_curated(board["id"], chip, lp_uart["peripheral"], "low_power_uart")
+        for key in ("tx", "rx"):
+            _require(key in lp_uart,
+                     f"board {board['id']}: low_power_uart missing '{key}'")
+        # WHICH IP, not which NAME. `lpuart2` on an STM32L4 is a usart:v3 block
+        # and cannot wake anything; the name would have said it could.
+        lp_ip = str(chip["peripherals"][lp_uart["peripheral"]].get("ip", ""))
+        lp_wake_real = lp_ip.rsplit("/", 1)[-1].startswith("lpuart_")
+        de_tag = ""
+        if "de" in lp_uart:
+            de_tag = (f",\n                                         "
+                      f"alloy::uart::de<alloy::dev::{lp_uart['de']}_t>")
+        decls.append(
+            f"using low_power_uart = alloy::uart::bind<alloy::dev::{lp_uart['peripheral']}_t,\n"
+            f"                                         alloy::uart::tx<alloy::dev::{lp_uart['tx']}_t>,\n"
+            f"                                         alloy::uart::rx<alloy::dev::{lp_uart['rx']}_t>,\n"
+            f"                                         clock_profile{de_tag}>;\n"
+            f"inline constexpr std::uint32_t low_power_uart_baud = "
+            f"{lp_uart.get('baud', 115200)}u;"
+        )
+    else:
+        decls.append(
+            "// This board declares no low-power UART; the stub keeps\n"
+            "// `if constexpr (board::caps::low_power_uart)` code compiling.\n"
+            "// It carries `open_checked` as well as `open`, because the whole\n"
+            "// point of the role is a baud rate checked against a divisor.\n"
+            "struct low_power_uart {\n"
+            "    struct null_handle {\n"
+            "        void write(std::uint8_t) const {}\n"
+            "        void write(const char*) const {}\n"
+            "        bool read(std::uint8_t&) const { return false; }\n"
+            "        void flush() const {}\n"
+            "    };\n"
+            "    struct opts {\n"
+            "        std::uint8_t data_bits = 8;\n"
+            "        bool fifo_enable = false;\n"
+            "        std::uint8_t de_assert_16ths = 8;\n"
+            "        std::uint8_t de_deassert_16ths = 8;\n"
+            "        low_power_uart_wake wake_from_stop = low_power_uart_wake::off;\n"
+            "    };\n"
+            "    struct inst {\n"
+            "        struct feat {\n"
+            "            static constexpr std::uint32_t rx_fifo_depth = 0u;\n"
+            "            static constexpr std::uint32_t tx_fifo_depth = 0u;\n"
+            "        };\n"
+            "    };\n"
+            "    static constexpr bool has_de = false;\n"
+            "    static constexpr std::uint32_t kernel_hz() { return 0u; }\n"
+            "    template <opts = {}>\n"
+            "    static null_handle open(alloy::uart::config = {}) { return {}; }\n"
+            "    template <alloy::frequency, std::uint32_t = 20, opts = {}>\n"
+            "    static null_handle open_checked(alloy::uart::frame = {}) { return {}; }\n"
+            "};\n"
+            "inline constexpr std::uint32_t low_power_uart_baud = 0u;"
+        )
+    # Emitted BEFORE the block above in the header, so `opts` can name it.
+    if lp_wake_real:
+        decls.insert(
+            len(decls) - 1,
+            "// The backing IP is an LPUART, so the wake vocabulary is the\n"
+            "// driver's own — three CR3.WUS encodings whose values live in the\n"
+            "// curated data, not here.\n"
+            "using low_power_uart_wake = alloy::uart::lpuart_wake;")
+    else:
+        decls.insert(
+            len(decls) - 1,
+            "// No Stop-mode receiver behind this role (or no role at all), so\n"
+            "// this is the NAME without the capability: portable code still\n"
+            "// compiles, and `board::caps::low_power_uart_wake` is false.\n"
+            "enum class low_power_uart_wake : std::uint8_t {\n"
+            "    off, address_match, start_bit, rx_not_empty };")
 
     led_pwm = roles.get("led_pwm")
     if led_pwm:

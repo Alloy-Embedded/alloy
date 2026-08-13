@@ -71,6 +71,40 @@ ROLES: dict[str, RoleSpec] = {
         required=("peripheral", "tx", "rx"), optional=("baud", "mode", "label"),
         project_fields=("baud",),
         waivers=(("mode", "rom", ("tx", "rx")),)),
+    # A UART whose RECEIVER STAYS CLOCKED WHILE THE CORE SLEEPS. A second uart
+    # role and not `debug_uart` pointed at a different peripheral, because the
+    # two say different things about the BOARD: `debug_uart` is where a human
+    # reads the console (on a Nucleo, the ST-LINK's virtual COM port), and this
+    # one is the link a product may be woken by. A board can have both, one, or
+    # neither, and which peripheral fills each is a board fact.
+    #
+    # `ip_class` is "uart" and NOT an "lpuart" of its own, deliberately. The
+    # class is what an instance can be DRIVEN as, and an LPUART is driven as a
+    # UART — alloy::uart::bind, alloy::uart::config, the same handle. What makes
+    # the block special is its divisor and its Stop-mode receiver, and neither
+    # of those is a different driver interface. A board whose only spare UART is
+    # a plain USART may fill this role with one; it simply cannot then be woken,
+    # which is a property of the silicon the board chose and not of this table.
+    #
+    # `de` IS A SIGNAL AND IS OPTIONAL. RS-485 driver-enable needs a routed pin
+    # (see alloy::uart::de<> — a pin-less `de_enable` bool is the exact lie
+    # routes::routable<> exists to kill), and half the boards that want a
+    # low-power link are point-to-point with no transceiver to turn around.
+    # Validation checks it against the chip's `de` route; the binder's own
+    # static_assert then checks the same pin against `rts`, which is the output
+    # the silicon repurposes. Both are true of a real DE pin and neither alone
+    # would catch a pin that is only one of them.
+    #
+    # `baud` is a project field for the same reason debug_uart's is — the same
+    # PCB runs 9600 or 115200 and the application picks. It is ALSO the field
+    # most likely to be rejected at compile time on an LPUART, whose divisor has
+    # a window; see src/alloy/hal/uart/st_lpuart_baud.hpp.
+    "low_power_uart": RoleSpec(
+        kind="peripheral", ip_class="uart", signals=("tx", "rx", "de"),
+        optional_signals=("de",),
+        required=("peripheral", "tx", "rx"),
+        optional=("de", "baud", "label"),
+        project_fields=("baud",)),
     "i2c": RoleSpec(
         kind="peripheral", ip_class="i2c", signals=("scl", "sda"),
         required=("peripheral", "scl", "sda"), optional=("label",)),

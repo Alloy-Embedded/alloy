@@ -22,6 +22,14 @@
       "baud": 115200,
       "label": "ST-Link VCP"
     },
+    "low_power_uart": {
+      "peripheral": "lpuart1",
+      "tx": "pb11",
+      "rx": "pb10",
+      "de": "pb1",
+      "baud": 115200,
+      "label": "LPUART1 on PB10/PB11 (AF1) with RS-485 driver-enable on PB1 (AF6) — morpho header expectation, NOT a fitted transceiver; no RS-485 device is on a Nucleo. PB10/PB11 rather than LPUART1's PA2/PA3 (AF6) on purpose: those are the SAME pins the ST-Link VCP uses for usart2's debug_uart, so the obvious route for this block is the one route it cannot have on this board. 115200 and not 9600 because the LPUART's kernel here is PCLK (RCC_CCIPR's reset selection, the only thing alloy's clock_node can express) and its divisor window makes 15626 baud the slowest reachable rate at 64 MHz — 9600 needs LSE, which this data cannot select. Asking for it is a compile error, not a wrong baud."
+    },
     "led_pwm": {
       "peripheral": "tim2",
       "channel": 1,
