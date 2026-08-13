@@ -93,7 +93,17 @@ concept Checksum32 = requires(C c, std::span<const std::uint8_t> b) {
 // It is not a fallback in any pejorative sense — it is the definition of the
 // answer, and the hardware is an accelerator for it.
 using software = alloy::ota::crc::crc32;
-static_assert(Checksum32<software>);
+// MESSAGE, not a bare assertion, because this is the half that fires on the
+// EIGHT boards of nine with no CRC block — `board::crc.open()` hands this class
+// back verbatim there, so this line is the diagnostic the majority board gets
+// when a method is added to one half of the facade and not the other. Deleting
+// `crc32::checksum()` was measured: without a message it reads "static
+// assertion failed" and nothing else.
+static_assert(Checksum32<software>,
+              "the software CRC-32 must satisfy the same shape the hardware "
+              "handle does — it IS what `board::crc.open()` returns on a chip "
+              "with no CRC block, so a method the hardware handle has and this "
+              "class does not is a different API wearing one name");
 
 // A claimed hardware CRC unit. Stateless and zero-size: the state is the
 // silicon's DR register, and there is exactly one of it.

@@ -20,9 +20,19 @@
 // ONE: A COMPLEMENTARY PAIR WITH NO DEAD TIME. `config::dead_time` is not a
 // number, it is a three-state type (`hal::bridge_dead_time`) whose default
 // state is "unstated" and whose only zero is spelled
-// `dead_time::inserted_by_the_gate_driver()`. Leaving it out is a COMPILE
-// ERROR, and `dead_time::ns(0)` is a DIFFERENT compile error, so "I forgot"
-// and "I meant zero" never produce the same diagnostic.
+// `dead_time::inserted_by_the_gate_driver()`. Under `open_checked<>` leaving
+// it out is a COMPILE ERROR and `dead_time::ns(0)` is a DIFFERENT compile
+// error, so "I forgot" and "I meant zero" arrive as two distinct
+// static_assert messages.
+//
+// THAT SEPARATION IS A COMPILE-TIME PROPERTY AND ONLY THAT, and the sentence
+// used to say it without the qualifier. The runtime trap that both entry
+// points keep is ONE `trap_code::impossible_config` for all five admissions —
+// measured, at -Os, as a single merged range check branching to a single
+// `trap<4>` — because a trap code is a register value and not a paragraph. A
+// program that reaches the trap knows it configured the bridge impossibly and
+// does not know which way. Which is the third reason the checked call is the
+// one to write.
 //
 // WHICH open() YOU CALL DECIDES WHICH NET YOU GET, and the difference was
 // measured rather than assumed:
