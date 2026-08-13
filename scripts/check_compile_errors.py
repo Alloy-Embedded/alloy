@@ -186,6 +186,34 @@ void probe() {
 """
 
 
+# TWO ROLES THAT LOOK LIKE ONE. The window watchdog is a SECOND role beside
+# `watchdog`, not a mode of it, and the whole argument for that rests on the
+# wrong pairing failing. It does not fail where roles.py claimed it did — an
+# ip_class mismatch is a validator WARNING for every role — so the stop is a
+# static_assert on the absent `wwdt_impl<>` specialization. An IWDG specializes
+# `wdt_impl` and nothing else, which is exactly what makes it detectable here.
+WWDT_WRONG_BLOCK = """
+#include <alloy/board.hpp>
+using wrong = alloy::wwdt::window_watchdog<alloy::dev::iwdg_t, board::clock_profile>;
+void probe() { (void)sizeof(wrong); }  // instantiate the class body
+"""
+
+# LAYER 1, IMPOSSIBLE VALUE, WHERE THE BOUND IS THE BOARD'S. A WWDG counts its
+# own bus clock through a fixed /4096 and seven bits, so the longest window it
+# can enforce is a function of PCLK — about 524 ms at 64 MHz, three orders of
+# magnitude under the IWDG's ~32 s. The failure this prevents is a user reading
+# "watchdog" and writing four seconds: without the check the planner clamps and
+# the program believes in a deadline nothing enforces. Rides on
+# __builtin_constant_p like the baud case, so it needs a real -O compile.
+WWDT_WINDOW_IMPOSSIBLE = """
+#include <alloy/board.hpp>
+void probe() {
+    (void)board::window_watchdog.start({.deadline = std::chrono::microseconds{4'000'000},
+                                        .earliest = std::chrono::microseconds{5'000}});
+}
+"""
+
+
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
     toks = shlex.split(cc_entry["command"])
@@ -396,12 +424,36 @@ def check_can_filters_over_capacity() -> int:
         ["more acceptance filters than this", "filters_fit<29, 28>"])
 
 
+def check_wwdt_wrong_block() -> int:
+    """Two roles that look like one: the IWDG has no window-watchdog driver,
+    and the diagnostic has to say which of the two dogs was meant."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        "an INDEPENDENT watchdog bound to the window_watchdog facade",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          WWDT_WRONG_BLOCK, ["--board", board], board=board),
+        ["no WINDOW watchdog driver", "wwdt_impl", "alloy::dev::iwdg_t"])
+
+
+def check_wwdt_window_impossible() -> int:
+    """Layer 1 value admission where the bound is the BOARD's clock, not the
+    driver's: a four-second window on a 64 MHz APB cannot exist."""
+    board = "nucleo_g0b1re"
+    return _expect_failure(
+        "a window longer than this board's WWDG can count",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          WWDT_WINDOW_IMPOSSIBLE, ["--board", board],
+                          board=board, optimize=True),
+        ["alloy::core::admit::wwdt_window", "this window cannot exist"])
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
             check_de_tag_unsupported() | check_baud_zero() |
             check_open_checked_conflict() | check_pwm_channel_disagrees() |
-            check_adc_watchdog_ordinal() | check_can_filters_over_capacity())
+            check_adc_watchdog_ordinal() | check_can_filters_over_capacity() |
+            check_wwdt_wrong_block() | check_wwdt_window_impossible())
 
 
 if __name__ == "__main__":
