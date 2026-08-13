@@ -327,20 +327,6 @@ struct route<fake_pin<P>, fake_timer<T>, S> {
 
 namespace alloy::hal {
 
-template <int P>
-struct pin_impl<fake_pin<P>> {
-    static void make_af(std::uint8_t) {}
-};
-
-// The OTHER personality this timer could have had, stubbed at the register
-// boundary so the personality-conflict tests below run the real `pwm::bind`
-// rather than a mock of it.
-template <int T>
-struct pwm_impl<fake_timer<T>> {
-    static void enable(std::uint32_t, std::uint32_t, unsigned) {}
-    static void set_duty(unsigned, std::uint16_t) {}
-};
-
 // What the driver would have written, recorded instead. The fake models the
 // ONE hardware behaviour the facade's contract depends on: a break — from the
 // pin or from software — clears the main output enable, and clearing the flag
@@ -356,8 +342,35 @@ struct bridge_log {
     bool bif = false;
     unsigned forced_breaks = 0;
     std::uint16_t duty[4] = {0, 0, 0, 0};
+
+    // WHAT HAPPENED IN WHICH ORDER, which for this facade is a safety
+    // property and not a detail: a pin muxed to a timer whose BDTR has not
+    // been written yet is driven by nothing (OSSI is 0 out of reset), so the
+    // phase pins must arrive AFTER the driver has programmed the off state.
+    // `mux` records the fake pin's ordinal; `kEnable` marks the driver's
+    // programming sequence.
+    static constexpr int kEnable = 0;
+    int seq[32] = {};
+    unsigned seq_n = 0;
+    void note(int what) {
+        if (seq_n < 32u) { seq[seq_n++] = what; }
+    }
 };
 inline bridge_log log{};
+
+template <int P>
+struct pin_impl<fake_pin<P>> {
+    static void make_af(std::uint8_t) { log.note(P); }
+};
+
+// The OTHER personality this timer could have had, stubbed at the register
+// boundary so the personality-conflict tests below run the real `pwm::bind`
+// rather than a mock of it.
+template <int T>
+struct pwm_impl<fake_timer<T>> {
+    static void enable(std::uint32_t, std::uint32_t, unsigned) {}
+    static void set_duty(unsigned, std::uint16_t) {}
+};
 
 template <int T>
 struct bridge_impl<fake_timer<T>> {
@@ -377,6 +390,7 @@ struct bridge_impl<fake_timer<T>> {
     static void enable(std::uint32_t kernel_hz, hal::bridge_config c,
                        unsigned phase_count, bool break_enabled,
                        hal::bridge_break_polarity break_active) {
+        log.note(bridge_log::kEnable);
         ++log.enables;
         log.kernel_hz = kernel_hz;
         log.cfg = c;
@@ -730,6 +744,50 @@ ALLOY_TEST(open_checked_admits_the_gate_driver_spelling_and_the_longest_one) {
         .freq_hz = 1'000u,
         .dead_time = alloy::bridge::dead_time::ns(15'750u)}>();
     ALLOY_CHECK_EQ(longest.dead_time_ns(), 15'750u);
+}
+
+// ── When each pin becomes the timer's ────────────────────────────────────
+
+ALLOY_TEST(the_phase_pins_are_muxed_after_the_off_state_is_in_force) {
+    // THE WINDOW THIS CLOSES. TIM1 leaves reset with BDTR = 0, so OSSI = 0 and
+    // MOE = 0, and OSSI = 0 means the outputs are released to the GPIO — while
+    // the GPIO is in alternate-function mode, which drives nothing either. A
+    // phase pin muxed before BDTR is written is therefore held by NOBODY for
+    // the length of the driver's programming sequence, with no dead time
+    // programmed yet. If the application had been holding the gate inputs low
+    // as plain outputs, make_af() is what releases them.
+    //
+    // So: break pin (an INPUT, and it wants to be connected before BKE arms
+    // it), then the whole driver sequence ending in BDTR, then the six phase
+    // pins — which arrive to a peripheral already forcing them to the CR2 idle
+    // level.
+    alloy::hal::log.seq_n = 0;
+    (void)inverter<33>::open(good);
+
+    ALLOY_CHECK_EQ(alloy::hal::log.seq_n, 8u);       // 1 break + enable + 6 phases
+    ALLOY_CHECK_EQ(alloy::hal::log.seq[0], 9);       // fake_pin<9> is the brk<> tag
+    ALLOY_CHECK_EQ(alloy::hal::log.seq[1], alloy::hal::bridge_log::kEnable);
+    bool phases_last = true;
+    for (unsigned i = 2; i < 8u; ++i) {
+        const int p = alloy::hal::log.seq[i];
+        if (p < 1 || p > 6) { phases_last = false; }
+    }
+    ALLOY_CHECK(phases_last);
+}
+
+ALLOY_TEST(a_bridge_with_no_break_pin_still_muxes_its_phases_last) {
+    // The `unprotected` path takes a different branch through open(), and the
+    // ordering rule is not a property of having a fault line.
+    using unguarded = alloy::bridge::bind<
+        fake_timer<34>, fake_clock, alloy::bridge::unprotected,
+        alloy::bridge::phase<1, fake_pin<1>, fake_pin<2>>>;
+    alloy::hal::log.seq_n = 0;
+    (void)unguarded::open(good);
+
+    ALLOY_CHECK_EQ(alloy::hal::log.seq_n, 3u);       // enable + 2 phase pins
+    ALLOY_CHECK_EQ(alloy::hal::log.seq[0], alloy::hal::bridge_log::kEnable);
+    ALLOY_CHECK_EQ(alloy::hal::log.seq[1], 1);
+    ALLOY_CHECK_EQ(alloy::hal::log.seq[2], 2);
 }
 
 // ── The personality rule ─────────────────────────────────────────────────

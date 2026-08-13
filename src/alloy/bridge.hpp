@@ -493,7 +493,57 @@ struct bind {
         // bridge's and whose configuration is not.
         alloy::claim::exclusive<Inst, alloy::claim::personality::bridge>();
 
-        (mux_phase<Phases>(), ...);
+        // ── THE ORDER OF THE NEXT THREE STEPS IS A SAFETY ARGUMENT ──────
+        //
+        // BREAK PIN FIRST, PHASE PINS LAST, and the driver's whole programming
+        // sequence in between. It used to be all seven pins first.
+        //
+        // What a pin does between "muxed to the timer" and "BDTR written":
+        // TIM1 comes out of reset with BDTR = 0, so OSSI = 0 and MOE = 0, and
+        // OSSI = 0 means "outputs released to the GPIO" (alloy-devices
+        // registers/st/tim_adv.yaml, BDTR; RM0444 section 21). The GPIO is in
+        // ALTERNATE FUNCTION mode by then, so its own output driver is not
+        // driving either — the pad is held by nothing. Muxing first therefore
+        // leaves six gate-driver inputs FLOATING for the length of enable():
+        // an RCC gate write and about twenty register writes.
+        //
+        // Two things that can do, and the first is the one that made this
+        // change. An application that was holding the gate inputs at a hard
+        // level as ordinary GPIO outputs — the usual "keep the gates down
+        // until the timer is ready" bring-up — has them RELEASED by make_af(),
+        // turning a driven low into a float at the one moment when no dead
+        // time is programmed yet. A floating gate-driver input with no fitted
+        // pull-down is undefined, and two of them on one half-bridge can both
+        // read high; that is a shoot-through with DTG still at zero. Where
+        // nothing had driven the pins, the old order does not CREATE the float
+        // (the G0's reset state is analog, which is equally undriven) — it
+        // just declines the first chance to end it.
+        //
+        // Muxing after enable() means the pin's first instant as an alternate
+        // function is already governed: MOE = 0, OSSI = 1, CCxE/CCxNE = 1 and
+        // CR2's OISx/OISxN forced to 0 by the driver, so the timer drives it
+        // LOW — the same state `when_off = drive_idle_level` promises after a
+        // break.
+        //
+        // THIS BUYS NOTHING WHEN `when_off` IS `high_impedance`, and it cannot:
+        // that setting is OSSI = 0 by request, so the pin is undriven under AF
+        // in either order. It is a statement that the gate driver's own pull
+        // resistors define the safe state, and this facade takes it at its
+        // word.
+        //
+        // The BREAK pin keeps its old place, ahead of the driver, because it
+        // is an INPUT and the argument runs the other way: with the pin
+        // already muxed when BDTR sets BKE, a fault line that is asserted at
+        // that instant is seen by the hardware immediately. The outputs are
+        // dark either way — MOE is 0 throughout — so this costs nothing and
+        // removes a window in which the break is armed against a pin the
+        // peripheral is not connected to yet.
+        //
+        // Read from the register descriptions in alloy-devices and RM0444's
+        // off-state semantics. No board is on hand; nothing below has been
+        // seen on silicon. What IS pinned is the ORDER — see
+        // `the_phase_pins_are_muxed_after_the_off_state_is_in_force` in
+        // tests/test_bridge.cpp.
         if constexpr (Break::present) {
             static_assert(
                 routes::routable<typename Break::pin, Inst, alloy::signal::bk>,
@@ -510,6 +560,11 @@ struct bind {
 
         hal::bridge_impl<Inst>::template enable<Opts>(
             kernel_hz(), c, sizeof...(Phases), Break::present, Break::active);
+
+        // …and only now do the six phase pins become the timer's. BDTR has
+        // been written, so whatever they are handed to is already forcing the
+        // off state.
+        (mux_phase<Phases>(), ...);
 
         return handle<Inst, sizeof...(Phases)>{
             hal::bridge_impl<Inst>::achieved_dead_time_ns(

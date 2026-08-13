@@ -235,6 +235,18 @@ struct bridge_impl<Inst> {
     // 6. EGR = UG to latch the preloaded PSC/ARR/CCRx, then CEN = 1. The
     //    counter runs; the outputs do not.
     //
+    // AND THEN, BACK IN THE FACADE, THE SIX PHASE PINS ARE MUXED. Not here —
+    // this driver does not know which pins the binder named — but the ordering
+    // belongs to the same argument as step 5 and is worth stating from both
+    // ends. Until BDTR is written, OSSI is 0 (its reset value) and MOE is 0,
+    // and OSSI = 0 means the outputs are RELEASED to the GPIO; a pin already
+    // switched to alternate function is then driven by nothing at all. So
+    // alloy::bridge::bind::open() muxes the phase pins AFTER this function
+    // returns, when OSSI = 1 and CCxE/CCxNE = 1 and CR2 = 0 have the pads
+    // pinned to the idle level the moment they arrive. The BREAK pin is muxed
+    // BEFORE, because it is an input and wants to be connected by the time
+    // step 5 sets BKE. See the comment at the mux in src/alloy/bridge.hpp.
+    //
     // WHOLE-REGISTER WRITES, not read-modify-write, for the reason the
     // encoder driver states: the bits this function does not name in CCMR1/2
     // are another personality's layout of the same word.

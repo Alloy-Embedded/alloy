@@ -848,7 +848,18 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     else:
         decls.append(
             "// No bridge declared; stub keeps caps-guarded code compiling.\n"
+            "//\n"
+            "// THE STUB CARRIES EVERY ENTRY POINT A REAL BIND HAS, and\n"
+            "// open_checked<> is the one that is easy to forget: an\n"
+            "// `if constexpr (board::caps::bridge)` in a non-template main()\n"
+            "// still PARSES its discarded branch, so a missing member\n"
+            "// template turns `open_checked<cfg>()` into a less-than\n"
+            "// comparison and the error a user sees is\n"
+            "// \"expected primary-expression before ')'\" on a board that has\n"
+            "// no bridge at all. `config` is aliased for the same reason: the\n"
+            "// call site names the type.\n"
             "struct bridge {\n"
+            "    using config = alloy::bridge::config;\n"
             "    struct null_handle {\n"
             "        static constexpr unsigned phases = 0;\n"
             "        template <unsigned N>\n"
@@ -863,6 +874,8 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "        [[nodiscard]] std::uint32_t dead_time_ns() const { return 0u; }\n"
             "    };\n"
             "    static null_handle open(alloy::bridge::config = {}) { return {}; }\n"
+            "    template <alloy::bridge::config = {}>\n"
+            "    static null_handle open_checked() { return {}; }\n"
             "};\n"
             "inline constexpr alloy::bridge::config bridge_defaults{};"
         )
