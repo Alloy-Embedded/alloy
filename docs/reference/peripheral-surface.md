@@ -54,6 +54,14 @@ thing you asked for.**
 
 ## The decision
 
+The load-bearing one first, because three revisions of this page buried it:
+
+| Question | Answer |
+|---|---|
+| What actually decides where a feature lives? | **[Question 0](#question-0-what-does-the-database-already-know) plus the reference manual.** Question 0 is mechanical and has answered 5 of 5 in every review; the taxonomy that used to sit here answered 1 of 5 twice and is now a [checklist](#the-checklist-questions-110). |
+
+Everything below is what the built peripherals settled, and holds:
+
 | Question | Answer |
 |---|---|
 | Where does the portable surface live? | `alloy::<periph>::config` — a runtime struct, frozen at the knobs *every* driver alloy ships programs. UART: three fields. |
@@ -872,28 +880,53 @@ never reaches a compiler.
 
 ## The rule
 
-**Revision 3 — derived from three peripherals that were built, not from
-taxonomy.** v1 was derived from UART and failed three features it had never
-seen. v2 was derived from those three and, by the count of the review that
-retired it, failed four of five more. Both were killed the same way: a reviewer
-applied them. So v3 was not written first. Three
-deliberately different peripherals were **built** — a cross-peripheral feature
-(`can`, `3ef5130`), a personality (`encoder`, `f1f6833`) and a sub-resource
-(`adc`, `de6e59b`) — each commit recording what its own prediction got wrong,
-and this section is the generalisation of that list and nothing more.
+**One question decides. The rest is a guide.**
 
-Two consequences of deriving it that way, both deliberate:
+That sentence is the outcome of three attempts and three adversarial reviews,
+and it is worth more than any of the taxonomies it replaces. The record:
 
-- **Every clause below points at a build.** If a clause has no witness in the
-  tree it is not in the rule; it is in
-  [what v3 has not seen](#what-v3-does-not-decide-and-what-it-has-not-seen).
-- **Where the builds never hit a case, v3 refuses rather than invents.** v1 and
-  v2 died of confident answers to questions they had no evidence about. A named
-  refusal is the only thing that does not have to be retracted later.
+| Revision | Derived from | Applied to features it had not seen | Score |
+| --- | --- | --- | --- |
+| v1 | UART | I2C 10-bit, ADC watchdog, timer encoder | 0 of 3 |
+| v2 | those three | FDCAN filters, RTC alarms, DAC waveform, LPTIM, USB endpoints | 1 of 5 |
+| v3 | three peripherals actually **built** | ADC oversampling, I2C PEC, DMA request routing, flash option bytes, GPIO slew rate | 1 of 5 |
 
-For any feature of any of the 65 peripherals, ask these in order and stop at the
-first that fires. Each question names the **artefact** that answers it, and each
-answer is a thing a compiler, a generator or a lint can check.
+Question 0 answered **5 of 5** every time it was applied, including in the review
+that retired v3.
+
+The pattern is not bad luck three times. Question 0 asks a **verifiable fact
+about the database** — is the peripheral curated, the register, the field, the
+field's encoding? Anyone can check it in a minute, and it is either true or not.
+Questions 1–10 ask for a **judgement about silicon nobody has read yet**, and
+every review found the same failure shape: the rule refuses the exotic cases it
+was taught to refuse, and answers confidently and wrongly on the ordinary ones.
+The fourth reviewer put it best — the not-yet-seen table lists cases that are
+hard to *reach*, not the cases that are easy to reach and hard to *place*.
+
+So the procedure for the ~25 peripherals still uncurated on this die is:
+
+1. **Run Question 0.** It is a gate, it is mechanical, and its output is often
+   "curate first" — a task in alloy-devices, not a layer.
+2. **Read the reference manual for that block.** There is no substitute and the
+   rule was pretending there was.
+3. **Follow a precedent.** Three peripherals were built precisely so that the
+   next one has something to copy rather than something to deduce:
+   a cross-peripheral feature (`can`, `3ef5130`), a personality
+   (`encoder`, `f1f6833`) and a sub-resource (`adc`, `de6e59b`). Each commit
+   records what its own prediction got wrong.
+4. **Consult questions 1–10 as a checklist**, not as a decision procedure. They
+   are a good list of the things to think about — is it a knob at all? whose is
+   it? where does its maximum come from? — and they are, measured, wrong about
+   one ordinary feature in five.
+
+Everything below stays because it is useful; what changed is its **status**.
+
+### The checklist (questions 1–10)
+
+For any feature, these are worth asking in order. Each names the **artefact**
+that would answer it, and each answer is a thing a compiler, a generator or a
+lint can check — which is what makes them worth asking even when they are wrong.
+They do not decide; you do, with the manual open.
 
 ### Question 0: what does the database already know? {#question-0-what-does-the-database-already-know}
 
@@ -966,12 +999,16 @@ The honest unconditional escape is the one
 address in *your* code, outside alloy, with no gate, no IRQ number and no route
 check. That is a real door and it is not `alloy::dev::`.
 
-### Questions 1–5: what kind of thing is it?
+#### Questions 1–5: what kind of thing is it?
 
 Before "how portable is this value" comes "what kind of thing is this value".
 v1 had only the layer questions, so it answered *confidently and wrongly* for
-everything that is not a knob. Question 5 is new in v3 and is the axis that
-killed v2.
+everything that is not a knob. Question 5 is the axis that killed v2.
+
+These five are the useful half of the checklist: three of the four features v3
+got wrong were mis-sorted here, not in the layer questions below — the reviewer
+found ADC oversampling, I2C PEC and DMA request routing all placed confidently
+in the wrong kind. Read them as prompts, and expect to overrule them.
 
 **1. Does it change which OPERATIONS the peripheral offers, and exclude the
 other modes while it is on?**
@@ -1068,7 +1105,7 @@ driver is:
    call would be another window and another moment off the bus, and
    `sizeof...(F)` is also the compile-time count the capacity check needs.
 
-### Questions 6–10: which layer does the knob live in?
+#### Questions 6–10: which layer does the knob live in?
 
 Only reached by things that really are knobs, on a peripheral question 0 cleared.
 
@@ -1250,13 +1287,21 @@ a TOML, and `main.cpp` writes `board::rs485::open()`.
 
 ---
 
-## What v3 does not decide, and what it has not seen {#what-v3-does-not-decide-and-what-it-has-not-seen}
+## What the checklist does not decide {#what-v3-does-not-decide-and-what-it-has-not-seen}
 
-A rule that needs a human argument per peripheral is not a rule. A rule that
-pretends to decide what it cannot is worse — that is exactly how v1 produced a
-confident wrong answer on I2C, and how v2 produced more of them. So this section is
-part of the rule, not an apology for it, and it has two halves: **questions the
-page asks and does not answer**, and **cases the three builds never showed it**.
+A rule that needs a human argument per peripheral is not a rule — and the
+measured conclusion of three reviews is that the checklist below IS that, so it
+is documented as a checklist and Question 0 carries the decision alone.
+
+This section keeps its two halves because both are still true and useful:
+**questions the page asks and does not answer**, and **cases the three builds
+never showed it**. One correction from the review that retired v3, because it is
+the most useful sentence anyone wrote about this page: the not-yet-seen list
+below is long, but it lists cases that are hard to REACH — three personalities
+on one block, a run-time personality switch, a companion with its own facade —
+and not the cases that are easy to reach and hard to place. None of the five
+ordinary features the reviewer tried landed on it. A refusal list only protects
+you from what it anticipated, and this one anticipated the exotic.
 
 ### Open questions, unchanged by the three builds
 
