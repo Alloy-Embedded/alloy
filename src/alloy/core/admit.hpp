@@ -46,6 +46,21 @@ namespace alloy::core::admit {
     "can represent; for the accuracy question use open_checked<Baud>()")]]
 void uart_baud();
 
+// The bound above is "no divisor can represent it", which is enough for every
+// UART whose divisor is a plain divide. An LPUART's is not: it divides
+// 256 x f_ck, into a 20-bit register with a forbidden floor, so it has a
+// WINDOW — rates too SLOW for the kernel clock are as impossible as rates too
+// fast, and no other UART in the tree has that shape.
+[[gnu::error(
+    "alloy::uart::open: this baud rate is outside the LPUART's divisor window. "
+    "The LPUART divides 256 x kernel, and its BRR must land between the "
+    "curated floor (feat::brr_min, 0x300 on ST) and its curated width — so the "
+    "kernel clock must be between 3x and 4096x the baud rate. On a 64 MHz PCLK "
+    "that makes 15 626 baud the SLOWEST reachable rate: for anything slower "
+    "the LPUART must be clocked from LSE or HSI16, which alloy's clock_node "
+    "cannot select yet")]]
+void lpuart_baud_window();
+
 [[gnu::error(
     "alloy::i2c::open: this bus speed is impossible on this port — it is zero, "
     "or above the I2C's own kernel clock")]]

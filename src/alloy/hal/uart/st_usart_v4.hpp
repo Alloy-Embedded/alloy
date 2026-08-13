@@ -3,6 +3,11 @@
 // BEHAVIOR only: every address, offset and field position comes from the
 // generated alloy::ip::st::usart_v4 header and the generated instance
 // descriptor. Blocking byte I/O + RX-interrupt callback.
+//
+// The programming sequence itself lives in st_usart_v4_body.hpp, shared with
+// the LPUART driver (st_lpuart_v4.hpp) — same offsets, same bit positions for
+// every field the sequence touches. What this file supplies is what differs:
+// the divisor, and the Layer-2 knobs whose register fields THIS block has.
 
 #pragma once
 
@@ -11,6 +16,7 @@
 
 #include "alloy/core/types.hpp"
 #include "alloy/core/units.hpp"
+#include "alloy/hal/uart/st_usart_v4_body.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/st/usart_v4.hpp"
 #include "alloy/irq.hpp"
@@ -27,7 +33,8 @@ namespace alloy::hal {
 // database has not mined them yet. Until it does, a v4 driver cannot honour
 // RS-485 DE, so `de_enable` must not be typeable here — which is the whole
 // point of declaring Layer 2 beside the driver instead of in one shared
-// struct.
+// struct. (The LPUART's curated data DOES carry them, so the same tag that
+// is a compile error here works there. The asymmetry is the database's.)
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v4>
 struct uart_opts<Inst> {
@@ -42,12 +49,8 @@ struct uart_opts<Inst> {
 
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v4>
-struct uart_impl<Inst> {
+struct uart_impl<Inst> : detail::st_usart_v4_body<Inst, uart_impl<Inst>> {
     using IP = typename Inst::ip;
-
-    static typename IP::regs& r() {
-        return *reinterpret_cast<typename IP::regs*>(Inst::base);
-    }
 
     // BRR (OVER8=0, PRESC=0): round kernel/baud. Single source of truth —
     // enable() programs it and achieved_baud() inverts it, so the compile-time
@@ -60,136 +63,25 @@ struct uart_impl<Inst> {
         return alloy::frequency{brr != 0u ? kernel_hz / brr : 0u};
     }
 
-    // Layer 1 (runtime `c`) + Layer 2 (compile-time `O`) in ONE entry point,
-    // so there is one programming sequence rather than two that can drift.
-    //
-    // enable() runs on a just-gated peripheral, so CR1/CR2/CR3 read as reset
-    // (all zero) and every default-valued write is guarded: a knob nobody set
-    // contributes no instruction. Values that come from a literal config at
-    // the call site fold away too — the `if`s below are runtime only when the
-    // caller's config is.
-    template <uart_opts<Inst> O = {}, bool De = false>
-    static void enable(std::uint32_t kernel_hz, hal::uart_config c) {
+    // A plain divider reaches every rate below its kernel clock, so there is
+    // nothing to admit beyond what alloy::uart::open() already checks. The
+    // LPUART overrides this because its divisor has a floor as well as a
+    // ceiling; see st_lpuart_v4.hpp.
+    static void admit_rate(std::uint32_t, std::uint32_t) {}
+
+    // The Layer-2 hook. This block's only vendor knob (fifo_enable) is
+    // programmed by the shared body, so all that is left is the tag this
+    // driver must REFUSE.
+    template <uart_opts<Inst> O, bool De>
+    static void program_vendor() {
         static_assert(!De,
-                      "this USART's driver has no hardware driver-enable: alloy's curated usart_v4 register data carries no DEM/DEAT/DEDT (the silicon has them; the database has not mined them). Drive DE from a GPIO, or reach the registers through alloy::dev::");
-        static_assert(O.data_bits >= 7u && O.data_bits <= 9u,
-                      "this USART's M1:M0 encodes a 7-, 8- or 9-bit word");
-        alloy::gate_on(Inst::gate);
-        IP::ue.clear(r());
-        r().BRR = baud_div(kernel_hz, c.baud);
-
-        // The parity bit lives INSIDE the word, so the M field is programmed
-        // with data bits + parity, not with data bits.
-        const bool pce = c.parity != hal::parity::none;
-        const unsigned word = O.data_bits + (pce ? 1u : 0u);
-        // THE ONE COMBINATION NEITHER LAYER CAN REJECT: data_bits is a
-        // compile-time knob, parity is a runtime field, and 9 data bits plus
-        // a parity bit is a 10-bit word this USART does not have. There is no
-        // static_assert that can see a runtime parity, and silently programming
-        // 8 bits would be the exact lie this design exists to remove — so it
-        // traps, like the double-open guard in alloy/uart.hpp. Costs nothing
-        // unless you asked for 9 data bits.
-        if constexpr (O.data_bits == 9u) {
-            if (pce) {
-                __builtin_trap();
-            }
-        }
-        if (word == 9u) {
-            IP::m0.set(r());
-        } else if (word == 7u) {
-            IP::m1.set(r());
-        }
-        if (pce) {
-            IP::pce.set(r());
-            if (c.parity == hal::parity::odd) {
-                IP::ps.set(r());
-            }
-        }
-        if (c.stop == hal::stop_bits::two) {
-            IP::stop.write(r(), 2u);
-        }
-
-        if constexpr (O.fifo_enable) {
-            static_assert(Inst::feat::rx_fifo_depth > 0u,
-                          "this instance has no RX FIFO (feat::rx_fifo_depth is 0)");
-            IP::fifoen.set(r());
-        }
-
-        IP::te.set(r());
-        IP::re.set(r());
-        IP::ue.set(r());
+                      "this USART's driver has no hardware driver-enable: alloy's curated usart_v4 register data carries no DEM/DEAT/DEDT (the silicon has them; the database has not mined them). Drive DE from a GPIO, use an LPUART on this die (its curated data does carry them), or reach the registers through alloy::dev::");
+        (void)O;
     }
 
-    static void write(std::uint8_t byte) {
-        while (IP::txe.read(r()) == 0u) {
-        }
-        r().TDR = byte;
-    }
-
-    [[nodiscard]] static bool read(std::uint8_t& byte) {
-        if (IP::rxne.read(r()) == 0u) {
-            return false;
-        }
-        byte = static_cast<std::uint8_t>(r().RDR);
-        return true;
-    }
-
-    static void flush() {
-        while (IP::tc.read(r()) == 0u) {
-        }
-    }
-
-    // --- RX interrupt callback (the driver ISR does ALL register work:
-    // drain RDR, clear ORE — a set ORE wedges RX otherwise — then hand each
-    // byte to the user function; user code never touches registers). ---
-    inline static void (*rx_fn)(void*, std::uint8_t) = nullptr;
-    inline static void* rx_ctx = nullptr;
-
-    static void rx_isr(void*) {
-        while (IP::rxne.read(r()) != 0u) {
-            const auto byte = static_cast<std::uint8_t>(r().RDR);
-            if (rx_fn != nullptr) {
-                rx_fn(rx_ctx, byte);
-            }
-        }
-        if (IP::ore.read(r()) != 0u) {
-            r().ICR = IP::orecf.mask;
-        }
-    }
-
-    static void enable_rx_irq(void (*fn)(void*, std::uint8_t), void* ctx) {
-        rx_fn = fn;
-        rx_ctx = ctx;
-        alloy::irq::attach(Inst::irq, &rx_isr);
-        IP::rxneie.set(r());
-        alloy::irq::enable(Inst::irq);
-    }
-
-    static void disable_rx_irq() {
-        IP::rxneie.clear(r());
-        alloy::irq::detach(Inst::irq, &rx_isr);
-        rx_fn = nullptr;
-    }
-
-    // --- TX via DMA: DMA TCIF only means the last byte reached TDR; the
-    // honest done-flag is ISR.TC (shift register + FIFO drained), so the
-    // stale TC is cleared at begin and polled at end (RM0444 DMA-TX
-    // procedure). 8-bit frames only: APB lane duplication can at worst
-    // touch TDR[8], which the transmitter ignores when M=00. ---
-    static void dma_tx_begin() {
-        r().ICR = IP::tccf.mask;
-        IP::dmat.set(r());
-    }
-
-    static void dma_tx_end() {
-        while (IP::tc.read(r()) == 0u) {
-        }
-        IP::dmat.clear(r());
-    }
-
-    [[nodiscard]] static std::uintptr_t tdr_addr() {
-        return reinterpret_cast<std::uintptr_t>(&r().TDR);
-    }
+    // Nothing this block raises needs clearing beyond ORE, which the shared
+    // RX ISR already does.
+    static void isr_vendor() {}
 };
 
 }  // namespace alloy::hal

@@ -381,6 +381,21 @@ struct bind {
     {
         static_assert(Baud.hz() != 0u,
                       "open_checked<Baud>: a baud rate of zero has no divisor");
+        // TOLERANCE IS THE SECOND QUESTION. The first is whether a divisor
+        // EXISTS, and for most UARTs it always does below the kernel clock, so
+        // only a driver whose divisor has a WINDOW declares this. The LPUART's
+        // does (it divides 256 x kernel into 20 bits with a forbidden floor),
+        // and without this the failure below would read
+        // `rate_check<9600, 0, 20>` — true, and silent about why the achieved
+        // rate was zero.
+        if constexpr (requires { hal::uart_impl<Inst>::baud_window_ok(0u, 0u); }) {
+            static_assert(hal::uart_impl<Inst>::baud_window_ok(kernel_hz(), Baud.hz()),
+                          "open_checked<Baud>: this UART's divisor has a WINDOW, and the "
+                          "requested baud is outside it on this board's kernel clock — the "
+                          "rate is not inaccurate, it is unreachable. See the driver's "
+                          "baud_window_ok(); on an ST LPUART the kernel must be between 3x "
+                          "and 4096x the baud rate");
+        }
         constexpr alloy::frequency achieved =
             hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz());
         (void)alloy::rate_check<Baud.hz(), achieved.hz(), TolPermille>{};
