@@ -1857,6 +1857,7 @@ empty road:
 |---|---|---|
 | `can` | `nucleo_g0b1re` (`caps::can`) | 8 — `"this board declares no can role"` |
 | `encoder` | `nucleo_g0b1re` (`caps::encoder`) | 8 — `"no encoder role on this board"` |
+| `tick` | `nucleo_g0b1re` (`caps::tick`, TIM6) | 8 — `"no tick role on this board"`. The example ALSO branches on `feat::trgo`, which is 1 on TIM6 and 0 on TIM14/16/17, so a board that binds the role to a small timer takes a third road that no board here exercises yet |
 | `adc_watchdog` | `nucleo_g0b1re` **and** `nucleo_g071rb` (`feat::analog_watchdogs == 3`) | 7 — of which `same70_xplained` is the informative one: it HAS an ADC (`afec0_t`) and no reachable watchdog, so `Adc::watchdogs` is 0 and the same `if constexpr` that serves a board with no ADC at all serves it |
 
 `adc_watchdog` is the one that shows the degree mechanism doing work rather than
@@ -2038,6 +2039,7 @@ predictions came to be scored rather than argued.
 | I2C 10-bit addressing | "every I2C driver can program an address width → Layer 1 `config`" | a 10-bit address is a property of the **transfer**, not the port: one bus talks to a 7-bit and a 10-bit device in consecutive calls | question 3, [the transfer axis](#the-transfer-axis-and-the-zephyr-answer). **Specified, not built** — `alloy::i2c::config` still has one field and the handle still takes `std::uint8_t addr` |
 | the ADC analog watchdog | count is degree, "and the rest through `alloy::dev::`" | the Layer-3 door was **locked**: `st/adc_v2`'s curated map ran `ISR, IER, CR, CFGR1, CFGR2, SMPR, CHSELR, DR, CCR` — no `TR1`, no `AWD1CR`, no `AWD` flag in `ISR`. Question 0, row 2 | curated, then **BUILT** (`de6e59b`). What the build changed about the prediction is in [sub-resources](#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime) |
 | timer encoder mode | "it needs a pin mux → a binder tag" | the pins *are* binder tags; what v1 missed is that encoder mode **excludes PWM on the same block**, and v1 had no category for a mutually exclusive whole-block mode. "A different IP tag, therefore a different driver" cannot express it either: `tim3` has one IP tag and two personalities | curated (question 0, row 3 — `SMCR` was a register with zero fields), then **BUILT** (`f1f6833`) |
+| the basic and small timers (TIM6/7/14/15/16/17) | the checklist was never asked — question 0 answered first and answered everything: all six were `uncurated`, which is row 1, so the only available move was data | **the interesting judgement was not a LAYER, it was how many IPs.** "A timer is a timer" says reuse `st/tim_gp16`; the register data says four separate blocks, and the load-bearing difference is `BDTR.MOE` — TIM15/16/17 leave the pin inactive with every other register correct, so reuse would have produced silence rather than an error. Nothing on this page has a question for "is this the same IP"; the answer came from diffing upstream's block hierarchy | curated (question 0, row 1) in `83bcbc2`, then **BUILT** (`e8d433d`) |
 
 Two details worth keeping, because they are the parts a summary loses.
 
