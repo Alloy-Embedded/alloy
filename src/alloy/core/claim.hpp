@@ -148,6 +148,11 @@ enum class personality : std::uint8_t {
     rtc,
     flash,
     dma,
+    // The hardware CRC unit. One shift register, one remainder: two owners
+    // interleaving updates do not race on a flag, they arithmetically corrupt
+    // each other and both read back a plausible 32-bit number. There is no
+    // downstream check that catches that, which is what makes it a claim.
+    crc,
     ethernet,
     exti,
     user_a,
