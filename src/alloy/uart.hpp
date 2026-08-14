@@ -11,14 +11,17 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
+#include <type_traits>
 
 #include "alloy/core/admit.hpp"
 #include "alloy/core/claim.hpp"
 #include "alloy/core/routes.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/core/units.hpp"
+#include "alloy/dma.hpp"
 #include "alloy/hal/gpio/pin_impl.hpp"
 #include "alloy/hal/uart/uart_impl.hpp"
 
@@ -88,6 +91,19 @@ struct de {
     using pin = Pin;
 };
 
+// The board's RX DMA assignment, attached to the binder by the GENERATOR the
+// same way the ADC's ConvRoute is (docs/design/dma-streams.md §1) — as a tag
+// in the binder's Extra... list, because that is where this binder keeps its
+// optional facts (the de<Pin> precedent). A board that assigns
+// "role.rx": {controller, channel} gets `alloy::uart::rx_dma<route>` appended
+// to its generated bind<>, which is what gates rx_ring() on; a board that
+// assigns nothing simply has no tag, and rx_ring() is constrained away with
+// the missing fact named.
+template <class Route>
+struct rx_dma {
+    using route = Route;
+};
+
 namespace detail {
 // Layer 1's VALUE admission. The named trap is the guarantee; the compile
 // error is a bonus that fires only when the optimizer propagates the constant
@@ -129,11 +145,134 @@ struct de_pin_of<uart::de<Pin>, Rest...> {
 template <class First, class... Rest>
     requires (!is_de_tag<First>)
 struct de_pin_of<First, Rest...> : de_pin_of<Rest...> {};
+
+template <class T>
+inline constexpr bool is_rx_dma_tag = false;
+template <class Route>
+inline constexpr bool is_rx_dma_tag<uart::rx_dma<Route>> = true;
+
+template <class... Extra>
+struct rx_route_of {
+    using type = void;
+};
+template <class Route, class... Rest>
+struct rx_route_of<uart::rx_dma<Route>, Rest...> {
+    using type = Route;
+};
+template <class First, class... Rest>
+    requires (!is_rx_dma_tag<First>)
+struct rx_route_of<First, Rest...> : rx_route_of<Rest...> {};
 }  // namespace detail
+
+// What the port+route pair must offer before `uart.rx_ring()` exists on it:
+// the driver's RX-DMA hooks (DMAR begin/end + the data-register address), the
+// IDLE event, AND a ring-capable controller behind the route (circular mode,
+// half events, live remaining-count — dma::ring_capable). One concept so the
+// facade's requires-gate names the whole contract; a binder with no route
+// (RxRoute = void) fails the probe instead of the build — the adc
+// stream_capable pattern, applied to the byte-stream shape.
+template <class Inst, class Route>
+concept rx_stream_capable = requires {
+    hal::uart_impl<Inst>::dma_rx_begin();
+    hal::uart_impl<Inst>::dma_rx_end();
+    hal::uart_impl<Inst>::rdr_addr();
+    hal::uart_impl<Inst>::enable_idle_irq(nullptr, nullptr);
+    typename Route::controller;
+    requires dma::ring_capable<typename Route::controller, Route::channel>;
+};
+
+// Received bytes streamed into a caller-owned ring by DMA, with the UART's
+// IDLE event as the frame-gap wake — the design's anchor 2.2
+// (docs/design/dma-streams.md §2.2). No ISR runs per byte: the channel moves
+// each byte from RDR to the ring, cursor()/readable() are computed from the
+// channel's live remaining-count register, and the ONE interrupt in the path
+// is IDLE — first quiet bit time after a byte — whose firing wakes a
+// WFI/WFE sleeper (`alloy::sleep_until_event()`), which then drains
+// readable() and consume()s what it parsed.
+//
+// This wrapper exists for the §4 TEARDOWN ORDER, which the bare ring cannot
+// provide alone: the peripheral's request stream stops BEFORE the channel
+// does (a request landing mid-teardown on a disabled channel is how overrun
+// flags get stuck). C++ member-destruction order encodes it — this class's
+// destructor BODY (IDLE off, DMAR off) runs first, then the `ring_` member's
+// destructor stops the channel and releases the claim. The ARM order is the
+// mirror image, encoded by member-then-body construction: the ring claims,
+// programs circular p2m u8 and STARTS the channel first; only then does
+// dma_rx_begin() raise DMAR — a request routed to an unarmed channel is a
+// byte the ring never sees.
+//
+// NOT movable, NOT copyable (the ring's ISRs and the IDLE ISR hold pointers
+// into it); guaranteed copy elision covers the factory-return spelling
+// `auto ring = bus.rx_ring(rxbuf);` — constructed in place, never moved.
+template <class Inst, class Route>
+class rx_stream {
+public:
+    rx_stream(const rx_stream&) = delete;
+    rx_stream& operator=(const rx_stream&) = delete;
+    rx_stream(rx_stream&&) = delete;
+    rx_stream& operator=(rx_stream&&) = delete;
+
+    ~rx_stream() {
+        hal::uart_impl<Inst>::disable_idle_irq();
+        hal::uart_impl<Inst>::dma_rx_end();
+    }
+
+    // The byte-stream discipline, forwarded from the ring (see alloy/dma.hpp
+    // for the full contract, including the reload-edge fold and the honest
+    // limit that a writer lapping an idle reader overwrites unread bytes —
+    // missed() is the overrun evidence).
+    [[nodiscard]] std::uint32_t cursor() const { return ring_.cursor(); }
+    [[nodiscard]] std::span<const std::uint8_t> readable() const {
+        return ring_.readable();
+    }
+    void consume(std::size_t n) { ring_.consume(n); }
+    [[nodiscard]] std::uint32_t missed() const { return ring_.missed(); }
+
+    // The checked half-granular discipline also composes (take()/pending() —
+    // what alloy::async::ring_waiter parks on) for consumers that want
+    // batches instead of frames.
+    [[nodiscard]] std::span<const std::uint8_t> take() { return ring_.take(); }
+    [[nodiscard]] bool pending() const { return ring_.pending(); }
+
+    // ISR-context hooks, at most one each (the alloy::irq contract: set a
+    // flag, wake a task). on_boundary fires per stable HALF (ring_waiter's
+    // hook); on_idle fires per FRAME GAP — the hookup a frame-driven consumer
+    // (or a future idle-waiter) registers. rx_ring() armed the IDLE interrupt
+    // already; registering here only chooses who is told.
+    void on_boundary(void (*fn)(void*), void* ctx = nullptr) {
+        ring_.on_boundary(fn, ctx);
+    }
+    void on_idle(void (*fn)(void*), void* ctx = nullptr) {
+        hal::uart_impl<Inst>::enable_idle_irq(fn, ctx);
+    }
+
+private:
+    template <class, class>
+    friend class handle;
+
+    template <std::size_t N>
+    explicit rx_stream(dma::ring_storage<std::uint8_t, N>& storage)
+        : ring_(Route{}, hal::uart_impl<Inst>::rdr_addr(), storage) {
+        // Channel armed (ring constructor, just ran) -> request stream on ->
+        // frame-gap wake armed. IDLE is armed with no callback: the interrupt
+        // firing IS the wake (§2.2's sleep_until_event), and the driver's ISR
+        // clears the flag so the line does not wedge.
+        hal::uart_impl<Inst>::dma_rx_begin();
+        hal::uart_impl<Inst>::enable_idle_irq(nullptr, nullptr);
+    }
+
+    dma::ring<std::uint8_t, Route> ring_;
+};
 
 // Move-only handle: opening twice is a runtime trap (C++ cannot make a
 // cross-TU double-open a compile error — see NORTH_STAR guard #7).
-template <class Inst>
+//
+// RxRoute is the board's `<role>.rx` DMA assignment, attached by the
+// generator through the binder's rx_dma<> tag — `void` when the board
+// assigned none, which constrains rx_ring(storage) away so a portable
+// program's `requires` probe reports the missing fact at compile time (the
+// adc handle's ConvRoute pattern).
+template <class Inst, class RxRoute = void>
 class handle {
 public:
     handle(const handle&) = delete;
@@ -214,6 +353,34 @@ public:
         hal::uart_impl<Inst>::dma_tx_end();
     }
 
+    // DMA RX ring: received bytes land in the caller's ring with the CPU
+    // asleep, consumed via cursor()/readable()/consume() with the IDLE event
+    // as the frame-gap wake — the design's anchor 2.2, on the BOARD-ASSIGNED
+    // route (board.json "dma": "<role>.rx"). Claims the assigned channel,
+    // programs a circular p2m transfer of bytes, starts it, raises DMAR, arms
+    // IDLE. Compile error (this method is constrained away) if the board
+    // assigned no RX route, the driver has no RX-DMA/IDLE hooks, or the
+    // routed controller cannot do circular + half events + live count —
+    // never a link error or a runtime surprise.
+    template <std::size_t N>
+    [[nodiscard]] uart::rx_stream<Inst, RxRoute> rx_ring(
+        dma::ring_storage<std::uint8_t, N>& storage) const
+        requires(!std::is_void_v<RxRoute>) && rx_stream_capable<Inst, RxRoute>
+    {
+        return uart::rx_stream<Inst, RxRoute>(storage);
+    }
+
+    // The explicit-route overload — the documented escape hatch for
+    // hand-wired projects (design §1): same stream, on a route the caller
+    // spelled out instead of the board's assignment.
+    template <class Route, std::size_t N>
+    [[nodiscard]] uart::rx_stream<Inst, Route> rx_ring(
+        Route, dma::ring_storage<std::uint8_t, N>& storage) const
+        requires rx_stream_capable<Inst, Route>
+    {
+        return uart::rx_stream<Inst, Route>(storage);
+    }
+
 private:
     template <class, class, class, class, class...>
     friend struct bind;
@@ -256,6 +423,11 @@ struct bind {
     static constexpr bool has_de = detail::has_de<Extra...>;
     using de_pin = typename detail::de_pin_of<Extra...>::type;
 
+    //: The board's `<role>.rx` DMA assignment (a generated alloy::dma::route,
+    //: attached via the rx_dma<> tag), or void when the board assigns none —
+    //: what gates handle::rx_ring() at compile time.
+    using rx_route = typename detail::rx_route_of<Extra...>::type;
+
     static_assert(routes::routable<tx_pin, Inst, signal::tx>,
                   "TX pin has no route to this UART on the selected chip "
                   "(check the chip's route table in alloy-devices)");
@@ -294,9 +466,9 @@ struct bind {
     // both default — so `open({.baud = ...})` is unchanged, which is why this
     // is an additive MINOR and not a migration.
     template <opts Opts = {}>
-    static handle<Inst> open(config c = {}) {
-        using tx_route = routes::route<tx_pin, Inst, signal::tx>;
-        using rx_route = routes::route<rx_pin, Inst, signal::rx>;
+    static handle<Inst, rx_route> open(config c = {}) {
+        using tx_pin_route = routes::route<tx_pin, Inst, signal::tx>;
+        using rx_pin_route = routes::route<rx_pin, Inst, signal::rx>;
 
         // WHO OWNS THE INSTANCE — per instance and cross-TU, where the old
         // `detail_opened` was per BINDER TYPE. Two bind<>s naming one
@@ -311,14 +483,14 @@ struct bind {
             detail_opts = &detail::opts_tag<Opts>;
         }
 
-        hal::pin_impl<tx_pin>::make_af(mux_value<tx_route>());
-        hal::pin_impl<rx_pin>::make_af(mux_value<rx_route>());
+        hal::pin_impl<tx_pin>::make_af(mux_value<tx_pin_route>());
+        hal::pin_impl<rx_pin>::make_af(mux_value<rx_pin_route>());
         if constexpr (has_de) {
             using de_route = routes::route<de_pin, Inst, signal::rts>;
             hal::pin_impl<de_pin>::make_af(mux_value<de_route>());
         }
         hal::uart_impl<Inst>::template enable<Opts, has_de>(kernel_hz(), c);
-        return handle<Inst>{};
+        return handle<Inst, rx_route>{};
     }
 
     // Reprogram the full line shape on a RUNNING port — the RS-485/multidrop
@@ -377,7 +549,7 @@ struct bind {
     // that conflict is now a compile error naming the member.
     template <alloy::frequency Baud, std::uint32_t TolPermille = 20,
               opts Opts = {}>
-    static handle<Inst> open_checked(frame f = {})
+    static handle<Inst, rx_route> open_checked(frame f = {})
         requires requires { hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz()); }
     {
         static_assert(Baud.hz() != 0u,

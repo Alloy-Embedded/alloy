@@ -177,6 +177,75 @@ struct st_usart_v4_body {
     [[nodiscard]] static std::uintptr_t tdr_addr() {
         return reinterpret_cast<std::uintptr_t>(&r().TDR);
     }
+
+    // --- RX via DMA + the IDLE line event (design §2.2's read side). DMAR
+    // reroutes the RXNE request to the DMA fabric instead of the RXNE
+    // interrupt; the caller arms the CHANNEL first, then calls dma_rx_begin()
+    // — a request raised before the channel is armed is a byte the ring never
+    // sees. Teardown is the reverse and it is the §4 order: dma_rx_end() stops
+    // the request stream BEFORE the channel stops (the facade's destructor
+    // sequence encodes it). ---
+    static void dma_rx_begin() {
+        // A set ORE freezes reception on this IP (the same wedge rx_isr
+        // clears): entering DMA mode with it set would stall the request
+        // stream before the first byte moved.
+        if (IP::ore.read(r()) != 0u) {
+            r().ICR = IP::orecf.mask;
+        }
+        IP::dmar.set(r());
+    }
+
+    static void dma_rx_end() { IP::dmar.clear(r()); }
+
+    [[nodiscard]] static std::uintptr_t rdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().RDR);
+    }
+
+    // --- The IDLE event: one interrupt per FRAME GAP (first idle bit time
+    // after a byte), not one per byte — the wake that lets a Modbus consumer
+    // sleep through a whole frame's worth of DMA'd bytes and read the ring
+    // once (design §2.2's t3.5 story; the precise gap arithmetic stays the
+    // protocol's, via uptime_us — IDLE fires at ONE character time).
+    //
+    // Same shared-line contract as rx_isr: return untouched unless our flag is
+    // up, then clear it (level-triggered) and hand off. NO POLLED idle
+    // ACCESSOR EXISTS — the ISR consumes the flag, so the first polled
+    // consumer owes the latch and its witness (the half<Ch>() precedent in
+    // st_dma_v1_body.hpp / test_st_dma_v1_latch.cpp), not a bare read. ---
+    inline static void (*idle_fn)(void*) = nullptr;
+    inline static void* idle_ctx = nullptr;
+
+    static void idle_isr(void*) {
+        if (IP::idle.read(r()) == 0u) {
+            return;
+        }
+        r().ICR = IP::idlecf.mask;
+        if (idle_fn != nullptr) {
+            idle_fn(idle_ctx);
+        }
+    }
+
+    // fn == nullptr is a legitimate registration: the interrupt STILL fires
+    // and wakes a WFI/WFE sleeper (that wake IS anchor 2.2's mechanism); the
+    // ISR clears the flag so the line does not re-fire forever.
+    static void enable_idle_irq(void (*fn)(void*), void* ctx) {
+        idle_fn = fn;
+        idle_ctx = ctx;
+        // Clear a stale IDLE first: the flag sets whenever the line has been
+        // idle since the last byte — armed mid-silence it would fire
+        // immediately and report a gap nobody waited through.
+        r().ICR = IP::idlecf.mask;
+        alloy::irq::attach(Inst::irq, &idle_isr);
+        IP::idleie.set(r());
+        alloy::irq::enable(Inst::irq);
+    }
+
+    static void disable_idle_irq() {
+        IP::idleie.clear(r());
+        alloy::irq::detach(Inst::irq, &idle_isr);
+        idle_fn = nullptr;
+        idle_ctx = nullptr;
+    }
 };
 
 }  // namespace alloy::hal::detail
