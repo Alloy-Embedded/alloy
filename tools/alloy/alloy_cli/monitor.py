@@ -47,11 +47,18 @@ def _open_port(board: dict[str, Any]) -> tuple[Any, str, int]:
     return port, port_name, baud
 
 
-def monitor(board: dict[str, Any]) -> None:
+def monitor(board: dict[str, Any], bus_model: dict[str, Any] | None = None) -> None:
     import serial  # noqa: PLC0415
+
+    from .bus_decode import format_message, frame_scanner  # noqa: PLC0415
 
     port, port_name, baud = _open_port(board)
     probe = board.get("probe") or {}
+    # When the project declares a wire contract, bus datagrams on this link
+    # are decoded into readable lines instead of printing as binary confetti
+    # between the log lines. Bytes that are not a complete, CRC-valid frame
+    # pass through untouched, so no log text is ever eaten by a false frame.
+    scanner = frame_scanner(bus_model) if bus_model is not None else None
     # pyserial asserts DTR/RTS on open; on FT2232H auto-download circuits
     # (ESP32 boards) an asserted RTS holds the chip in reset — release both.
     # But do this ONLY for those USB-UART bridges: on an EDBG/CMSIS-DAP CDC
@@ -71,9 +78,19 @@ def monitor(board: dict[str, Any]) -> None:
             except (OSError, serial.SerialException):
                 stop.set()
                 break
+            if not data:
+                continue
+            if scanner is not None:
+                data, msgs = scanner.feed(data)
+                # One stream, one write path: mixing sys.stdout with
+                # sys.stdout.buffer here would interleave by flush order,
+                # not by arrival, and scramble the log.
+                for m in msgs:
+                    sys.stdout.buffer.write(
+                        (format_message(m) + "\r\n").encode("utf-8", "replace"))
             if data:
                 sys.stdout.buffer.write(data)
-                sys.stdout.buffer.flush()
+            sys.stdout.buffer.flush()
 
     t = threading.Thread(target=reader, daemon=True)
     t.start()
@@ -82,6 +99,11 @@ def monitor(board: dict[str, Any]) -> None:
     finally:
         stop.set()
         t.join(timeout=1.0)
+        if scanner is not None:
+            held = scanner.flush()  # a held partial frame was text after all
+            if held:
+                sys.stdout.buffer.write(held)
+                sys.stdout.buffer.flush()
         port.close()
         print("\nmonitor: closed")
 
@@ -123,7 +145,8 @@ def _forward_keys(port: Any, stop: threading.Event) -> None:
 
 # ---------------------------------------------------------------- NDJSON mode
 
-def monitor_ndjson(board: dict[str, Any]) -> None:
+def monitor_ndjson(board: dict[str, Any],
+                   bus_model: dict[str, Any] | None = None) -> None:
     """The same serial link, as one JSON object per line on stdout.
 
     The interactive monitor puts the terminal in cbreak mode to forward
@@ -133,20 +156,29 @@ def monitor_ndjson(board: dict[str, Any]) -> None:
 
     Timestamps are milliseconds since the link opened, not wall clock — what a
     reader wants from a device log is the interval between lines.
+
+    With a bus model, decoded datagrams arrive on the SAME stream as
+    {"t": …, "bus": {…}} — same timeline, so a panel can show a message
+    beside the log line that preceded it. The decode happens here, never in
+    the editor: the IDE renders what the CLI already understood.
     """
     import json  # noqa: PLC0415
     import time  # noqa: PLC0415
 
     import serial  # noqa: PLC0415
 
+    from .bus_decode import frame_scanner  # noqa: PLC0415
+
     port, port_name, baud = _open_port(board)
     started = time.monotonic()
+    scanner = frame_scanner(bus_model) if bus_model is not None else None
 
     def emit(obj: dict[str, Any]) -> None:
         sys.stdout.write(json.dumps(obj) + "\n")
         sys.stdout.flush()
 
-    emit({"event": "open", "port": port_name, "baud": baud})
+    emit({"event": "open", "port": port_name, "baud": baud,
+          "bus_decode": scanner is not None})
     stop = threading.Event()
 
     def writer() -> None:
@@ -176,6 +208,11 @@ def monitor_ndjson(board: dict[str, Any]) -> None:
                 break
             if not data:
                 continue
+            if scanner is not None:
+                data, msgs = scanner.feed(data)
+                for m in msgs:
+                    emit({"t": round((time.monotonic() - started) * 1000),
+                          "bus": m})
             pending.extend(data)
             while b"\n" in pending:
                 raw, _, rest = pending.partition(b"\n")
@@ -184,6 +221,11 @@ def monitor_ndjson(board: dict[str, Any]) -> None:
                       "line": raw.rstrip(b"\r").decode("utf-8", "replace")})
     finally:
         stop.set()
+        if scanner is not None:
+            # Bytes held as a possible frame that never completed are text
+            # after all — releasing them is what keeps a trailing prompt from
+            # disappearing into the scanner.
+            pending.extend(scanner.flush())
         if pending:
             # Do not swallow a device that printed a prompt with no newline.
             emit({"t": round((time.monotonic() - started) * 1000),

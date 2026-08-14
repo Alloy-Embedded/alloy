@@ -73,6 +73,25 @@ struct other_wire {
 
 constexpr kitchen sample{0x7E, -5, 0x7E7E, -1234, 0x11223344u, -56789, 3.25f, true};
 
+// The binding behind the cross-language golden below (kept beside the others
+// because a local struct may not carry static data members).
+struct ping {
+    std::uint32_t token;
+};
+
+struct ping_wire {
+    using message = ping;
+    static constexpr std::uint16_t id = 0x0301;
+    static constexpr std::uint8_t ver = 1;
+    static constexpr std::size_t size = 4;
+    static void encode(const ping& m, std::uint8_t* out) noexcept {
+        alloy::byteorder::store_le32(&out[0], m.token);
+    }
+    static ping decode(const std::uint8_t* in) noexcept {
+        return {alloy::byteorder::load_le32(&in[0])};
+    }
+};
+
 // Feed a whole buffer; return how many complete frames came out, leaving the
 // last frame's view in the receiver's accessors.
 template <std::size_t N>
@@ -117,6 +136,26 @@ ALLOY_TEST(bus_wire_round_trips_every_field_type) {
 
     // The wrong binding refuses the view instead of misreading it.
     ALLOY_CHECK(!bus::decode_as<other_wire>(v, out));
+}
+
+ALLOY_TEST(bus_wire_golden_frame_is_byte_exact) {
+    // THE CROSS-LANGUAGE ANCHOR. These 16 bytes are the whole frame for
+    // ping{token = 0xCAFE0001}, seq 3, id 0x0301, ver 1 — and the SAME
+    // literal is pinned in tools/alloy/tests/test_bus_decode.py, which
+    // decodes it with an independently written CRC-32. Firmware encoder and
+    // host decoder therefore cannot drift apart silently: changing either
+    // side's bytes fails the other side's suite.
+    static constexpr std::uint8_t golden[] = {
+        0x7E, 0x01, 0x03, 0x07, 0x00, 0x01, 0x03, 0x01,
+        0x01, 0x00, 0xFE, 0xCA, 0xB4, 0x68, 0xEE, 0x71,
+    };
+
+    std::uint8_t frame[32];
+    const std::size_t n = bus::encode_datagram<ping_wire>(ping{0xCAFE0001u}, 3, frame);
+    ALLOY_CHECK_EQ(n, sizeof golden);
+    for (std::size_t i = 0; i < sizeof golden; ++i) {
+        ALLOY_CHECK_EQ(frame[i], golden[i]);
+    }
 }
 
 ALLOY_TEST(bus_wire_encode_refuses_a_short_buffer) {

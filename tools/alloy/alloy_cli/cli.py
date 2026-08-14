@@ -743,12 +743,31 @@ def cmd_monitor(args: argparse.Namespace) -> int:
 
     project = _project(args)
     board = project.load_board()
+    bus_model = _bus_model(project)
     if getattr(args, "json", False):
         # For an editor: one JSON object per line, and no terminal required.
-        monitor_ndjson(board)
+        monitor_ndjson(board, bus_model)
     else:
-        monitor(board)
+        monitor(board, bus_model)
     return 0
+
+
+def _bus_model(project: Project) -> dict | None:
+    """The project's wire contract, when it has one — so the monitor can name
+    the datagrams it sees. A broken bus.toml must not cost you your log, so a
+    failure here degrades to "no decode" with a note on stderr; `alloy bus
+    validate` is where a bad registry is meant to be diagnosed."""
+    from .bus import load_bus, resolve  # noqa: PLC0415
+    from .emit.common import EmitError  # noqa: PLC0415
+
+    if not (project.root / "bus.toml").is_file():
+        return None
+    try:
+        return resolve(load_bus(project.root))
+    except EmitError as exc:
+        print(f"warning: bus.toml not usable, frames stay raw ({exc})",
+              file=sys.stderr)
+        return None
 
 
 # image_version is a u32 and anti-rollback treats it as a one-way ratchet. The

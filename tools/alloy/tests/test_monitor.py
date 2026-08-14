@@ -50,7 +50,10 @@ def _run(monkeypatch, chunks: list[bytes], stdin: str = "") -> list[dict]:
 
 def test_it_announces_the_link_and_its_close(monkeypatch) -> None:
     events = _run(monkeypatch, [b"hi\n"])
-    assert events[0] == {"event": "open", "port": "/dev/fake", "baud": 115200}
+    # bus_decode tells a panel whether datagrams on this link will arrive
+    # named — false here because this fake project declares no bus.toml.
+    assert events[0] == {"event": "open", "port": "/dev/fake", "baud": 115200,
+                         "bus_decode": False}
     assert events[-1] == {"event": "closed"}
 
 

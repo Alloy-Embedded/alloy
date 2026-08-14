@@ -109,6 +109,36 @@ alloy bus manifest      # alloy.bus_manifest.v1 — feeds the IDE monitor's deco
 Validation runs again at generation: a bad `bus.toml` fails `alloy gen`
 with every problem listed, never the compile.
 
+## Watching the bus
+
+A central bus makes a sniffer nearly free: a `bridge_route` pointed at the
+debug uart taps whichever topics you choose to forward, and the host end
+turns those bytes back into named messages.
+
+```
+alloy monitor
+...
+alloy bus_bridge ready
+[bus] reading  seq=12  centi_c=2543  ok=true
+```
+
+Decoding happens in the CLI, against the same `bus.toml` the firmware
+compiled from — automatically, whenever the project has one. Bytes that are
+not a complete, CRC-valid frame pass through as ordinary log text, so a
+`~` in a log line never costs you the line; and an id the manifest cannot
+name (or a body whose layout disagrees) degrades to hex with a note saying
+what was expected, because a monitor that went blank when the two ends
+disagree would fail at the one moment it matters.
+
+In the VS Code monitor panel the same messages arrive on the same timeline
+as the log, marked apart from printf output. Since fields render as
+`name=value`, numeric telemetry flows into the panel's sparklines with no
+extra plumbing, and the filter box works on messages like any other line.
+
+`alloy bus manifest` remains the machine-readable registry for other tools;
+the panel does not need it, because what reaches the editor is already
+decoded.
+
 ## Costs
 
 Measured numbers — RAM per subscriber, instructions per delivery, bridge

@@ -95,6 +95,22 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   the registry the IDE monitor's frame decode will read). All recorded in
   the stability surface: verb, both envelopes, and the generated header.
 
+  **And the monitor now speaks it.** `alloy monitor` (and `--json`) decodes
+  bus datagrams on the link against the project's own `bus.toml`, so a
+  sniffing `bridge_route` turns binary confetti into
+  `[bus] reading seq=12 centi_c=2543 ok=true`. The decode lives in the CLI,
+  never in the editor — the VS Code panel is handed decoded messages and
+  renders them on the same timeline as the log. Two refusals worth naming:
+  bytes that are not a complete, CRC-valid frame are handed back as log
+  text (a `~` in a log line must not cost you the line, and claiming
+  damaged datagrams would invent evidence the device's own counters are
+  there to provide), and an unknown id or mismatched layout degrades to hex
+  with a note saying what the manifest expected, rather than going blank at
+  the one moment a link disagreement matters. A 16-byte golden frame is
+  pinned in BOTH suites — the firmware encoder's test and the host
+  decoder's, the latter building it with an independently written CRC-32 —
+  so the two ends cannot drift apart silently.
+
 - **`alloy symbols` and a `[budget]` table — proof that the code landed where
   the linker script said.** `size` reports four numbers; they tell you the
   image fits and nothing about placement. `alloy symbols` reads the ELF, sorts
