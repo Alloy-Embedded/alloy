@@ -89,11 +89,12 @@ struct de {
 };
 
 namespace detail {
-// Layer 1's VALUE admission. Compile error when the baud is a constant (which
-// every literal call site is), named trap when it is not — see
-// alloy/core/admit.hpp for why the two lines are spelled here rather than
-// wrapped. `kernel` of zero is the same class of impossible: a port whose
-// clock tree never started cannot divide anything.
+// Layer 1's VALUE admission. The named trap is the guarantee; the compile
+// error is a bonus that fires only when the optimizer propagates the constant
+// (measured matrix in alloy/core/admit.hpp — a debug build does NOT get it).
+// The net that fires at every level is `open_checked<Baud>` below, which puts
+// the value in a template parameter. `kernel` of zero is the same class of
+// impossible: a port whose clock tree never started cannot divide anything.
 inline void admit_baud(std::uint32_t baud, std::uint32_t kernel) {
     const bool ok = baud != 0u && kernel != 0u && baud <= kernel;
     if (__builtin_constant_p(ok) && !ok) {

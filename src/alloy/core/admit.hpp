@@ -10,14 +10,27 @@
 // `open_checked<Baud>` existed and was right, and being opt-in made the
 // DEFAULT the unsafe one. This closes that, in two mechanisms with one rule:
 //
-//   compile time, when the value is a constant — which every literal call
-//   site is. `__builtin_constant_p` plus a function declared with the `error`
-//   attribute: if the impossible branch survives optimization, the call is a
-//   hard error naming this function and, through the inline chain, the
-//   binder and the instance.
+//   compile time, WHEN THE OPTIMIZER PROPAGATES THE CONSTANT — a bonus, not
+//   a promise. This comment used to say "which every literal call site is",
+//   and that was measured false in two directions (arm-none-eabi-g++ 14.2.1,
+//   the bridge/tick reviews):
 //
-//   run time, when it is not. A named trap code in a register (see
+//     one literal call site   -O0 no, -Og no, -O1 varies, -O2 yes, -Os yes
+//     two in one function     -O0 no, -Og no, -O1 no,     -O2 yes, -Os NO
+//
+//   A debug build therefore compiles the impossible value clean and lands in
+//   the trap below. `__builtin_constant_p` plus a function declared with the
+//   `error` attribute: if the impossible branch survives optimization, the
+//   call is a hard error naming this function and, through the inline chain,
+//   the binder and the instance.
+//
+//   run time — THE GUARANTEE. A named trap code in a register (see
 //   alloy/core/claim.hpp, including what that does and does not buy).
+//
+// Where the value can ride a TEMPLATE PARAMETER, that net fires at every
+// optimization level including -fsyntax-only: alloy::uart::open_checked<Baud>
+// and alloy::bridge::open_checked<Config> are that shape, and it is the one
+// to reach for when a check must never depend on inliner heuristics.
 //
 // WHAT IT CHECKS, and this bound is deliberate: only values no divisor can
 // REPRESENT — zero, and rates above the peripheral's own kernel clock. Both
@@ -115,19 +128,6 @@ void adc_watchdog_threshold();
     "than one that receives none")]]
 void can_filter_id();
 
-[[gnu::error(
-    "alloy::wwdt::window_watchdog::start: this window cannot exist on this "
-    "board. Either the deadline is zero, or the early bound is not BELOW the "
-    "deadline (a window that opens after it closes admits no feed at all and "
-    "resets the part on the first one), or the deadline is longer than this "
-    "WWDG can count. That last bound is the board's, not this driver's: a "
-    "window watchdog counts its own bus clock through a fixed /4096 and a "
-    "seven-bit counter, so on a 64 MHz APB it tops out near half a SECOND — "
-    "three orders of magnitude short of the independent watchdog's ~32 s. "
-    "Read `board::window_watchdog.longest` and, if you wanted a long "
-    "backstop, the peripheral you wanted is alloy::wdt (the IWDG)")]]
-void wwdt_window();
-
 // ── The bridge, where an admitted value that is wrong destroys hardware ──
 //
 // Four separate functions rather than one, because these are the four ways a
@@ -175,5 +175,18 @@ void bridge_dead_time_vs_period();
     "alloy::bridge::open: this switching frequency is impossible on this "
     "timer — it is zero, or above the timer's own kernel clock")]]
 void bridge_freq();
+
+[[gnu::error(
+    "alloy::wwdt::window_watchdog::start: this window cannot exist on this "
+    "board. Either the deadline is zero, or the early bound is not BELOW the "
+    "deadline (a window that opens after it closes admits no feed at all and "
+    "resets the part on the first one), or the deadline is longer than this "
+    "WWDG can count. That last bound is the board's, not this driver's: a "
+    "window watchdog counts its own bus clock through a fixed /4096 and a "
+    "seven-bit counter, so on a 64 MHz APB it tops out near half a SECOND — "
+    "three orders of magnitude short of the independent watchdog's ~32 s. "
+    "Read `board::window_watchdog.longest` and, if you wanted a long "
+    "backstop, the peripheral you wanted is alloy::wdt (the IWDG)")]]
+void wwdt_window();
 
 }  // namespace alloy::core::admit

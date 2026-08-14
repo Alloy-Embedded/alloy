@@ -69,10 +69,11 @@ struct config {};
 using watchdog_config = hal::adc_watchdog_config;
 
 namespace detail {
-// Same two mechanisms as alloy/core/admit.hpp's other four: a hard compile
-// error when the value is a constant (every literal call site), a named trap
-// when it is not. Spelled out here rather than behind a helper for the reason
-// admit.hpp gives — a wrapper folds on GCC and not on clang.
+// Same two mechanisms as alloy/core/admit.hpp's other four: the named trap is
+// the guarantee, and the compile error is a bonus that fires only when the
+// optimizer propagates the constant (measured matrix in admit.hpp — a debug
+// build does not get it). Spelled out here rather than behind a helper for
+// the reason admit.hpp gives — a wrapper folds on GCC and not on clang.
 inline void admit_window(std::uint16_t low, std::uint16_t high) {
     const bool ok = low <= high;
     if (__builtin_constant_p(ok) && !ok) {

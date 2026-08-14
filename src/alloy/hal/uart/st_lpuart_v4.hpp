@@ -113,10 +113,12 @@ struct uart_impl<Inst> : detail::st_usart_v4_body<Inst, uart_impl<Inst>> {
     // Does a divisor EXIST? This is the check the LPUART needs and a USART
     // does not: outside [3x, 4096x] of the baud rate there is no BRR value at
     // all, so `open({.baud = 9'600})` on a 64 MHz kernel is not an inaccurate
-    // port, it is a port that would run at some unrelated rate. Compile error
-    // when the numbers are constants — which every literal call site makes
-    // them, since kernel_hz comes from the board's clock profile — and a named
-    // trap when they are not. Same two-mechanism shape as
+    // port, it is a port that would run at some unrelated rate. The named trap
+    // is the guarantee; the compile error is a bonus that fires only when the
+    // optimizer propagates the constant (measured matrix in admit.hpp — debug
+    // builds do not get it). `open_checked<Baud>` is the net that always
+    // fires, and its LPUART boundary is proven exact (15625 refused, 15626
+    // accepted at 64 MHz). Same two-mechanism shape as
     // alloy::core::admit::uart_baud(); see admit.hpp for why the two lines are
     // spelled at the call site instead of wrapped.
     static void admit_rate(std::uint32_t kernel_hz, std::uint32_t baud) {

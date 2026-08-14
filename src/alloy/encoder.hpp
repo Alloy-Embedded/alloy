@@ -68,9 +68,11 @@ struct b {
 
 namespace detail {
 
-// Layer 1's VALUE admission — see alloy/core/admit.hpp. Compile error when
-// the period is a constant (which every literal call site is), named trap
-// when it is not.
+// Layer 1's VALUE admission — see alloy/core/admit.hpp. The named trap is the
+// guarantee; the compile error is a bonus that fires only when the optimizer
+// propagates the constant (measured matrix there — debug builds do not get
+// it). No open_checked<> shape exists for the encoder yet; if this admission
+// ever needs to fire reliably at compile time, that is the shape to add.
 //
 // THREE WAYS A MODULO IS IMPOSSIBLE, and only the third is about silicon:
 //   0 and 1  the driver programs ARR = period - 1, so a period of 0 wraps
