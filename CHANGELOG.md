@@ -14,6 +14,26 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams phase 3 — the F4/F7 anchors run.** The same portable
+  `modbus_rtu_server` and `async_io` binaries that carry anchors 2.2/2.3 on
+  the G0 now open on `nucleo_f722ze`/`nucleo_f767zi` from nothing but the
+  boards' `debug_uart.rx/tx` assignments, and both anchors are proven under
+  Renode (modbus DMA ring with every G0 assertion unchanged; the route-claimed
+  TX with the interrupt-woken `resumes=2`; a DMAR negative control that fails
+  red, not hung). Two driver gaps the promise turned out to need, fixed
+  generically: `st_usart_v3` (F7/L4) now inherits the same witnessed
+  RX-DMA/IDLE body the v4 family runs (`tests/test_st_usart_v4_idle.cpp`
+  keeps covering it), and `uart.write_dma()` sources its request id from the
+  binder's matched `<role>.tx` route where no chip-wide `dmareq_tx` can exist
+  (stream engines: CHSEL is a per-stream fact of the matched triple). The
+  platform emitter grew the stream-engine block: every curated `st/dma_v2`
+  controller with one NVIC line per stream from chip `irq_lines`, the
+  0-based RX request wire, and a generated Renode model (`DMA_V2_CS`) that
+  keeps the stock `DMA.STM32DMA` behaviours and adds the two it measurably
+  lacks — CIRC reload and the HTIF half event — with CHSEL routing honestly
+  labelled unwitnessable-by-construction. CI gains three experimental-first
+  legs (modbus on both F7s, async_io on the F767ZI).
+
 - **`libs/bus` — typed zero-heap pub/sub for the slow plane.** The topic is
   the C++ type: `publish(temp_reading{...})` reaches every live
   `subscriber<temp_reading>` (intrusive per-type list walked under the irq
