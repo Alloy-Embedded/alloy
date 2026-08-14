@@ -1,0 +1,15 @@
+[lib]
+name = "meter"
+version = "0.1.0"
+description = "AC metering — RMS, real power as the mean of the instantaneous product, apparent power, power factor and int64 energy, single pass with no buffers"
+category = "control"
+license = "MIT"
+homepage = "https://en.wikipedia.org/wiki/AC_power"
+
+[requires]
+concepts = []
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

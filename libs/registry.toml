@@ -28,6 +28,13 @@ summary = "Maxim DS3231 high-accuracy real-time clock (I2C)"
 concepts = ["I2cBus"]
 source = "path:libs/ds3231"
 
+[meter]
+version = "0.1.0"
+category = "control"
+summary = "AC metering — RMS, real power as the mean of the instantaneous product, apparent power, power factor and int64 energy, single pass with no buffers"
+concepts = []
+source = "path:libs/meter"
+
 [modbus]
 version = "0.5.0"
 category = "protocol"
