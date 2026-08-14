@@ -52,7 +52,9 @@
     }
   },
   "dma": {
-    "adc.conv": {"controller": "dma1", "channel": 1}
+    "adc.conv": {"controller": "dma1", "channel": 1},
+    "debug_uart.rx": {"controller": "dma1", "channel": 2},
+    "debug_uart.tx": {"controller": "dma1", "channel": 3}
   },
   "probe": {
     "kind": "stlink",

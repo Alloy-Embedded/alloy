@@ -258,11 +258,35 @@ def test_the_shipped_g0_boards_route_the_adc_ring(board_id: str) -> None:
 
     board = json.loads(
         (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
-    assert board["dma"] == {"adc.conv": {"controller": "dma1", "channel": 1}}
+    assert board["dma"]["adc.conv"] == {"controller": "dma1", "channel": 1}
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
     assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 1, "
             "/*request=*/5> adc_conv{};") in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb"])
+def test_the_shipped_g0_boards_route_the_debug_uart(board_id: str) -> None:
+    """The phase-2 anchors (doc §2.2/§2.3) start here: both curated G0 boards
+    assign debug_uart.rx/tx to dma1 channels 2/3 (the doc §1 example split;
+    adc.conv holds channel 1), and the emitted routes carry requests 52/53 —
+    the RM0444 DMAMUX ids for USART2_RX/TX, stated by dmamux_v1.yaml and each
+    chip's usart2 `dma_requests`, absent from board.json."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assert board["dma"]["debug_uart.rx"] == {"controller": "dma1", "channel": 2}
+    assert board["dma"]["debug_uart.tx"] == {"controller": "dma1", "channel": 3}
+    assert board["roles"]["debug_uart"]["peripheral"] == "usart2"
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 2, "
+            "/*request=*/52> debug_uart_rx{};") in out
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 3, "
+            "/*request=*/53> debug_uart_tx{};") in out
 
 
 @skip_no_devices
