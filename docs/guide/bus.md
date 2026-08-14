@@ -139,6 +139,21 @@ extra plumbing, and the filter box works on messages like any other line.
 the panel does not need it, because what reaches the editor is already
 decoded.
 
+## What it costs on a real wire
+
+`examples/bus_bridge` on a SAME70 Xplained at 115200, over the portable
+floor (byte-at-a-time polling, no DMA): a round trip through the bus is
+reliable at **one message every 3 ms**, roughly 330/s — comfortably inside
+the slow plane. Beyond that the UART overruns, because the loop is software
+half-duplex: while it spins a pong out it is not reading.
+
+What matters is that the library says so rather than hiding it. Twenty
+messages sent back to back produced `bad_frames=0 tx_missed=0` — nothing
+corrupted, nothing dropped internally — and `lost=12`, the seq gaps
+catching every message the UART lost before it was ever a frame. Print
+those counters in any bridge you ship; the example does, and it is the
+difference between diagnosing a link in seconds and guessing at it.
+
 ## Costs
 
 Measured numbers — RAM per subscriber, instructions per delivery, bridge

@@ -51,6 +51,18 @@ bus::bridge_route<messages::pong_wire> pong_route{uplink};
 // from this image or across the wire is invisible here, which is the point.
 bus::subscriber<messages::ping, 4> pings;
 
+void put_u32(auto& uart, std::uint32_t v) {
+    char buf[10];
+    int n = 0;
+    do {
+        buf[n++] = static_cast<char>('0' + (v % 10u));
+        v /= 10u;
+    } while (v != 0);
+    while (n-- > 0) {
+        uart.write(static_cast<std::uint8_t>(buf[n]));
+    }
+}
+
 }  // namespace
 
 int main() {
@@ -60,13 +72,32 @@ int main() {
 
     std::uint32_t served = 0;
     std::uint8_t staging[bus::wire_max_frame];
+    // Link health. The library counts every failure mode it has; an example
+    // that never showed them would leave a real link's first bad day a
+    // mystery — and on silicon there IS one, because this polled floor is
+    // software half-duplex: while the loop spins a pong out (20 B ≈ 1.7 ms
+    // at 115200) it is not reading, and the UART holds one byte. A peer that
+    // streams messages faster than that overruns it, and these counters are
+    // how you find out instead of guessing.
+    std::uint32_t last_bad = 0, last_lost = 0, last_missed = 0, last_txm = 0;
+    std::uint32_t quiet_since = 0;
     for (;;) {
         // Feed the link whatever the uart has (byte-at-a-time ByteStream
         // floor; a DMA board would hand readable() spans instead).
         std::uint8_t b = 0;
+        bool got = false;
         while (uart.read(b)) {
             (void)uplink.on_bytes({&b, 1}, alloy::uptime_us());
+            got = true;
         }
+        if (got) {
+            quiet_since = alloy::uptime_ms();
+        }
+        // Housekeeping: abandon a half frame from a peer that died mid-send.
+        // feed() applies the same rule on arrival, so skipping this only
+        // matters when NO further byte ever comes — which is exactly the
+        // case a link watchdog cares about.
+        uplink.tick(alloy::uptime_us());
 
         // The service: consume pings FROM THE BUS, answer INTO THE BUS.
         messages::ping p{};
@@ -84,6 +115,34 @@ int main() {
             for (const std::uint8_t out : frame) {
                 uart.write(out);
             }
+        }
+
+        // Report the witnesses only when one MOVES, and only after the line
+        // has been quiet for a moment: printing costs airtime on this same
+        // wire, so doing it mid-burst would worsen the very overrun it
+        // reports.
+        const std::uint32_t bad = uplink.rx_bad_frames();
+        const std::uint32_t lost = uplink.rx_lost();
+        const std::uint32_t missed = pings.missed();
+        const std::uint32_t txm = uplink.tx_missed();
+        const bool moved = bad != last_bad || lost != last_lost
+                           || missed != last_missed || txm != last_txm;
+        if (moved && uplink.tx_empty() && alloy::uptime_ms() - quiet_since > 200) {
+            last_bad = bad;
+            last_lost = lost;
+            last_missed = missed;
+            last_txm = txm;
+            uart.write("bus: served=");
+            put_u32(uart, served);
+            uart.write(" bad_frames=");
+            put_u32(uart, bad);
+            uart.write(" lost=");
+            put_u32(uart, lost);
+            uart.write(" sub_missed=");
+            put_u32(uart, missed);
+            uart.write(" tx_missed=");
+            put_u32(uart, txm);
+            uart.write("\r\n");
         }
     }
 }

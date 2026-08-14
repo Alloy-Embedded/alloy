@@ -137,6 +137,34 @@ const auto frame = link.tx_take(staging);   // staging: caller's DMA-visible RAM
 link.on_bytes(bytes, alloy::uptime_us());
 ```
 
+### What the wire costs, measured on silicon
+
+On a SAME70 Xplained at 115200 running `examples/bus_bridge` (the portable
+floor: byte-at-a-time `ByteStream` polling, no DMA), a ping→pong round trip
+through the bus is reliable at **one message every 3 ms** — about 330/s,
+comfortably inside the slow plane this library is for. Push harder and the
+messages start disappearing, and the reason is the transport, not the bus:
+the loop is software half-duplex, so while it spins a 20-byte pong out
+(~1.7 ms of airtime) it is not reading, and the UART holds one byte.
+
+The counters say so precisely. Twenty messages sent back to back:
+
+```
+bus: served=7 bad_frames=0 lost=12 sub_missed=0 tx_missed=0
+```
+
+`bad_frames=0` and `tx_missed=0`: the library corrupted nothing and dropped
+nothing of its own. `lost=12`: the seq gaps caught every message the UART
+overran, before it was ever a frame. That is the whole point of witnesses
+over repairs — the failure is named where it happened, and no layer
+pretends it did not.
+
+A board whose `debug_uart.rx` has a DMA route lifts this ceiling: the ring
+receives while the CPU transmits. That path is the bridge's, not the
+example's, and it is not measured here yet.
+
+### The rest of the contract
+
 The ring accepts a frame whole or not at all (`tx_missed()` is the witness);
 unknown ids (`rx_unknown()`) and stale layouts (`rx_dropped()`) are counted,
 never guessed at. Dropped-at-source frames still consume seq, so the peer's
