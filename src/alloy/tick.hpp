@@ -48,10 +48,33 @@ struct config {
 namespace detail {
 
 // Layer 1's VALUE admission — see alloy/core/admit.hpp. A rate the kernel
-// clock cannot divide down to is a compile error at every literal call site
-// and a named trap otherwise. BOTH ENDS ARE REAL and neither is exotic on a
-// 64 MHz G0: 100 MHz is above the clock, and 0.9 Hz needs more than the
-// 2^32 of division two 16-bit registers hold.
+// clock cannot divide down to is a NAMED TRAP, always, plus a compile error
+// when the optimizer has already folded the value.
+//
+// BOTH ENDS ARE REAL and neither is exotic on a 64 MHz G0: 100 MHz is above
+// the clock, and 0.9 Hz needs more than the 2^32 of division two 16-bit
+// registers hold.
+//
+// THE COMPILE ERROR IS A BONUS, NOT A PROMISE, and this comment used to claim
+// otherwise — "a compile error at every literal call site". Measured on
+// arm-none-eabi-g++ 14.2.1 with examples/tick's own flags, on the G0B1RE:
+//
+//   one literal call site   -O0 no, -Og no, -O1 yes, -O2 yes, -Os yes
+//   two in one function     -O0 no, -Og no, -O1 no,  -O2 yes, -Os NO
+//
+// So a debug build of a tick at an impossible rate compiles clean, and at -Os
+// a second call site in the same function is enough to lose the diagnostic
+// again. That is a property of __builtin_constant_p, not of this facade:
+// alloy::bridge measured the identical two gaps and answered them with
+// `open_checked<Config>()`, whose checks are static_asserts on a template
+// parameter and therefore fire under -fsyntax-only at every -O level.
+//
+// alloy::tick has NOT been given that treatment, deliberately: the bridge got
+// it because a missing dead time destroys the hardware on the first switching
+// edge, and a tick at the wrong rate is a tick at the wrong rate, caught by
+// the trap on the first call. If that trade ever stops being the right one,
+// the shape to copy is bridge::bind::open_checked and the acceptance cases in
+// scripts/check_compile_errors.py. Until then the guarantee here is the trap.
 template <class Inst>
 inline void admit_hz(std::uint32_t hz, std::uint32_t kernel_hz) {
     const bool ok = alloy::hal::tick_impl<Inst>::representable(kernel_hz, hz);

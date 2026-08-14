@@ -220,9 +220,22 @@ template <class... Ps>
     return true;
 }
 
-// Layer 1's VALUE admission — see alloy/core/admit.hpp. Compile error when
-// the value is a constant (which every literal call site is), named trap when
-// it is not.
+// Layer 1's VALUE admission for the open(config) path — see
+// alloy/core/admit.hpp.
+//
+// THE UNCONDITIONAL HALF IS THE TRAP, and the [[gnu::error]] above it is a
+// bonus that arrives only when the optimizer has already folded the value.
+// The top of this file has the measurements; the short version, on
+// arm-none-eabi-g++ 14.2.1 with examples/bridge's own flags, is that a single
+// literal call site fires at -O1/-O2/-O3/-Os and does NOT fire at -O0 or -Og,
+// and that two open() calls in one function defeat it at -Os as well, because
+// neither constant is propagated and __builtin_constant_p is 0 at both sites.
+//
+// This comment used to say "compile error when the value is a constant (which
+// every literal call site is)". A literal call site is not a constant here
+// until an optimizer makes it one, which is the entire reason
+// open_checked<Config>() exists: its five static_asserts are on a template
+// parameter and fire under -fsyntax-only at every -O level. Write that one.
 inline void admit_freq(std::uint32_t freq_hz, std::uint32_t kernel) {
     const bool ok = freq_hz != 0u && kernel != 0u && freq_hz <= kernel;
     if (__builtin_constant_p(ok) && !ok) {
