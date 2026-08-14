@@ -184,14 +184,38 @@ def _dma_class_controllers(chip: dict[str, Any],
 
 def dma_signal_candidates(board: dict[str, Any], chip: dict[str, Any]) -> list[str]:
     """Every 'role.signal' this board could legally assign: a declared role whose
-    bound peripheral advertises the signal under `dma_requests`."""
+    bound peripheral advertises the signal under `dma_requests` (G0-shape) or
+    `dma_routes` (stream-engine shape, F4/F7)."""
     out: list[str] = []
     for role, cfg in (board.get("roles") or {}).items():
         if not isinstance(cfg, dict) or not isinstance(cfg.get("peripheral"), str):
             continue
-        requests = (chip["peripherals"].get(cfg["peripheral"]) or {}).get("dma_requests") or {}
-        out.extend(f"{role}.{signal}" for signal in requests)
+        periph = chip["peripherals"].get(cfg["peripheral"]) or {}
+        signals = set(periph.get("dma_requests") or {})
+        signals.update(periph.get("dma_routes") or {})
+        out.extend(f"{role}.{signal}" for signal in signals)
     return sorted(out)
+
+
+def _stream_triples(chip: dict[str, Any], periph: str,
+                    signal: str) -> list[dict[str, Any]] | None:
+    """The signal's `dma_routes` triples when the bound peripheral is the
+    STREAM-ENGINE shape (F4/F7 dma_v2): each triple is {controller, stream,
+    request}, `stream` is 0-BASED per ST stream numbering (dma_v1's `channel`
+    is 1-based — the phase-1 rename keeps the two nouns distinct on purpose),
+    and the matched triple supplies the request (CHSEL) exactly as
+    `dma_requests` does on G0. None on the G0 shape; `dma_requests` wins if
+    data ever stated both, preserving the phase-1 path."""
+    p = chip["peripherals"].get(periph) or {}
+    if signal in (p.get("dma_requests") or {}):
+        return None
+    return (p.get("dma_routes") or {}).get(signal)
+
+
+def _triple_name(triple: dict[str, Any]) -> str:
+    """One legal alternative, printed the way design §1 promises:
+    "{controller, stream N}"."""
+    return f"{{{triple['controller']}, stream {int(triple['stream'])}}}"
 
 
 def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
@@ -199,14 +223,17 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
     """Every problem in the board's `dma:` map, as
     {key, message, suggestions} — deterministic order, all found in one pass.
 
-    This is the PHASE-1 legality shape: a DMAMUX/free-router family (G0/G4),
-    where the request id is chip-wide so ANY channel of ANY dma-class
-    controller may serve it, and the only inter-assignment rule is collision.
-    EXTENSION POINT (phase 3, stream engines — F4/F7): when the bound
-    peripheral carries `dma_routes` triples instead of a flat `dma_requests`
-    map, the stated (controller, stream) must match one of the signal's
-    triples and the error must list the legal alternatives. That check slots
-    in at the signal-resolution step below; deliberately not half-built here.
+    TWO silicon shapes, decided per signal at the resolution step below:
+
+    - DMAMUX/free-router (G0/G4, `dma_requests`): the request id is chip-wide
+      so ANY channel of ANY dma-class controller may serve it, and the only
+      inter-assignment rule is collision. Channels are 1-BASED (dma_v1).
+    - Stream engine (F4/F7, `dma_routes` — the phase-3 extension this point
+      was marked for): one signal reaches ONLY its triples, so the stated
+      (controller, stream) must match one, the matched triple supplies the
+      request (CHSEL), and a non-match is refused listing every legal
+      "{controller, stream}" (design §1). Streams are 0-BASED per ST stream
+      numbering; the errors say which base they mean, both ways.
     """
     problems: list[dict[str, Any]] = []
     assignments = board.get("dma") or {}
@@ -232,7 +259,8 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
             continue
         periph = cfg["peripheral"]
         requests = (chip["peripherals"].get(periph) or {}).get("dma_requests") or {}
-        if signal not in requests:
+        triples = _stream_triples(chip, periph, signal)
+        if signal not in requests and triples is None:
             role_signals = sorted(c for c in candidates if c.startswith(f"{role_name}."))
             bad(key, f"the chip states no DMA request for {periph} '{signal}'"
                      + ("" if role_signals else
@@ -242,12 +270,50 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
 
         assign = assignments[key]
         if not isinstance(assign, dict):
-            bad(key, 'the assignment must be {"controller": ..., "channel": ...}', [])
+            want = "stream" if triples is not None else "channel"
+            bad(key, f'the assignment must be {{"controller": ..., "{want}": ...}}', [])
             continue
         controller = assign.get("controller")
         if controller not in controllers:
             bad(key, f"'{controller}' is not a DMA controller on this chip",
                 controllers)
+            continue
+
+        if triples is not None:
+            # Stream-engine shape: the board's (controller, stream) must match
+            # one of the chip's triples — refusal prints every legal one.
+            legal = [_triple_name(t) for t in triples]
+            if "channel" in assign and "stream" not in assign:
+                bad(key, f"{periph} '{signal}' rides a stream engine: the key "
+                         f"is 'stream' (0-based, ST stream numbering), not "
+                         f"'channel' (dma_v1's 1-based) — legal: "
+                         + ", ".join(legal), legal)
+                continue
+            stream = assign.get("stream")
+            if isinstance(stream, bool) or not isinstance(stream, int):
+                bad(key, "'stream' must be an integer (0-based, per ST stream "
+                         "numbering)", [])
+                continue
+            if not any(t["controller"] == controller and int(t["stream"]) == stream
+                       for t in triples):
+                bad(key, f"{{{controller}, stream {stream}}} does not reach "
+                         f"{periph} '{signal}' — the chip's dma_routes allow "
+                         f"only: " + ", ".join(legal), legal)
+                continue
+            prev = taken.setdefault((controller, stream), str(key))
+            if prev != str(key):
+                free = [_triple_name(t) for t in triples
+                        if (t["controller"], int(t["stream"])) not in taken]
+                bad(key, f"{controller} stream {stream} already serves "
+                         f"'{prev}' — one stream moves one signal", free)
+            continue
+
+        # G0 shape (dma_requests): any channel of any dma-class controller.
+        if "stream" in assign and "channel" not in assign:
+            bad(key, f"{periph} '{signal}' routes through a free router "
+                     f"(DMAMUX): the key is 'channel' (1-based, dma_v1 "
+                     f"numbering), not 'stream' (the stream engines' 0-based "
+                     f"key)", [])
             continue
         channel = assign.get("channel")
         if isinstance(channel, bool) or not isinstance(channel, int):
@@ -283,9 +349,21 @@ def _dma_route_type(board: dict[str, Any], chip: dict[str, Any],
         return None
     role_name, _, signal = key.partition(".")
     periph = (board.get("roles") or {})[role_name]["peripheral"]
-    request = int(chip["peripherals"][periph]["dma_requests"][signal])
+    triples = _stream_triples(chip, periph, signal)
+    if triples is None:
+        # G0 shape: chip-wide request id, board-chosen channel (1-based).
+        number = int(assign["channel"])
+        request = int(chip["peripherals"][periph]["dma_requests"][signal])
+    else:
+        # Stream engine: the route's number is the 0-BASED STREAM and the
+        # request (CHSEL) comes from the matched dma_routes triple — the
+        # chip's fact, exactly like dma_requests, never the board's.
+        number = int(assign["stream"])
+        request = next(int(t["request"]) for t in triples
+                       if t["controller"] == assign["controller"]
+                       and int(t["stream"]) == number)
     return (f"alloy::dma::route<alloy::dev::{assign['controller']}_t, "
-            f"{int(assign['channel'])}, /*request=*/{request}>")
+            f"{number}, /*request=*/{request}>")
 
 
 def _polarity(active: str) -> str:
@@ -1228,9 +1306,14 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     for key in sorted(board.get("dma") or {}):
         role_name, _, signal = key.partition(".")
         periph = roles[role_name]["peripheral"]
+        # On stream engines the route's number is the 0-BASED STREAM (ST
+        # numbering) and the request is the matched triple's CHSEL — say so
+        # at the constant, where a reader will compare it against the RM.
+        shape = (" (0-based stream, CHSEL from the matched dma_routes triple)"
+                 if _stream_triples(chip, periph, signal) is not None else "")
         route_decls.append(
             f"inline constexpr {_dma_route_type(board, chip, key)} "
-            f"{role_name}_{signal}{{}};  // serves {periph} {signal}"
+            f"{role_name}_{signal}{{}};  // serves {periph} {signal}{shape}"
         )
     if route_decls:
         extra_includes.append("alloy/dma.hpp")
