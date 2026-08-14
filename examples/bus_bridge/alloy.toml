@@ -1,0 +1,8 @@
+[project]
+name = "bus_bridge"
+
+[board]
+id = "nucleo_g071rb"
+
+[libs]
+bus = "0.3.0"

@@ -16,6 +16,8 @@
 //   bus/watch.hpp       watch<T> latest-value cell + watch_route<T>
 //   bus/wire.hpp        the wire boundary — frame codec, RX machine,
 //                       WireBinding (sans-IO; local topics never touch it)
+//   bus/bridge.hpp      bridge<RingBytes> + bridge_route<B> — local topics
+//                       extended over a byte link, encode-at-publish
 //
 // Sizing note for async apps: one publish can wake up to N parked tasks, and
 // the executor's ready queue TRAPS on overflow rather than dropping a wake —
@@ -23,6 +25,7 @@
 
 #pragma once
 
+#include "bus/bridge.hpp"      // IWYU pragma: export
 #include "bus/subscriber.hpp"  // IWYU pragma: export
 #include "bus/topic.hpp"       // IWYU pragma: export
 #include "bus/watch.hpp"       // IWYU pragma: export

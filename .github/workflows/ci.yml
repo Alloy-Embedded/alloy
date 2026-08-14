@@ -387,6 +387,23 @@ jobs:
             robot: modbus_rtu.robot
             banner: alloy modbus_rtu_server ready
             experimental: true
+          # BUS BRIDGE — libs/bus F2: the robot plays the PEER BOARD with an
+          # independent frame implementation in monitor Python (its own
+          # bitwise CRC-32 vs the firmware's bytewise-branchless one — same
+          # spec, separately written). Pings cross the bridge, republish on
+          # the firmware's LOCAL bus, a subscriber-service answers by
+          # publishing a pong whose count only service state can produce —
+          # an echoing firmware cannot pass. Negative cases: a CRC-corrupt
+          # frame and an unknown message id each earn total silence and cost
+          # exactly one frame. Framing is length-driven (no silence windows),
+          # so nothing leans on emulator clock fidelity. `experimental` per
+          # the convention: new board+robot pair — green locally first;
+          # PROMOTE after a few green CI runs.
+          - board: nucleo_g071rb
+            example: bus_bridge
+            robot: bus_bridge.robot
+            banner: alloy bus_bridge ready
+            experimental: true
           # PIN INTERRUPT CONFORMANCE — BLOCKING. The emitted platform now carries
           # real GPIO ports and a real EXTI, so a monitor-injected edge travels the
           # silicon path: pad -> EXTICR port select -> trigger -> pending -> shared
@@ -958,7 +975,7 @@ jobs:
         run: |
           set -u
           failed=()
-          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read adc_stream dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog window_watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read adc_stream dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server bus_bridge irq_echo pin_irq dma_probe net_probe net_echo services watchdog window_watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
             echo "::group::$ex"
             if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
               failed+=("$ex")

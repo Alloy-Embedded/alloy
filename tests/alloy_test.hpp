@@ -21,7 +21,7 @@ namespace alloy::test {
 
 using test_fn = void (*)();
 
-inline constexpr std::size_t max_tests = 512;
+inline constexpr std::size_t max_tests = 1024;
 
 struct registry {
     test_fn fns[max_tests]{};

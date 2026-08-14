@@ -31,6 +31,22 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   construction — and the concurrency story (full-mask walk, SPSC queues,
   `waiter_slot` wake) is written out in `bus/topic.hpp`.
 
+  `bus/bridge.hpp` extends topics over a byte link. The design decision
+  that carries it is ENCODE-AT-PUBLISH: a `bridge_route<B>` hangs a
+  wire-node on the topic, and delivery encodes straight into the link's
+  frame ring — so ONE tx task awaits ONE `tx_pending()` no matter how many
+  routes feed it (no `when_any` needed), and cross-topic order is
+  publication order. Frames enqueue whole or not at all (`tx_missed()`);
+  a message republished from the wire skips wire nodes — it cannot echo
+  back out its own link or hop through a second bridge; single-hop is
+  structure. Witnesses over repairs throughout: `rx_unknown()` (the peer's
+  bus.toml knows ids ours does not), `rx_dropped()` (id matched, layout
+  version did not). The `bus_bridge` example runs the full story on a G0
+  under Renode: the robot peer — an INDEPENDENTLY written CRC-32 and
+  encoder in monitor Python — sends pings that cross the bridge, republish
+  on the local bus, and are answered by a subscriber-service publishing
+  pongs with service-state counts an echoing firmware could not fake.
+
   `bus/wire.hpp` is the sans-IO wire boundary for the inter-board bridge:
   the OTA frame shape (`0x7E | type | seq | len16 | payload | crc32`, no
   escaping, length-driven delimitation — provable with a frozen clock), a

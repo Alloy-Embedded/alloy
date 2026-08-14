@@ -1,7 +1,7 @@
 [lib]
 name = "bus"
-version = "0.2.0"
-description = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells, sans-IO wire codec for inter-board datagrams"
+version = "0.3.0"
+description = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells, and a datagram bridge extending topics over a byte link"
 category = "service"
 license = "MIT"
 

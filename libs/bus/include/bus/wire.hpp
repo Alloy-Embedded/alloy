@@ -54,6 +54,7 @@ inline constexpr std::size_t wire_max_body = 128;
 inline constexpr std::size_t wire_msg_header = 3;  // msg_id u16 LE + ver u8
 inline constexpr std::size_t wire_frame_overhead = 9;
 inline constexpr std::size_t wire_max_payload = wire_msg_header + wire_max_body;
+inline constexpr std::size_t wire_max_frame = wire_frame_overhead + wire_max_payload;
 
 // ID doctrine (the nvm-key rules, verbatim): explicit u16, never
 // auto-assigned, never deleted, never reused. 0x0000 is refused as a

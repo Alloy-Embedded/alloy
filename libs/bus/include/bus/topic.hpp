@@ -85,6 +85,25 @@ struct topic {
     }
 };
 
+// The one walk, two entry points. A locally-published message reaches every
+// node, wire nodes included (that is how it leaves the board). A message a
+// bridge REPUBLISHES FROM THE WIRE skips wire nodes — structural anti-echo:
+// it can never bounce back out this link, nor hop onward through another
+// bridge on the same topic (single-hop is doctrine, not configuration).
+template <class T>
+bool publish_filtered(const T& msg, bool include_wire) noexcept {
+    bool ok = true;
+    const arch::irq_state s = arch::irq_save();
+    for (node* n = topic<T>::head; n != nullptr; n = n->next) {
+        if (n->wire && !include_wire) {
+            continue;
+        }
+        ok = n->deliver(n->owner, &msg) && ok;
+    }
+    arch::irq_restore(s);
+    return ok;
+}
+
 }  // namespace detail
 
 // Publish one message to every live subscriber of T. Safe from thread or ISR
@@ -93,13 +112,7 @@ struct topic {
 // a fire-and-forget call site may ignore the return, the witness remains).
 template <class T>
 bool publish(const T& msg) noexcept {
-    bool ok = true;
-    const arch::irq_state s = arch::irq_save();
-    for (detail::node* n = detail::topic<T>::head; n != nullptr; n = n->next) {
-        ok = n->deliver(n->owner, &msg) && ok;
-    }
-    arch::irq_restore(s);
-    return ok;
+    return detail::publish_filtered(msg, /*include_wire=*/true);
 }
 
 }  // namespace alloy::lib::bus

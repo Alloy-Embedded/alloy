@@ -43,6 +43,7 @@ alloy::lib::bus::watch_route<temp_reading> feed{current};  // topic -> cell
 | `bus/subscriber.hpp` | `subscriber<T, Depth>` — private FIFO, drop-newest counted, `try_next()` or `co_await next()` |
 | `bus/watch.hpp` | `watch<T>` latest-value cell + `watch_route<T>` to feed it from a topic |
 | `bus/wire.hpp` | The wire boundary, sans-IO: frame codec, byte-at-a-time RX machine, `WireBinding` — local topics never touch it |
+| `bus/bridge.hpp` | `bridge<RingBytes>` + `bridge_route<B>` — topics extended over a byte link, encode-at-publish, structural anti-echo |
 
 ## Measured (arm-none-eabi-gcc 14.2.1, `-Os -mcpu=cortex-m0plus`, 8-byte message)
 
@@ -97,6 +98,37 @@ Measured, same toolchain: `wire_receiver<>` is 172 B of RAM (131 B payload
 buffer included); the whole `feed()` machine is 426 B of text plus a 48 B
 shared bytewise CRC-32; `encode_datagram<B>` is ~110 B per binding. Frame
 overhead on the wire: 12 B per datagram (9 frame + 3 message header).
+
+## The bridge (examples/bus_bridge is the two-board story)
+
+One declaration per forwarded message covers both directions:
+
+```cpp
+alloy::lib::bus::bridge<512> link;                       // frames ready to send
+alloy::lib::bus::bridge_route<temp_reading_wire> r{link};  // topic <-> wire
+
+// TX task (or a superloop draining tx_take): ONE await for ALL routes,
+// because delivery ENCODES into the link's ring at publish time —
+// no when_any needed, and cross-topic order is publication order.
+co_await link.tx_pending();
+const auto frame = link.tx_take(staging);   // staging: caller's DMA-visible RAM
+
+// RX feeder: whoever owns the uart hands bytes in; complete datagrams
+// decode through the routes and republish locally, SKIPPING wire nodes —
+// a message cannot echo back out its own link or hop onward (single-hop
+// is structure, not configuration).
+link.on_bytes(bytes, alloy::uptime_us());
+```
+
+The ring accepts a frame whole or not at all (`tx_missed()` is the witness);
+unknown ids (`rx_unknown()`) and stale layouts (`rx_dropped()`) are counted,
+never guessed at. Dropped-at-source frames still consume seq, so the peer's
+`lost()` sees them. Measured, same toolchain: `bridge<512>` is 728 B of RAM
+(512 ring + receiver), a route is 36 B, and the whole bridge machinery
+(send + take + on_bytes + one binding) is ~1.6 KB of text. The complete
+`bus_bridge` example — bridge, two routes, service, superloop — is 4.1 KB of
+text on the G0, and its Renode leg plays a peer with an independently
+written CRC-32 in monitor Python.
 
 ## The rules that carry the design
 
