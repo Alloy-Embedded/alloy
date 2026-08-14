@@ -275,7 +275,7 @@ public:
     }
 
 private:
-    template <class, class>
+    template <class, class, class>
     friend class handle;
 
     template <std::size_t N>
@@ -300,7 +300,16 @@ private:
 // assigned none, which constrains rx_ring(storage) away so a portable
 // program's `requires` probe reports the missing fact at compile time (the
 // adc handle's ConvRoute pattern).
-template <class Inst, class RxRoute = void>
+//
+// TxRoute is the `<role>.tx` twin (tx_dma<> tag), and it is what makes
+// write_dma() exist on a STREAM engine (F4/F7 dma_v2): there the request id
+// (CHSEL) is a per-stream fact of the MATCHED dma_routes triple — usart3 TX
+// on an F7 is request 4 on dma1 stream 3 but request 7 on stream 4 — so no
+// chip-wide `Inst::dmareq_tx` can exist and the route the board matched is
+// the only honest source (design §1: the request follows the matched
+// triple). On the G0 shape both sources exist and are equal by construction
+// (board.py derives the route's request from the chip's `dma_requests`).
+template <class Inst, class RxRoute = void, class TxRoute = void>
 class handle {
 public:
     handle(const handle&) = delete;
@@ -331,15 +340,42 @@ public:
         hal::uart_impl<Inst>::disable_rx_irq();
     }
 
+    // WHERE THE TX REQUEST ID COMES FROM — the one place, so write_dma() and
+    // write_dma_begin() cannot disagree. Two silicon shapes (design §1):
+    //  * DMAMUX/free-router (G0-shape): the id is chip-wide, `Inst::dmareq_tx`
+    //    — any channel may serve it, the phase-2 path, unchanged.
+    //  * Stream engine (F4/F7 dma_v2): the id is CHSEL, a fact of the MATCHED
+    //    dma_routes triple, so it rides the board's tx route (the binder's
+    //    tx_dma<> tag -> TxRoute). Per-stream by nature: claim the route
+    //    (`alloy::dma::claim(Role::tx_route{})`) and pass THAT channel — a
+    //    hand-spelled channel<Dma, N> on a different stream would program
+    //    this CHSEL onto a stream the chip's triples never routed, which is
+    //    exactly the misroute the board-level triple check refuses; on this
+    //    shape the route claim is the only spelling the facade can vouch for.
+    // When both exist (G0 with an assigned tx route) they are equal by
+    // construction — board.py derives the route's request from the chip's
+    // `dma_requests` — and the chip-wide fact is preferred, keeping the
+    // phase-2 escape hatch (explicit channel, no assignment) working.
+    static constexpr std::uint8_t detail_tx_request()
+        requires requires { Inst::dmareq_tx; } || (!std::is_void_v<TxRoute>)
+    {
+        if constexpr (requires { Inst::dmareq_tx; }) {
+            return Inst::dmareq_tx;
+        } else {
+            return TxRoute::request;
+        }
+    }
+
     // Blocking TX of a buffer via a claimed DMA channel: returns once the
     // DMA finished AND the transmitter drained (honest completion). Only
-    // exists where the driver has TX-DMA hooks and the chip data carries
-    // the request ID.
+    // exists where the driver has TX-DMA hooks and a request id exists —
+    // the chip-wide `Inst::dmareq_tx` (G0/DMAMUX shape) or the board's
+    // matched `<role>.tx` route (stream-engine shape; see detail_tx_request).
     template <class Chan>
     [[nodiscard]] bool write_dma(const Chan& dma, std::span<const std::uint8_t> data) const
         requires requires {
             hal::uart_impl<Inst>::dma_tx_begin();
-            Inst::dmareq_tx;
+            detail_tx_request();
         }
     {
         write_dma_begin(dma, data);
@@ -366,11 +402,12 @@ public:
     void write_dma_begin(const Chan& dma, std::span<const std::uint8_t> data) const
         requires requires {
             hal::uart_impl<Inst>::dma_tx_begin();
-            Inst::dmareq_tx;
+            detail_tx_request();
         }
     {
         hal::uart_impl<Inst>::dma_tx_begin();
-        dma.start_m2p_u8(data, hal::uart_impl<Inst>::tdr_addr(), Inst::dmareq_tx);
+        dma.start_m2p_u8(data, hal::uart_impl<Inst>::tdr_addr(),
+                         detail_tx_request());
     }
 
     template <class Chan>
@@ -500,7 +537,7 @@ struct bind {
     // both default — so `open({.baud = ...})` is unchanged, which is why this
     // is an additive MINOR and not a migration.
     template <opts Opts = {}>
-    static handle<Inst, rx_route> open(config c = {}) {
+    static handle<Inst, rx_route, tx_route> open(config c = {}) {
         using tx_pin_route = routes::route<tx_pin, Inst, signal::tx>;
         using rx_pin_route = routes::route<rx_pin, Inst, signal::rx>;
 
@@ -524,7 +561,7 @@ struct bind {
             hal::pin_impl<de_pin>::make_af(mux_value<de_route>());
         }
         hal::uart_impl<Inst>::template enable<Opts, has_de>(kernel_hz(), c);
-        return handle<Inst, rx_route>{};
+        return handle<Inst, rx_route, tx_route>{};
     }
 
     // Reprogram the full line shape on a RUNNING port — the RS-485/multidrop
@@ -583,7 +620,7 @@ struct bind {
     // that conflict is now a compile error naming the member.
     template <alloy::frequency Baud, std::uint32_t TolPermille = 20,
               opts Opts = {}>
-    static handle<Inst, rx_route> open_checked(frame f = {})
+    static handle<Inst, rx_route, tx_route> open_checked(frame f = {})
         requires requires { hal::uart_impl<Inst>::achieved_baud(kernel_hz(), Baud.hz()); }
     {
         static_assert(Baud.hz() != 0u,
