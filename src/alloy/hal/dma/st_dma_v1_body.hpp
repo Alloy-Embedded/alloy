@@ -11,8 +11,22 @@
 // hand-written IP double over a memory-backed register file and exercises the
 // REAL ISR/latch/poll code — which is what makes the latch contract (§4 of
 // docs/design/dma-streams.md) witnessable off-target: test_st_dma_v1_latch.cpp
-// fails if the ISR->poller latch on either the complete or the HALF flag is
-// reverted.
+// fails if the ISR->poller latch on the complete, the HALF or the ERROR flag
+// is reverted.
+//
+// THREE EVENTS, ONE DISCIPLINE. Completion, half and error each have a latch,
+// because complete_isr clears all three kinds of flag and a poller arriving
+// after it has no other source of truth. The error latch is the newest of the
+// three and it changes an ANSWER, not just a timing: `alloy::dma::channel::
+// wait()` ends in `return !error()`, so before the latch a transfer that
+// failed and whose interrupt had run reported success — done() from the
+// completion latch, error() false because the ISR had eaten TEIF. wait() now
+// returns false for that transfer, which is the point: anchor 2.4's
+// `spi.transfer_dma()` returns a bool sourced from it. Nothing that passes
+// today changes: TEIF is only ever raised by real bus/alignment faults, and it
+// is an inert tag in both Renode DMA models (the stock STM32G0DMA and alloy's
+// generated DMA_V2_CS), so no shipped example or emulation leg can reach the
+// branch whose answer flipped.
 //
 // Rules honored (RM0444 §10/§11): CCR/CNDTR/CPAR/CMAR may only be written
 // with EN=0; hardware clears EN ONLY on a transfer error — completion
@@ -95,6 +109,17 @@ struct st_dma_v1_engine {
         static inline void (*half_fn)(void*) = nullptr;
         static inline void* half_ctx = nullptr;
         static inline volatile bool half_latched = false;
+        // THE ERROR gets the latch too, for the same reason and not a weaker
+        // one: complete_isr CLEARS TEIF (it must), and error() used to read
+        // only the live bit — so a transfer that FAILED and whose interrupt
+        // ran reported complete()==true and error()==false, and channel::wait()
+        // (`return !error()`) answered TRUE for a failed transfer. Every caller
+        // that returns a bool sourced from wait() inherited that lie. The ISR
+        // hands the fact over here, exactly like the other two events, and
+        // error() reports latch OR live flag. Witnessed on the host:
+        // test_st_dma_v1_latch.cpp fails if either error-latch line is
+        // reverted.
+        static inline volatile bool err_latched = false;
     };
 
 
@@ -115,6 +140,8 @@ struct st_dma_v1_engine {
         clear_flags<Ch>();
         callback<Ch>::latched = false;  // a new transfer is not already complete
         callback<Ch>::half_latched = false;  // ...nor already half-done
+        callback<Ch>::err_latched = false;   // ...and does not inherit the last
+                                             // transfer's failure
         MUX::ip::dmareq_id.write(mux_ccr<Ch>(), request);
         cpar<Ch>() = static_cast<std::uint32_t>(periph_addr);
         cmar<Ch>() = static_cast<std::uint32_t>(mem_addr);
@@ -156,9 +183,13 @@ struct st_dma_v1_engine {
         return callback<Ch>::latched ||
                (r().ISR & IP::template tcif<Ch - 1>.mask) != 0u;
     }
+    // Either source, like complete() and half(): the latch the ISR set on its
+    // way past, or the live flag for the polled-only case. Transfer-scoped —
+    // setup() clears it, so it reports THIS transfer, never the last one.
     template <unsigned Ch>
     [[nodiscard]] static bool error() {
-        return (r().ISR & IP::template teif<Ch - 1>.mask) != 0u;
+        return callback<Ch>::err_latched ||
+               (r().ISR & IP::template teif<Ch - 1>.mask) != 0u;
     }
 
     // Live remaining-transfer count, in items. In circular mode it reloads to
@@ -203,11 +234,17 @@ struct st_dma_v1_engine {
         }
         r().IFCR = (done ? IP::template ctcif<Ch - 1>.mask : 0u) |
                    (failed ? IP::template cteif<Ch - 1>.mask : 0u);
+        // The error latch is written BEFORE the completion latch and before the
+        // callback runs: a consumer that sees done() must already be able to see
+        // why, and a callback calling error() from interrupt context gets the
+        // truth about the transfer that just ended.
+        if (failed) {
+            callback<Ch>::err_latched = true;
+        }
         callback<Ch>::latched = true;
         if (callback<Ch>::fn != nullptr) {
             // The callback sees a channel whose flags are already cleared, so it
             // may start the next transfer without racing its own completion.
-            (void)failed;
             callback<Ch>::fn(callback<Ch>::ctx);
         }
     }

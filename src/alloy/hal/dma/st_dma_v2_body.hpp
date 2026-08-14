@@ -58,6 +58,18 @@
 // guard and its clear both read the HARDWARE flags and clear ONLY what the
 // handler consumed — a blanket clear would eat the sibling event between the
 // read and the write (the v1 test's wrap-instant case, kept here).
+//
+// THREE EVENTS UNDER THAT ONE DISCIPLINE — completion, half, and ERROR. The
+// error latch is the newest and it changes an ANSWER, not just a timing:
+// `alloy::dma::channel::wait()` ends in `return !error()`, so before the latch
+// a stream that faulted and whose interrupt had run reported success (done()
+// from the completion latch; error() false because complete_isr had already
+// consumed TEIF/DMEIF). wait() now returns false for that stream, which is the
+// point: anchor 2.4's `spi.transfer_dma()` returns a bool sourced from it.
+// Nothing that passes today changes — TEIF/DMEIF are only ever raised by real
+// bus/alignment faults, and both are inert tags in alloy's generated F7 Renode
+// model (DMA_V2_CS) as in the stock G0 one, so no shipped example or emulation
+// leg can reach the branch whose answer flipped.
 
 #pragma once
 
@@ -182,6 +194,13 @@ struct st_dma_v2_engine {
         static inline void (*half_fn)(void*) = nullptr;
         static inline void* half_ctx = nullptr;
         static inline volatile bool half_latched = false;
+        // The error latch, the v1 engine's line for line — and this engine
+        // needs it MORE: complete_isr's clear is WIDER here (TEIF *and* DMEIF),
+        // so without a latch error() went blind to both failure modes the
+        // moment the interrupt ran, and channel::wait() (`return !error()`)
+        // answered TRUE for a stream that had faulted. Set by the ISR, cleared
+        // by setup(), reported by error() alongside the live flags.
+        static inline volatile bool err_latched = false;
     };
 
     // Program one stream (idle after this returns from stop()'s EN poll).
@@ -201,6 +220,8 @@ struct st_dma_v2_engine {
         clear_flags<S>();    // EN set is IGNORED while any of the five flags is up
         callback<S>::latched = false;       // a new transfer is not already complete
         callback<S>::half_latched = false;  // ...nor already half-done
+        callback<S>::err_latched = false;   // ...and does not inherit the last
+                                            // transfer's failure
         // Direct mode, explicitly: a previous owner may have enabled the FIFO.
         IP::dmdis.write(sfcr<S>(), 0u);
         IP::feie.write(sfcr<S>(), 0u);
@@ -260,10 +281,14 @@ struct st_dma_v2_engine {
         return callback<S>::latched ||
                (isr_reg<S>() & flags_of<S>().tc) != 0u;
     }
+    // Either source, like complete() and half(): the latch the ISR set on its
+    // way past, or the live flags for the polled-only case. Transfer-scoped —
+    // setup() clears it, so it reports THIS transfer, never the last one.
     template <unsigned S>
     [[nodiscard]] static bool error() {
         constexpr stream_flags fs = flags_of<S>();
-        return (isr_reg<S>() & (fs.te | fs.dme)) != 0u;
+        return callback<S>::err_latched ||
+               (isr_reg<S>() & (fs.te | fs.dme)) != 0u;
     }
 
     // Live remaining-transfer count, in items. Circular mode reloads it to the
@@ -309,13 +334,21 @@ struct st_dma_v2_engine {
         ifcr_reg<S>() = (done ? fs.ctc : 0u) |
                         ((flags & fs.te) != 0u ? fs.cte : 0u) |
                         ((flags & fs.dme) != 0u ? fs.cdme : 0u);
+        // The error latch is written BEFORE the completion latch and before the
+        // callback runs: a consumer that sees done() must already be able to
+        // see why, and a callback calling error() from interrupt context gets
+        // the truth about the transfer that just ended. ONE latch for both
+        // failure modes — TEIF and DMEIF each mean "this transfer went wrong",
+        // which is exactly what error() has always reported.
+        if (failed) {
+            callback<S>::err_latched = true;
+        }
         callback<S>::latched = true;
         if (callback<S>::fn != nullptr) {
             // The callback sees a stream whose flags are already cleared, so
             // it may program the next transfer without racing its own
             // completion. (In non-circular mode hardware has ALSO dropped EN
             // by now — setup()'s stop-poll falls straight through.)
-            (void)failed;
             callback<S>::fn(callback<S>::ctx);
         }
     }

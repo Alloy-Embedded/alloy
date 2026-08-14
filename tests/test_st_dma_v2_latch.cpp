@@ -21,6 +21,16 @@
 // same for the completion pair. (Verified by doing exactly those reverts
 // locally while writing this file — all four, one at a time.)
 //
+// THE ERROR LATCH gets the same treatment, and one step further: because a
+// missing error latch does not merely lose a fact, it INVERTS an answer, the
+// consequence is witnessed through the SHIPPED caller rather than only through
+// the engine accessor. `st_dma_v2_wait_reports_a_failure_its_own_isr_consumed`
+// runs the real `alloy::dma::channel::wait()` (this file specializes
+// alloy::hal::dma_impl onto the engine, the test_dma_ring.cpp idiom) over a
+// stream that failed and whose interrupt ran, and requires FALSE. Before the
+// error latch that call returned true — done() from the completion latch,
+// error() false because complete_isr had already eaten TEIF/DMEIF.
+//
 // V2-SPECIFIC EDGES pinned here, beyond the v1 shape:
 //  - the half witness runs on stream 5 and completion on stream 6 — HISR/
 //    HIFCR territory, so a driver that only ever consulted the LOW register
@@ -32,7 +42,11 @@
 //    latches reset, EN rises again);
 //  - CHSEL carries the route's request id, and the five-flag clear that
 //    precedes EN (setting EN is IGNORED by hardware while any of the
-//    stream's flags is set) names all five clear bits.
+//    stream's flags is set) names all five clear bits;
+//  - TWO FAILURE MODES behind one error(): TEIF and DMEIF. complete_isr's
+//    clear is correspondingly wider than v1's, so the engine hides one more
+//    mode without the latch — a DIRECT-MODE error (DMEIF alone, no TEIF) is
+//    pinned by its own case here.
 //
 // What this file can NOT witness: EN refusing to fall while a FIFO drains
 // (the memory double clears it at the store), real flag timing out of
@@ -40,9 +54,11 @@
 // legs' claim (the phase-3 model-probe day).
 
 #include <cstdint>
+#include <span>
 
 #include "alloy/core/mmio.hpp"
 #include "alloy/core/types.hpp"
+#include "alloy/dma.hpp"
 #include "alloy/hal/dma/st_dma_v2_body.hpp"
 #include "alloy_test.hpp"
 
@@ -228,6 +244,17 @@ void count_full(void*) { ++g_full_calls; }
 
 }  // namespace
 
+// The engine, wearing the name alloy::dma::channel looks it up under — so the
+// SHIPPED user-facing wait()/done()/error() can be run over the same memory-
+// backed register file (test_dma_ring.cpp's idiom, pointed at the real driver
+// instead of a recording fake). Nothing here overrides behavior: it is the
+// engine, renamed.
+namespace alloy::hal {
+template <class Tag>
+struct dma_impl<fake_dma_v2_inst<Tag>>
+    : alloy::hal::detail::st_dma_v2_engine<fake_dma_v2_inst<Tag>> {};
+}  // namespace alloy::hal
+
 // ── THE WITNESS: ISR-then-poll on the HALF flag, in HISR territory ────────
 
 ALLOY_TEST(st_dma_v2_half_survives_its_own_isr_for_a_late_poller) {
@@ -292,8 +319,136 @@ ALLOY_TEST(st_dma_v2_completion_survives_its_own_isr_for_a_late_poller) {
     ALLOY_CHECK((eng::r().HISR & IP::tcif6.mask) == 0u);
 
     ALLOY_CHECK(eng::complete<6>());  // the latch, or nothing
+    // ...and it succeeded. The control that keeps the error latch honest in
+    // the other direction: a clean completion must never raise error().
+    ALLOY_CHECK(!eng::error<6>());
 
     eng::disable_complete_irq<6>();
+}
+
+// ── THE ERROR TWIN: a failure the ISR consumed is still reportable ────────
+//
+// The defect this pins: complete_isr clears TEIF *and* DMEIF (it must —
+// level-triggered line) and used to discard the fact with `(void)failed;`,
+// while error() read only the live bits. A failed stream therefore reported
+// complete()==true and error()==false to anything that polled after the
+// interrupt — and this engine hid BOTH of its failure modes that way.
+ALLOY_TEST(st_dma_v2_error_survives_its_own_isr_for_a_late_poller) {
+    struct tag {};
+    using eng = engine<tag>;
+    using IP = fake_dma_v2_ip<tag>;
+    g_full_calls = 0;
+
+    // Stream 4: HISR/HIFCR territory again, so a low-pair-only error path
+    // cannot pass this.
+    eng::enable_complete_irq<4>(&count_full, nullptr);
+    eng::setup<4>(eng::dir::mem_to_periph, false, eng::width::b8, eng::width::b8,
+                  0x40u, 0x80u, 8u, 3u);
+    eng::start<4>();
+    ALLOY_CHECK(!eng::error<4>());  // negative control: nothing latched yet
+
+    // Hardware: the stream faults. TEIF4 rises WITHOUT TCIF, and hardware
+    // clears EN itself (RM0431 §9.3.18 — a transfer error disables the stream).
+    eng::r().HISR = eng::r().HISR | IP::teif4.mask;
+    eng::scr<4>() = eng::scr<4>() & ~IP::en.mask();
+    eng::complete_isr<4>(nullptr);
+    // A failure IS a completion-path event: the callback runs (TEIE and DMEIE
+    // rode into SxCR with TCIE) and the transfer is over.
+    ALLOY_CHECK_EQ(g_full_calls, 1);
+    // The ISR consumed the flag — and ONLY that flag: no CTCIF (no completion
+    // to clear) and no CDMEIF (DMEIF was never up). The clear-only-what-you-
+    // consumed rule, on the error side, where this engine's clear is widest.
+    ALLOY_CHECK_EQ(eng::r().HIFCR, IP::cteif4.mask);
+    commit_w1c<tag>();
+    ALLOY_CHECK((eng::r().HISR & IP::teif4.mask) == 0u);
+
+    // THE WITNESS. A poller arriving after the ISR has no hardware flag left to
+    // read — error<4>() must report from the latch. Revert either error-latch
+    // line in st_dma_v2_body.hpp (the `err_latched = true` in complete_isr, or
+    // the `err_latched ||` term in error()) and this check fails.
+    ALLOY_CHECK(eng::error<4>());
+    // And the transfer is finished either way, which is what makes wait() fall
+    // out of its loop and consult error() at all.
+    ALLOY_CHECK(eng::complete<4>());
+
+    eng::disable_complete_irq<4>();
+}
+
+// The v2-only second failure mode: a DIRECT-MODE error (a request arrived at a
+// stream that could not service it) raises DMEIF with TEIF clear. error() has
+// always reported both; the latch must carry both, and the ISR must clear only
+// the one that was up.
+ALLOY_TEST(st_dma_v2_direct_mode_error_survives_its_own_isr) {
+    struct tag {};
+    using eng = engine<tag>;
+    using IP = fake_dma_v2_ip<tag>;
+    g_full_calls = 0;
+
+    eng::enable_complete_irq<0>(&count_full, nullptr);
+    eng::setup<0>(eng::dir::periph_to_mem, false, eng::width::b8, eng::width::b8,
+                  0x40u, 0x80u, 8u, 3u);
+    eng::start<0>();
+    commit_w1c<tag>();
+    ALLOY_CHECK(!eng::error<0>());
+
+    eng::r().LISR = eng::r().LISR | IP::dmeif0.mask;
+    eng::complete_isr<0>(nullptr);
+    ALLOY_CHECK_EQ(g_full_calls, 1);
+    ALLOY_CHECK_EQ(eng::r().LIFCR, IP::cdmeif0.mask);  // CDMEIF only
+    commit_w1c<tag>();
+    ALLOY_CHECK((eng::r().LISR & IP::dmeif0.mask) == 0u);
+
+    ALLOY_CHECK(eng::error<0>());  // the latch carries the direct-mode error too
+
+    eng::disable_complete_irq<0>();
+}
+
+// The CONSEQUENCE, through the shipped caller rather than the engine accessor:
+// alloy::dma::channel::wait() ends in `return !error()`, so a lost error is a
+// wait() that returns SUCCESS for a transfer that failed — and anchor 2.4's
+// spi.transfer_dma() returns a bool sourced from exactly this call.
+ALLOY_TEST(st_dma_v2_wait_reports_a_failure_its_own_isr_consumed) {
+    struct tag {};
+    using eng = engine<tag>;
+    using IP = fake_dma_v2_ip<tag>;
+    using inst = fake_dma_v2_inst<tag>;
+    static const std::uint8_t payload[4] = {1, 2, 3, 4};
+    g_full_calls = 0;
+
+    // POSITIVE CONTROL FIRST, on its own stream: a transfer that completes
+    // cleanly, whose interrupt also ran, must still wait() TRUE — otherwise
+    // this test could "pass" by breaking every DMA transfer in the framework.
+    {
+        auto ok = alloy::dma::channel<inst, 2>::claim();
+        ok.on_complete(&count_full, nullptr);
+        ok.start_m2p_u8(std::span<const std::uint8_t>(payload), 0x40u, 3u);
+        eng::r().LISR = eng::r().LISR | IP::tcif2.mask;
+        eng::scr<2>() = eng::scr<2>() & ~IP::en.mask();  // v2: EN self-clears
+        eng::complete_isr<2>(nullptr);
+        commit_w1c<tag>();
+        ALLOY_CHECK(ok.wait());
+        ok.clear_on_complete();
+    }
+
+    // THE CASE. Same shape, but hardware raises TEIF instead of TCIF.
+    {
+        auto bad = alloy::dma::channel<inst, 3>::claim();
+        bad.on_complete(&count_full, nullptr);
+        bad.start_m2p_u8(std::span<const std::uint8_t>(payload), 0x40u, 3u);
+        eng::r().LISR = eng::r().LISR | IP::teif3.mask;
+        eng::scr<3>() = eng::scr<3>() & ~IP::en.mask();
+        eng::complete_isr<3>(nullptr);
+        commit_w1c<tag>();  // the flag the ISR consumed is really gone
+
+        // The shipped answer FIRST, so that it is this check — the one a
+        // caller's `bool ok` comes from — that trips when the latch is
+        // reverted, not a diagnostic further down.
+        ALLOY_CHECK(!bad.wait());
+        ALLOY_CHECK(bad.done());   // the transfer is over...
+        ALLOY_CHECK(bad.error());  // ...and it failed.
+        bad.clear_on_complete();
+    }
+    ALLOY_CHECK_EQ(g_full_calls, 2);
 }
 
 // ── the v2 silicon edge: EN auto-clears at non-circular transfer end ──────
@@ -344,21 +499,26 @@ ALLOY_TEST(st_dma_v2_setup_resets_stale_latches) {
                   0x40u, 0x80u, 8u, 3u);
     commit_w1c<tag>();
     // A full lap of the previous transfer latched both events...
-    eng::r().LISR = eng::r().LISR | IP::htif1.mask | IP::tcif1.mask;
+    eng::r().LISR = eng::r().LISR | IP::htif1.mask | IP::tcif1.mask |
+                    IP::teif1.mask;
     eng::half_isr<1>(nullptr);
     commit_w1c<tag>();
     eng::complete_isr<1>(nullptr);
     commit_w1c<tag>();
     ALLOY_CHECK(eng::half<1>());
     ALLOY_CHECK(eng::complete<1>());
+    ALLOY_CHECK(eng::error<1>());  // all THREE latches are up
 
     // ...and programming a NEW transfer must forget them: a fresh transfer is
-    // not already half-done, and a poll must not report the old one's events.
+    // not already half-done, is not already complete, and — the reason the
+    // error latch is transfer-scoped rather than sticky — has not failed
+    // because its predecessor did.
     eng::setup<1>(eng::dir::periph_to_mem, true, eng::width::b8, eng::width::b8,
                   0x40u, 0x80u, 8u, 3u);
     commit_w1c<tag>();
     ALLOY_CHECK(!eng::half<1>());
     ALLOY_CHECK(!eng::complete<1>());
+    ALLOY_CHECK(!eng::error<1>());
 
     eng::disable_half_irq<1>();
     eng::disable_complete_irq<1>();
@@ -382,7 +542,8 @@ ALLOY_TEST(st_dma_v2_isrs_are_no_ops_for_foreign_interrupts) {
     // contract still holds (alloy::irq chains, spurious NVIC pends): both
     // handlers run and must touch NOTHING — no IFCR write (a clear here would
     // eat the sibling's event), no callback, no latch.
-    eng::r().LISR = eng::r().LISR | IP::htif2.mask | IP::tcif2.mask;
+    eng::r().LISR = eng::r().LISR | IP::htif2.mask | IP::tcif2.mask |
+                    IP::teif2.mask | IP::dmeif2.mask;
     eng::half_isr<0>(nullptr);
     eng::complete_isr<0>(nullptr);
     ALLOY_CHECK_EQ(eng::r().LIFCR, 0u);
@@ -390,6 +551,8 @@ ALLOY_TEST(st_dma_v2_isrs_are_no_ops_for_foreign_interrupts) {
     ALLOY_CHECK_EQ(g_full_calls, 0);
     ALLOY_CHECK(!eng::half<0>());
     ALLOY_CHECK(!eng::complete<0>());
+    // ...including the error latch: a SIBLING stream's failure is not ours.
+    ALLOY_CHECK(!eng::error<0>());
     eng::r().LISR = 0u;
 
     eng::disable_half_irq<0>();
