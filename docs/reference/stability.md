@@ -41,10 +41,14 @@ alloy/drivers/…     alloy/dsp/…         alloy/util/…
 ```
 
 `alloy/board.hpp`, `alloy/device.hpp`, `alloy/product.hpp`,
-`alloy/product_nvm.hpp`, `alloy/slots.hpp` and `alloy/ota_key.hpp` have no file
-in `src/alloy` at all — codegen writes them per board into `.alloy/generated/`.
-Their **names** are public; their **contents** are the chip database's promise,
-which is what `[devices]` below pins.
+`alloy/product_nvm.hpp`, `alloy/slots.hpp`, `alloy/ota_key.hpp` and
+`alloy/bus_messages.hpp` have no file in `src/alloy` at all — codegen writes
+them per board into `.alloy/generated/`. Their **names** are public; the
+contents of the first six are the chip database's promise, which is what
+`[devices]` below pins. `bus_messages.hpp` is different: its contents are the
+**project's own** promise — the `bus.toml` wire contract — and the emitted
+binding shape (the `WireBinding` form `libs/bus` consumes) is Tier 1, because
+two boards compiled from one `bus.toml` must stay byte-compatible on the wire.
 
 Two more names are public with **IP-shaped contents**, on the same footing:
 
@@ -89,6 +93,12 @@ The tables a project may write: `[project]`, `[board]`, `[alloy]`,
 `[devices]`, `[product]`, `[libs]`, `[ota]`, `[roles.*]`, `[clock]`. Unknown
 keys inside `[devices]` are refused rather than ignored — a typo in a pin is
 the last thing that should fail open.
+
+`bus.toml` (beside `alloy.toml`, when a project has wire messages) is on the
+same footing: `schema = "alloy.bus.v1"`, unknown keys refused everywhere — a
+typo in a wire id is the last thing that should fail open — and the id rules
+(explicit, never auto-assigned, retired not deleted) are enforced by
+`alloy bus validate` and by generation.
 
 ### Not public
 

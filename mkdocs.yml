@@ -115,6 +115,7 @@ nav:
       - guide/async.md
       - guide/libraries.md
       - guide/products.md
+      - guide/bus.md
       - guide/adding-a-board.md
       - guide/testing.md
       - guide/escape-hatch.md

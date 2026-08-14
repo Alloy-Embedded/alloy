@@ -78,6 +78,23 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   `bad_frames()` counts corruption — witnesses, not repairs; a bad frame
   costs exactly itself.
 
+  And "tomorrow" arrived: **`bus.toml` is now the generated wire
+  contract.** A project declares its cross-wire messages once — explicit
+  u16 ids (never auto-assigned; `0x0000` and `0xFF00..` reserved), typed
+  fields from the closed v1 set, `retired = true` tombstones that reserve
+  an id forever — and `alloy gen` renders `<alloy/bus_messages.hpp>`:
+  structs plus `WireBinding`-shaped codecs in EXACTLY the hand-written
+  shape, so migrating a hand binding changes authorship, not bytes
+  (`examples/bus_bridge` moved to generated bindings and its Renode leg
+  passed unchanged — the byte-identical witness). One oracle
+  (`bus.message_issues`), two reporting shapes, pinned by the standard
+  P1/P2 anti-drift properties; unknown keys refused top to bottom — a typo
+  in a wire id is the last thing that should fail open. New verbs:
+  `alloy bus validate` (located issues, `alloy.bus_validate.v1`),
+  `alloy bus list`, and `alloy bus manifest` (`alloy.bus_manifest.v1` —
+  the registry the IDE monitor's frame decode will read). All recorded in
+  the stability surface: verb, both envelopes, and the generated header.
+
 - **`alloy symbols` and a `[budget]` table — proof that the code landed where
   the linker script said.** `size` reports four numbers; they tell you the
   image fits and nothing about placement. `alloy symbols` reads the ELF, sorts

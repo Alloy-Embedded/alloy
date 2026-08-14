@@ -78,6 +78,12 @@ def generate(project: Project, db=None, layout: str = "flash",
     # compile.
     if project.product_id is not None:
         _emit_product(project, gen, written)
+    # The bus wire contract (bus.toml — ids and layouts for messages that
+    # cross a link, libs/bus) — only when the project declares one; a project
+    # without wire messages is byte-for-byte unchanged. Validate-before-emit,
+    # same doctrine as the product layer.
+    if (project.root / "bus.toml").is_file():
+        _emit_bus(project, gen, written)
     # lwIP's config header is a generated fact sheet (features/pools/checksums
     # derived from the board's MAC + the project's [net] table), not a hand-tuned
     # C file — emitted only for boards that declare an ethernet role, which is the
@@ -129,6 +135,18 @@ def _emit_product(project: Project, gen: Path, written: list[Path]) -> None:
     _write(gen / "alloy" / "product_nvm.hpp", emit_product_nvm_header(model),
            written)
     _write(gen / "product.h", emit_product_c_header(model), written)
+
+
+def _emit_bus(project: Project, gen: Path, written: list[Path]) -> None:
+    """The wire contract: bus_messages.hpp — message structs plus their
+    WireBinding-shaped bindings, generated from bus.toml so the two ends of a
+    link compile from the same declaration. gen/ is on the include path, so
+    `#include <alloy/bus_messages.hpp>` resolves with zero build changes."""
+    from ..bus import load_bus, resolve  # noqa: PLC0415
+    from .bus import emit_bus_header  # noqa: PLC0415
+
+    model = resolve(load_bus(project.root))  # raises with EVERY problem listed
+    _write(gen / "alloy" / "bus_messages.hpp", emit_bus_header(model), written)
 
 
 def _slot_window(chip: dict[str, Any], slot: str | None) -> tuple[int, int] | None:

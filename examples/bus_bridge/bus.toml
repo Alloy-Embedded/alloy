@@ -1,0 +1,23 @@
+# The wire contract for this link. The peer (here, the Renode robot's
+# monitor-Python implementation) speaks these exact ids and layouts; a real
+# second board would compile from a verbatim copy of this file.
+#
+# Doctrine (alloy bus validate enforces it): ids are explicit u16, never
+# auto-assigned, never reused — a dead id is retired, not deleted. Same id
+# means same layout forever; a layout change is a new id.
+schema = "alloy.bus.v1"
+
+[messages.ping]
+id = 0x0301
+version = 1
+fields = [
+  { name = "token", type = "u32" },
+]
+
+[messages.pong]
+id = 0x0302
+version = 1
+fields = [
+  { name = "token", type = "u32" },
+  { name = "count", type = "u32" },
+]

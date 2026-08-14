@@ -30,7 +30,7 @@ PUBLIC_VERBS = {
     "board-validate", "product-validate", "size", "crash", "chips", "devices",
     "chip-info", "chip-status", "clock", "clean", "set-board", "setup",
     "debug-info",
-    "emulate", "test", "frame-audit", "sbom", "lib", "image", "keygen",
+    "emulate", "test", "frame-audit", "sbom", "lib", "bus", "image", "keygen",
     "secure", "provision", "ports", "update", "gen", "build", "flash",
     "monitor", "run",
 }
@@ -40,7 +40,8 @@ PUBLIC_VERBS = {
 # these bumps the number and both are emitted for the deprecation window.
 PUBLIC_SCHEMAS = {
     "alloy.board.v1", "alloy.board_info.v1", "alloy.board_validate.v1",
-    "alloy.boards.v1", "alloy.build.v1", "alloy.chip_info.v1",
+    "alloy.boards.v1", "alloy.build.v1", "alloy.bus_manifest.v1",
+    "alloy.bus_validate.v1", "alloy.chip_info.v1",
     "alloy.chip_status.v1", "alloy.chips.v1", "alloy.clock.v1",
     "alloy.clock_graph.v1",
     "alloy.crash.v1", "alloy.debug_info.v1", "alloy.devices.v1",
@@ -75,7 +76,8 @@ PUBLIC_TOML_TABLES = {"project", "board", "alloy", "devices", "product",
 # public (an app writes `#include <alloy/board.hpp>`); their CONTENT is the
 # chip database's promise, which is what [devices] pins.
 GENERATED_HEADERS = {"board.hpp", "device.hpp", "product.hpp",
-                     "product_nvm.hpp", "slots.hpp", "ota_key.hpp"}
+                     "product_nvm.hpp", "slots.hpp", "ota_key.hpp",
+                     "bus_messages.hpp"}
 
 # Headers that are NOT public even though they are reachable: the backend a
 # portable app is not supposed to name, the peripheral drivers the generated

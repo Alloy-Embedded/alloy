@@ -1360,6 +1360,40 @@ def cmd_lib(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_bus(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .bus import load_bus, resolve  # noqa: PLC0415
+    from .bus_validate import validate_report  # noqa: PLC0415
+    from .emit.bus import emit_bus_manifest  # noqa: PLC0415
+
+    root = Path(args.project)
+    if args.bus_command == "validate":
+        report = validate_report(root)
+        if getattr(args, "json", False):
+            print(json.dumps(report, indent=2))
+        else:
+            for issue in report["issues"]:
+                field = f" [{issue['field']}]" if issue["field"] else ""
+                print(f"{issue['level']}{field}: {issue['message']}")
+            print("ok" if report["ok"] else "invalid")
+        return 0 if report["ok"] else 1
+    model = resolve(load_bus(root))  # EmitError -> the standard error funnel
+    if args.bus_command == "manifest":
+        print(emit_bus_manifest(model))
+        return 0
+    if args.bus_command == "list":
+        for m in model["messages"]:
+            if m["retired"]:
+                print(f"0x{m['id']:04X}  {m['name']:<24} RETIRED")
+            else:
+                fields = ", ".join(f["name"] for f in m["fields"])
+                print(f"0x{m['id']:04X}  {m['name']:<24} v{m['version']}  "
+                      f"{m['size']:>3} B  {fields}")
+        return 0
+    return 1
+
+
 def cmd_frame_audit(args: argparse.Namespace) -> int:
     from .frame_audit import cmd_frame_audit as _audit  # noqa: PLC0415
 
@@ -1697,6 +1731,21 @@ def main() -> None:
     p_lib_add.add_argument("name")
     p_lib_add.add_argument("--project", default=".")
     p_lib_add.set_defaults(func=cmd_lib)
+
+    p_bus = sub.add_parser("bus", help="bus message registry (bus.toml): the wire "
+                                       "contract for libs/bus datagrams")
+    bus_sub = p_bus.add_subparsers(dest="bus_command", required=True)
+    p_bus_val = bus_sub.add_parser(
+        "validate", help="check bus.toml — every problem at once, located")
+    p_bus_val.add_argument("--json", action="store_true",
+                           help="alloy.bus_validate.v1 envelope")
+    p_bus_man = bus_sub.add_parser(
+        "manifest", help="machine-readable registry (alloy.bus_manifest.v1) — "
+                         "feeds the IDE monitor's frame decode")
+    p_bus_list = bus_sub.add_parser("list", help="table of declared messages")
+    for p in (p_bus_val, p_bus_man, p_bus_list):
+        p.add_argument("--project", default=".")
+        p.set_defaults(func=cmd_bus)
 
     p_img = sub.add_parser(
         "image", help="pack an app binary into a signed-format update image "

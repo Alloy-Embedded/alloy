@@ -18,10 +18,13 @@
 // uptime_us feeds only the stall-abandon housekeeping. Baud is 115200 —
 // unlike modbus RTU there is no t3.5 to protect, so speed is free.
 //
-// The wire bindings below are hand-written in the exact shape the bus.toml
-// generator (phase F3) will emit; when that lands, these structs move to a
-// generated header and the frames stay byte-identical.
+// The wire contract lives in bus.toml — `alloy gen` renders it into
+// <alloy/bus_messages.hpp> (structs + WireBinding-shaped bindings, the
+// exact shape phases F1/F2 wrote by hand, so the frames on the wire are
+// byte-identical to the hand-written era; this example's Renode leg is the
+// witness — it passed unchanged across the migration).
 #include <alloy/board.hpp>
+#include <alloy/bus_messages.hpp>
 #include <alloy/time.hpp>
 #include <bus.hpp>
 
@@ -31,52 +34,16 @@ namespace bus = alloy::lib::bus;
 
 namespace {
 
-struct ping {
-    std::uint32_t token;
-};
-
-struct pong {
-    std::uint32_t token;
-    std::uint32_t count;
-};
-
-struct ping_wire {
-    using message = ping;
-    static constexpr std::uint16_t id = 0x0301;
-    static constexpr std::uint8_t ver = 1;
-    static constexpr std::size_t size = 4;
-    static void encode(const ping& m, std::uint8_t* out) noexcept {
-        alloy::byteorder::store_le32(&out[0], m.token);
-    }
-    static ping decode(const std::uint8_t* in) noexcept {
-        return {alloy::byteorder::load_le32(&in[0])};
-    }
-};
-
-struct pong_wire {
-    using message = pong;
-    static constexpr std::uint16_t id = 0x0302;
-    static constexpr std::uint8_t ver = 1;
-    static constexpr std::size_t size = 8;
-    static void encode(const pong& m, std::uint8_t* out) noexcept {
-        alloy::byteorder::store_le32(&out[0], m.token);
-        alloy::byteorder::store_le32(&out[4], m.count);
-    }
-    static pong decode(const std::uint8_t* in) noexcept {
-        return {alloy::byteorder::load_le32(&in[0]), alloy::byteorder::load_le32(&in[4])};
-    }
-};
-
 // The link and its routes: ping crosses inbound, pong crosses outbound —
 // the SAME declaration covers both directions of each message. Static, in
 // declaration order (routes after the link they hang on).
 bus::bridge<512> link;
-bus::bridge_route<ping_wire> ping_route{link};
-bus::bridge_route<pong_wire> pong_route{link};
+bus::bridge_route<messages::ping_wire> ping_route{link};
+bus::bridge_route<messages::pong_wire> pong_route{link};
 
 // The service's inbox. It subscribes to the TOPIC — whether a ping came
 // from this image or across the wire is invisible here, which is the point.
-bus::subscriber<ping, 4> pings;
+bus::subscriber<messages::ping, 4> pings;
 
 }  // namespace
 
@@ -96,10 +63,10 @@ int main() {
         }
 
         // The service: consume pings FROM THE BUS, answer INTO THE BUS.
-        ping p{};
+        messages::ping p{};
         while (pings.try_next(p)) {
             ++served;
-            (void)bus::publish(pong{p.token, served});
+            (void)bus::publish(messages::pong{p.token, served});
         }
 
         // Drain queued frames to the wire.
