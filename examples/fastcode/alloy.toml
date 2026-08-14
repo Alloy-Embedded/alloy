@@ -3,3 +3,13 @@ name = "fastcode"
 
 [board]
 id = "nucleo_g0b1re"
+
+# The hot path must stay in fast RAM AND stay small. `alloy build` checks this
+# after every link and fails when it drifts, so "keep the ISR tight" stops being
+# a code-review habit.
+#
+# A budgeted section that is ABSENT also fails — which is the state worth
+# guarding against: a `.fastcode` nothing was placed in looks correct on every
+# other number, and the hot path just quietly runs from flash.
+[budget]
+".fastcode" = 64

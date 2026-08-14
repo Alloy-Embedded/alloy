@@ -14,6 +14,43 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **`alloy symbols` and a `[budget]` table — proof that the code landed where
+  the linker script said.** `size` reports four numbers; they tell you the
+  image fits and nothing about placement. `alloy symbols` reads the ELF, sorts
+  by address, demangles, and shows each section's run address beside its load
+  address — so a section that startup must copy is visibly distinct from one
+  that runs where it is stored:
+
+  ```
+  section          size      vma        lma
+  .text              3776  0x080000c0 0x080000c0
+  .fastcode            20  0x20000000 0x08000f88  copied from flash at startup
+  .bss               1152  0x20000018 0x08000f9c  zeroed/reserved, not loaded
+  ```
+
+  `--section .fastcode` answers "did my hot function actually get there" in one
+  command; `--json` is the `alloy.symbols.v1` envelope for the IDE.
+
+  An optional `[budget]` table in `alloy.toml` turns a section ceiling into a
+  build failure:
+
+  ```toml
+  [budget]
+  ".fastcode" = 64
+  ```
+
+  A budgeted section that is missing **or empty** fails too. That is the case
+  worth guarding: deleting an `ALLOY_FASTCODE` attribute leaves the section
+  behind at zero bytes, every total still looks right, and the hot path
+  quietly runs from flash for the rest of the product's life. `examples/
+  fastcode` now carries a budget, and CI asserts its symbol really sits at a
+  RAM address loaded from flash.
+
+  This came out of reading an eight-repository firmware estate whose linker
+  script placed sixteen hot functions in tightly-coupled memory that no
+  startup ever copied — documented intent, absent mechanism, and no artefact
+  anywhere that could have shown it.
+
 - **DMA streams, phase 2: `uart.rx_ring()`, `alloy::dma::claim(route)`, and
   the Modbus RTU server on the ring** (docs/design/dma-streams.md §2.2/§2.3).
   Where the board assigns `debug_uart.rx`, the uart handle grows the anchor

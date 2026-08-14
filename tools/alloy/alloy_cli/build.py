@@ -482,6 +482,32 @@ def build(project: Project, chip: dict[str, Any]) -> Path:
     if size_tool:
         subprocess.run([size_tool, str(elf)], check=False)
 
+    # A [budget] table in alloy.toml turns "this section must not grow" into a
+    # link-time failure. Nothing to check when the project declares none, so a
+    # project that never mentions [budget] builds byte-for-byte as before.
+    #
+    # This runs AFTER the size table so the numbers a person is already looking
+    # at are on screen when the reason appears.
+    budget = project.budget_options()
+    if budget:
+        from .symbols import budget_failures, symbol_report  # noqa: PLC0415
+
+        report = symbol_report(project, chip, elf)
+        if not report["available"]:
+            print(f"warning: [budget] declared but not checked — {report['reason']}")
+        else:
+            failures = budget_failures(report)
+            for row in report["budget"]:
+                used = "absent" if row["used"] is None else f"{row['used']} B"
+                mark = "ok" if row["ok"] else "OVER"
+                print(f"budget {row['section']:<14} {used:>10} / {row['limit']} B  {mark}")
+            if failures:
+                raise EmitError(
+                    "section budget exceeded: "
+                    + "; ".join(f"{f['section']} {f['reason']}" for f in failures)
+                    + "\nRaise the ceiling in alloy.toml [budget] if the growth is "
+                      "intended — the point is that it is a decision, not a drift.")
+
     # clangd support out of the box.
     cc_json = out / "compile_commands.json"
     link = project.root / "compile_commands.json"

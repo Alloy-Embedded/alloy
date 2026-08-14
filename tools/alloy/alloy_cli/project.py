@@ -133,6 +133,26 @@ class Project:
             return {}
         return tomllib.loads(toml_path.read_text()).get("net", {})
 
+    def budget_options(self) -> dict[str, Any]:
+        """The optional ``[budget]`` table from alloy.toml: a byte ceiling per
+        output section, checked after every link.
+
+            [budget]
+            ".fastcode" = 2048     # the hot path must stay in fast RAM AND small
+            ".bss"      = 8192
+
+        A budget is how "this must not grow" stops being a code-review habit.
+        The section names are the linker's, not friendly aliases, because the
+        thing being bounded is what the linker actually produced — and a name
+        that does not appear in the image FAILS rather than passes, since an
+        absent `.fastcode` is exactly the state where nothing was placed there
+        and every other number still looks right.
+        """
+        toml_path = self.root / "alloy.toml"
+        if not toml_path.exists():
+            return {}
+        return tomllib.loads(toml_path.read_text()).get("budget", {})
+
     def load_board(self) -> dict[str, Any]:
         if not self.board_json.exists():
             boards_dir = self.alloy_root / "boards"

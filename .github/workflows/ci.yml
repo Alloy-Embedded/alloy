@@ -958,7 +958,7 @@ jobs:
         run: |
           set -u
           failed=()
-          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read adc_stream dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read adc_stream dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog window_watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
             echo "::group::$ex"
             if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
               failed+=("$ex")
@@ -969,6 +969,44 @@ jobs:
             echo "FAILED examples for ${{ matrix.board }}: ${failed[*]}"
             exit 1
           fi
+
+      # ALLOY_FASTCODE claims a hot function runs from RAM. `size` cannot
+      # confirm that — the totals are identical whether the section was placed
+      # and copied or merely declared. So look at the symbol.
+      #
+      # This exists because a firmware estate we studied placed sixteen hot
+      # functions in a tightly-coupled-memory section that no startup ever
+      # copied. Every number looked right for the life of the product; the fast
+      # path ran from flash. One `nm` would have shown it.
+      - name: fastcode really lands in RAM (${{ matrix.board }})
+        run: |
+          set -eu
+          cd alloy/examples/fastcode
+          uv run --project ../../tools/alloy alloy symbols --board ${{ matrix.board }} \
+            --section .fastcode --json > /tmp/syms.json
+          python3 - <<'PY'
+          import json, sys
+          d = json.load(open("/tmp/syms.json"))
+          fast = next((s for s in d["sections"] if s["name"] == ".fastcode"), None)
+          if fast is None or not fast["size"]:
+              sys.exit("FAIL: .fastcode is absent or empty — nothing was placed there")
+          if not fast["needs_copy"]:
+              sys.exit(f"FAIL: .fastcode runs at {fast['vma']:#x} and is stored at "
+                       f"{fast['lma']:#x} — same address, so it is NOT in fast RAM")
+          placed = [s for s in d["symbols"] if s.get("section") == ".fastcode" and s["size"]]
+          if not placed:
+              sys.exit("FAIL: .fastcode has size but holds no sized symbol")
+          for s in placed:
+              print(f"ok: {s['name']} at {s['addr']:#x} in .fastcode "
+                    f"(loaded from {fast['lma']:#x})")
+          # And the budget in the example's alloy.toml was evaluated, not skipped.
+          if not d["budget"]:
+              sys.exit("FAIL: examples/fastcode declares [budget] but none was checked")
+          for row in d["budget"]:
+              if not row["ok"]:
+                  sys.exit(f"FAIL: budget {row['section']}: {row['reason']}")
+              print(f"ok: budget {row['section']} {row['used']}/{row['limit']} B")
+          PY
 
   # The net examples pull in vendored lwIP, whose build seam only compiles for a
   # board with an Ethernet MAC — so they CANNOT ride the board×example matrix above

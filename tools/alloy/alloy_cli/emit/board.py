@@ -298,8 +298,7 @@ def _polarity(active: str) -> str:
 PRESENCE_ROLES = (
     "led", "button", "debug_uart", "led_pwm", "encoder", "bridge", "adc", "i2c", "spi",
     "eeprom", "watchdog", "window_watchdog", "nvm", "fs", "rtc", "dac", "can",
-    "gpio_bus",
-    "ethernet", "tick",
+    "gpio_bus", "ethernet", "tick", "low_power_uart",
 )
 
 
@@ -493,6 +492,7 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         decls.append(
             "inline constexpr alloy::wwdt::null_window_watchdog window_watchdog{};")
 
+
     # A timer as a bare periodic time base (board::tick). NO PINS: the only
     # board fact is which block is free, and the rate is a project field. The
     # stub carries the SAME SHAPE as a real bind — including an `inst::feat`
@@ -550,7 +550,6 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "    static null_handle open(alloy::tick::config = {}) { return {}; }\n"
             "};\n"
             "inline constexpr alloy::tick::config tick_defaults{};")
-
 
     # Flash-backed persistent regions (board::nvm, board::fs) are carved from the
     # TOP of flash so a small app never collides with them. A board may declare

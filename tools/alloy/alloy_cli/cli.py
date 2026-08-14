@@ -456,6 +456,25 @@ def cmd_size(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_symbols(args: argparse.Namespace) -> int:
+    import json  # noqa: PLC0415
+
+    from .devices import load_chip  # noqa: PLC0415
+    from .symbols import budget_failures, print_report, symbol_report  # noqa: PLC0415
+
+    project = _project(args)
+    chip = load_chip(project.devices_root, project.load_board()["chip"])
+    report = symbol_report(project, chip)
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+        return 1 if budget_failures(report) else 0
+    if not report["available"]:
+        print(f"no symbol report: {report['reason']}", file=sys.stderr)
+        return 1
+    print_report(report, top=args.top, section=args.section)
+    return 1 if budget_failures(report) else 0
+
+
 def cmd_crash(args: argparse.Namespace) -> int:
     import json  # noqa: PLC0415
 
@@ -1481,6 +1500,24 @@ def main() -> None:
                              "board+product)")
     p_size.add_argument("--json", action="store_true")
     p_size.set_defaults(func=cmd_size)
+
+    p_syms = sub.add_parser(
+        "symbols", help="what is in the LAST build and WHERE — sections with their "
+                        "load vs run addresses, the largest symbols, and any "
+                        "[budget] in alloy.toml")
+    p_syms.add_argument("--project", default=".")
+    p_syms.add_argument("--board", help="override the board declared in alloy.toml")
+    p_syms.add_argument("--product",
+                        help="override the product declared in alloy.toml — must "
+                             "match the build being inspected")
+    p_syms.add_argument("--top", type=int, default=25,
+                        help="how many of the largest symbols to list (default 25)")
+    p_syms.add_argument("--section",
+                        help="list only symbols in this output section, e.g. "
+                             ".fastcode — the question 'did my hot function "
+                             "actually land there' in one command")
+    p_syms.add_argument("--json", action="store_true")
+    p_syms.set_defaults(func=cmd_symbols)
 
     p_crash = sub.add_parser(
         "crash", help="decode a device's crash report — pc/lr to file:line via "
