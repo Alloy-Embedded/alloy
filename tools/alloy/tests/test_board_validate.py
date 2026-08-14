@@ -212,6 +212,17 @@ _MUTATIONS: list[tuple[str, Any]] = [
     ("dma signal the chip has no request for",
      lambda b: b.__setitem__("dma", {
          "debug_uart.conv": {"controller": "dma1", "channel": 1}})),
+    # Phase 4 put two signals on ONE role for the first time (the SPI pair).
+    # Both halves are ordinary assignments under the same rules, and the two
+    # ways to get a pair wrong must both reach the validator.
+    ("dma pair with both halves on one channel",
+     lambda b: b.__setitem__("dma", {
+         "spi.rx": {"controller": "dma1", "channel": 4},
+         "spi.tx": {"controller": "dma1", "channel": 4}})),
+    ("dma pair half written with the stream engines' key",
+     lambda b: b.__setitem__("dma", {
+         "spi.rx": {"controller": "dma1", "channel": 4},
+         "spi.tx": {"controller": "dma1", "stream": 5}})),
 ]
 
 

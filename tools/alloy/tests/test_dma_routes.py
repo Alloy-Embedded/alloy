@@ -537,16 +537,21 @@ def test_a_board_without_the_rx_assignment_keeps_the_untagged_uart_binder() -> N
 def test_the_rx_tag_moves_with_the_board_statement() -> None:
     """The channel in the tag is the board's statement, untranslated — perturb
     the assignment and the emitted tag must move with it (the same data-driven
-    defense the renode wire tests state for their numbers)."""
+    defense the renode wire tests state for their numbers).
+
+    The perturbation must land on a channel this board leaves FREE, or the
+    collision rule refuses it before the tag is ever emitted — which is why
+    phase 4 kept dma1 channel 7 in reserve here (see
+    test_g071rb_keeps_a_channel_in_reserve)."""
     from alloy_cli.devices import load_chip, load_registers
     from alloy_cli.emit.board import emit_board_header
 
     board = json.loads(
         (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
-    board["dma"]["debug_uart.rx"] = {"controller": "dma1", "channel": 5}
+    board["dma"]["debug_uart.rx"] = {"controller": "dma1", "channel": 7}
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
-    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 5, "
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 7, "
             "/*request=*/52>>") in out
 
 
@@ -692,3 +697,257 @@ def test_the_validator_mirrors_the_stream_rules_with_suggestions() -> None:
     assert "'stream' (0-based" in by_field["dma.debug_uart.tx"]["message"]
     for issue in issues:
         assert len(issue["suggestions"]) <= MAX_SUGGESTIONS
+
+
+# ------------------------------------------- the phase-4 signals (SPI / I2C)
+#
+# Anchor 2.4 (doc §2.4) is a PAIR: `spi.transfer_dma()` claims both channels,
+# RX first. The board half of that is two assignments on one role — the first
+# role in the tree to carry more than one signal — plus i2c's two one-shot
+# directions. These tests pin the shipped statements and the refusals that
+# guard them; the C++ facades gate on the same routes by their binder alias.
+
+_G0_BOARDS = ["nucleo_g0b1re", "nucleo_g071rb"]
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS)
+def test_the_g0_boards_route_the_spi_pair(board_id: str) -> None:
+    """Both curated G0 boards serve spi1 from dma1 channels 4 (rx) and 5 (tx),
+    after the three phase-1/2 assignments. The requests — 16/17 — are the
+    RM0444 DMAMUX ids for SPI1_RX/SPI1_TX, read from the chip file and absent
+    from board.json exactly like every route before them."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assert board["dma"]["spi.rx"] == {"controller": "dma1", "channel": 4}
+    assert board["dma"]["spi.tx"] == {"controller": "dma1", "channel": 5}
+    assert board["roles"]["spi"]["peripheral"] == "spi1"
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 4, "
+            "/*request=*/16> spi_rx{};") in out
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 5, "
+            "/*request=*/17> spi_tx{};") in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS)
+def test_the_g0_boards_route_the_i2c_read(board_id: str) -> None:
+    """i2c1's RX gets channel 6 and request 10 (the RM0444 DMAMUX id for
+    I2C1_RX). Unlike SPI, I2C's two directions never run together — it is half
+    duplex — so these are one-shots that share a role, NOT a pair, and the
+    both-or-neither rule that governs `spi.rx`/`spi.tx` does not apply."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assert board["dma"]["i2c.rx"] == {"controller": "dma1", "channel": 6}
+    assert board["roles"]["i2c"]["peripheral"] == "i2c1"
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 6, "
+            "/*request=*/10> i2c_rx{};") in out
+
+
+@skip_no_devices
+def test_only_the_roomy_g0_board_routes_the_i2c_write() -> None:
+    """`i2c.tx` (channel 7, request 11) is stated on nucleo_g0b1re and
+    deliberately NOT on nucleo_g071rb, and the asymmetry is the point:
+
+    - g071rb's die has ONE dma controller with seven channels; phase 4 would
+      spend its last one on the direction nothing can exercise there. Renode
+      1.16.1's model of this IP drives a request line from CR1.RXDMAEN only —
+      TXDMAEN is an inert tag — so an emulated i2c DMA WRITE leg cannot be
+      witnessed on the board both i2c legs run on.
+    - g0b1re has a whole spare dma2, so it can afford the route, and the
+      facade's write path gets a shipped board to compile against.
+
+    A portable program therefore meets both branches of its own
+    `requires`-gate across the board matrix, which is worth more than a
+    uniform board file."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    roomy = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g0b1re" / "board.json").read_text())
+    tight = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    assert roomy["dma"]["i2c.tx"] == {"controller": "dma1", "channel": 7}
+    assert "i2c.tx" not in tight["dma"]
+    out = emit_board_header(roomy, load_chip(DEVICES_ROOT, roomy["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 7, "
+            "/*request=*/11> i2c_tx{};") in out
+    tight_out = emit_board_header(tight, load_chip(DEVICES_ROOT, tight["chip"]),
+                                  load_registers(DEVICES_ROOT))
+    assert "i2c_tx{}" not in tight_out
+
+
+@skip_no_devices
+def test_the_f722_board_routes_the_spi_pair_on_the_stream_engine() -> None:
+    """The F7 leg of anchor 2.4, and the promise that a new family opens the
+    same example by adding board.json lines: nucleo_f722ze already declares the
+    spi role, so two `dma:` lines are the WHOLE board change. dma2 streams 0
+    and 3 both come from stm32f722's curated spi1 triples; dma1 streams 1/3
+    stay with usart3, a different controller entirely."""
+    out = _emit_shipped("nucleo_f722ze")
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_f722ze" / "board.json").read_text())
+    assert board["dma"]["spi.rx"] == {"controller": "dma2", "stream": 0}
+    assert board["dma"]["spi.tx"] == {"controller": "dma2", "stream": 3}
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma2_t, 0, "
+            "/*request=*/3> spi_rx{};") in out
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma2_t, 3, "
+            "/*request=*/3> spi_tx{};") in out
+
+
+@skip_no_devices
+def test_the_f722_spi_pair_may_move_to_its_other_legal_streams() -> None:
+    """stm32f722's spi1 triples offer dma2 stream 2 for rx and stream 5 for tx.
+    Both alternatives generate, and the emitted route number follows the board
+    statement — the assignment is a choice the board is entitled to make, not a
+    constant the emitter re-derives."""
+    def move(board):
+        board["dma"]["spi.rx"] = {"controller": "dma2", "stream": 2}
+        board["dma"]["spi.tx"] = {"controller": "dma2", "stream": 5}
+    out = _emit_shipped("nucleo_f722ze", move)
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma2_t, 2, "
+            "/*request=*/3> spi_rx{};") in out
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma2_t, 5, "
+            "/*request=*/3> spi_tx{};") in out
+
+
+@skip_no_devices
+def test_the_f722_spi_refusal_prints_the_legal_streams_per_direction() -> None:
+    """The §1 promise on the new signals: rx and tx have DIFFERENT legal
+    triples, so the refusal must print the ones for the direction that is
+    wrong — not a merged list, and never the other direction's."""
+    from alloy_cli.emit.common import EmitError
+
+    def wreck_rx(board): board["dma"]["spi.rx"] = {"controller": "dma2",
+                                                   "stream": 3}
+    with pytest.raises(EmitError) as excinfo:
+        _emit_shipped("nucleo_f722ze", wreck_rx)
+    message = str(excinfo.value)
+    assert "{dma2, stream 3} does not reach spi1 'rx'" in message
+    assert "{dma2, stream 0}" in message and "{dma2, stream 2}" in message
+    assert "stream 5" not in message  # that is TX's alternative, not RX's
+
+
+@skip_no_devices
+def test_the_channel_key_on_the_f722_spi_pair_names_both_bases() -> None:
+    """The 1-based/0-based trap, now on a role that carries two signals: each
+    half is checked on its own and each refusal carries its own direction's
+    legal triples."""
+    from alloy_cli.board_validate import validate_board
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_f722ze" / "board.json").read_text())
+    board["dma"]["spi.rx"] = {"controller": "dma2", "channel": 0}
+    board["dma"]["spi.tx"] = {"controller": "dma2", "channel": 3}
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    issues = {i["field"]: i for i in
+              validate_board(board, chip, load_registers(DEVICES_ROOT))
+              if i["level"] == "error" and (i["field"] or "").startswith("dma.")}
+    assert set(issues) == {"dma.spi.rx", "dma.spi.tx"}
+    assert issues["dma.spi.rx"]["suggestions"] == ["{dma2, stream 0}",
+                                                   "{dma2, stream 2}"]
+    assert issues["dma.spi.tx"]["suggestions"] == ["{dma2, stream 3}",
+                                                   "{dma2, stream 5}"]
+    for issue in issues.values():
+        assert "'stream' (0-based" in issue["message"]
+        assert "'channel' (dma_v1's 1-based)" in issue["message"]
+
+
+@skip_no_devices
+def test_a_pair_pointed_at_one_channel_collides_like_any_other() -> None:
+    """Half a duplex is not a thing, and neither is a duplex on one channel:
+    the pair's two halves collide under the SAME rule two roles do. The
+    refusal names the earlier claimant — rx, because the keys are walked in
+    sorted order and 'spi.rx' < 'spi.tx' — which is also the order §1 makes
+    the pair claim them in."""
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    board["dma"]["spi.tx"] = {"controller": "dma1", "channel": 4}
+    from alloy_cli.devices import load_chip, load_registers
+
+    problems = dma_assignment_problems(board, load_chip(DEVICES_ROOT,
+                                                        board["chip"]),
+                                       load_registers(DEVICES_ROOT))
+    assert [p["key"] for p in problems] == ["spi.tx"]
+    assert "already serves 'spi.rx'" in problems[0]["message"]
+
+
+@skip_no_devices
+def test_g071rb_keeps_a_channel_in_reserve() -> None:
+    """The scarcity this board lives under, pinned so nobody spends the last
+    channel by accident: stm32g071rb has ONE dma-class controller with seven
+    channels, phase 4 leaves exactly one of them free, and the refusal a
+    seventh signal gets can still offer it. Fill channel 7 as well and the
+    suggestion list goes EMPTY — the honest answer, and the moment the board
+    file needs a human."""
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    registers = load_registers(DEVICES_ROOT)
+    assert dma_assignment_problems(board, chip, registers) == []
+    assert set(board["dma"]) == {"adc.conv", "debug_uart.rx", "debug_uart.tx",
+                                 "spi.rx", "spi.tx", "i2c.rx"}
+    assert chip["peripherals"]["dma1"]["channels"]["count"] == 7
+    assert [n for n, p in chip["peripherals"].items()
+            if p.get("ip") == "st/dma_v1"] == ["dma1"]
+    # The reserve is real, and it is visible in what a refusal can offer: a
+    # misassigned spi.tx is told about channel 5 (the one it just vacated) AND
+    # channel 7 (the reserve).
+    def collide(b: dict[str, Any]) -> list[str]:
+        b = {**b, "dma": {**b["dma"], "spi.tx": {"controller": "dma1",
+                                                 "channel": 1}}}
+        found = dma_assignment_problems(b, chip, registers)
+        assert [p["key"] for p in found] == ["spi.tx"]
+        return found[0]["suggestions"]
+
+    assert collide(board) == ["5", "7"]
+    # Spend channel 7 on the seventh signal — legal, generates, and the die
+    # is then wired to its last channel: the same refusal has only the
+    # vacated one left to offer.
+    board["dma"]["i2c.tx"] = {"controller": "dma1", "channel": 7}
+    assert dma_assignment_problems(board, chip, registers) == []
+    assert collide(board) == ["5"]
+    # And this die advertises MORE assignable signals than it has channels —
+    # led_pwm's `up`/`ch1` can never be served here at all, whatever a board
+    # file says. Scarcity, not oversight.
+    assert len(dma_signal_candidates(board, chip)) > 7
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS + ["nucleo_f722ze"])
+def test_a_duplex_role_never_ships_half_assigned(board_id: str) -> None:
+    """The board-file discipline behind the pair: `spi.rx` and `spi.tx` are
+    both stated or neither is. A board with one of them builds, and then
+    `transfer_dma` is constrained away with nothing saying why the OTHER half
+    is missing — a half-configured board that looks configured."""
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assigned = set(board.get("dma") or {})
+    assert ("spi.rx" in assigned) == ("spi.tx" in assigned)
+
+
+@skip_no_devices
+def test_the_spi_and_i2c_signals_are_offered_as_candidates() -> None:
+    """The suggestion machinery needed no new knowledge: `dma_signal_candidates`
+    derives keys from any peripheral-bearing role's `dma_requests`, so the
+    phase-4 signals became suggestible the moment the chips carried them."""
+    from alloy_cli.devices import load_chip
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    candidates = dma_signal_candidates(board, load_chip(DEVICES_ROOT,
+                                                        board["chip"]))
+    assert {"spi.rx", "spi.tx", "i2c.rx", "i2c.tx"} <= set(candidates)

@@ -120,7 +120,11 @@
   "dma": {
     "adc.conv": {"controller": "dma1", "channel": 1},
     "debug_uart.rx": {"controller": "dma1", "channel": 2},
-    "debug_uart.tx": {"controller": "dma1", "channel": 3}
+    "debug_uart.tx": {"controller": "dma1", "channel": 3},
+    "spi.rx": {"controller": "dma1", "channel": 4},
+    "spi.tx": {"controller": "dma1", "channel": 5},
+    "i2c.rx": {"controller": "dma1", "channel": 6},
+    "i2c.tx": {"controller": "dma1", "channel": 7}
   },
   "probe": {
     "kind": "stlink",
