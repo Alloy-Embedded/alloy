@@ -344,3 +344,59 @@ def test_a_board_without_the_assignment_keeps_the_two_parameter_binder() -> None
     adc_periph = board["roles"]["adc"]["peripheral"]
     assert (f"using adc = alloy::adc::bind<alloy::dev::{adc_periph}_t, "
             "clock_profile>;") in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb"])
+def test_the_debug_uart_rx_route_rides_on_the_binder(board_id: str) -> None:
+    """Design §1 for the phase-2 anchor (§2.2): the debug_uart.rx assignment
+    is attached to the uart binder as an alloy::uart::rx_dma<> tag — the fact
+    that makes `uart.rx_ring(rxbuf)` compile on the wired boards. Same type
+    spelling as the board::dma constant (_dma_route_type emits both)."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 2, "
+            "/*request=*/52>>>;") in out
+    # The tag rides the debug_uart bind specifically, after clock_profile.
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert "alloy::uart::rx_dma<" in bind
+
+
+@skip_no_devices
+def test_a_board_without_the_rx_assignment_keeps_the_untagged_uart_binder() -> None:
+    """No debug_uart.rx assignment -> no rx_dma<> tag -> the handle's RxRoute
+    defaults to void and rx_ring(storage) is constrained away. The TX
+    assignment alone must NOT grow an rx tag."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    del board["dma"]["debug_uart.rx"]
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert "rx_dma" not in bind
+    assert bind.rstrip().endswith("clock_profile>")
+
+
+@skip_no_devices
+def test_the_rx_tag_moves_with_the_board_statement() -> None:
+    """The channel in the tag is the board's statement, untranslated — perturb
+    the assignment and the emitted tag must move with it (the same data-driven
+    defense the renode wire tests state for their numbers)."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    board["dma"]["debug_uart.rx"] = {"controller": "dma1", "channel": 5}
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 5, "
+            "/*request=*/52>>") in out
