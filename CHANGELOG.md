@@ -14,6 +14,37 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams, phase 2: `uart.rx_ring()`, `alloy::dma::claim(route)`, and
+  the Modbus RTU server on the ring** (docs/design/dma-streams.md §2.2/§2.3).
+  Where the board assigns `debug_uart.rx`, the uart handle grows the anchor
+  shape — received bytes land in a caller-owned ring BY DMA, no interrupt per
+  byte, no CPU read of the data register:
+
+      static alloy::dma::ring_storage<std::uint8_t, 256> rxbuf;
+      auto ring = uart.rx_ring(rxbuf);   // claims, arms, raises DMAR + IDLE
+      for (;;) {
+          alloy::sleep_until_event();
+          auto bytes = ring.readable();  // live count register, no ISR ran
+          if (!bytes.empty() && server.on_bytes(bytes)) {
+              ring.consume(bytes.size());
+          }
+      }
+
+  The generator attaches the assignment to the binder (`rx_dma<>`/`tx_dma<>`
+  tags -> `rx_route`/`tx_route`), so boards that assign nothing fold the
+  methods away at a named requires-gate, and `alloy::dma::claim(route)` turns
+  the board's TX assignment into the channel token the shipped
+  `write_dma_begin/end` + async `dma_waiter` pair consume (anchor 2.3 — the
+  async_io example now claims its channel from the board fact). libs/modbus
+  0.5.0 adds `rtu_server::on_bytes(span)` — the batch entry sharing one
+  delivery path with `poll()`. Both anchors are asserted under emulation on
+  the wired G0 Nucleos by the EXISTING `modbus_rtu.robot` (every assertion
+  unchanged, plus a ring-path marker the polled fallback cannot print) and
+  `async_io.robot` (route-claim marker; dma1 ch3's shared-IRQ line). Stated
+  limits: the pinned Renode USART model implements no IDLE, so the IDLE
+  frame-gap wake is silicon-only (SysTick wakes the loop under emulation),
+  and t3.5 framing never depended on sub-millisecond wakes.
+
 - **DMA streams, phase 1: `alloy::dma::ring`, board-assigned routes, and
   `adc.ring()`** (docs/design/dma-streams.md). A DMA route is now a generated
   fact: the board states which channel serves which role signal —
