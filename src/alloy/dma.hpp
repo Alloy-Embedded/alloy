@@ -193,13 +193,12 @@ struct alignas(32) ring_storage {
     T data[N];
 };
 
-namespace detail {
 // What a controller must offer before rings exist on it: a circular mode plus
 // half-transfer event delivery and a live remaining-count read. On a backend
 // without these (today: SAME70 XDMAC, supports_circular = false) the ring type
-// is CONSTRAINED AWAY, so a facade's `ring()` method — itself gated on this —
-// is a compile error naming the missing capability, never a link error or a
-// runtime surprise.
+// is CONSTRAINED AWAY, so a facade's `ring()` method — gated on THIS concept,
+// which is public for exactly that reason — is a compile error naming the
+// missing capability, never a link error or a runtime surprise.
 template <class Inst, unsigned Ch>
 concept ring_capable = requires {
     requires hal::dma_impl<Inst>::supports_circular;
@@ -207,7 +206,6 @@ concept ring_capable = requires {
     hal::dma_impl<Inst>::template enable_complete_irq<Ch>(nullptr, nullptr);
     hal::dma_impl<Inst>::template remaining<Ch>();
 };
-}  // namespace detail
 
 // Circular peripheral->memory stream with half/full events and a read cursor.
 //
@@ -233,7 +231,7 @@ concept ring_capable = requires {
 // cannot produce one (peripheral not started, ring torn down) hangs honestly
 // rather than returning an unstable half.
 template <class T, class Route>
-    requires detail::ring_capable<typename Route::controller, Route::channel>
+    requires ring_capable<typename Route::controller, Route::channel>
 class ring {
     using Inst = typename Route::controller;
     static constexpr unsigned Ch = Route::channel;

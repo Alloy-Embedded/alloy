@@ -126,6 +126,7 @@ add_executable(alloy_unit_tests
     test_ota_transport.cpp
     test_provision.cpp
     test_can.cpp
+    test_dma_ring.cpp
     test_net.cpp
     test_wwdt.cpp
     test_crc.cpp
