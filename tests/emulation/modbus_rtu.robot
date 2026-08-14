@@ -101,6 +101,17 @@ Modbus Server Answers A Byte Level Master And Honors The Silences
     Create Terminal Tester    ${UART}
     Start Emulation
     Wait For Line On Uart     ${BANNER}    timeout=30
+    # ADDITION (dma-streams phase 2, anchor §2.2): the ring-path marker. The
+    # firmware prints this line ONLY when RX rides the DMA ring — channel
+    # claimed on the board-assigned route, frames drained via readable()/
+    # consume(), no per-byte RX interrupt — and the polled fallback cannot
+    # print it, so a silent fold back to the old path cannot pass this leg.
+    # Every assertion below is UNCHANGED from the polled-path version of this
+    # suite: same requests, same byte-exact responses, same silences.
+    # (The IDLE frame-gap wake is NOT witnessed here: the pinned USART model
+    # does not implement IDLE; under emulation SysTick provides the wakes.
+    # What this leg witnesses is the DMA transport and the framing logic.)
+    Wait For Line On Uart     modbus: dma ring rx    timeout=10
     # From here on, time is driven explicitly: pause, inject, RunFor — every
     # phase sees the same virtual timeline on every run.
     Execute Command           pause
