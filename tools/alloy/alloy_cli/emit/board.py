@@ -271,6 +271,23 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
     return problems
 
 
+def _dma_route_type(board: dict[str, Any], chip: dict[str, Any],
+                    key: str) -> str | None:
+    """The C++ type of one assignment's route constant, or None when the board
+    does not assign `key`. ONE spelling for the two places a route type is
+    emitted — the `board::dma` constant and the role binder's route parameter —
+    so the binder and the constant cannot drift. Assumes the assignment already
+    passed dma_assignment_problems (emit_board_header refuses before here)."""
+    assign = (board.get("dma") or {}).get(key)
+    if not assign:
+        return None
+    role_name, _, signal = key.partition(".")
+    periph = (board.get("roles") or {})[role_name]["peripheral"]
+    request = int(chip["peripherals"][periph]["dma_requests"][signal])
+    return (f"alloy::dma::route<alloy::dev::{assign['controller']}_t, "
+            f"{int(assign['channel'])}, /*request=*/{request}>")
+
+
 def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
@@ -1114,9 +1131,22 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         periph_name = adc_role["peripheral"]
         _require(periph_name in chip["peripherals"],
                  f"board {board['id']}: adc peripheral '{periph_name}' not in chip data")
-        decls.append(
-            f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, clock_profile>;"
-        )
+        # The board's `adc.conv` DMA assignment rides on the BINDER (design §1:
+        # the generator "attaches it to the role's binder"), which is what makes
+        # the anchor spelling `adc.ring(samples)` real — the handle knows its
+        # route without the user naming one. No assignment -> the parameter
+        # defaults to void and ring() is constrained away, a named compile
+        # error at the facade's requires-gate.
+        adc_conv_route = _dma_route_type(board, chip, "adc.conv")
+        if adc_conv_route:
+            decls.append(
+                f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, "
+                f"clock_profile, {adc_conv_route}>;"
+            )
+        else:
+            decls.append(
+                f"using adc = alloy::adc::bind<alloy::dev::{periph_name}_t, clock_profile>;"
+            )
         channels = chip["peripherals"][periph_name].get("channels", {})
         for chname in ("vref", "temp"):
             present = chname in channels
@@ -1167,12 +1197,9 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     for key in sorted(board.get("dma") or {}):
         role_name, _, signal = key.partition(".")
         periph = roles[role_name]["peripheral"]
-        request = int(chip["peripherals"][periph]["dma_requests"][signal])
-        assign = (board.get("dma") or {})[key]
         route_decls.append(
-            f"inline constexpr alloy::dma::route<alloy::dev::{assign['controller']}_t, "
-            f"{int(assign['channel'])}, /*request=*/{request}> {role_name}_{signal}{{}};"
-            f"  // serves {periph} {signal}"
+            f"inline constexpr {_dma_route_type(board, chip, key)} "
+            f"{role_name}_{signal}{{}};  // serves {periph} {signal}"
         )
     if route_decls:
         extra_includes.append("alloy/dma.hpp")

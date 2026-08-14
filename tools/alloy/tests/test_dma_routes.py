@@ -281,3 +281,42 @@ def test_a_board_that_assigns_nothing_still_gets_the_namespace() -> None:
     assert "namespace dma {\n}  // namespace dma" in out
     assert "alloy::dma::route" not in out
     assert '#include "alloy/dma.hpp"' not in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb"])
+def test_the_adc_conv_route_rides_on_the_binder(board_id: str) -> None:
+    """Design §1: the generator emits the constant AND 'attaches it to the
+    role's binder'. The binder attachment is what makes the anchor spelling
+    `adc.ring(samples)` real — the handle knows its route without the user
+    naming one — and it must be the SAME type the board::dma constant has
+    (one helper spells both, so they cannot drift)."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    adc_periph = board["roles"]["adc"]["peripheral"]
+    assert (f"using adc = alloy::adc::bind<alloy::dev::{adc_periph}_t, "
+            "clock_profile, alloy::dma::route<alloy::dev::dma1_t, 1, "
+            "/*request=*/5>>;") in out
+
+
+@skip_no_devices
+def test_a_board_without_the_assignment_keeps_the_two_parameter_binder() -> None:
+    """No route -> ConvRoute defaults to void inside the facade and ring() is
+    constrained away; the emitted binder must stay the two-parameter spelling
+    so that default actually applies."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    del board["dma"]
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    adc_periph = board["roles"]["adc"]["peripheral"]
+    assert (f"using adc = alloy::adc::bind<alloy::dev::{adc_periph}_t, "
+            "clock_profile>;") in out
