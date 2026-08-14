@@ -105,6 +105,7 @@ add_executable(alloy_unit_tests
     test_services.cpp
     test_irq.cpp
     test_async.cpp
+    test_sched.cpp
     test_units.cpp
     test_lpuart_baud.cpp
     test_claim.cpp
