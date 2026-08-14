@@ -323,6 +323,12 @@ jobs:
           # which fails; and an interrupt that never fires makes the leg's bounded
           # pump print "STUCK" and fail in ~31 s instead of hanging the run. Both
           # were verified locally by deliberately breaking the firmware.
+          # SINCE dma-streams PHASE 2 the DMA leg is ALSO anchor 2.3 (design
+          # §2.3): the TX channel is claimed FROM THE BOARD'S debug_uart.tx
+          # route (dma1 ch3 — the ch2_3 shared-IRQ line), and the robot
+          # asserts the "dma route: claimed board debug_uart.tx" marker the
+          # explicit-channel escape hatch cannot print (negative control
+          # verified red locally, 31.6 s at the marker wait).
           - board: nucleo_g071rb
             example: async_io
             robot: async_io.robot
@@ -350,10 +356,33 @@ jobs:
           # against) recovered from in one t3.5, with the next valid request
           # served. Runs at 9600 baud so t3.5 = 4011 µs spans several SysTick
           # periods — the leg tests framer LOGIC, not the emulator's sub-ms
-          # fidelity. `experimental` per the convention above: authored without
-          # an end-to-end local run (arm64 host vs x86_64 tlib) — PROMOTE TO
-          # BLOCKING after a few green CI runs.
+          # fidelity.
+          #
+          # SINCE dma-streams PHASE 2 this leg is ALSO anchor 2.2 (design
+          # §2.2): RX rides a DMA ring on the board-assigned debug_uart.rx
+          # route — no per-byte RX interrupt, frames drained via readable()/
+          # consume() into the server's on_bytes — and the robot asserts the
+          # firmware's "modbus: dma ring rx" marker, which the polled
+          # fallback cannot print (negative control verified red locally:
+          # the polled build fails the leg in 27.6 s at the marker wait).
+          # Every request/response/silence assertion is byte-for-byte the
+          # polled-era suite. NOT witnessed here: the IDLE frame-gap wake —
+          # the pinned USART model does not implement IDLE (emit/renode.py
+          # states the measured fact); SysTick provides the wakes under
+          # emulation. BLOCKING since phase 2: six consecutive green CI runs
+          # as experimental (the convention's promotion bar) plus local
+          # end-to-end runs of the ring path on both G0s (pinned Renode
+          # 1.16.1, 4.2 s each).
           - board: nucleo_g071rb
+            example: modbus_rtu_server
+            robot: modbus_rtu.robot
+            banner: alloy modbus_rtu_server ready
+          # The same anchor on the second wired G0 (usart2 there too; the dma
+          # assignment is the same board.json statement). `experimental` per
+          # the convention above: this board+robot pair is NEW to CI — green
+          # locally (4.19 s, pinned Renode 1.16.1, arm64) but no x86_64 tlib
+          # run yet. PROMOTE after a few green CI runs.
+          - board: nucleo_g0b1re
             example: modbus_rtu_server
             robot: modbus_rtu.robot
             banner: alloy modbus_rtu_server ready
