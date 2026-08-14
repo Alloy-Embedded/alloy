@@ -1183,6 +1183,7 @@ def cmd_emulate(args: argparse.Namespace) -> int:
         debug_uart_name,
         emit_renode_platform,
         emit_renode_script,
+        renode_support_files,
         renode_supported,
     )
 
@@ -1201,6 +1202,10 @@ def cmd_emulate(args: argparse.Namespace) -> int:
     repl = out / f"{board['id']}.repl"
     resc = out / f"{board['id']}.resc"
     repl.write_text(emit_renode_platform(chip, board))
+    # Support files (today: the ADC-DMA C# shims) land next to the .repl so
+    # the .resc's include resolves under the same space-free/bare-name rule.
+    for support_name, support_text in renode_support_files(chip, board).items():
+        (out / support_name).write_text(support_text)
     resc.write_text(emit_renode_script(chip, board, str(repl), str(elf)))
     uart = debug_uart_name(chip, board)
     # `uart:` is machine-readable so CI can pass sysbus.<name> to the Robot test
