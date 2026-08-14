@@ -139,29 +139,44 @@ link.on_bytes(bytes, alloy::uptime_us());
 
 ### What the wire costs, measured on silicon
 
-On a SAME70 Xplained at 115200 running `examples/bus_bridge` (the portable
-floor: byte-at-a-time `ByteStream` polling, no DMA), a ping→pong round trip
-through the bus is reliable at **one message every 3 ms** — about 330/s,
-comfortably inside the slow plane this library is for. Push harder and the
-messages start disappearing, and the reason is the transport, not the bus:
-the loop is software half-duplex, so while it spins a 20-byte pong out
-(~1.7 ms of airtime) it is not reading, and the UART holds one byte.
+Measured on a SAME70 Xplained running `examples/bus_bridge`, ping→pong
+round trips through the bus:
 
-The counters say so precisely. Twenty messages sent back to back:
+| | 115200 | 230400 |
+|---|---|---|
+| Round-trip latency | 3.4 ms | 1.9 ms |
+| Sustained, no loss | ~290/s | ~400/s |
+| Wire's own ceiling | 320/s | 640/s |
+
+The latency is the WIRE, not the software: a ping plus a pong is 36 bytes,
+which is 3.1 ms of airtime at 115200 — the firmware adds about 0.3 ms on
+top. So the knob that moves this number is the baud rate
+(`[roles.debug_uart] baud` in `alloy.toml`), not the code.
+
+**Take interrupt RX if the board has it.** Writing a byte busy-waits on the
+TX-ready flag, and these parts hold ONE received byte, so a purely polled
+loop is deaf for the whole length of a transmission. Same board, same wire,
+20 messages sent back to back: **polled delivers 7, interrupt RX delivers
+20.** The example arms it behind a `requires` probe and falls back to
+polling, so this costs portability nothing.
+
+Past the wire's ceiling, messages are lost — and the counters name exactly
+where, which is the point of witnesses over repairs. A 40-message burst at
+230400, well beyond what the link can answer:
 
 ```
-bus: served=7 bad_frames=0 lost=12 sub_missed=0 tx_missed=0
+bus: served=27 bad_frames=0 lost=13 sub_missed=0 tx_missed=0 rx_overflow=0
 ```
 
-`bad_frames=0` and `tx_missed=0`: the library corrupted nothing and dropped
-nothing of its own. `lost=12`: the seq gaps caught every message the UART
-overran, before it was ever a frame. That is the whole point of witnesses
-over repairs — the failure is named where it happened, and no layer
-pretends it did not.
+Nothing corrupted, no queue full, no ring full: the library dropped none of
+them. `lost=13` is the seq gaps catching every message the UART overran
+before it was ever a frame.
 
-A board whose `debug_uart.rx` has a DMA route lifts this ceiling: the ring
-receives while the CPU transmits. That path is the bridge's, not the
-example's, and it is not measured here yet.
+Two ceilings above this one are known and unmeasured. A board whose
+`debug_uart.rx` has a DMA route removes the deafness entirely (the ring
+receives while the CPU transmits). And `publish()` holds the irq mask
+across the frame encode, CRC included — on a fast link that window is
+itself a limit, which is the risk the design named from the start.
 
 ### The rest of the contract
 

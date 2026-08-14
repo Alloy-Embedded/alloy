@@ -49,7 +49,28 @@ bus::bridge_route<messages::pong_wire> pong_route{uplink};
 
 // The service's inbox. It subscribes to the TOPIC — whether a ping came
 // from this image or across the wire is invisible here, which is the point.
-bus::subscriber<messages::ping, 4> pings;
+// Depth is sized against the RX staging below, not picked by feel: the loop
+// drains ALL buffered bytes — publishing every frame it decodes — before the
+// service consumes any, so a full staging buffer becomes ~30 publishes in
+// one pass. A depth-4 queue drops those on the floor (measured: sub_missed=2
+// on a 40-message burst), and the drop would be blamed on the wire.
+bus::subscriber<messages::ping, 32> pings;
+
+// RX staging for the interrupt path: the ISR pushes one byte, the loop
+// drains. This is what lets the link survive a peer that talks WHILE we
+// transmit. Writing a byte busy-waits on the TX-ready flag, and these parts
+// hold ONE received byte — so a purely polled loop drops whatever arrives
+// during a transmission, which on a 20-byte frame is 20 byte-times of
+// deafness. Measured on a SAME70 at 115200: polled delivers 7 of 20
+// back-to-back messages, the interrupt path delivers all of them.
+//
+// Sized for the worst case this example can meet: TX is slower than RX
+// here (a pong is longer than a ping), so a sustained burst arrives faster
+// than it can be answered and the staging must absorb the difference.
+// It is still finite — hence the overflow counter, reported like every
+// other witness.
+alloy::ring_buffer<std::uint8_t, 512> rx_fifo;
+std::uint32_t rx_overflow = 0;
 
 void put_u32(auto& uart, std::uint32_t v) {
     char buf[10];
@@ -67,8 +88,32 @@ void put_u32(auto& uart, std::uint32_t v) {
 
 int main() {
     board::init();
-    auto uart = board::debug_uart::open({.baud = 115'200});
+    // The board's declared baud, overridable per project from alloy.toml
+    // ([roles.debug_uart] baud = …) — this link's ceiling is the WIRE, so
+    // that knob is the one that moves it: at 115200 a ping+pong costs 36
+    // bytes ≈ 3.1 ms, which caps a round trip at ~320/s no matter how good
+    // the firmware is.
+    auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
     uart.write("alloy bus_bridge ready\r\n");
+
+    // Arm interrupt RX where the board has it; fall back to polling where it
+    // does not. Same shape as examples/irq_echo — the generic lambda keeps
+    // on_receive dependent, so a board without an interrupt path still
+    // compiles and says so, with no preprocessor anywhere.
+    bool irq_rx = false;
+    if constexpr (board::caps::irq && board::caps::debug_uart) {
+        [&irq_rx](auto& u) {
+            if constexpr (requires { u.on_receive(nullptr, nullptr); }) {
+                u.on_receive(+[](void*, std::uint8_t byte) {
+                    if (!rx_fifo.push(byte)) {
+                        ++rx_overflow;  // the loop fell behind — say so
+                    }
+                });
+                irq_rx = true;
+            }
+        }(uart);
+    }
+    uart.write(irq_rx ? "bus: rx by interrupt\r\n" : "bus: rx polled\r\n");
 
     std::uint32_t served = 0;
     std::uint8_t staging[bus::wire_max_frame];
@@ -79,14 +124,15 @@ int main() {
     // at 115200) it is not reading, and the UART holds one byte. A peer that
     // streams messages faster than that overruns it, and these counters are
     // how you find out instead of guessing.
-    std::uint32_t last_bad = 0, last_lost = 0, last_missed = 0, last_txm = 0;
+    std::uint32_t last_bad = 0, last_lost = 0, last_missed = 0, last_txm = 0,
+                  last_ovf = 0;
     std::uint32_t quiet_since = 0;
     for (;;) {
         // Feed the link whatever the uart has (byte-at-a-time ByteStream
         // floor; a DMA board would hand readable() spans instead).
         std::uint8_t b = 0;
         bool got = false;
-        while (uart.read(b)) {
+        while (irq_rx ? rx_fifo.pop(b) : uart.read(b)) {
             (void)uplink.on_bytes({&b, 1}, alloy::uptime_us());
             got = true;
         }
@@ -125,13 +171,16 @@ int main() {
         const std::uint32_t lost = uplink.rx_lost();
         const std::uint32_t missed = pings.missed();
         const std::uint32_t txm = uplink.tx_missed();
+        const std::uint32_t ovf = rx_overflow;
         const bool moved = bad != last_bad || lost != last_lost
-                           || missed != last_missed || txm != last_txm;
+                           || missed != last_missed || txm != last_txm
+                           || ovf != last_ovf;
         if (moved && uplink.tx_empty() && alloy::uptime_ms() - quiet_since > 200) {
             last_bad = bad;
             last_lost = lost;
             last_missed = missed;
             last_txm = txm;
+            last_ovf = ovf;
             uart.write("bus: served=");
             put_u32(uart, served);
             uart.write(" bad_frames=");
@@ -142,6 +191,8 @@ int main() {
             put_u32(uart, missed);
             uart.write(" tx_missed=");
             put_u32(uart, txm);
+            uart.write(" rx_overflow=");
+            put_u32(uart, rx_overflow);
             uart.write("\r\n");
         }
     }

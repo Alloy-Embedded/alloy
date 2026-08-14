@@ -139,20 +139,39 @@ extra plumbing, and the filter box works on messages like any other line.
 the panel does not need it, because what reaches the editor is already
 decoded.
 
-## What it costs on a real wire
+## What it costs on a real wire, and how to make it faster
 
-`examples/bus_bridge` on a SAME70 Xplained at 115200, over the portable
-floor (byte-at-a-time polling, no DMA): a round trip through the bus is
-reliable at **one message every 3 ms**, roughly 330/s — comfortably inside
-the slow plane. Beyond that the UART overruns, because the loop is software
-half-duplex: while it spins a pong out it is not reading.
+Measured with `examples/bus_bridge` on a SAME70 Xplained — round trips
+through the bus, message published on one side, answered on the other:
 
-What matters is that the library says so rather than hiding it. Twenty
-messages sent back to back produced `bad_frames=0 tx_missed=0` — nothing
-corrupted, nothing dropped internally — and `lost=12`, the seq gaps
-catching every message the UART lost before it was ever a frame. Print
-those counters in any bridge you ship; the example does, and it is the
-difference between diagnosing a link in seconds and guessing at it.
+| | 115200 | 230400 |
+|---|---|---|
+| Round-trip latency | 3.4 ms | 1.9 ms |
+| Sustained, no loss | ~290/s | ~400/s |
+
+Three things move these numbers, in the order worth trying:
+
+1. **Raise the baud.** The latency is airtime, not code: a ping plus a pong
+   is 36 bytes, which is 3.1 ms at 115200, and the firmware adds ~0.3 ms on
+   top of it. Doubling the baud nearly halves the round trip. Set
+   `[roles.debug_uart] baud` in `alloy.toml`; the example reads
+   `board::debug_uart_baud`, so nothing needs recompiling by hand.
+2. **Take interrupt RX.** Writing a byte busy-waits on the TX-ready flag,
+   and these parts hold ONE received byte, so a polled loop is deaf for the
+   whole length of a transmission. Same board, same wire, 20 messages sent
+   back to back: **polled delivers 7, interrupt RX delivers 20.** Arm it
+   behind a `requires` probe, as the example does, and portability costs
+   nothing.
+3. **Size the queues against the staging, not by feel.** The loop drains all
+   buffered bytes — publishing every frame it decodes — before the service
+   consumes any, so a full staging buffer becomes dozens of publishes in one
+   pass. A shallow subscriber queue drops them, and the drop looks like a
+   wire fault. The example sizes its queue against its RX staging and says
+   so.
+
+Past the wire's ceiling messages are lost, and the counters name where. Print
+them in any bridge you ship — it is the difference between diagnosing a link
+in seconds and guessing at it.
 
 ## Costs
 
