@@ -51,6 +51,9 @@
       "label": "SPI1 on PB3/PB4/PB5 (Arduino D3/D5/D4, morpho CN10) — keeps LD4/PA5 free; set hardware-proven by old-alloy lite_hal_probe"
     }
   },
+  "dma": {
+    "adc.conv": {"controller": "dma1", "channel": 1}
+  },
   "probe": {
     "kind": "stlink",
     "runner": "probe-rs",

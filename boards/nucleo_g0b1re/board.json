@@ -117,6 +117,9 @@
       "label": "3-bit demo bus on PB3/PB4/PB5 (morpho CN10)"
     }
   },
+  "dma": {
+    "adc.conv": {"controller": "dma1", "channel": 1}
+  },
   "probe": {
     "kind": "stlink",
     "runner": "openocd",

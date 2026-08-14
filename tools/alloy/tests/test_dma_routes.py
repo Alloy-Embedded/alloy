@@ -248,6 +248,24 @@ def test_a_legal_map_emits_typed_routes_under_board_dma() -> None:
 
 
 @skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb"])
+def test_the_shipped_g0_boards_route_the_adc_ring(board_id: str) -> None:
+    """The phase-1 anchor (doc §2.1) starts here: both curated G0 boards
+    assign adc.conv to dma1 channel 1, and the emitted route carries request 5
+    — the RM0444 DMAMUX id, read from the chip file, absent from board.json."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assert board["dma"] == {"adc.conv": {"controller": "dma1", "channel": 1}}
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 1, "
+            "/*request=*/5> adc_conv{};") in out
+
+
+@skip_no_devices
 def test_a_board_that_assigns_nothing_still_gets_the_namespace() -> None:
     """`namespace board::dma` must exist on EVERY board so a requires-probe
     for a route is well-formed everywhere; only the constants are conditional
