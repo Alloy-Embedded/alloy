@@ -37,9 +37,15 @@ namespace {
 // The link and its routes: ping crosses inbound, pong crosses outbound —
 // the SAME declaration covers both directions of each message. Static, in
 // declaration order (routes after the link they hang on).
-bus::bridge<512> link;
-bus::bridge_route<messages::ping_wire> ping_route{link};
-bus::bridge_route<messages::pong_wire> pong_route{link};
+//
+// Named `uplink`, not `link`: at namespace scope on a target whose libc
+// headers declare POSIX link(2) — the Xtensa/ESP32 toolchain does — a
+// namespace-scope `link` competes with ::link on equal footing and every
+// use is ambiguous. A file-local name that collides with a libc function
+// is a portability trap, and this example compiles for every board.
+bus::bridge<512> uplink;
+bus::bridge_route<messages::ping_wire> ping_route{uplink};
+bus::bridge_route<messages::pong_wire> pong_route{uplink};
 
 // The service's inbox. It subscribes to the TOPIC — whether a ping came
 // from this image or across the wire is invisible here, which is the point.
@@ -59,7 +65,7 @@ int main() {
         // floor; a DMA board would hand readable() spans instead).
         std::uint8_t b = 0;
         while (uart.read(b)) {
-            (void)link.on_bytes({&b, 1}, alloy::uptime_us());
+            (void)uplink.on_bytes({&b, 1}, alloy::uptime_us());
         }
 
         // The service: consume pings FROM THE BUS, answer INTO THE BUS.
@@ -71,7 +77,7 @@ int main() {
 
         // Drain queued frames to the wire.
         for (;;) {
-            const auto frame = link.tx_take(staging);
+            const auto frame = uplink.tx_take(staging);
             if (frame.empty()) {
                 break;
             }
