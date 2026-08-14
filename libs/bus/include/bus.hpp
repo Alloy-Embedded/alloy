@@ -14,6 +14,8 @@
 //   bus/topic.hpp       topic<T> intrusive lists + publish()  (the fan-out)
 //   bus/subscriber.hpp  subscriber<T, Depth> — queue + try_next / co_await
 //   bus/watch.hpp       watch<T> latest-value cell + watch_route<T>
+//   bus/wire.hpp        the wire boundary — frame codec, RX machine,
+//                       WireBinding (sans-IO; local topics never touch it)
 //
 // Sizing note for async apps: one publish can wake up to N parked tasks, and
 // the executor's ready queue TRAPS on overflow rather than dropping a wake —
@@ -24,3 +26,4 @@
 #include "bus/subscriber.hpp"  // IWYU pragma: export
 #include "bus/topic.hpp"       // IWYU pragma: export
 #include "bus/watch.hpp"       // IWYU pragma: export
+#include "bus/wire.hpp"        // IWYU pragma: export

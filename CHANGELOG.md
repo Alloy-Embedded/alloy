@@ -31,6 +31,17 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   construction — and the concurrency story (full-mask walk, SPSC queues,
   `waiter_slot` wake) is written out in `bus/topic.hpp`.
 
+  `bus/wire.hpp` is the sans-IO wire boundary for the inter-board bridge:
+  the OTA frame shape (`0x7E | type | seq | len16 | payload | crc32`, no
+  escaping, length-driven delimitation — provable with a frozen clock), a
+  byte-at-a-time receive machine whose injected `tick()` only abandons
+  stalled half frames, and the `WireBinding` contract (explicit u16 id,
+  never auto-assigned, never reused; same id ⇒ same layout forever) that
+  hand-written bindings satisfy today and the `bus.toml` generator will
+  emit tomorrow. At-most-once datagrams: `lost()` counts seq gaps,
+  `bad_frames()` counts corruption — witnesses, not repairs; a bad frame
+  costs exactly itself.
+
 - **`alloy symbols` and a `[budget]` table — proof that the code landed where
   the linker script said.** `size` reports four numbers; they tell you the
   image fits and nothing about placement. `alloy symbols` reads the ELF, sorts

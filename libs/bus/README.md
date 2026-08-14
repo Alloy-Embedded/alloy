@@ -42,6 +42,7 @@ alloy::lib::bus::watch_route<temp_reading> feed{current};  // topic -> cell
 | `bus/topic.hpp` | `detail::topic<T>` intrusive lists + `publish()` — the fan-out and its exact concurrency story |
 | `bus/subscriber.hpp` | `subscriber<T, Depth>` — private FIFO, drop-newest counted, `try_next()` or `co_await next()` |
 | `bus/watch.hpp` | `watch<T>` latest-value cell + `watch_route<T>` to feed it from a topic |
+| `bus/wire.hpp` | The wire boundary, sans-IO: frame codec, byte-at-a-time RX machine, `WireBinding` — local topics never touch it |
 
 ## Measured (arm-none-eabi-gcc 14.2.1, `-Os -mcpu=cortex-m0plus`, 8-byte message)
 
@@ -68,6 +69,34 @@ Publish cost under the mask (instruction counts from the disassembly):
 - deliver with a parked task: adds `executor_core::schedule()`, which
   includes a software `__aeabi_uidivmod` on Cortex-M0+ (the executor's
   ready-ring modulo — an executor cost the bus inherits on its worst path).
+
+## The wire (sans-IO — the bridge phase drives it)
+
+A message that crosses a wire needs a declared, stable identity; a local
+struct needs nothing. The frame is the house length-prefixed convention
+(OTA's shape): `0x7E | type | seq | len u16 LE | payload | crc32 LE`, no
+escaping — a `0x7E` inside a body is legal because length is read before
+payload, so delimitation never needs a clock (the injected `tick()` exists
+only to abandon a stalled half frame). Datagrams are at-most-once: no ack,
+no retry, no device timers; `lost()` counts seq gaps as a witness, not a
+repair. Bindings are hand-written today in the exact shape the `bus.toml`
+generator will emit later:
+
+```cpp
+struct temp_reading_wire {
+    using message = temp_reading;
+    static constexpr std::uint16_t id  = 0x0101;  // explicit, never reused
+    static constexpr std::uint8_t  ver = 1;
+    static constexpr std::size_t  size = 3;
+    static void encode(const temp_reading&, std::uint8_t* out) noexcept;
+    static temp_reading decode(const std::uint8_t* in) noexcept;
+};
+```
+
+Measured, same toolchain: `wire_receiver<>` is 172 B of RAM (131 B payload
+buffer included); the whole `feed()` machine is 426 B of text plus a 48 B
+shared bytewise CRC-32; `encode_datagram<B>` is ~110 B per binding. Frame
+overhead on the wire: 12 B per datagram (9 frame + 3 message header).
 
 ## The rules that carry the design
 

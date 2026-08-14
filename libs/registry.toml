@@ -22,9 +22,9 @@ concepts = ["I2cBus", "DelayNs"]
 source = "path:libs/bme280"
 
 [bus]
-version = "0.1.0"
+version = "0.2.0"
 category = "service"
-summary = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells"
+summary = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells, sans-IO wire codec for inter-board datagrams"
 concepts = []
 source = "path:libs/bus"
 
