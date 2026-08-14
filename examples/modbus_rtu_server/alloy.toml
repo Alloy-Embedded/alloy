@@ -5,4 +5,4 @@ name = "modbus_rtu_server"
 id = "nucleo_g071rb"
 
 [libs]
-modbus = "0.4.0"
+modbus = "0.5.0"

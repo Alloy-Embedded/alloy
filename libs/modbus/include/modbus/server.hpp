@@ -1,9 +1,15 @@
 // Poll-driven Modbus RTU server (slave) over any alloy::ByteStream uart.
 //
-// poll() is bounded work: drain what the uart has, frame it, dispatch AT
-// MOST one request against the DataModel, emit at most one response. It
-// never blocks, never sleeps, never yields to an OS — drop it in a
-// superloop or call it from a coroutine between co_awaits.
+// Two RX entries, one delivery path:
+//  - poll(): bounded work — drain what the uart has, frame it, dispatch AT
+//    MOST one request against the DataModel, emit at most one response. It
+//    never blocks, never sleeps, never yields to an OS — drop it in a
+//    superloop or call it from a coroutine between co_awaits.
+//  - on_bytes(span): the DMA-ring shape (docs/design/dma-streams.md §2.2) —
+//    the caller's ring collected the bytes with no per-byte ISR and no
+//    per-byte read; each wake hands the batch over whole, and EVERY request
+//    inside it is dispatched as it closes. TX (the response) still goes out
+//    through the uart the server holds.
 //
 // Spec behaviors carried exactly (Modbus over Serial Line v1.02 §2.4):
 //  - a request for another unit is NOT ours: total silence, not an error;
@@ -111,6 +117,50 @@ public:
         if (!framer_.has_frame()) {
             return false;
         }
+        return deliver();
+    }
+
+    // The DMA-ring entry (docs/design/dma-streams.md §2.2): a BATCH of
+    // received bytes — everything the ring's readable() returned at this
+    // wake — fed in one call, every complete request inside it dispatched
+    // (and answered) as it closes. The uart is never read here; RX bytes
+    // arrive by DMA and this span is the only input path.
+    //
+    // Returns the count of bytes ACCEPTED, which is always bytes.size(): the
+    // framer owns assembly and discards internally (noise, oversize claims,
+    // CRC failures all land in its t3.5 discard mode), so the caller must
+    // ring.consume() exactly what it fed — re-feeding a byte on a later wake
+    // is a double-feed corruption, not a retry. Non-zero for a non-empty
+    // span, so the anchor's `if (on_bytes(frame)) ring.consume(...)`
+    // spelling reads naturally.
+    //
+    // One timestamp stamps the whole batch: the bytes were already on the
+    // wire before this call, and intra-batch gaps are unknowable after DMA
+    // batched them — frame separation inside a batch comes from LENGTH
+    // PREDICTION (a frame closes on its last byte, then the next byte starts
+    // fresh because deliver() consumed), while t3.5 silence separates the
+    // batches themselves.
+    std::size_t on_bytes(std::span<const std::uint8_t> bytes) {
+        const std::uint32_t now = clock_.now_us();
+        for (std::uint8_t b : bytes) {
+            framer_.feed(b, now);
+            if (framer_.has_frame()) {
+                (void)deliver();
+            }
+        }
+        framer_.tick(clock_.now_us());
+        if (framer_.has_frame()) {
+            (void)deliver();  // a silence-framed close on the trailing tick
+        }
+        return bytes.size();
+    }
+
+private:
+    // One complete CRC-valid frame is waiting in the framer: answer it (or
+    // honor the silences) and release the assembly buffer. The single
+    // delivery path poll() and on_bytes() share, so the unit filter and the
+    // broadcast rule cannot drift between the polled and the DMA-ring shape.
+    bool deliver() {
         const auto frame = framer_.frame();
         const std::uint8_t unit = frame[0];
         if (unit != unit_ && unit != 0u) {
@@ -122,7 +172,6 @@ public:
         return true;
     }
 
-private:
     // Response PDU worst case: fc + byte_count + 2*MaxRegisters of data.
     static constexpr std::size_t pdu_cap = 2u + 2u * MaxRegisters;
 

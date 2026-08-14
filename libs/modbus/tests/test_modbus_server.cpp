@@ -356,3 +356,123 @@ ALLOY_TEST(modbus_server_a_full_client_server_transaction_closes_the_loop) {
     ALLOY_CHECK(r.has_value());
     ALLOY_CHECK_EQ(regs[0], 0x5555u);
 }
+
+// ---------------------------------------------------------------------------
+// on_bytes(): the DMA-ring entry (design §2.2) — batches instead of a uart.
+// Same delivery path as poll() (deliver() is shared), so these tests pin the
+// BATCH semantics: whole-frame batches, multiple frames per batch, frames
+// torn across batches, and the wedge/CRC discard costing exactly one t3.5.
+
+namespace {
+// Body + CRC into out (>= body.size()+2); returns the ADU length.
+std::size_t make_adu(std::span<const std::uint8_t> body, std::span<std::uint8_t> out) {
+    for (std::size_t i = 0; i < body.size(); ++i) {
+        out[i] = body[i];
+    }
+    return append_crc(out, body.size());
+}
+}  // namespace
+
+ALLOY_TEST(modbus_server_on_bytes_answers_a_batch_and_never_reads_the_uart) {
+    mock_serial wire;
+    virtual_clock vc;
+    test_model model;
+    server srv{wire, model, kCfg, {&vc, 100}};
+
+    // Poison the uart's RX: if on_bytes ever fell back to reading the wire,
+    // these bytes would corrupt the framer and the response below.
+    const std::uint8_t poison[3] = {0xFF, 0xFF, 0xFF};
+    wire.queue_rx(poison);
+
+    const std::uint8_t req[6] = {0x11, 0x03, 0x00, 0x00, 0x00, 0x02};
+    std::uint8_t adu[16];
+    const std::size_t n = make_adu(req, adu);
+    ALLOY_CHECK_EQ(srv.on_bytes({adu, n}), n);  // every byte accepted
+
+    const std::uint8_t resp[7] = {0x11, 0x03, 0x04, 0x11, 0x11, 0x22, 0x22};
+    ALLOY_CHECK(tx_is(wire, resp));
+    ALLOY_CHECK_EQ(wire.rx_pos, 0u);  // the poison was never read
+}
+
+ALLOY_TEST(modbus_server_on_bytes_dispatches_every_frame_in_one_batch) {
+    mock_serial wire;
+    virtual_clock vc;
+    test_model model;
+    server srv{wire, model, kCfg, {&vc, 100}};
+
+    // Another unit's frame then ours, ONE batch: length prediction closes the
+    // first (silence, unit filter), the second is answered — no t3.5 needed
+    // between frames whose length the table predicts.
+    const std::uint8_t other[6] = {0x05, 0x03, 0x00, 0x00, 0x00, 0x01};
+    const std::uint8_t ours[6] = {0x11, 0x03, 0x00, 0x00, 0x00, 0x01};
+    std::uint8_t batch[32];
+    std::size_t len = make_adu(other, batch);
+    len += make_adu(ours, {batch + len, sizeof batch - len});
+    ALLOY_CHECK_EQ(srv.on_bytes({batch, len}), len);
+
+    const std::uint8_t resp[5] = {0x11, 0x03, 0x02, 0x11, 0x11};
+    ALLOY_CHECK(tx_is(wire, resp));  // exactly ONE response: ours
+}
+
+ALLOY_TEST(modbus_server_on_bytes_wedge_batch_costs_one_t35_and_recovers) {
+    mock_serial wire;
+    virtual_clock vc;
+    test_model model;
+    server srv{wire, model, kCfg, {&vc, 100}};
+
+    // The reference-library wedge (robot phase 3): an FC16 claiming 0x7F
+    // registers / 0xFF bytes plus trailing garbage, one batch. Total silence.
+    const std::uint8_t wedge[11] = {0x11, 0x10, 0x00, 0x00, 0x00, 0x7F, 0xFF,
+                                    0xDE, 0xAD, 0xBE, 0xEF};
+    ALLOY_CHECK_EQ(srv.on_bytes(wedge), sizeof wedge);
+    ALLOY_CHECK_EQ(wire.tx_len, 0u);
+
+    // Inside the discard window a valid frame is still eaten — the framer is
+    // resynchronizing and half-read garbage may look like anything.
+    const std::uint8_t req[6] = {0x11, 0x03, 0x00, 0x00, 0x00, 0x02};
+    std::uint8_t adu[16];
+    const std::size_t n = make_adu(req, adu);
+    (void)srv.on_bytes({adu, n});
+    ALLOY_CHECK_EQ(wire.tx_len, 0u);
+
+    // One t3.5 of bus silence later the same request is answered as if
+    // nothing happened — the regression gate on the whole integration.
+    vc.advance_us(1'000'000);
+    ALLOY_CHECK_EQ(srv.on_bytes({adu, n}), n);
+    const std::uint8_t resp[7] = {0x11, 0x03, 0x04, 0x11, 0x11, 0x22, 0x22};
+    ALLOY_CHECK(tx_is(wire, resp));
+}
+
+ALLOY_TEST(modbus_server_on_bytes_assembles_a_frame_torn_across_batches) {
+    mock_serial wire;
+    virtual_clock vc;
+    test_model model;
+    server srv{wire, model, kCfg, {&vc, 100}};
+
+    // DMA hands over whatever had arrived at the wake: a frame may tear at
+    // any byte. Two batches inside the t3.5 window (the stepping clock moves
+    // 100 us per reading) must assemble into one answered request.
+    const std::uint8_t req[6] = {0x11, 0x03, 0x00, 0x00, 0x00, 0x02};
+    std::uint8_t adu[16];
+    const std::size_t n = make_adu(req, adu);
+    ALLOY_CHECK_EQ(srv.on_bytes({adu, 3}), 3u);
+    ALLOY_CHECK_EQ(wire.tx_len, 0u);  // nothing to answer yet
+    ALLOY_CHECK_EQ(srv.on_bytes({adu + 3, n - 3}), n - 3);
+
+    const std::uint8_t resp[7] = {0x11, 0x03, 0x04, 0x11, 0x11, 0x22, 0x22};
+    ALLOY_CHECK(tx_is(wire, resp));
+}
+
+ALLOY_TEST(modbus_server_on_bytes_crc_corruption_stays_silent) {
+    mock_serial wire;
+    virtual_clock vc;
+    test_model model;
+    server srv{wire, model, kCfg, {&vc, 100}};
+
+    const std::uint8_t req[6] = {0x11, 0x03, 0x00, 0x00, 0x00, 0x02};
+    std::uint8_t adu[16];
+    const std::size_t n = make_adu(req, adu);
+    adu[n - 1] ^= 0x01;  // corrupt the CRC
+    ALLOY_CHECK_EQ(srv.on_bytes({adu, n}), n);  // accepted — and eaten
+    ALLOY_CHECK_EQ(wire.tx_len, 0u);
+}
