@@ -322,6 +322,13 @@ add_executable({project.name}.elf
 
 target_include_directories({project.name}.elf PRIVATE
     "{project.alloy_root / 'src'}"
+    # The project's OWN src/ — sources are collected by rglob, so a project may
+    # organise src/ into subdirectories, and a header in one must be reachable
+    # from a header in another without ../ gymnastics. Before this line only
+    # main.cpp's SIBLINGS resolved (the quoted-include searches the includer's
+    # directory), which silently worked right up until the first project grew
+    # a src/ subdirectory.
+    "{project.root / 'src'}"
     "{gen}"
     "{project.alloy_root / 'third_party' / 'monocypher'}"{lib_includes}
 )
