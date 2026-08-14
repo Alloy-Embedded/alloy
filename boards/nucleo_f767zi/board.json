@@ -42,6 +42,10 @@
       "reset_pin": "pg2"
     }
   },
+  "dma": {
+    "debug_uart.rx": {"controller": "dma1", "stream": 1},
+    "debug_uart.tx": {"controller": "dma1", "stream": 3}
+  },
   "probe": {
     "kind": "stlink",
     "runner": "openocd",

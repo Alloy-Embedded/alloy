@@ -39,6 +39,10 @@
       "label": "SPI1 on Arduino D13/D12/D11 = PA5/PA6/PA7 (CN7, per UM1974 Nucleo-144 pinout \u2014 old repo had no SPI map for this board); no LED conflict"
     }
   },
+  "dma": {
+    "debug_uart.rx": {"controller": "dma1", "stream": 1},
+    "debug_uart.tx": {"controller": "dma1", "stream": 3}
+  },
   "probe": {
     "kind": "stlink",
     "runner": "openocd",
