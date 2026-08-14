@@ -9,9 +9,21 @@ passes through untranslated; it must move with the board statement, so these
 tests perturb the assignment and assert the wire moves — the same
 data-driven defense test_renode_exti.py states for its numbers.
 
-What none of this witnesses: that a request actually moves a byte (the leg's
-claim), and the IDLE wake, which the pinned model does not implement at all
-(see _uart_rx_dma_wire's docstring for the measured facts).
+What none of this witnesses: the IDLE wake, which the pinned model does not
+implement at all (see _uart_rx_dma_wire's docstring for the measured facts).
+
+The byte-movement claim itself WAS witnessed locally (2026-08-14, pinned
+Renode 1.16.1, macOS arm64) by a throwaway probe on nucleo_g071rb — not yet
+by a CI leg. The probe: a ring on the generated debug_uart.rx route draining
+RDR by DMA (CR3.DMAR poked directly; the firmware never reads RDR, never
+arms RXNE), echoing delivered lines with a sequence number. Green run:
+"HELLO" delivered as line #1; with CR3.DMAR cleared by the monitor, "DEAD"
+never delivered (the model's request GPIO is DMAR-gated); after an RQR.RXFRQ
+flush and DMAR restore, "WORLD" delivered as line #2 — the sequence number
+proving DEAD's absence exactly, and the flush proving the documented
+stuck-level recovery. Negative control on causation: the same firmware
+against the same platform with only the ReceiveDmaRequest line deleted fails
+on line #1 (10 s timeout where the good run passes in 1.5 s).
 """
 
 from __future__ import annotations
