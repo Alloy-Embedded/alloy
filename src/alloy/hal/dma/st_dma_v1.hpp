@@ -82,8 +82,12 @@ struct dma_impl<Inst> {
         static inline volatile bool latched = false;
         // The half event gets the SAME latch treatment, not a fork of it: the
         // half ISR clears HTIF (it must), so a polled half<Ch>() reads this
-        // latch OR the flag — an ISR and a poller can never fight over one
-        // hardware bit (the exact bug class the completion latch closed).
+        // latch OR the flag — the rule that keeps an ISR and a poller from
+        // fighting over one hardware bit (the bug class the completion latch
+        // closed, WITH a witness). This half-side copy has none yet: nothing
+        // in the tree polls half<Ch>() (phase 1's ring is event-driven), so
+        // the latch here is the rule applied, not the rule proven. The first
+        // polled consumer (phase 2) owes it the test.
         static inline void (*half_fn)(void*) = nullptr;
         static inline void* half_ctx = nullptr;
         static inline volatile bool half_latched = false;

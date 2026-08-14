@@ -14,6 +14,33 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams, phase 1: `alloy::dma::ring`, board-assigned routes, and
+  `adc.ring()`** (docs/design/dma-streams.md). A DMA route is now a generated
+  fact: the board states which channel serves which role signal —
+
+      "dma": { "adc.conv": {"controller": "dma1", "channel": 1} }
+
+  — the generator validates it against the chip's routing data (collisions,
+  out-of-range channels, and signals without a request are refused with the
+  legal alternatives; `alloy board-validate` reports the same problems with
+  locations) and emits a typed `board::dma` constant. The request id never
+  appears in board.json — it is the chip's fact. On top of the route,
+  `ring<T>`/`ring_storage<T, N>` stream circular DMA into a caller-owned
+  buffer with half/full boundary events, and the ADC facade composes the two:
+
+      alloy::dma::ring_storage<std::uint16_t, 256> samples;
+      auto adc = board::adc::open();
+      auto ring = adc.ring(samples, /*channel=*/3);
+      // consumer: ring.pending() / ring.take() — hardware-stable halves
+
+  Destroying the ring stops the hardware and releases the channel claim.
+  Boards that assign nothing still build, and a program that streams nothing
+  pays zero bytes (measured: byte-identical images). The half-before-full
+  event order and the delivered values are asserted under emulation on
+  `nucleo_g0b1re` and `nucleo_g071rb` (`examples/adc_stream`); DMAMUX request
+  routing itself is not witnessable under Renode and awaits silicon. One
+  route ships assigned (`adc.conv`); UART/SPI streams are the next phase.
+
 - **`alloy::tick` — a hardware timer as a periodic time base, over four ST IP
   versions with one driver.** The STM32G0's TIM6, TIM7, TIM14, TIM15, TIM16 and
   TIM17 were `uncurated` and unreachable; they are curated in `alloy-devices`

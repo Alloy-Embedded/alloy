@@ -147,9 +147,12 @@ concept stream_capable = requires {
 
 // One continuously-converting channel streamed into a caller-owned ring by
 // DMA — the design's anchor 2.1 (docs/design/dma-streams.md §2.1). The CPU
-// never touches the sampling path: the converter free-runs (CONT + DMAEN),
-// every result is moved by the channel the board assigned to `adc.conv`, and
-// the consumer takes hardware-stable halves off the ring.
+// never touches the sampling path: the converter is programmed to free-run
+// (CONT + DMAEN — RM-derived; Renode tags CONT unimplemented, so emulation
+// paces conversions through the leg's trigger shim and only silicon can
+// witness the free-run itself), every result is moved by the channel the
+// board assigned to `adc.conv`, and the consumer takes hardware-stable
+// halves off the ring.
 //
 // This wrapper exists for the §4 TEARDOWN ORDER, which the bare ring cannot
 // provide alone: the peripheral's request stream must stop BEFORE the channel

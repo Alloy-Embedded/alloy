@@ -273,8 +273,9 @@ public:
         //
         // The ORDER of these two lines is deliberate. alloy::irq::attach
         // PREPENDS to the shared-line chain, so dispatch runs the COMPLETION
-        // handler before the half handler. On silicon that order is
-        // immaterial — HTIF and TCIF are edge events half a buffer apart. On
+        // handler before the half handler. On silicon the order should not
+        // matter — the RM describes HTIF and TCIF as events half a buffer
+        // apart — but no silicon run has witnessed that yet. On
         // Renode's STM32G0DMA (the phase-1 witness) it is load-bearing:
         // the model raises both flags together at the wrap and its per-flag
         // clears also drop the sibling flag (CHTIF clears TransferComplete —
