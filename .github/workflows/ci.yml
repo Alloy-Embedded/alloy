@@ -387,6 +387,43 @@ jobs:
             robot: modbus_rtu.robot
             banner: alloy modbus_rtu_server ready
             experimental: true
+          # THE SAME ANCHOR ON THE F7s — dma-streams phase 3 (design §6 row
+          # 3): the SAME portable main.cpp, opened by nothing but the boards'
+          # debug_uart.rx/tx assignments; RX rides dma1 STREAM 1 (0-based, ST
+          # numbering) through the st/dma_v2 engine and the emitted
+          # stream-engine model (emit/renode.py DMA_V2_CS — CIRC reload +
+          # HTIF over the stock model's measured behaviours; CHSEL routing is
+          # by-construction unwitnessable there, same caveat as the G0
+          # DMAMUX bridge). Every assertion is byte-for-byte the G0 suite's.
+          # `experimental` per the convention: new board+robot pairs — green
+          # locally on both (7.6/7.8 s, pinned Renode 1.16.1, arm64), plus a
+          # negative control (DMAR raise stripped -> MODBUS-FAIL in ~8 s,
+          # no hang). PROMOTE after a few green CI runs.
+          - board: nucleo_f722ze
+            example: modbus_rtu_server
+            robot: modbus_rtu.robot
+            banner: alloy modbus_rtu_server ready
+            experimental: true
+          - board: nucleo_f767zi
+            example: modbus_rtu_server
+            robot: modbus_rtu.robot
+            banner: alloy modbus_rtu_server ready
+            experimental: true
+          # ANCHOR 2.3 ON THE F7 — the async_io DMA leg claims the F767ZI's
+          # debug_uart.tx route (dma1 stream 3, request from the matched
+          # triple) and the DMA-carried line + resumes=2 prove the stream-3
+          # NVIC wake is real under the emitted model. SPI_LEG/I2C_LEG=False:
+          # this board has neither bus in its board.json, the firmware folds
+          # those legs closed at compile time, and the robot asserts the
+          # firmware SAYS SO (the "not available" lines) instead of skipping
+          # silently. `experimental` per the convention: new board+robot
+          # pair, green locally (6.6 s, pinned Renode 1.16.1, arm64).
+          - board: nucleo_f767zi
+            example: async_io
+            robot: async_io.robot
+            banner: alloy async_io
+            extra_args: "--variable SPI_LEG:False --variable I2C_LEG:False"
+            experimental: true
           # BUS BRIDGE — libs/bus F2: the robot plays the PEER BOARD with an
           # independent frame implementation in monitor Python (its own
           # bitwise CRC-32 vs the firmware's bytewise-branchless one — same
