@@ -214,6 +214,7 @@ struct st_usart_v4_body {
     // st_dma_v1_body.hpp / test_st_dma_v1_latch.cpp), not a bare read. ---
     inline static void (*idle_fn)(void*) = nullptr;
     inline static void* idle_ctx = nullptr;
+    inline static bool idle_armed = false;
 
     static void idle_isr(void*) {
         if (IP::idle.read(r()) == 0u) {
@@ -228,9 +229,26 @@ struct st_usart_v4_body {
     // fn == nullptr is a legitimate registration: the interrupt STILL fires
     // and wakes a WFI/WFE sleeper (that wake IS anchor 2.2's mechanism); the
     // ISR clears the flag so the line does not re-fire forever.
+    //
+    // Calling again WHILE ARMED is a LISTENER SWAP, not a re-arm — the
+    // facade's contract (uart::rx_stream::on_idle: "rx_ring() armed the IDLE
+    // interrupt already; registering here only chooses who is told"). The
+    // swap must not repeat the arming sequence: a second irq::attach of the
+    // same ISR on the same line is the alloy::irq duplicate trap, and
+    // re-clearing IDLE here would eat a gap the already-armed ISR owns.
+    // The (fn, ctx) pair is swapped under a masked window: with the line
+    // armed and live, an IDLE landing between the two stores would call one
+    // listener's fn with the other's ctx.
     static void enable_idle_irq(void (*fn)(void*), void* ctx) {
-        idle_fn = fn;
-        idle_ctx = ctx;
+        {
+            const arch::irq_state saved = arch::irq_save();
+            idle_fn = fn;
+            idle_ctx = ctx;
+            arch::irq_restore(saved);
+        }
+        if (idle_armed) {
+            return;
+        }
         // Clear a stale IDLE first: the flag sets whenever the line has been
         // idle since the last byte — armed mid-silence it would fire
         // immediately and report a gap nobody waited through.
@@ -238,6 +256,7 @@ struct st_usart_v4_body {
         alloy::irq::attach(Inst::irq, &idle_isr);
         IP::idleie.set(r());
         alloy::irq::enable(Inst::irq);
+        idle_armed = true;
     }
 
     static void disable_idle_irq() {
@@ -245,6 +264,7 @@ struct st_usart_v4_body {
         alloy::irq::detach(Inst::irq, &idle_isr);
         idle_fn = nullptr;
         idle_ctx = nullptr;
+        idle_armed = false;
     }
 };
 
