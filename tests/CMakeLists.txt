@@ -129,6 +129,7 @@ add_executable(alloy_unit_tests
     test_can.cpp
     test_dma_ring.cpp
     test_st_dma_v1_latch.cpp
+    test_st_dma_v2_latch.cpp
     test_st_usart_v4_idle.cpp
     test_adc_stream.cpp
     test_uart_rx_stream.cpp
