@@ -12,6 +12,12 @@ using namespace alloy::literals;
 
 // Runs from fast RAM (no flash wait states) — the kind of thing a control loop
 // or a hot ISR wants.
+// The loop's STATE, in the same fast memory as its code. On this G0 there is
+// no coupled RAM, so it lands in ordinary SRAM and costs nothing; on a part
+// with DTCM or CCM it moves there without the source changing.
+ALLOY_FASTDATA std::uint32_t g_calls = 1;
+ALLOY_FASTBSS std::uint32_t g_last;
+
 ALLOY_FASTCODE std::uint32_t hot_sum(std::uint32_t n) {
     std::uint32_t s = 0;
     for (std::uint32_t i = 1; i <= n; ++i) {
@@ -64,6 +70,8 @@ int main() {
     uart.write("  (expect 0x0800.... = flash)\r\n");
 
     // Calling it proves the startup copied the code correctly.
+    g_calls += 1;
+    g_last = hot_sum(100);
     uart.write("hot_sum(100) = ");
     print_u32(uart, hot_sum(100));
     uart.write("  (expect 5050)\r\n");

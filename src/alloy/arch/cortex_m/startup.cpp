@@ -16,6 +16,11 @@ extern std::uint32_t _ebss;    // .bss end
 extern std::uint32_t _sifastcode;  // .fastcode load address (flash)
 extern std::uint32_t _sfastcode;   // .fastcode start (ram)
 extern std::uint32_t _efastcode;   // .fastcode end (ram)
+extern std::uint32_t _sifastdata;  // .fastdata load address (flash)
+extern std::uint32_t _sfastdata;   // .fastdata start (coupled ram)
+extern std::uint32_t _efastdata;   // .fastdata end
+extern std::uint32_t _sfastbss;    // .fastbss start (coupled ram)
+extern std::uint32_t _efastbss;    // .fastbss end
 
 // Static-constructor arrays (walked directly — no newlib crti/_init needed).
 using init_fn = void (*)();
@@ -45,6 +50,17 @@ int main();
     src = &_sifastcode;
     for (std::uint32_t* dst = &_sfastcode; dst < &_efastcode; ++dst, ++src) {
         *dst = *src;
+    }
+    // ALLOY_FASTDATA / ALLOY_FASTBSS, in the chip's coupled RAM (DTCM on an
+    // M7, CCM on an F3/F4/G4). Same scheme again; both empty unless something
+    // opted in, and both absent entirely on a chip with no coupled memory —
+    // the linker defines the symbols equal, so the loops run zero times.
+    src = &_sifastdata;
+    for (std::uint32_t* dst = &_sfastdata; dst < &_efastdata; ++dst, ++src) {
+        *dst = *src;
+    }
+    for (std::uint32_t* dst = &_sfastbss; dst < &_efastbss; ++dst) {
+        *dst = 0u;
     }
     // Zero the BSS.
     for (std::uint32_t* dst = &_sbss; dst < &_ebss; ++dst) {

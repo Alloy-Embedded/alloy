@@ -51,6 +51,29 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   startup ever copied — documented intent, absent mechanism, and no artefact
   anywhere that could have shown it.
 
+- **`ALLOY_FASTDATA` / `ALLOY_FASTBSS` — a hot loop's state in the chip's
+  coupled RAM.** `ALLOY_FASTCODE` already put hot CODE in fast RAM; its STATE
+  and the stack still sat behind the same bus as everything else. Where a part
+  has tightly- or core-coupled memory (DTCM on a Cortex-M7, CCM on an
+  F3/F4/G4), marked objects now land there:
+
+      ALLOY_FASTDATA float g_integrator = 0.0f;   // copied at boot
+      ALLOY_FASTBSS  float g_history[64];         // zeroed at boot
+
+  `alloy-devices` carries the region — the fact was in ST's own data and the
+  builder was discarding it — with `fast: true` and `dma_reachable: false`.
+  **The second flag is why this is opt-in per symbol.** Coupled memory hangs
+  off the core, not the bus matrix the peripheral DMA sees: a buffer placed
+  there and handed to a transfer moves nothing and says nothing. `.data` and
+  `.bss` therefore stay in ordinary SRAM, asserted by a test. On a part with no
+  coupled RAM the sections are still emitted, empty, into ordinary RAM — so the
+  startup's copy loop is the same code everywhere.
+
+  Also fixed here: `app_regions()` for RL78 carried a paste from the script
+  emitter, referencing two names absent from its scope and returning the script
+  string where callers expect regions. `alloy size` on an RL78 board raised
+  NameError; nothing had exercised it.
+
 - **Three control libraries, and a gate so they cannot rot.** `libs/protect`
   (limits with debounce, hysteresis and a latched fault word that records every
   simultaneous fault), `libs/meter` (RMS, real power as the mean of the
