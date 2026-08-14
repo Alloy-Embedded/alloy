@@ -261,6 +261,30 @@ ALLOY_TEST(dma_ring_cursor_counts_items_across_wraps) {
     ALLOY_CHECK_EQ(r.cursor(), 19u);
 }
 
+ALLOY_TEST(dma_ring_cursor_is_exact_at_the_reload_edge) {
+    // The dma_v1 caveat the ring's arithmetic FOLDS (st_dma_v1 remaining()'s
+    // header note): in circular mode the count register reads a transient 0 at
+    // the instant the lap completes, BEFORE the wrap ISR has run. cursor()
+    // maps that reading onto "this lap fully written" — w*N + (N-0) — which is
+    // the true item count at that instant, so the fold is exact, not merely
+    // conservative. write_pos() folds the same reading to position 0 via the
+    // modulo, so readable() lags by up to one buffer there (never overstates).
+    struct tag {};
+    using impl = alloy::hal::dma_impl<fake_ctrl<tag>>;
+    static ring_storage<std::uint8_t, 16> buf;
+    ring r{route<fake_ctrl<tag>, 1, 7>{}, 0u, buf};
+
+    impl::rem = 0;  // reload edge: lap done, wrap ISR not yet run
+    ALLOY_CHECK_EQ(r.cursor(), 16u);
+    ALLOY_CHECK(r.readable().empty());  // position 0 == read cursor 0: the lag
+    // the ISR arrives; the count register has reloaded
+    impl::fire_full();
+    impl::rem = 16;
+    ALLOY_CHECK_EQ(r.cursor(), 16u);  // same truth, now carried by wraps_
+    impl::rem = 0;  // second reload edge, one lap later
+    ALLOY_CHECK_EQ(r.cursor(), 32u);
+}
+
 ALLOY_TEST(dma_ring_readable_returns_contiguous_runs_tail_first_at_wrap) {
     struct tag {};
     using impl = alloy::hal::dma_impl<fake_ctrl<tag>>;
@@ -351,6 +375,45 @@ ALLOY_TEST(dma_ring_second_claimant_of_a_live_ring_channel_traps) {
         static ring_storage<std::uint16_t, 8> buf2;
         ring a{route<fake_ctrl<tag>, 1, 5>{}, 0u, buf};
         ring b{route<fake_ctrl<tag>, 2, 6>{}, 0u, buf2};
+    }));
+}
+
+// ── claim(route): the anchor-2.3 spelling ─────────────────────────────────
+
+ALLOY_TEST(dma_claim_route_yields_a_channel_token_on_the_routes_channel) {
+    struct tag {};
+    using Ctrl = fake_ctrl<tag>;
+    using impl = alloy::hal::dma_impl<Ctrl>;
+
+    // The route names controller + channel + request; claim() consumes the
+    // first two and hands back the ordinary channel token.
+    auto tx = alloy::dma::claim(route<Ctrl, 3, 21>{});
+    ALLOY_CHECK(impl::controller_enabled);
+    ALLOY_CHECK(
+        (alloy::claim::sub_held<Ctrl, 3, alloy::claim::personality::dma>()));
+
+    // The token is the SHIPPED channel API: the one-shot starter works and the
+    // request id at the register is the CALLER's peripheral fact (dmareq_tx's
+    // stand-in here = 9), not the route's — the route's id is validated
+    // board data for the same signal, but the one-shot path takes it from the
+    // instance descriptor at the call site.
+    static const std::uint8_t msg[2] = {0xAA, 0x55};
+    tx.start_m2p_u8(std::span<const std::uint8_t>{msg}, 0x77u, 9u);
+    ALLOY_CHECK(impl::last_dir == impl::dir::mem_to_periph);
+    ALLOY_CHECK_EQ(impl::last_request, 9u);
+    ALLOY_CHECK_EQ(impl::last_periph, 0x77u);
+}
+
+ALLOY_TEST(dma_claim_route_and_ring_share_one_ordinal_space) {
+    // channel::claim() semantics, unchanged: one token per firmware, so a ring
+    // arriving after a route-claim of the same channel traps (and the reverse
+    // is already pinned by dma_ring_second_claimant_of_a_live_ring_channel).
+    ALLOY_CHECK(refuses([] {
+        struct tag {};
+        static ring_storage<std::uint16_t, 8> buf;
+        auto tok = alloy::dma::claim(route<fake_ctrl<tag>, 1, 5>{});
+        (void)tok;
+        ring r{route<fake_ctrl<tag>, 1, 5>{}, 0u, buf};
     }));
 }
 

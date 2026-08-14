@@ -170,6 +170,25 @@ private:
     channel() = default;
 };
 
+// Route -> claimed channel token — the design's anchor 2.3 spelling for the
+// SHIPPED one-shot paths (write_dma / write_dma_begin+end, dma_waiter), on the
+// board's generated assignment instead of a hand-typed <Inst, Ch>:
+//
+//     auto tx = alloy::dma::claim(board::dma::debug_uart_tx);
+//     co_await w.run([&] { uart.write_dma_begin(tx, log_line); });
+//     uart.write_dma_end(tx);
+//
+// This is a NAMING of channel<>::claim(), not a third ownership mechanism:
+// same one-token-per-firmware semantics, same trap on a second claimant, same
+// ordinal space as the rings (a ring on this route's channel and this token
+// are the same resource, and the loser traps). The route's request id rides
+// along in the type but is not consumed here — the one-shot starters take the
+// request from the PERIPHERAL's fact (Inst::dmareq_tx) at the call site.
+template <class Controller, unsigned Ch, std::uint8_t Request>
+[[nodiscard]] inline channel<Controller, Ch> claim(route<Controller, Ch, Request>) {
+    return channel<Controller, Ch>::claim();
+}
+
 // ── Rings: circular streams over a caller-owned buffer ────────────────────
 //
 // A ring is an OWNED OBJECT (design §1): construction claims the channel and
