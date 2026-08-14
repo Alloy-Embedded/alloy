@@ -381,6 +381,55 @@ namespace Antmicro.Renode.Peripherals.DMA
 """
 
 
+def _uart_rx_dma_wire(board: dict[str, Any], chip: dict[str, Any]):
+    """(controller, channel) when the board assigns `debug_uart.rx`
+    (board.json "dma") to the G0-style controller this platform emits. None
+    otherwise — same shape and same reasons as _adc_dma_wire.
+
+    UNLIKE the ADC, the UART needs no C# bridge and no access shim — both
+    facts read in the pinned 1.16.1 sources (renode-infrastructure @ the
+    v1.16.1 submodule pin, STM32F7_USART.cs):
+
+     * The model already has the request output the ADC lacked:
+       `ReceiveDmaRequest`, a GPIO the model SETS while CR3.DMAR is written
+       and the rx queue is non-empty, and CLEARS when the queue drains
+       (`BufferState` setter). STM32G0DMA implements IGPIOReceiver and acts on
+       the rising edge only (OnGPIO ignores value==false), one transfer unit
+       per edge in p2m mode — so the .repl can wire the two directly, no
+       DMAMUX stand-in required. Per-byte injection (uart.WriteChar, the
+       modbus_rtu.robot master) produces one edge per byte: the DMA's RDR
+       read drains the one-deep-at-that-instant queue synchronously inside
+       the WriteChar call, so the level falls and re-arms every time.
+       HONEST LIMIT the leg inherits: bytes that arrive while the channel is
+       disabled (or before DMAR is set) queue up silently and produce NO
+       further edges — the level is already high, and nothing re-evaluates
+       it on channel enable. Firmware must arm RX-DMA before the first byte;
+       the legs inject only after the firmware's banner, which is that
+       ordering made procedural.
+
+     * RDR is byte-readable: the model carries
+       AllowedTranslations(ByteToDoubleWord | WordToDoubleWord), so a
+       PSIZE=8 DMA read needs no word-access subclass. (The class is
+       `sealed` — the subclass idiom is unavailable, and nothing needs it.)
+
+     * What the model CANNOT witness: the IDLE line. ISR.IDLE (bit 4),
+       CR1.IDLEIE and ICR.IDLECF are all tagged (unimplemented) in the
+       pinned source and IDLE never enters the model's IRQ equation, so an
+       IDLE-armed wake does not exist under this emulation and no resc hook
+       can add it (the flag would read stuck-high and still raise nothing).
+       The model DOES implement the receiver timeout (RTOR/RTOIE/RTOF/RTOCF,
+       non-lowPower shape) including the IRQ path — a firmware that arms RTO
+       for its frame-gap wake IS witnessable; one that arms only IDLE is
+       witnessable only through its DMA half/full events or polling."""
+    assign = (board.get("dma") or {}).get("debug_uart.rx")
+    dma = _resolve_dma(chip)
+    if not isinstance(assign, dict) or dma is None:
+        return None
+    if assign.get("controller") != dma[0]:
+        return None
+    return dma[0], int(assign["channel"])
+
+
 def renode_support_files(chip: dict[str, Any], board: dict[str, Any]) -> dict[str, str]:
     """Extra files the .resc includes, written next to the .repl by the
     caller. Today: the ADC-DMA C# shims, only where that wiring is live."""
@@ -540,6 +589,24 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
     {uart_clock}: 8000000
     IRQ -> nvic@{irqn}
 """
+    # RX-DMA request wire, only where the board assigns `debug_uart.rx` and
+    # the model is the one with the ReceiveDmaRequest output (measured facts,
+    # honest limits and the IDLE caveat: _uart_rx_dma_wire's docstring). The
+    # channel index is 1-based on BOTH sides — the board.json channel and
+    # STM32G0DMA.OnGPIO's [1..count] check — so it passes through untranslated,
+    # derived from the same board statement the firmware's route uses:
+    # platform and firmware cannot disagree, so request ROUTING itself stays
+    # unwitnessable here, exactly like the ADC leg. Forward reference to the
+    # controller (declared below) is the same .repl idiom the ADC bridge's
+    # `target:` already relies on, green in CI.
+    # The wire is INERT for every firmware that leaves CR3.DMAR clear — the
+    # model gates the GPIO on it — which is what keeps the pre-phase-2 UART
+    # legs' semantics untouched by construction.
+    if model == "UART.STM32F7_USART":
+        rx_wire = _uart_rx_dma_wire(board, chip)
+        if rx_wire is not None:
+            platform = platform.rstrip("\n") + (
+                f"\n    ReceiveDmaRequest -> {rx_wire[0]}@{rx_wire[1]}\n")
     i2c = _resolve_i2c(chip, board)
     if i2c is not None:
         i2c_name, i2c_base, i2c_model, i2c_irq = i2c
