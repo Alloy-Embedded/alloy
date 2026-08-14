@@ -51,6 +51,21 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   startup ever copied — documented intent, absent mechanism, and no artefact
   anywhere that could have shown it.
 
+- **Three control libraries, and a gate so they cannot rot.** `libs/protect`
+  (limits with debounce, hysteresis and a latched fault word that records every
+  simultaneous fault), `libs/meter` (RMS, real power as the mean of the
+  instantaneous product, power factor, int64 energy) and `libs/pll` (SOGI grid
+  synchronisation with phase, frequency and amplitude, and a constant-rotation
+  phase advance). All three are pure arithmetic — `concepts = []` — so they
+  build and are tested on a laptop with no toolchain.
+
+  The gate matters as much as the libraries: `test_libs_are_covered.py` requires
+  every registry entry to have a manifest, an include directory, a test that
+  NAMES its namespace, and at least three assertions. A header-only module that
+  no test instantiates is never compiled — its templates are parsed and never
+  checked. That is how seven headers with outright syntax errors survived years
+  in the library these three were distilled from.
+
 - **DMA streams, phase 2: `uart.rx_ring()`, `alloy::dma::claim(route)`, and
   the Modbus RTU server on the ring** (docs/design/dma-streams.md §2.2/§2.3).
   Where the board assigns `debug_uart.rx`, the uart handle grows the anchor
