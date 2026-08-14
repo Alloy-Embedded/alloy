@@ -80,8 +80,12 @@ escaping — a `0x7E` inside a body is legal because length is read before
 payload, so delimitation never needs a clock (the injected `tick()` exists
 only to abandon a stalled half frame). Datagrams are at-most-once: no ack,
 no retry, no device timers; `lost()` counts seq gaps as a witness, not a
-repair. Bindings are hand-written today in the exact shape the `bus.toml`
-generator will emit later:
+repair.
+
+A binding names one message on the wire. Write it by hand, or declare the
+message in `bus.toml` and let `alloy gen` emit exactly this shape into
+`<alloy/bus_messages.hpp>` — the frames are byte-identical either way, so
+moving a hand binding into the registry changes authorship, not bytes:
 
 ```cpp
 struct temp_reading_wire {
@@ -93,6 +97,19 @@ struct temp_reading_wire {
     static temp_reading decode(const std::uint8_t* in) noexcept;
 };
 ```
+
+```toml
+# bus.toml — the same thing, declared once for both ends of the link
+[messages.temp_reading]
+id = 0x0101
+fields = [ { name = "centi_c", type = "i16" },
+           { name = "sensor_id", type = "u8" } ]
+```
+
+`alloy bus validate` enforces the id doctrine (explicit, never
+auto-assigned, retired rather than deleted), and `alloy monitor` decodes
+these datagrams on the link so a sniffing route reads as
+`[bus] temp_reading  seq=12  centi_c=2543` instead of binary.
 
 Measured, same toolchain: `wire_receiver<>` is 172 B of RAM (131 B payload
 buffer included); the whole `feed()` machine is 426 B of text plus a 48 B
@@ -143,7 +160,9 @@ written CRC-32 in monitor Python.
   every task awaiting them; destructors unlink from the topic.
 - **Publish can wake N tasks; the executor's ready queue traps on overflow.**
   Count a publish burst when sizing `executor<MaxReady>`.
-- **Single-core by contract.** `irq_save` masks this core only; a cross-core
-  or cross-board transport is the bridge phase (see `BUS_PROPOSTA.md` at the
-  workspace root), which adds declared wire IDs — locally, none of that
-  exists on purpose.
+- **Single-core by contract.** `irq_save` masks this core only. Crossing to
+  another board is the bridge, above; crossing to another CORE is neither —
+  that needs a transport this library does not have yet.
+
+The full guide, including the wire contract and the monitor, is
+`docs/guide/bus.md` in the alloy repository.
