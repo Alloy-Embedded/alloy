@@ -20,7 +20,12 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   boards' `debug_uart.rx/tx` assignments, and both anchors are proven under
   Renode (modbus DMA ring with every G0 assertion unchanged; the route-claimed
   TX with the interrupt-woken `resumes=2`; a DMAR negative control that fails
-  red, not hung). Two driver gaps the promise turned out to need, fixed
+  red, not hung). **What emulation proves is half a route**: the stream index
+  is load-bearing end to end — misdirect the model's request wire by one
+  stream and the leg fails red — but the request id is not, because deleting
+  the driver's CHSEL write leaves the leg green. On F4/F7 as on the G0's
+  DMAMUX, only silicon witnesses the request half. Two driver gaps the
+  promise turned out to need, fixed
   generically: `st_usart_v3` (F7/L4) now inherits the same witnessed
   RX-DMA/IDLE body the v4 family runs (`tests/test_st_usart_v4_idle.cpp`
   keeps covering it), and `uart.write_dma()` sources its request id from the
