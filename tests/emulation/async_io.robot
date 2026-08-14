@@ -29,16 +29,27 @@ Resource          ${RENODEKEYWORDS}
 
 *** Variables ***
 ${BANNER}         alloy async_io
+# Which bus legs EXIST on the board under test. The firmware folds a leg away
+# at compile time on a board without that bus (no role, or a driver with no
+# interrupt hook) and prints "<bus> await: not available on this board"
+# instead — so the suite must know which shape it is asserting. Defaults keep
+# the original board (nucleo_g071rb: all legs live) byte-identical; an F7 leg
+# passes False for the buses its board.json does not carry. Where a leg is
+# live, every assertion is UNCHANGED; where it is not, the suite asserts the
+# firmware SAYS SO — a silent fold is a failure either way.
+${SPI_LEG}        True
+${I2C_LEG}        True
 
-*** Test Cases ***
-Coroutines Resume From Peripheral Interrupts
-    Execute Command           include @${RESC}
+*** Keywords ***
+Prime Spi Fixture
     # SPI device (a TEST fixture, not emitted into the platform), primed with the
     # three bytes the awaited exchange will shift back on MISO.
     Execute Command           machine LoadPlatformDescriptionFromString "spidev: Mocks.DummySPISlave @ spi1"
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xDE
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xAD
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xBE
+
+Prime I2c Echo Fixture
     # I2C device at 0x08, turned into an ECHO from the monitor's Python (the SPI
     # mock's EnqueueValue has no I2C counterpart), so the bytes the read await
     # returns can only be the bytes the write await put on the bus.
@@ -59,17 +70,31 @@ Coroutines Resume From Peripheral Interrupts
     ...  """
     Execute Command           ${echo}
     Execute Command           setup_echo_i2c "sysbus.i2c1.probe_target"
-    Create Terminal Tester    ${UART}
-    Start Emulation
-    Wait For Line On Uart     ${BANNER}    timeout=30
+
+Expect Spi Leg
     # SPI: the whole three-byte exchange behind ONE co_await. The pattern proves
     # the ISR clocked bytes 2 and 3; resumes=2 proves the task was suspended
     # while it did and woken by the completion interrupt.
     Wait For Line On Uart     spi await: 0xdeadbe    timeout=30
     Wait For Line On Uart     spi await: resumes=2    timeout=30
+
+Expect I2c Leg
     # I2C: a write await and a read await, one STOP interrupt each -> 3 resumes.
     Wait For Line On Uart     i2c await: 0xdeadbe    timeout=30
     Wait For Line On Uart     i2c await: resumes=3    timeout=30
+
+*** Test Cases ***
+Coroutines Resume From Peripheral Interrupts
+    Execute Command           include @${RESC}
+    Run Keyword If            "${SPI_LEG}" == "True"    Prime Spi Fixture
+    Run Keyword If            "${I2C_LEG}" == "True"    Prime I2c Echo Fixture
+    Create Terminal Tester    ${UART}
+    Start Emulation
+    Wait For Line On Uart     ${BANNER}    timeout=30
+    Run Keyword If            "${SPI_LEG}" == "True"    Expect Spi Leg
+    ...    ELSE    Wait For Line On Uart    spi await: not available on this board    timeout=30
+    Run Keyword If            "${I2C_LEG}" == "True"    Expect I2c Leg
+    ...    ELSE    Wait For Line On Uart    i2c await: not available on this board    timeout=30
     # ADDITION (dma-streams phase 2, anchor §2.3): the route-claim marker.
     # The firmware claims its TX channel FROM THE BOARD'S debug_uart.tx route
     # (alloy::dma::claim(board::dma::debug_uart_tx) — the generated fact, not
