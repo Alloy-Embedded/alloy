@@ -67,8 +67,9 @@ struct dma_impl<Inst> {
 
     static void enable_controller() { alloy::gate_on(Inst::gate); }
 
-    // Completion callbacks. Storage is per (controller, channel): `callback` is
-    // a template, so each Ch gets its own statics without a runtime table.
+    // Completion + half-transfer callbacks. Storage is per (controller,
+    // channel): `callback` is a template, so each Ch gets its own statics
+    // without a runtime table.
     template <unsigned Ch>
     struct callback {
         static inline void (*fn)(void*) = nullptr;
@@ -79,6 +80,13 @@ struct dma_impl<Inst> {
         // finished. The ISR therefore hands the fact over to this latch, and
         // complete<Ch>() reports either source.
         static inline volatile bool latched = false;
+        // The half event gets the SAME latch treatment, not a fork of it: the
+        // half ISR clears HTIF (it must), so a polled half<Ch>() reads this
+        // latch OR the flag — an ISR and a poller can never fight over one
+        // hardware bit (the exact bug class the completion latch closed).
+        static inline void (*half_fn)(void*) = nullptr;
+        static inline void* half_ctx = nullptr;
+        static inline volatile bool half_latched = false;
     };
 
 
@@ -98,6 +106,7 @@ struct dma_impl<Inst> {
         stop<Ch>();
         clear_flags<Ch>();
         callback<Ch>::latched = false;  // a new transfer is not already complete
+        callback<Ch>::half_latched = false;  // ...nor already half-done
         MUX::ip::dmareq_id.write(mux_ccr<Ch>(), request);
         cpar<Ch>() = static_cast<std::uint32_t>(periph_addr);
         cmar<Ch>() = static_cast<std::uint32_t>(mem_addr);
@@ -114,7 +123,11 @@ struct dma_impl<Inst> {
                     // start_*() would silently clear the callback's TCIE.
                     (callback<Ch>::fn != nullptr
                          ? (IP::tcie.mask() | IP::teie.mask())
-                         : 0u);
+                         : 0u) |
+                    // HTIE folded exactly like TCIE, for the same reason: CCR
+                    // is whole-register-written under EN=0, so "enable later"
+                    // would silently erase the other enables.
+                    (callback<Ch>::half_fn != nullptr ? IP::htie.mask() : 0u);
     }
 
     template <unsigned Ch>
@@ -140,6 +153,22 @@ struct dma_impl<Inst> {
         return (r().ISR & IP::template teif<Ch - 1>.mask) != 0u;
     }
 
+    // Live remaining-transfer count, in items. In circular mode it reloads to
+    // the programmed count at wrap — this is what a ring's cursor arithmetic
+    // reads; a transient 0 right at the reload edge is the caller's to fold.
+    template <unsigned Ch>
+    [[nodiscard]] static std::uint16_t remaining() {
+        return static_cast<std::uint16_t>(cndtr<Ch>());
+    }
+
+    // The half-transfer twin of complete<Ch>(): the latch the ISR set on its
+    // way past, or the live flag for the polled-only case.
+    template <unsigned Ch>
+    [[nodiscard]] static bool half() {
+        return callback<Ch>::half_latched ||
+               (r().ISR & IP::template htif<Ch - 1>.mask) != 0u;
+    }
+
     template <unsigned Ch>
     static void clear_flags() {
         r().IFCR = IP::template cgif<Ch - 1>.mask;  // clears the channel's 4 flags
@@ -149,19 +178,43 @@ struct dma_impl<Inst> {
     // runs for interrupts belonging to other channels. Returning immediately
     // when our own TCIF is clear is what makes several channels attachable to
     // one line — the same contract alloy::irq states for every shared handler.
+    //
+    // The guard and the clear both read the HARDWARE flags, not the latch, and
+    // the clear names ONLY the flags this handler consumed: with half events in
+    // play, a blanket cgif here would eat an HTIF that set between the read and
+    // the write, and a latch-based guard would re-fire the completion callback
+    // on every half interrupt of an already-latched channel.
     template <unsigned Ch>
     static void complete_isr(void*) {
-        if (!complete<Ch>() && !error<Ch>()) {
+        const std::uint32_t flags = r().ISR;
+        const bool done = (flags & IP::template tcif<Ch - 1>.mask) != 0u;
+        const bool failed = (flags & IP::template teif<Ch - 1>.mask) != 0u;
+        if (!done && !failed) {
             return;
         }
-        const bool failed = error<Ch>();
-        clear_flags<Ch>();
+        r().IFCR = (done ? IP::template ctcif<Ch - 1>.mask : 0u) |
+                   (failed ? IP::template cteif<Ch - 1>.mask : 0u);
         callback<Ch>::latched = true;
         if (callback<Ch>::fn != nullptr) {
             // The callback sees a channel whose flags are already cleared, so it
             // may start the next transfer without racing its own completion.
             (void)failed;
             callback<Ch>::fn(callback<Ch>::ctx);
+        }
+    }
+
+    // The half-transfer ISR: same shared-line contract, same latch discipline.
+    // A separate function (not a branch in complete_isr) so each event's
+    // attach/detach stays independent — alloy::irq chains both on one line.
+    template <unsigned Ch>
+    static void half_isr(void*) {
+        if ((r().ISR & IP::template htif<Ch - 1>.mask) == 0u) {
+            return;
+        }
+        r().IFCR = IP::template chtif<Ch - 1>.mask;
+        callback<Ch>::half_latched = true;
+        if (callback<Ch>::half_fn != nullptr) {
+            callback<Ch>::half_fn(callback<Ch>::half_ctx);
         }
     }
 
@@ -181,6 +234,24 @@ struct dma_impl<Inst> {
         alloy::irq::detach(irq_line_of<Ch>(), &complete_isr<Ch>);
         callback<Ch>::fn = nullptr;
         callback<Ch>::ctx = nullptr;
+    }
+
+    // Register BEFORE the transfer's setup(), like the completion callback and
+    // for the same CCR-write rule — setup() folds HTIE in when this is set.
+    template <unsigned Ch>
+    static void enable_half_irq(void (*fn)(void*), void* ctx) {
+        callback<Ch>::half_fn = fn;
+        callback<Ch>::half_ctx = ctx;
+        alloy::irq::attach(irq_line_of<Ch>(), &half_isr<Ch>);
+        alloy::irq::enable(irq_line_of<Ch>());
+    }
+
+    template <unsigned Ch>
+    static void disable_half_irq() {
+        ccr<Ch>() = ccr<Ch>() & ~IP::htie.mask();
+        alloy::irq::detach(irq_line_of<Ch>(), &half_isr<Ch>);
+        callback<Ch>::half_fn = nullptr;
+        callback<Ch>::half_ctx = nullptr;
     }
 
     // IRQ line grouping is IP-version behavior; the numbers are chip data.
