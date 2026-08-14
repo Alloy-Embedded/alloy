@@ -19,7 +19,31 @@
 // newest of the two valid regions wins on load. Deferred commit batches a
 // burst of writes into one erase cycle: poll() commits after the registry
 // has been quiet for `quiet_ms` (clock injected — the house rule).
-
+//
+// ── WHEN NOT TO USE THIS LIBRARY ────────────────────────────────────────────
+// This registry is OPINIONATED, and three of its opinions are constructor
+// traps or format commitments. A product that ports an EXISTING parameter
+// system should check all four before adopting it; a standalone parameter
+// service in the application is the correct pattern where any one applies —
+// that is not a workaround, it is the design (this library serves products
+// born on alloy):
+//
+//   * STORED DEFAULTS IN A DIFFERENT ENCODING THAN MIN/MAX. The registry
+//     requires def within [min, max] and TRAPS in the constructor otherwise.
+//     Fielded tables exist where dozens of rows store defaults in a raw
+//     encoding the bounds do not describe — those tables cannot be loaded,
+//     by design, and no flag disables the check.
+//   * A PRE-EXISTING ON-FLASH IMAGE FORMAT. The bank's ping-pong layout
+//     ([magic|seq|count|values|crc32], two regions) is not negotiable, and
+//     adopting it over a fleet that already stores another layout means every
+//     unit factory-resets on its first post-update boot.
+//   * RUNTIME-WRITABLE DEFAULTS OR PROPERTIES. Here the descriptor table is
+//     constexpr: defaults, bounds and flags are code. A product whose
+//     defaults are DATA (an OEM image rewritten in the field) needs a
+//     service that persists them, which this deliberately is not.
+//   * PRESET VALUE SETS (per-row alternate value columns selected at
+//     runtime). No column exists for them.
+//
 #pragma once
 
 #include <cstddef>
