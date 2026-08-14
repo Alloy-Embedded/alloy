@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from .devices import load_chip, load_registers
+from .emit.board import dma_assignment_problems
 from .emit.common import EmitError, uses_external_clock
 from .roles import ROLES, ip_classes, role_pin_fields, routes_by_peripheral
 
@@ -226,6 +227,15 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
         else:
             program = (profiles[profile] or {}).get("program") or []
     issues.extend(_check_external_clock(board, program))
+
+    # --- dma channel assignments -----------------------------------------
+    # SAME rules the emitter refuses on (one function, no drift), reported
+    # here in full with suggestions instead of stopping at the first.
+    for problem in dma_assignment_problems(board, chip, registers):
+        issues.append(_issue(
+            "error", f"dma '{problem['key']}': {problem['message']}",
+            field=f"dma.{problem['key']}",
+            suggestions=problem["suggestions"][:MAX_SUGGESTIONS]))
 
     # --- roles -----------------------------------------------------------
     for role, cfg in sorted(roles.items()):

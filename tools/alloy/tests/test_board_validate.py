@@ -202,6 +202,16 @@ _MUTATIONS: list[tuple[str, Any]] = [
     ("unroutable signal pin", lambda b: b["roles"]["i2c"].__setitem__("scl", "pb3")),
     ("role the framework does not know",
      lambda b: b["roles"].__setitem__("teleporter", {"peripheral": "i2c1"})),
+    ("dma channel collision",
+     lambda b: b.__setitem__("dma", {
+         "adc.conv": {"controller": "dma1", "channel": 1},
+         "debug_uart.rx": {"controller": "dma1", "channel": 1}})),
+    ("dma controller that is not one",
+     lambda b: b.__setitem__("dma", {
+         "adc.conv": {"controller": "tim2", "channel": 1}})),
+    ("dma signal the chip has no request for",
+     lambda b: b.__setitem__("dma", {
+         "debug_uart.conv": {"controller": "dma1", "channel": 1}})),
 ]
 
 

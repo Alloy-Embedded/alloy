@@ -162,6 +162,115 @@ def _check_role_personalities(board: dict[str, Any]) -> None:
             claimed[periph] = (role, personality)
 
 
+# ── DMA channel assignments (board.json "dma") ──────────────────────────────
+#
+# The board states which controller+channel serves which role signal; the
+# request id stays the CHIP's fact and never appears in board.json
+# (docs/design/dma-streams.md §1). These helpers are the ONE expression of the
+# legality rules: the emitter refuses the first problem (like
+# _check_role_personalities), board_validate reports all of them with
+# suggestions — both call dma_assignment_problems, so the two verbs cannot
+# drift.
+
+_DMA_IDENT = re.compile(r"[a-z_][a-z0-9_]*\Z")
+
+
+def _dma_class_controllers(chip: dict[str, Any],
+                           registers: dict[str, dict[str, Any]]) -> list[str]:
+    return sorted(
+        name for name, p in chip["peripherals"].items()
+        if p.get("ip") and registers.get(p["ip"], {}).get("class") == "dma")
+
+
+def dma_signal_candidates(board: dict[str, Any], chip: dict[str, Any]) -> list[str]:
+    """Every 'role.signal' this board could legally assign: a declared role whose
+    bound peripheral advertises the signal under `dma_requests`."""
+    out: list[str] = []
+    for role, cfg in (board.get("roles") or {}).items():
+        if not isinstance(cfg, dict) or not isinstance(cfg.get("peripheral"), str):
+            continue
+        requests = (chip["peripherals"].get(cfg["peripheral"]) or {}).get("dma_requests") or {}
+        out.extend(f"{role}.{signal}" for signal in requests)
+    return sorted(out)
+
+
+def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
+                            registers: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every problem in the board's `dma:` map, as
+    {key, message, suggestions} — deterministic order, all found in one pass.
+
+    This is the PHASE-1 legality shape: a DMAMUX/free-router family (G0/G4),
+    where the request id is chip-wide so ANY channel of ANY dma-class
+    controller may serve it, and the only inter-assignment rule is collision.
+    EXTENSION POINT (phase 3, stream engines — F4/F7): when the bound
+    peripheral carries `dma_routes` triples instead of a flat `dma_requests`
+    map, the stated (controller, stream) must match one of the signal's
+    triples and the error must list the legal alternatives. That check slots
+    in at the signal-resolution step below; deliberately not half-built here.
+    """
+    problems: list[dict[str, Any]] = []
+    assignments = board.get("dma") or {}
+    roles = board.get("roles") or {}
+    controllers = _dma_class_controllers(chip, registers)
+    candidates = dma_signal_candidates(board, chip)
+    # (controller, channel) -> first key that claimed it, for the collision rule.
+    taken: dict[tuple[str, int], str] = {}
+
+    def bad(key: str, message: str, suggestions: list[str]) -> None:
+        problems.append({"key": str(key), "message": message,
+                         "suggestions": suggestions})
+
+    for key in sorted(assignments, key=str):
+        role_name, dot, signal = str(key).partition(".")
+        if not dot or not _DMA_IDENT.match(role_name) or not _DMA_IDENT.match(signal):
+            bad(key, "the key must be 'role.signal' (e.g. \"adc.conv\")", candidates)
+            continue
+        cfg = roles.get(role_name)
+        if not isinstance(cfg, dict) or not isinstance(cfg.get("peripheral"), str):
+            bad(key, f"'{role_name}' is not a peripheral-bearing role this board "
+                     f"declares", candidates)
+            continue
+        periph = cfg["peripheral"]
+        requests = (chip["peripherals"].get(periph) or {}).get("dma_requests") or {}
+        if signal not in requests:
+            role_signals = sorted(c for c in candidates if c.startswith(f"{role_name}."))
+            bad(key, f"the chip states no DMA request for {periph} '{signal}'"
+                     + ("" if role_signals else
+                        f" — {periph} advertises no DMA requests at all"),
+                role_signals or candidates)
+            continue
+
+        assign = assignments[key]
+        if not isinstance(assign, dict):
+            bad(key, 'the assignment must be {"controller": ..., "channel": ...}', [])
+            continue
+        controller = assign.get("controller")
+        if controller not in controllers:
+            bad(key, f"'{controller}' is not a DMA controller on this chip",
+                controllers)
+            continue
+        channel = assign.get("channel")
+        if isinstance(channel, bool) or not isinstance(channel, int):
+            bad(key, "'channel' must be an integer", [])
+            continue
+        # dma_v1 channels are 1-based; `channels.count` is the chip's geometry.
+        # A dma-class controller without a count (no geometry curated yet) gets
+        # no range check rather than a made-up one.
+        count = ((chip["peripherals"][controller].get("channels") or {}).get("count"))
+        if isinstance(count, int) and not 1 <= channel <= count:
+            bad(key, f"{controller} has channels 1..{count}, not {channel}",
+                [str(c) for c in range(1, count + 1)
+                 if (controller, c) not in taken])
+            continue
+        prev = taken.setdefault((controller, channel), str(key))
+        if prev != str(key):
+            free = [str(c) for c in range(1, (count or channel) + 1)
+                    if (controller, c) not in taken]
+            bad(key, f"{controller} channel {channel} already serves '{prev}' — "
+                     f"one channel moves one stream", free)
+    return problems
+
+
 def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
@@ -232,6 +341,15 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
     # Before anything is emitted: no peripheral may be handed to two mutually
     # exclusive personalities. Generation is the earliest place that can see it.
     _check_role_personalities(board)
+    # Same doctrine for the DMA map: a channel assignment the chip's routing
+    # data contradicts (or two assignments on one channel) never generates.
+    # board_validate reports the SAME rules, all at once, with suggestions.
+    dma_problems = dma_assignment_problems(board, chip, registers)
+    if dma_problems:
+        first = dma_problems[0]
+        hint = f" (try: {', '.join(first['suggestions'][:6])})" if first["suggestions"] else ""
+        raise EmitError(
+            f"board {board['id']}: dma '{first['key']}': {first['message']}{hint}")
     # A board may carry an INLINE clock profile (a custom PLL from `alloy clock`
     # / the visual editor) instead of naming one of the chip's curated profiles.
     if isinstance(board.get("clock"), dict):
@@ -1036,6 +1154,34 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             "// caps-guarded generic lambdas compiling (never instantiated).\n"
             "struct dma_t {};"
         )
+
+    # DMA routes — the board's channel assignments (board.json "dma"), already
+    # validated against the chip's request routing up top. One typed constant
+    # per assignment; the REQUEST id comes from the chip's `dma_requests`,
+    # never from the board file. The namespace is emitted on EVERY board so a
+    # `requires { board::dma::adc_conv; }` probe is always well-formed: a board
+    # that assigns nothing gets the empty namespace, and a facade's
+    # requires-gated stream method reports the missing route by name at compile
+    # time instead of misrouting silently.
+    route_decls: list[str] = []
+    for key in sorted(board.get("dma") or {}):
+        role_name, _, signal = key.partition(".")
+        periph = roles[role_name]["peripheral"]
+        request = int(chip["peripherals"][periph]["dma_requests"][signal])
+        assign = (board.get("dma") or {})[key]
+        route_decls.append(
+            f"inline constexpr alloy::dma::route<alloy::dev::{assign['controller']}_t, "
+            f"{int(assign['channel'])}, /*request=*/{request}> {role_name}_{signal}{{}};"
+            f"  // serves {periph} {signal}"
+        )
+    if route_decls:
+        extra_includes.append("alloy/dma.hpp")
+    decls.append(
+        "// Board-assigned DMA routes (see board.json \"dma\"); empty when the\n"
+        "// board assigns none.\n"
+        "namespace dma {\n" + "".join(f"{d}\n" for d in route_decls) +
+        "}  // namespace dma"
+    )
 
     # --- CRC unit and factory device ID: no role, no pins, no board.json. ---
     #
