@@ -273,6 +273,36 @@ jobs:
             example: adc_watchdog
             robot: adc_watchdog.robot
             banner: alloy adc_watchdog
+          # ADC DMA RING — BLOCKING — the dma-streams phase-1 anchor (design
+          # §2.1): continuous conversions stream into a 256-sample ring by DMA
+          # while the firmware takes hardware-stable halves, asserting in
+          # take() order that the HALF interrupt delivered before the FULL one,
+          # that the full one delivered, and that the ring WRAPPED (pattern
+          # written twice) — each half pinned to the fed millivolts
+          # (SetDefaultValue 1650 ch3 -> v=2048..2048; an unrouted or unfed
+          # channel prints 0). Both G0 Nucleos, one main.cpp; the ADC instance
+          # name differs per die (adc vs adc1) and rides in as a robot
+          # variable. Green locally on the pinned Renode 1.16.1 (1.7 s/1.6 s,
+          # emitter-generated platforms) with two negative controls verified
+          # red: a wrong fed voltage (31.5 s, the value lines), and swapping
+          # the ring's two event-attach lines (31.5 s — the model's global
+          # flag-clears eat the wrap when dispatch order flips; see the
+          # comment in alloy/dma.hpp). VACUOUS SPOTS, stated in
+          # adc_stream.robot: DMAMUX request routing (unmodelled — the
+          # generated request bridge and the firmware's route derive from the
+          # same board.json statement), once-per-boundary half events (the
+          # model re-raises HTIF per second-half sample, so missed() is
+          # diagnostic only), CONT (tagged no-op; EXTEN shim paces the
+          # stream), and the CCRDY shim shared with every ADC leg.
+          - board: nucleo_g071rb
+            example: adc_stream
+            robot: adc_stream.robot
+            banner: alloy adc_stream
+          - board: nucleo_g0b1re
+            example: adc_stream
+            robot: adc_stream.robot
+            banner: alloy adc_stream
+            extra_args: "--variable ADC:sysbus.adc1"
           # DMA DRIVER CONFORMANCE — BLOCKING — against Renode's OWN
           # DMA.STM32G0DMA, NVIC-wired (the purpose-written inline model was
           # replaced in commit 52c2642, which this comment used to predate).
@@ -899,7 +929,7 @@ jobs:
         run: |
           set -u
           failed=()
-          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
+          for ex in blink async_blink async_heartbeat async_sensor async_io uart_echo hello pwm_fade encoder analog_probe adc_watchdog i2c_scan i2c_read spi_loopback spi_read adc_read adc_stream dma_uart memory_probe time_probe modbus_rtu_client modbus_rtu_server irq_echo pin_irq dma_probe net_probe net_echo services watchdog nvm rtc dac can gpio_bus fastcode filter secure fs lpuart_wake bridge device_id tick; do
             echo "::group::$ex"
             if ! (cd "alloy/examples/$ex" && uv run --project ../../tools/alloy alloy build --board ${{ matrix.board }}); then
               failed+=("$ex")
