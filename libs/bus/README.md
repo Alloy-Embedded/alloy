@@ -172,11 +172,33 @@ Nothing corrupted, no queue full, no ring full: the library dropped none of
 them. `lost=13` is the seq gaps catching every message the UART overran
 before it was ever a frame.
 
-Two ceilings above this one are known and unmeasured. A board whose
-`debug_uart.rx` has a DMA route removes the deafness entirely (the ring
-receives while the CPU transmits). And `publish()` holds the irq mask
-across the frame encode, CRC included — on a fast link that window is
-itself a limit, which is the risk the design named from the start.
+### The mask window, measured and shortened
+
+`publish()` holds the irq mask across the whole delivery — list walk, frame
+encode, ring push — which is the risk this design named from the start, and
+on a fast link it is a real one: **42.8 µs** per publish, measured on a
+SAME70 over 1000 iterations. At 230400 baud a byte arrives every 43.4 µs, so
+a publish was blinding the receiver for very nearly a whole byte.
+
+Encoding through a table-driven CRC-32 (`crc32_table`, 1 KiB of .rodata)
+instead of the bytewise one cuts that to **23.6 µs** — 45%, since the CRC was
+about half the window and the rest is the walk and the 21-byte ring copy.
+A 20-message burst at 230400 goes from 18/20 delivered to 20/20.
+
+Nothing about the concurrency changed: the seq is still taken and the frame
+still pushed inside one mask, so frames cannot reorder and `lost()` stays
+trustworthy. That mattered more than the microseconds — the alternative,
+encoding outside the mask, is faster still and would let two publishers
+interleave their sequence numbers, turning `lost()` into a liar exactly
+during the bursts you use it to diagnose.
+
+The remaining ceiling is the wire itself: a 40-message burst at 230400 still
+answers 27, because 40 pongs is more airtime than the link has. That is
+backpressure, not loss to fix.
+
+One ceiling stays unmeasured: a board whose `debug_uart.rx` has a DMA route
+removes the transmit deafness entirely (the ring receives while the CPU
+transmits).
 
 ### The rest of the contract
 

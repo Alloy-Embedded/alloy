@@ -375,3 +375,40 @@ ALLOY_TEST(crc_one_generic_verifier_runs_on_the_handle_and_on_the_fallback) {
     auto sw = alloy::crc::software_engine{}.open();
     ALLOY_CHECK_EQ(verify_the_way_a_program_would(sw, s), 0xCBF43926u);
 }
+
+// The table variant exists so a caller holding an interrupt mask across a
+// checksum (libs/bus's frame encode) does not spend eight shifts per byte
+// there. It is only safe to swap in if it is the SAME function: pinned here
+// over every byte value, every length up to a frame, and the catalogue check
+// value — so a table folded from a mistyped polynomial fails the build's
+// tests rather than the field's links.
+ALLOY_TEST(crc32_table_is_the_same_function_as_the_bytewise_one) {
+    static constexpr std::uint8_t check[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    ALLOY_CHECK_EQ(alloy::ota::crc::crc32_table_of({check, sizeof check}),
+                   0xCBF4'3926u);  // the CRC-32/ISO-HDLC catalogue value
+    ALLOY_CHECK_EQ(alloy::ota::crc::crc32_table_of({check, sizeof check}),
+                   alloy::ota::crc::crc32_of({check, sizeof check}));
+
+    // Every byte value, at every length a bus frame can reach.
+    std::uint8_t buf[160];
+    for (std::size_t i = 0; i < sizeof buf; ++i) {
+        buf[i] = static_cast<std::uint8_t>(i * 7u + 13u);
+    }
+    for (std::size_t n = 0; n <= sizeof buf; ++n) {
+        const std::span<const std::uint8_t> s{buf, n};
+        if (alloy::ota::crc::crc32_table_of(s) != alloy::ota::crc::crc32_of(s)) {
+            ALLOY_CHECK(false);
+            return;
+        }
+    }
+    ALLOY_CHECK(true);
+
+    // And incrementally, split at an awkward boundary — the receiver feeds
+    // one byte at a time, so the streaming path must agree too.
+    alloy::ota::crc::crc32_table inc;
+    inc.reset();
+    for (const std::uint8_t b : buf) {
+        inc.update(&b, 1);
+    }
+    ALLOY_CHECK_EQ(inc.value(), alloy::ota::crc::crc32_of({buf, sizeof buf}));
+}

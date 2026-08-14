@@ -112,7 +112,10 @@ std::size_t encode_datagram(const typename B::message& m, std::uint8_t seq,
     byteorder::store_le16(&out[5], B::id);
     out[7] = B::ver;
     B::encode(m, &out[8]);
-    const std::uint32_t c = ota::crc::crc32_of(out.subspan(1, 4 + payload));
+    // Table CRC deliberately: a bridge encodes THIS inside publish()'s irq
+    // mask, and the bytewise loop there is not a size trade but deafness —
+    // measured, it is a whole received byte at 230400 baud.
+    const std::uint32_t c = ota::crc::crc32_table_of(out.subspan(1, 4 + payload));
     byteorder::store_le32(&out[5 + payload], c);
     return total;
 }
@@ -268,7 +271,10 @@ private:
     }
 
     std::array<std::uint8_t, MaxPayload> buf_{};
-    ota::crc::crc32 crc_;
+    // Same table as the encoder above: it is already in the image, so the
+    // faster inner loop is free here, and a receive path that keeps up
+    // matters on the same links that made the encoder's window matter.
+    ota::crc::crc32_table crc_;
     std::uint32_t stall_us_;
     std::uint32_t last_byte_us_ = 0;
     std::uint32_t rx_crc_ = 0;
