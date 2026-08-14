@@ -1,0 +1,15 @@
+[lib]
+name = "pll"
+version = "0.1.0"
+description = "SOGI-PLL grid synchronisation — phase, frequency and amplitude from one single-phase voltage sample, with a constant-rotation phase advance for computation delay"
+category = "control"
+license = "MIT"
+homepage = "https://en.wikipedia.org/wiki/Phase-locked_loop"
+
+[requires]
+concepts = []
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

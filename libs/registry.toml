@@ -63,6 +63,13 @@ summary = "Runtime parameter registry — descriptor table, O(1) tick reads, str
 concepts = ["FlashController"]
 source = "path:libs/param"
 
+[pll]
+version = "0.1.0"
+category = "control"
+summary = "SOGI-PLL grid synchronisation — phase, frequency and amplitude from one single-phase voltage sample, with a constant-rotation phase advance for computation delay"
+concepts = []
+source = "path:libs/pll"
+
 [protect]
 version = "0.1.0"
 category = "control"
