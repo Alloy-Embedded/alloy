@@ -7,9 +7,16 @@ expression of the legality rules — the emitter refuses the first problem, the
 validator reports all of them — so these tests exercise the shared function
 directly and then pin both consumers to it.
 
-Phase-1 shape only: DMAMUX / free-router families (G0/G4), where any dma-class
-channel may serve any request and the only inter-assignment rule is collision.
-The F4/F7 triple check is a marked extension point, deliberately absent here.
+Two silicon shapes, each with its own fixture die:
+
+- DMAMUX / free-router (G0/G4, `dma_requests`): any dma-class channel may
+  serve any request; the only inter-assignment rule is collision. Channels
+  are 1-BASED (dma_v1).
+- Stream engine (F4/F7, `dma_routes` triples — phase 3, filling the marked
+  extension point): one signal reaches ONLY its triples, the matched triple
+  supplies the request (CHSEL), refusal prints every legal
+  "{controller, stream}" (design §1), and streams are 0-BASED per ST
+  numbering — the tests pin the loudness of that distinction both ways.
 """
 
 from __future__ import annotations
@@ -185,6 +192,143 @@ def test_every_problem_is_reported_not_just_the_first() -> None:
     assert {p["key"] for p in problems} == {"debug_uart.rx", "debug_uart.tx", "spi.rx"}
 
 
+def test_a_stream_key_on_a_free_router_chip_names_both_bases() -> None:
+    """The reverse confusion must be as loud as the forward one: writing the
+    stream engines' 0-based key on a DMAMUX board is refused naming BOTH
+    numbering bases, never silently read as a channel (the off-by-one that
+    would misroute every transfer by one channel)."""
+    problems = _problems({"adc.conv": {"controller": "dma1", "stream": 1}})
+    assert len(problems) == 1
+    assert "'channel' (1-based" in problems[0]["message"]
+    assert "0-based" in problems[0]["message"]
+
+
+# ------------------------------------------- the stream-engine shape (F4/F7)
+#
+# A synthetic F7-shaped die: usart3's rx reaches exactly one triple, tx
+# reaches two (the real RM0431 shape for USART3_TX: DMA1 stream 3 CHSEL 4 or
+# stream 4 CHSEL 7 — different requests on purpose, so a test can PROVE the
+# request follows the matched triple). `spare` overlaps rx's stream for the
+# collision test.
+
+STREAM_CHIP: dict[str, Any] = {
+    "vendor": "st", "part": "SYNTH_F7",
+    "peripherals": {
+        "usart3": {"ip": "st/usart_v3", "base": "0x40004800",
+                   "dma_routes": {
+                       "rx": [{"controller": "dma1", "stream": 1, "request": 4}],
+                       "tx": [{"controller": "dma1", "stream": 3, "request": 4},
+                              {"controller": "dma1", "stream": 4, "request": 7}]}},
+        "spare1": {"ip": "st/spi_v2", "base": "0x40013000",
+                   "dma_routes": {
+                       "rx": [{"controller": "dma1", "stream": 1, "request": 6}]}},
+        "dma1": {"ip": "st/dma_v2", "base": "0x40026000"},
+        "dma2": {"ip": "st/dma_v2", "base": "0x40026400"},
+    },
+}
+
+STREAM_REGISTERS: dict[str, dict[str, Any]] = {
+    "st/dma_v2": {"class": "dma"},
+    "st/usart_v3": {"class": "uart"},
+    "st/spi_v2": {"class": "spi"},
+}
+
+
+def _stream_board(dma: dict[str, Any] | None) -> dict[str, Any]:
+    board: dict[str, Any] = {
+        "id": "synth_f7",
+        "roles": {
+            "debug_uart": {"peripheral": "usart3", "tx": "pd8", "rx": "pd9"},
+            "spi": {"peripheral": "spare1", "sck": "pa5", "miso": "pa6",
+                    "mosi": "pa7"},
+        },
+    }
+    if dma is not None:
+        board["dma"] = dma
+    return board
+
+
+def _stream_problems(dma: dict[str, Any] | None) -> list[dict[str, Any]]:
+    return dma_assignment_problems(_stream_board(dma), STREAM_CHIP,
+                                   STREAM_REGISTERS)
+
+
+def test_stream_candidates_come_from_the_routes() -> None:
+    assert dma_signal_candidates(_stream_board(None), STREAM_CHIP) == [
+        "debug_uart.rx", "debug_uart.tx", "spi.rx"]
+
+
+def test_a_matching_triple_is_clean_and_so_is_the_alternative() -> None:
+    assert _stream_problems({
+        "debug_uart.rx": {"controller": "dma1", "stream": 1},
+        "debug_uart.tx": {"controller": "dma1", "stream": 3}}) == []
+    assert _stream_problems({
+        "debug_uart.tx": {"controller": "dma1", "stream": 4}}) == []
+
+
+def test_a_non_matching_stream_prints_every_legal_triple() -> None:
+    """The design §1 promise, verbatim: refusal lists the legal
+    "{controller, stream}" alternatives — in the MESSAGE (the emitter shows
+    only the first problem's text) and in the suggestions (board_validate's
+    structured field)."""
+    problems = _stream_problems({"debug_uart.tx": {"controller": "dma1",
+                                                   "stream": 5}})
+    assert len(problems) == 1
+    assert "{dma1, stream 5} does not reach usart3 'tx'" in problems[0]["message"]
+    assert "{dma1, stream 3}" in problems[0]["message"]
+    assert "{dma1, stream 4}" in problems[0]["message"]
+    assert problems[0]["suggestions"] == ["{dma1, stream 3}", "{dma1, stream 4}"]
+
+
+def test_the_wrong_controller_is_refused_the_same_way() -> None:
+    """The doc's own example: a controller the triples never name, even a
+    real dma-class one, is a generation error listing the legal options."""
+    problems = _stream_problems({"debug_uart.rx": {"controller": "dma2",
+                                                   "stream": 1}})
+    assert len(problems) == 1
+    assert "{dma2, stream 1} does not reach usart3 'rx'" in problems[0]["message"]
+    assert problems[0]["suggestions"] == ["{dma1, stream 1}"]
+
+
+def test_the_channel_key_on_a_stream_engine_names_both_bases() -> None:
+    """dma_v1's 1-based `channel` on an F7 assignment is the off-by-one trap
+    the phase-1 rename exists to kill: refused by NAME, stating both
+    numbering bases, and still listing the legal triples."""
+    problems = _stream_problems({"debug_uart.tx": {"controller": "dma1",
+                                                   "channel": 3}})
+    assert len(problems) == 1
+    assert "'stream' (0-based" in problems[0]["message"]
+    assert "'channel' (dma_v1's 1-based)" in problems[0]["message"]
+    assert problems[0]["suggestions"] == ["{dma1, stream 3}", "{dma1, stream 4}"]
+
+
+def test_a_stream_that_is_not_an_integer_is_refused() -> None:
+    for stream in ("1", 1.0, True, None):
+        problems = _stream_problems({"debug_uart.rx": {"controller": "dma1",
+                                                       "stream": stream}})
+        assert len(problems) == 1
+        assert "'stream' must be an integer" in problems[0]["message"]
+
+
+def test_a_malformed_stream_assignment_says_stream_not_channel() -> None:
+    problems = _stream_problems({"debug_uart.rx": "dma1 s1"})
+    assert len(problems) == 1
+    assert '"stream"' in problems[0]["message"]
+
+
+def test_two_signals_on_one_stream_collide() -> None:
+    """Stream collisions are refused exactly like channel collisions; the
+    free-alternatives list is honest — spare1's only triple is taken, so it
+    suggests nothing rather than something illegal."""
+    problems = _stream_problems({
+        "debug_uart.rx": {"controller": "dma1", "stream": 1},
+        "spi.rx": {"controller": "dma1", "stream": 1}})
+    assert len(problems) == 1
+    assert problems[0]["key"] == "spi.rx"
+    assert "already serves 'debug_uart.rx'" in problems[0]["message"]
+    assert problems[0]["suggestions"] == []
+
+
 # ----------------------------------------------- the emitter and the verb
 # consume the same rules
 
@@ -293,13 +437,15 @@ def test_the_shipped_g0_boards_route_the_debug_uart(board_id: str) -> None:
 def test_a_board_that_assigns_nothing_still_gets_the_namespace() -> None:
     """`namespace board::dma` must exist on EVERY board so a requires-probe
     for a route is well-formed everywhere; only the constants are conditional
-    (and so is the alloy/dma.hpp include)."""
+    (and so is the alloy/dma.hpp include). Fixture moved off f767zi when
+    phase 3 gave the F7 boards their assignments; same70 still assigns none
+    (its XDMAC backend has no circular mode, doc §3.4)."""
     from alloy_cli.devices import load_chip, load_registers
     from alloy_cli.emit.board import emit_board_header
 
     board = json.loads(
-        (ALLOY_ROOT / "boards" / "nucleo_f767zi" / "board.json").read_text())
-    assert "dma" not in board, "fixture assumption: f767zi assigns no routes yet"
+        (ALLOY_ROOT / "boards" / "same70_xplained" / "board.json").read_text())
+    assert "dma" not in board, "fixture assumption: same70 assigns no routes"
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
     assert "namespace dma {\n}  // namespace dma" in out
@@ -438,3 +584,111 @@ def test_a_tx_only_assignment_grows_only_the_tx_tag() -> None:
     bind = out.split("using debug_uart = ")[1].split(";")[0]
     assert "rx_dma" not in bind
     assert "alloy::uart::tx_dma<" in bind
+
+
+# ------------------------------------------- stream-engine emission (F4/F7)
+#
+# The phase-3 promise (doc §6): the SAME portable examples open on the F7
+# Nucleos by adding ONLY board.json dma assignments. These tests pin the
+# board half of that promise: the shipped assignments emit the same
+# constant + binder-tag shape the G0 boards get, with the request read from
+# the matched dma_routes triple.
+
+def _emit_shipped(board_id: str, mutate=None) -> str:
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    if mutate is not None:
+        mutate(board)
+    return emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                             load_registers(DEVICES_ROOT))
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_f722ze", "nucleo_f767zi"])
+def test_the_shipped_f7_boards_route_the_debug_uart(board_id: str) -> None:
+    """Both Nucleo-144s put the VCP on USART3 and assign {dma1, stream 1}
+    (rx) / {dma1, stream 3} (tx). The emitted route number is the 0-BASED
+    STREAM, and the request ids (4/4) are the triples' CHSEL — chip facts,
+    absent from board.json."""
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    assert board["dma"]["debug_uart.rx"] == {"controller": "dma1", "stream": 1}
+    assert board["dma"]["debug_uart.tx"] == {"controller": "dma1", "stream": 3}
+    assert board["roles"]["debug_uart"]["peripheral"] == "usart3"
+    out = _emit_shipped(board_id)
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 1, "
+            "/*request=*/4> debug_uart_rx{};") in out
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 3, "
+            "/*request=*/4> debug_uart_tx{};") in out
+    assert '#include "alloy/dma.hpp"' in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_f722ze", "nucleo_f767zi"])
+def test_the_f7_routes_ride_the_binder_like_the_g0_ones(board_id: str) -> None:
+    """Same attachment shape as G0: rx_dma<>/tx_dma<> tags on the debug_uart
+    bind, same type spelling as the board::dma constants (_dma_route_type
+    emits both, so they cannot drift)."""
+    out = _emit_shipped(board_id)
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 1, "
+            "/*request=*/4>>") in bind
+    assert ("alloy::uart::tx_dma<alloy::dma::route<alloy::dev::dma1_t, 3, "
+            "/*request=*/4>>") in bind
+
+
+@skip_no_devices
+def test_the_request_follows_the_matched_triple() -> None:
+    """The anti-drift proof the G0 mutation tests cannot state: on a stream
+    engine the request is NOT a per-signal constant — moving tx from stream 3
+    to its other legal triple (stream 4) must move the request from 4 to 7,
+    because the CHSEL rides the triple, not the signal."""
+    def move_tx(board): board["dma"]["debug_uart.tx"] = {
+        "controller": "dma1", "stream": 4}
+    out = _emit_shipped("nucleo_f722ze", move_tx)
+    assert ("inline constexpr alloy::dma::route<alloy::dev::dma1_t, 4, "
+            "/*request=*/7> debug_uart_tx{};") in out
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert ("alloy::uart::tx_dma<alloy::dma::route<alloy::dev::dma1_t, 4, "
+            "/*request=*/7>>") in bind
+
+
+@skip_no_devices
+def test_the_emitter_refuses_an_off_triple_stream_printing_the_legal_ones() -> None:
+    """Generation (not just validation) refuses a stream the triples never
+    name, and the refusal text carries the legal alternatives — the §1
+    promise at the emitter's door."""
+    from alloy_cli.emit.common import EmitError
+
+    def wreck_tx(board): board["dma"]["debug_uart.tx"] = {
+        "controller": "dma1", "stream": 5}
+    with pytest.raises(EmitError) as excinfo:
+        _emit_shipped("nucleo_f722ze", wreck_tx)
+    message = str(excinfo.value)
+    assert "{dma1, stream 5} does not reach usart3 'tx'" in message
+    assert "{dma1, stream 3}" in message and "{dma1, stream 4}" in message
+
+
+@skip_no_devices
+def test_the_validator_mirrors_the_stream_rules_with_suggestions() -> None:
+    """board_validate reports the same triple check through the one shared
+    function, suggestions capped like every other issue."""
+    from alloy_cli.board_validate import MAX_SUGGESTIONS, validate_board
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_f767zi" / "board.json").read_text())
+    board["dma"]["debug_uart.rx"] = {"controller": "dma2", "stream": 1}
+    board["dma"]["debug_uart.tx"] = {"controller": "dma1", "channel": 3}
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    issues = [i for i in validate_board(board, chip, load_registers(DEVICES_ROOT))
+              if i["level"] == "error" and (i["field"] or "").startswith("dma.")]
+    by_field = {i["field"]: i for i in issues}
+    assert set(by_field) == {"dma.debug_uart.rx", "dma.debug_uart.tx"}
+    assert by_field["dma.debug_uart.rx"]["suggestions"] == ["{dma1, stream 1}"]
+    assert "'stream' (0-based" in by_field["dma.debug_uart.tx"]["message"]
+    for issue in issues:
+        assert len(issue["suggestions"]) <= MAX_SUGGESTIONS
