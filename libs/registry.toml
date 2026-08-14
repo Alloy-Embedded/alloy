@@ -21,6 +21,13 @@ summary = "Bosch BME280 temperature + pressure + humidity sensor (I2C)"
 concepts = ["I2cBus", "DelayNs"]
 source = "path:libs/bme280"
 
+[bus]
+version = "0.1.0"
+category = "service"
+summary = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells"
+concepts = []
+source = "path:libs/bus"
+
 [ds3231]
 version = "0.1.0"
 category = "rtc"

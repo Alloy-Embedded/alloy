@@ -1,0 +1,18 @@
+[lib]
+name = "bus"
+version = "0.1.0"
+description = "Typed zero-heap pub/sub for the slow plane — per-type topics, private subscriber queues (poll or co_await), latest-value watch cells"
+category = "service"
+license = "MIT"
+
+[requires]
+# The core constrains no alloy concept: topics, subscribers and watch cells
+# are pure data structures over arch::irq_save + ring_buffer + waiter_slot,
+# fully host-testable. The inter-board bridge (a later phase) is where a
+# ByteStream transport appears.
+concepts = []
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

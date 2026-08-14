@@ -14,6 +14,23 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **`libs/bus` — typed zero-heap pub/sub for the slow plane.** The topic is
+  the C++ type: `publish(temp_reading{...})` reaches every live
+  `subscriber<temp_reading>` (intrusive per-type list walked under the irq
+  mask — safe from thread or ISR context). Each subscriber owns its own
+  fixed queue, so backpressure is isolated: a slow consumer drops its own
+  messages, counted in `missed()`, drop-newest like a HW overrun. Two
+  consumption shapes: `try_next()` for a superloop with no executor, and
+  `co_await sub.next()` for a coroutine service (one awaiting task per
+  subscriber; a second traps). `watch<T>` is the latest-value cell for
+  state — `get()` sees the newest write, never a queue — fed from a topic
+  via `watch_route<T>`. Measured on Cortex-M0+ at `-Os`: 72 B of RAM per
+  `subscriber<8-byte msg, depth 4>`, ~30 instructions per delivery in the
+  common case, 444 B of text for a whole 3-subscriber fan-out TU. Fan-out
+  is genuinely new surface — every existing layer is single-owner by
+  construction — and the concurrency story (full-mask walk, SPSC queues,
+  `waiter_slot` wake) is written out in `bus/topic.hpp`.
+
 - **`alloy symbols` and a `[budget]` table — proof that the code landed where
   the linker script said.** `size` reports four numbers; they tell you the
   image fits and nothing about placement. `alloy symbols` reads the ELF, sorts
