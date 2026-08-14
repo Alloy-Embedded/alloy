@@ -18,6 +18,7 @@
 #include <coroutine>
 #include <cstddef>
 #include <cstdint>
+#include <type_traits>
 
 #include "alloy/arch/cpu.hpp"
 #include "alloy/arch/irq.hpp"
@@ -66,6 +67,12 @@ public:
     // ISR-safe wake: push a handle onto the ready queue. A full queue traps
     // (honest hard fail) rather than dropping the wake — size MaxReady correctly
     // (each live task is enqueued at most once, so >= task count cannot overflow).
+    //
+    // schedule() is a STABLE PUBLIC wake path, not an implementation detail:
+    // drivers wake tasks with it from ISRs, and an application-level policy
+    // object may use it the same way — pick a task, wake it, and pump the
+    // budgeted run_once() below. That pair is what lets any drain discipline
+    // be built OUTSIDE this file, with the executor as the resumption engine.
     void schedule(std::coroutine_handle<> h) {
         auto tp = std::coroutine_handle<task::promise_type>::from_address(h.address());
         const arch::irq_state s = arch::irq_save();
@@ -111,24 +118,27 @@ public:
     // its handle for the first resume.
     void spawn(const task& t) { schedule(t.handle); }
 
-    // One superstep (THREAD context only): wake elapsed timers, then resume every
-    // ready handle once, retiring any that finished. Returns handles resumed.
-    std::size_t run_once() {
+    static constexpr std::size_t kUnbounded = static_cast<std::size_t>(-1);
+
+    // One superstep (THREAD context only): wake elapsed timers, then resume
+    // ready handles — every one of them by default, or AT MOST `max_resumes`
+    // when a budget is given — retiring any that finished. Returns handles
+    // resumed; what a budgeted call left behind is `ready_count()`, which
+    // together with the return value distinguishes "resumed k, drained" from
+    // "resumed k, j still waiting".
+    //
+    // THE BUDGET is what makes an external arbiter possible: a policy object
+    // that owns a drain discipline calls run_once(1) per decision, electing
+    // WHICH task runs by waking it (schedule() above) and WHEN by spending
+    // the budget. The executor stays a resumption engine; the discipline
+    // stays application property. A budget of 0 still wakes elapsed timers —
+    // "poll the clock, resume nobody", which an arbiter uses to gather
+    // readiness before deciding.
+    std::size_t run_once(std::size_t max_resumes = kUnbounded) {
         wake_expired_timers(alloy::uptime_ms());
         std::size_t ran = 0;
-        for (;;) {
-            std::coroutine_handle<> h{};
-            const arch::irq_state s = arch::irq_save();
-            if (count_ > 0) {
-                h = ready_[head_];
-                head_ = (head_ + 1) % cap_;
-                --count_;
-                // Clear queued so a wake that arrives after resume can re-enqueue.
-                std::coroutine_handle<task::promise_type>::from_address(h.address())
-                    .promise()
-                    .queued = false;
-            }
-            arch::irq_restore(s);
+        while (ran < max_resumes) {
+            std::coroutine_handle<> h = take_ready();
             if (!h) {
                 break;
             }
@@ -153,7 +163,26 @@ public:
 
     [[nodiscard]] std::size_t ready_count() const { return count_; }
 
-private:
+protected:
+    // Pop the next ready handle (or null), clearing its queued flag so a wake
+    // that arrives after resume can re-enqueue. Shared by the plain superstep
+    // above and the observer-instrumented one in executor<>.
+    std::coroutine_handle<> take_ready() {
+        std::coroutine_handle<> h{};
+        const arch::irq_state s = arch::irq_save();
+        if (count_ > 0) {
+            h = ready_[head_];
+            head_ = (head_ + 1) % cap_;
+            --count_;
+            std::coroutine_handle<task::promise_type>::from_address(h.address())
+                .promise()
+                .queued = false;
+        }
+        arch::irq_restore(s);
+        return h;
+    }
+
+    // The instrumented superstep in executor<> needs these two as well.
     // Destroy a finished coroutine and mark its storage reusable together (read
     // the flag before destroy() invalidates the frame; the flag lives in the
     // task_storage, which is separate memory and stays valid).
@@ -188,14 +217,62 @@ private:
     }
 };
 
+// The no-cost default observer for the executor. A real observer provides
+// the same members and takes its OWN timestamps in them — the executor never
+// reads a clock on the observer's behalf. The task identity is the coroutine
+// frame address: stable for the task's whole life, which is what a task-name
+// map keys on.
+struct null_resume_observer {
+    void resume_begin(void* /*task*/) {}
+    void resume_end(void* /*task*/) {}
+};
+
 // Concrete executor: supplies the ready-queue storage. Pick MaxReady >= the
 // number of concurrent tasks so schedule() can never overflow.
-template <std::size_t MaxReady = 8>
+//
+// The Observer parameter is the instrumentation seam. With the default it
+// costs NOTHING: the instrumented superstep below is compiled out entirely
+// (`if constexpr`) and run_once resolves to the core's plain loop. With a
+// real observer, every resume is bracketed by resume_begin/resume_end —
+// which, combined with the resume budget, is what a slot firmware needs to
+// publish per-task run times without the framework shipping any statistics
+// of its own.
+template <std::size_t MaxReady = 8, class Observer = null_resume_observer>
 class executor : public executor_core {
     std::coroutine_handle<> buf_[MaxReady]{};
+    Observer* obs_ = nullptr;
 
 public:
     executor() : executor_core(buf_, MaxReady) {}
+
+    void set_observer(Observer& o) { obs_ = &o; }
+
+    std::size_t run_once(std::size_t max_resumes = kUnbounded) {
+        if constexpr (std::is_same_v<Observer, null_resume_observer>) {
+            return executor_core::run_once(max_resumes);
+        } else {
+            wake_expired_timers(alloy::uptime_ms());
+            std::size_t ran = 0;
+            while (ran < max_resumes) {
+                std::coroutine_handle<> h = take_ready();
+                if (!h) {
+                    break;
+                }
+                if (obs_ != nullptr) {
+                    obs_->resume_begin(h.address());
+                }
+                h.resume();
+                if (obs_ != nullptr) {
+                    obs_->resume_end(h.address());
+                }
+                ++ran;
+                if (h.done()) {
+                    retire(h);
+                }
+            }
+            return ran;
+        }
+    }
 };
 
 }  // namespace alloy::async

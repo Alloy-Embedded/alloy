@@ -11,9 +11,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <vector>
 
 #include "alloy/async/event.hpp"
 #include "alloy/async/executor.hpp"
+#include "alloy/async/periodic.hpp"
 #include "alloy/async/delay.hpp"
 #include "alloy/async/dma.hpp"
 #include "alloy/async/i2c.hpp"
@@ -646,3 +648,155 @@ ALLOY_TEST(async_dma_completion_inside_the_start_is_not_lost) {
     ALLOY_CHECK_EQ(stage, 2);
     ALLOY_CHECK(!st.in_use);
 }
+
+// ═══════════════════ the resume budget (external arbitration) ══════════════
+
+ALLOY_TEST(async_budgeted_run_once_resumes_at_most_the_budget) {
+    executor<8> ex;
+    task_storage<256> s1, s2, s3;
+    event e1, e2, e3;
+    int c1 = 0, c2 = 0, c3 = 0;
+    task t1 = counter_task(s1, e1, c1, 1);
+    task t2 = counter_task(s2, e2, c2, 1);
+    task t3 = counter_task(s3, e3, c3, 1);
+    ex.spawn(t1);
+    ex.spawn(t2);
+    ex.spawn(t3);
+    ALLOY_CHECK_EQ(ex.ready_count(), 3u);
+
+    // One decision per call: the return says what ran, ready_count() says
+    // what a budgeted call left behind — together they distinguish
+    // "resumed 1, drained" from "resumed 1, two still waiting".
+    ALLOY_CHECK_EQ(ex.run_once(1), 1u);
+    ALLOY_CHECK_EQ(ex.ready_count(), 2u);
+    ALLOY_CHECK_EQ(ex.run_once(1), 1u);
+    ALLOY_CHECK_EQ(ex.ready_count(), 1u);
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);  // unbounded drains the rest
+    ALLOY_CHECK_EQ(ex.ready_count(), 0u);
+
+    // The three parked on their first co_await, in spawn order.
+    e1.set();
+    e2.set();
+    e3.set();
+    ALLOY_CHECK_EQ(ex.run_once(2), 2u);  // budget 2 of 3
+    ALLOY_CHECK_EQ(c1 + c2 + c3, 2);
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);
+    ALLOY_CHECK_EQ(c1 + c2 + c3, 3);
+}
+
+ALLOY_TEST(async_budget_zero_wakes_timers_but_resumes_nobody) {
+    executor<8> ex;
+    task_storage<256> st;
+    int after = 0;
+    alloy::test::set_uptime_ms(1000);
+    task t = sleeper_task(st, after);  // co_await delay(100ms), three times
+    ex.spawn(t);
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);  // start; parks on the delay
+    ALLOY_CHECK_EQ(ex.ready_count(), 0u);
+
+    alloy::test::advance_uptime_ms(110);
+    // Budget 0 is "poll the clock, resume nobody": the elapsed timer moves
+    // its task to READY where an arbiter can see it, and nothing runs.
+    ALLOY_CHECK_EQ(ex.run_once(0), 0u);
+    ALLOY_CHECK_EQ(ex.ready_count(), 1u);
+    ALLOY_CHECK_EQ(after, 0);
+    ALLOY_CHECK_EQ(ex.run_once(1), 1u);
+    ALLOY_CHECK_EQ(after, 1);
+}
+
+// ═══════════════════════ the executor observer seam ════════════════════════
+
+namespace {
+struct resume_recorder {
+    std::vector<void*> begins;
+    std::vector<void*> ends;
+    void resume_begin(void* task) { begins.push_back(task); }
+    void resume_end(void* task) { ends.push_back(task); }
+};
+}  // namespace
+
+ALLOY_TEST(async_observer_brackets_each_resume_with_the_frame_identity) {
+    executor<8, resume_recorder> ex;
+    resume_recorder obs;
+    ex.set_observer(obs);
+    task_storage<256> st;
+    event ev;
+    int count = 0;
+    task t = counter_task(st, ev, count, 2);
+    ex.spawn(t);
+
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);  // the start resume
+    ALLOY_CHECK_EQ(obs.begins.size(), 1u);
+    ALLOY_CHECK_EQ(obs.ends.size(), 1u);
+    ALLOY_CHECK(obs.begins[0] == obs.ends[0]);  // bracketed, same frame
+
+    ev.set();
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);
+    ALLOY_CHECK_EQ(obs.begins.size(), 2u);
+    // The identity is STABLE across resumes of one task: what a name map
+    // keys on.
+    ALLOY_CHECK(obs.begins[1] == obs.begins[0]);
+}
+
+// ═══════════════════════ the drift-free cadence ════════════════════════════
+
+namespace {
+task metronome_task(task_storage<512>&, periodic& p, std::vector<std::uint32_t>& stamps,
+                    int n) {
+    for (int i = 0; i < n; ++i) {
+        co_await p.next();
+        stamps.push_back(alloy::uptime_ms());
+    }
+}
+}  // namespace
+
+ALLOY_TEST(async_periodic_holds_the_grid_where_delay_would_drift) {
+    executor<8> ex;
+    task_storage<512> st;
+    std::vector<std::uint32_t> stamps;
+    alloy::test::set_uptime_ms(1000);
+    periodic p{std::chrono::milliseconds{100}};
+    task t = metronome_task(st, p, stamps, 3);
+    ex.spawn(t);
+    ex.run_once();  // start; parks on the first next() (deadline 1100)
+
+    // The executor is LATE to every wake by 30 ms — the exact situation where
+    // `co_await delay(100ms)` ticks at 130 ms. The grid must not move.
+    alloy::test::set_uptime_ms(1130);
+    ex.run_once();  // woke for the 1100 edge (30 late)
+    alloy::test::set_uptime_ms(1230);
+    ex.run_once();  // the NEXT edge is 1200, not 1230+100
+    alloy::test::set_uptime_ms(1330);
+    ex.run_once();
+    ALLOY_CHECK_EQ(stamps.size(), 3u);
+    // Wakes happened late (that is life), but each was armed ON the grid:
+    // 1100, 1200, 1300 — the phase never absorbed the lateness.
+    ALLOY_CHECK_EQ(p.phase_ms(), 1400u);
+}
+
+ALLOY_TEST(async_periodic_starvation_catches_up_without_a_burst) {
+    executor<8> ex;
+    task_storage<512> st;
+    std::vector<std::uint32_t> stamps;
+    alloy::test::set_uptime_ms(2000);
+    periodic p{std::chrono::milliseconds{100}};
+    task t = metronome_task(st, p, stamps, 3);
+    ex.spawn(t);
+    ex.run_once();  // parks on deadline 2100
+
+    // The task is starved for 3.7 periods (edges 2100/2200/2300/2400 owed).
+    // What a starved periodic delivers is the PENDING wake (2100 — its timer
+    // had already fired) plus ONE catch-up serve for the most recent missed
+    // edge (2400, already past when next() realigns) — TWO serves, never the
+    // four a naive replay would burst. Both land inside this superstep.
+    alloy::test::set_uptime_ms(2470);
+    ALLOY_CHECK_EQ(ex.run_once(), 1u);  // one RESUME runs both serves through
+    ALLOY_CHECK_EQ(stamps.size(), 2u);  // the loop's immediate-ready next()
+    // ...and the grid is intact: the task now waits for 2500, a multiple of
+    // the interval from the construction epoch — no drift absorbed.
+    ALLOY_CHECK_EQ(p.phase_ms(), 2600u);  // 2500 armed + one interval
+    alloy::test::set_uptime_ms(2500);
+    ex.run_once();
+    ALLOY_CHECK_EQ(stamps.size(), 3u);
+}
+
