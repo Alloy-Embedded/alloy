@@ -37,8 +37,119 @@
 
 namespace alloy::hal::detail {
 
+// RX-via-DMA + the IDLE frame-gap event, shared ONE LEVEL WIDER than the
+// PRESC/FIFO body below: ST's ISR/ICR-era USARTs — v3 (F7/L4, no PRESC) as
+// well as v4/lpuart_v4 — place CR1.IDLEIE, CR3.DMAR, ISR.IDLE, ICR.IDLECF/
+// ORECF and RDR at identical offsets and bit positions (the same claim
+// st_usart_v3.hpp's header makes for its whole bring-up subset, and the same
+// reason st_usart_v4_body exists at all: a copy would drift). Split out so
+// uart_impl<usart_v3> can inherit the WITNESSED code instead of copying it —
+// tests/test_st_usart_v4_idle.cpp drives these exact members through
+// st_usart_v4_body, and that witness must keep covering every driver that
+// ships them (the phase-2 IDLE debt, paid once, stays paid).
+//
+// Static storage is per-Inst (one listener set per USART instance), exactly
+// as it was when these lived in st_usart_v4_body<Inst, Impl>.
+template <class Inst>
+struct st_usart_rx_dma_idle_body {
+    using IP = typename Inst::ip;
+
+    static typename IP::regs& r() {
+        return *reinterpret_cast<typename IP::regs*>(Inst::base);
+    }
+
+    // --- RX via DMA + the IDLE line event (design §2.2's read side). DMAR
+    // reroutes the RXNE request to the DMA fabric instead of the RXNE
+    // interrupt; the caller arms the CHANNEL first, then calls dma_rx_begin()
+    // — a request raised before the channel is armed is a byte the ring never
+    // sees. Teardown is the reverse and it is the §4 order: dma_rx_end() stops
+    // the request stream BEFORE the channel stops (the facade's destructor
+    // sequence encodes it). ---
+    static void dma_rx_begin() {
+        // A set ORE freezes reception on this IP (the same wedge rx_isr
+        // clears): entering DMA mode with it set would stall the request
+        // stream before the first byte moved.
+        if (IP::ore.read(r()) != 0u) {
+            r().ICR = IP::orecf.mask;
+        }
+        IP::dmar.set(r());
+    }
+
+    static void dma_rx_end() { IP::dmar.clear(r()); }
+
+    [[nodiscard]] static std::uintptr_t rdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().RDR);
+    }
+
+    // --- The IDLE event: one interrupt per FRAME GAP (first idle bit time
+    // after a byte), not one per byte — the wake that lets a Modbus consumer
+    // sleep through a whole frame's worth of DMA'd bytes and read the ring
+    // once (design §2.2's t3.5 story; the precise gap arithmetic stays the
+    // protocol's, via uptime_us — IDLE fires at ONE character time).
+    //
+    // Same shared-line contract as rx_isr: return untouched unless our flag is
+    // up, then clear it (level-triggered) and hand off. NO POLLED idle
+    // ACCESSOR EXISTS — the ISR consumes the flag, so the first polled
+    // consumer owes the latch and its witness (the half<Ch>() precedent in
+    // st_dma_v1_body.hpp / test_st_dma_v1_latch.cpp), not a bare read. ---
+    inline static void (*idle_fn)(void*) = nullptr;
+    inline static void* idle_ctx = nullptr;
+    inline static bool idle_armed = false;
+
+    static void idle_isr(void*) {
+        if (IP::idle.read(r()) == 0u) {
+            return;
+        }
+        r().ICR = IP::idlecf.mask;
+        if (idle_fn != nullptr) {
+            idle_fn(idle_ctx);
+        }
+    }
+
+    // fn == nullptr is a legitimate registration: the interrupt STILL fires
+    // and wakes a WFI/WFE sleeper (that wake IS anchor 2.2's mechanism); the
+    // ISR clears the flag so the line does not re-fire forever.
+    //
+    // Calling again WHILE ARMED is a LISTENER SWAP, not a re-arm — the
+    // facade's contract (uart::rx_stream::on_idle: "rx_ring() armed the IDLE
+    // interrupt already; registering here only chooses who is told"). The
+    // swap must not repeat the arming sequence: a second irq::attach of the
+    // same ISR on the same line is the alloy::irq duplicate trap, and
+    // re-clearing IDLE here would eat a gap the already-armed ISR owns.
+    // The (fn, ctx) pair is swapped under a masked window: with the line
+    // armed and live, an IDLE landing between the two stores would call one
+    // listener's fn with the other's ctx.
+    static void enable_idle_irq(void (*fn)(void*), void* ctx) {
+        {
+            const arch::irq_state saved = arch::irq_save();
+            idle_fn = fn;
+            idle_ctx = ctx;
+            arch::irq_restore(saved);
+        }
+        if (idle_armed) {
+            return;
+        }
+        // Clear a stale IDLE first: the flag sets whenever the line has been
+        // idle since the last byte — armed mid-silence it would fire
+        // immediately and report a gap nobody waited through.
+        r().ICR = IP::idlecf.mask;
+        alloy::irq::attach(Inst::irq, &idle_isr);
+        IP::idleie.set(r());
+        alloy::irq::enable(Inst::irq);
+        idle_armed = true;
+    }
+
+    static void disable_idle_irq() {
+        IP::idleie.clear(r());
+        alloy::irq::detach(Inst::irq, &idle_isr);
+        idle_fn = nullptr;
+        idle_ctx = nullptr;
+        idle_armed = false;
+    }
+};
+
 template <class Inst, class Impl>
-struct st_usart_v4_body {
+struct st_usart_v4_body : st_usart_rx_dma_idle_body<Inst> {
     using IP = typename Inst::ip;
 
     static typename IP::regs& r() {
@@ -178,94 +289,10 @@ struct st_usart_v4_body {
         return reinterpret_cast<std::uintptr_t>(&r().TDR);
     }
 
-    // --- RX via DMA + the IDLE line event (design §2.2's read side). DMAR
-    // reroutes the RXNE request to the DMA fabric instead of the RXNE
-    // interrupt; the caller arms the CHANNEL first, then calls dma_rx_begin()
-    // — a request raised before the channel is armed is a byte the ring never
-    // sees. Teardown is the reverse and it is the §4 order: dma_rx_end() stops
-    // the request stream BEFORE the channel stops (the facade's destructor
-    // sequence encodes it). ---
-    static void dma_rx_begin() {
-        // A set ORE freezes reception on this IP (the same wedge rx_isr
-        // clears): entering DMA mode with it set would stall the request
-        // stream before the first byte moved.
-        if (IP::ore.read(r()) != 0u) {
-            r().ICR = IP::orecf.mask;
-        }
-        IP::dmar.set(r());
-    }
-
-    static void dma_rx_end() { IP::dmar.clear(r()); }
-
-    [[nodiscard]] static std::uintptr_t rdr_addr() {
-        return reinterpret_cast<std::uintptr_t>(&r().RDR);
-    }
-
-    // --- The IDLE event: one interrupt per FRAME GAP (first idle bit time
-    // after a byte), not one per byte — the wake that lets a Modbus consumer
-    // sleep through a whole frame's worth of DMA'd bytes and read the ring
-    // once (design §2.2's t3.5 story; the precise gap arithmetic stays the
-    // protocol's, via uptime_us — IDLE fires at ONE character time).
-    //
-    // Same shared-line contract as rx_isr: return untouched unless our flag is
-    // up, then clear it (level-triggered) and hand off. NO POLLED idle
-    // ACCESSOR EXISTS — the ISR consumes the flag, so the first polled
-    // consumer owes the latch and its witness (the half<Ch>() precedent in
-    // st_dma_v1_body.hpp / test_st_dma_v1_latch.cpp), not a bare read. ---
-    inline static void (*idle_fn)(void*) = nullptr;
-    inline static void* idle_ctx = nullptr;
-    inline static bool idle_armed = false;
-
-    static void idle_isr(void*) {
-        if (IP::idle.read(r()) == 0u) {
-            return;
-        }
-        r().ICR = IP::idlecf.mask;
-        if (idle_fn != nullptr) {
-            idle_fn(idle_ctx);
-        }
-    }
-
-    // fn == nullptr is a legitimate registration: the interrupt STILL fires
-    // and wakes a WFI/WFE sleeper (that wake IS anchor 2.2's mechanism); the
-    // ISR clears the flag so the line does not re-fire forever.
-    //
-    // Calling again WHILE ARMED is a LISTENER SWAP, not a re-arm — the
-    // facade's contract (uart::rx_stream::on_idle: "rx_ring() armed the IDLE
-    // interrupt already; registering here only chooses who is told"). The
-    // swap must not repeat the arming sequence: a second irq::attach of the
-    // same ISR on the same line is the alloy::irq duplicate trap, and
-    // re-clearing IDLE here would eat a gap the already-armed ISR owns.
-    // The (fn, ctx) pair is swapped under a masked window: with the line
-    // armed and live, an IDLE landing between the two stores would call one
-    // listener's fn with the other's ctx.
-    static void enable_idle_irq(void (*fn)(void*), void* ctx) {
-        {
-            const arch::irq_state saved = arch::irq_save();
-            idle_fn = fn;
-            idle_ctx = ctx;
-            arch::irq_restore(saved);
-        }
-        if (idle_armed) {
-            return;
-        }
-        // Clear a stale IDLE first: the flag sets whenever the line has been
-        // idle since the last byte — armed mid-silence it would fire
-        // immediately and report a gap nobody waited through.
-        r().ICR = IP::idlecf.mask;
-        alloy::irq::attach(Inst::irq, &idle_isr);
-        IP::idleie.set(r());
-        alloy::irq::enable(Inst::irq);
-        idle_armed = true;
-    }
-
-    static void disable_idle_irq() {
-        IP::idleie.clear(r());
-        alloy::irq::detach(Inst::irq, &idle_isr);
-        idle_fn = nullptr;
-        idle_ctx = nullptr;
-        idle_armed = false;
-    }
+    // RX-via-DMA (dma_rx_begin/end, rdr_addr) and the IDLE frame-gap event
+    // (enable_idle_irq/idle_isr/disable_idle_irq) are INHERITED from
+    // st_usart_rx_dma_idle_body above — shared with the v3 driver, witnessed
+    // once by tests/test_st_usart_v4_idle.cpp through this class.
 };
 
 }  // namespace alloy::hal::detail

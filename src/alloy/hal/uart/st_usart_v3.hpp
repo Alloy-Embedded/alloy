@@ -11,6 +11,7 @@
 
 #include "alloy/core/types.hpp"
 #include "alloy/core/units.hpp"
+#include "alloy/hal/uart/st_usart_v4_body.hpp"  // st_usart_rx_dma_idle_body (shared, witnessed)
 #include "alloy/hal/uart/uart_impl.hpp"
 #include "alloy/ip/st/usart_v3.hpp"
 #include "alloy/irq.hpp"
@@ -44,9 +45,18 @@ struct uart_opts<Inst> {
     std::uint8_t de_deassert_16ths = 8;
 };
 
+// RX-via-DMA + IDLE come from st_usart_rx_dma_idle_body (st_usart_v4_body.hpp):
+// this IP places CR1.IDLEIE, CR3.DMAR, ISR.IDLE, ICR.IDLECF/ORECF and RDR at
+// the same offsets and bit positions as the v4 family — the same equivalence
+// this file's header comment already claims for the bring-up subset — so the
+// driver inherits the code the host IDLE witness (tests/test_st_usart_v4_idle
+// .cpp) already exercises instead of copying it into a second, unwitnessed
+// body. This is what folds uart.rx_ring()/write_dma open on the F7 boards
+// (design §3.2 phase 3): the facade's rx_stream_capable gate probes exactly
+// these members.
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v3>
-struct uart_impl<Inst> {
+struct uart_impl<Inst> : detail::st_usart_rx_dma_idle_body<Inst> {
     using IP = typename Inst::ip;
 
     static typename IP::regs& r() {
