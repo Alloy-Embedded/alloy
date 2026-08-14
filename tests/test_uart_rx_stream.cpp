@@ -327,4 +327,24 @@ ALLOY_TEST(uart_rx_ring_gates_on_route_and_capability) {
         (std::is_same_v<
             typename alloy::uart::detail::rx_route_of<alloy::uart::de<int>>::type,
             void>));
+
+    // The TX side's attachment point (anchor 2.3): tx_dma<> is found anywhere
+    // in Extra..., void when absent, and each extractor sees only ITS tag —
+    // an rx assignment must never leak into tx_route or vice versa.
+    ALLOY_CHECK(
+        (std::is_same_v<
+            typename alloy::uart::detail::tx_route_of<
+                alloy::uart::de<int>, alloy::uart::rx_dma<Route>,
+                alloy::uart::tx_dma<alloy::dma::route<Ctrl, 3, 53>>>::type,
+            alloy::dma::route<Ctrl, 3, 53>>));
+    ALLOY_CHECK(
+        (std::is_same_v<
+            typename alloy::uart::detail::tx_route_of<
+                alloy::uart::de<int>, alloy::uart::rx_dma<Route>>::type,
+            void>));
+    ALLOY_CHECK(
+        (std::is_same_v<
+            typename alloy::uart::detail::rx_route_of<
+                alloy::uart::tx_dma<alloy::dma::route<Ctrl, 3, 53>>>::type,
+            void>));
 }

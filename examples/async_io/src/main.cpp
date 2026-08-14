@@ -41,6 +41,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <type_traits>
 
 using namespace alloy::async;
 using namespace alloy::literals;
@@ -200,25 +201,50 @@ int main() {
     }
 
     // --- DMA: a UART TX buffer moved by the engine -------------------------
-    [&uart]<class Dma>(Dma*) {
+    //
+    // Anchor 2.3 (docs/design/dma-streams.md §2.3) where the board assigns
+    // debug_uart.tx: the channel token comes from the ROUTE — the generated
+    // board fact, claimed through `alloy::dma::claim(route)` — the same
+    // claim machinery, the same trap on a second claimant, with the channel
+    // number nowhere in this file. Portable code reaches the route by its
+    // DEPENDENT name, the binder's `tx_route` (a namespace-scope
+    // `board::dma::debug_uart_tx` cannot fold inside a requires-probe;
+    // board-specific code would claim that constant — the same fact, one
+    // emitter helper spells both). The explicit `channel<Dma, 1>::claim()`
+    // stays as the escape hatch (design §1) for boards with a DMA driver but
+    // no assignment; the marker line pins WHICH spelling ran, because the
+    // escape hatch cannot print it.
+    [&uart]<class UartBind, class Dma>(UartBind*, Dma*) {
         if constexpr (HasDma<Dma> && requires(alloy::dma::channel<Dma, 1>& c) {
                           uart.write_dma_begin(c, std::span<const std::uint8_t>{});
                           c.on_complete(nullptr, nullptr);
                       }) {
-            auto chan = alloy::dma::channel<Dma, 1>::claim();
-            using chan_t = decltype(chan);
-            // Constructed BEFORE the first transfer on purpose: the channel's
-            // config register may only be written while the channel is
-            // disabled, so the driver folds TCIE in at setup() based on whether
-            // a completion callback is registered. A waiter that registered
-            // itself inside the co_await would arm nothing and park forever.
-            dma_waiter<chan_t> w{chan};
-            sched.spawn(dma_leg(dma_frame, uart, w, chan, {dma_msg, sizeof dma_msg - 1}));
-            pump(uart, dma_frame, "dma");
+            auto run_leg = [&uart]<class Chan>(Chan& chan) {
+                // Constructed BEFORE the first transfer on purpose: the
+                // channel's config register may only be written while the
+                // channel is disabled, so the driver folds TCIE in at setup()
+                // based on whether a completion callback is registered. A
+                // waiter that registered itself inside the co_await would arm
+                // nothing and park forever.
+                dma_waiter<Chan> w{chan};
+                sched.spawn(dma_leg(dma_frame, uart, w, chan,
+                                    {dma_msg, sizeof dma_msg - 1}));
+                pump(uart, dma_frame, "dma");
+            };
+            if constexpr (requires {
+                              requires !std::is_void_v<typename UartBind::tx_route>;
+                          }) {
+                auto chan = alloy::dma::claim(typename UartBind::tx_route{});
+                uart.write("dma route: claimed board debug_uart.tx\r\n");
+                run_leg(chan);
+            } else {
+                auto chan = alloy::dma::channel<Dma, 1>::claim();
+                run_leg(chan);
+            }
         } else {
             uart.write("dma await: not available on this board\r\n");
         }
-    }(static_cast<board::dma_t*>(nullptr));
+    }(static_cast<board::debug_uart*>(nullptr), static_cast<board::dma_t*>(nullptr));
 
     uart.write("async io: done\r\n");
     for (;;) {

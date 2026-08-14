@@ -361,7 +361,7 @@ def test_the_debug_uart_rx_route_rides_on_the_binder(board_id: str) -> None:
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
     assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 2, "
-            "/*request=*/52>>>;") in out
+            "/*request=*/52>>") in out
     # The tag rides the debug_uart bind specifically, after clock_profile.
     bind = out.split("using debug_uart = ")[1].split(";")[0]
     assert "alloy::uart::rx_dma<" in bind
@@ -369,19 +369,21 @@ def test_the_debug_uart_rx_route_rides_on_the_binder(board_id: str) -> None:
 
 @skip_no_devices
 def test_a_board_without_the_rx_assignment_keeps_the_untagged_uart_binder() -> None:
-    """No debug_uart.rx assignment -> no rx_dma<> tag -> the handle's RxRoute
-    defaults to void and rx_ring(storage) is constrained away. The TX
-    assignment alone must NOT grow an rx tag."""
+    """No debug_uart rx/tx assignments -> no dma tags -> the handle's RxRoute
+    defaults to void and rx_ring(storage) is constrained away, tx_route is
+    void and the route-claim branch folds."""
     from alloy_cli.devices import load_chip, load_registers
     from alloy_cli.emit.board import emit_board_header
 
     board = json.loads(
         (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
     del board["dma"]["debug_uart.rx"]
+    del board["dma"]["debug_uart.tx"]
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
     bind = out.split("using debug_uart = ")[1].split(";")[0]
     assert "rx_dma" not in bind
+    assert "tx_dma" not in bind
     assert bind.rstrip().endswith("clock_profile>")
 
 
@@ -400,3 +402,39 @@ def test_the_rx_tag_moves_with_the_board_statement() -> None:
                             load_registers(DEVICES_ROOT))
     assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 5, "
             "/*request=*/52>>") in out
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb"])
+def test_the_debug_uart_tx_route_rides_on_the_binder_too(board_id: str) -> None:
+    """Anchor 2.3's portable gate: the debug_uart.tx assignment is attached
+    as alloy::uart::tx_dma<> -> the binder's `tx_route` — the dependent name
+    a requires-probe can fold on (the namespace-scope board::dma constant
+    cannot). Same type spelling as board::dma::debug_uart_tx."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert ("alloy::uart::tx_dma<alloy::dma::route<alloy::dev::dma1_t, 3, "
+            "/*request=*/53>>") in bind
+
+
+@skip_no_devices
+def test_a_tx_only_assignment_grows_only_the_tx_tag() -> None:
+    """Each signal's tag is independent: dropping the rx assignment must drop
+    rx_dma<> and keep tx_dma<>."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = json.loads(
+        (ALLOY_ROOT / "boards" / "nucleo_g071rb" / "board.json").read_text())
+    del board["dma"]["debug_uart.rx"]
+    out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
+                            load_registers(DEVICES_ROOT))
+    bind = out.split("using debug_uart = ")[1].split(";")[0]
+    assert "rx_dma" not in bind
+    assert "alloy::uart::tx_dma<" in bind

@@ -70,6 +70,13 @@ Coroutines Resume From Peripheral Interrupts
     # I2C: a write await and a read await, one STOP interrupt each -> 3 resumes.
     Wait For Line On Uart     i2c await: 0xdeadbe    timeout=30
     Wait For Line On Uart     i2c await: resumes=3    timeout=30
+    # ADDITION (dma-streams phase 2, anchor §2.3): the route-claim marker.
+    # The firmware claims its TX channel FROM THE BOARD'S debug_uart.tx route
+    # (alloy::dma::claim(board::dma::debug_uart_tx) — the generated fact, not
+    # a channel literal) and prints this line only on that path; the explicit
+    # channel<Dma, N> escape hatch cannot print it. Every assertion below is
+    # unchanged.
+    Wait For Line On Uart     dma route: claimed board debug_uart.tx    timeout=30
     # DMA: this line is carried by the DMA engine (memory -> USART TDR), so it
     # cannot appear unless the transfer ran; resumes=2 says the task slept
     # through it and the channel's completion interrupt woke it.

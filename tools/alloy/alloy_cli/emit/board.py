@@ -710,6 +710,14 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             rx_route = _dma_route_type(board, chip, "debug_uart.rx")
             rx_tag = (f",\n                                     "
                       f"alloy::uart::rx_dma<{rx_route}>") if rx_route else ""
+            # And `debug_uart.tx` the same way, as tx_dma<> -> the binder's
+            # `tx_route` — the dependent name portable code gates anchor 2.3
+            # on (the namespace-scope board::dma constant cannot fold inside
+            # a requires-probe; the binder alias can).
+            tx_route = _dma_route_type(board, chip, "debug_uart.tx")
+            if tx_route:
+                rx_tag += (f",\n                                     "
+                           f"alloy::uart::tx_dma<{tx_route}>")
             decls.append(
                 f"using debug_uart = alloy::uart::bind<alloy::dev::{uart['peripheral']}_t,\n"
                 f"                                     alloy::uart::tx<alloy::dev::{uart['tx']}_t>,\n"
@@ -795,6 +803,10 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         if lp_rx_route:
             de_tag += (f",\n                                         "
                        f"alloy::uart::rx_dma<{lp_rx_route}>")
+        lp_tx_route = _dma_route_type(board, chip, "low_power_uart.tx")
+        if lp_tx_route:
+            de_tag += (f",\n                                         "
+                       f"alloy::uart::tx_dma<{lp_tx_route}>")
         decls.append(
             f"using low_power_uart = alloy::uart::bind<alloy::dev::{lp_uart['peripheral']}_t,\n"
             f"                                         alloy::uart::tx<alloy::dev::{lp_uart['tx']}_t>,\n"

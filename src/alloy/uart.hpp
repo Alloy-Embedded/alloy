@@ -104,6 +104,17 @@ struct rx_dma {
     using route = Route;
 };
 
+// The board's TX DMA assignment ("<role>.tx"), attached the same way. The
+// binder exposes it as `tx_route` so PORTABLE code has a dependent name to
+// gate on and to claim (anchor 2.3's `alloy::dma::claim(route)` — the token
+// the shipped write_dma_begin/end pair and the async dma_waiter consume).
+// Board-specific code may equally claim the board::dma constant by name; the
+// two spell the SAME generated fact (one emitter helper produces both).
+template <class Route>
+struct tx_dma {
+    using route = Route;
+};
+
 namespace detail {
 // Layer 1's VALUE admission. The named trap is the guarantee; the compile
 // error is a bonus that fires only when the optimizer propagates the constant
@@ -162,6 +173,23 @@ struct rx_route_of<uart::rx_dma<Route>, Rest...> {
 template <class First, class... Rest>
     requires (!is_rx_dma_tag<First>)
 struct rx_route_of<First, Rest...> : rx_route_of<Rest...> {};
+
+template <class T>
+inline constexpr bool is_tx_dma_tag = false;
+template <class Route>
+inline constexpr bool is_tx_dma_tag<uart::tx_dma<Route>> = true;
+
+template <class... Extra>
+struct tx_route_of {
+    using type = void;
+};
+template <class Route, class... Rest>
+struct tx_route_of<uart::tx_dma<Route>, Rest...> {
+    using type = Route;
+};
+template <class First, class... Rest>
+    requires (!is_tx_dma_tag<First>)
+struct tx_route_of<First, Rest...> : tx_route_of<Rest...> {};
 }  // namespace detail
 
 // What the port+route pair must offer before `uart.rx_ring()` exists on it:
@@ -427,6 +455,12 @@ struct bind {
     //: attached via the rx_dma<> tag), or void when the board assigns none —
     //: what gates handle::rx_ring() at compile time.
     using rx_route = typename detail::rx_route_of<Extra...>::type;
+
+    //: The board's `<role>.tx` assignment (tx_dma<> tag), or void. Portable
+    //: code gates on it and claims it — `alloy::dma::claim(Role::tx_route{})`
+    //: is the anchor-2.3 token from the binder's side of the fact; the
+    //: board::dma constant is the same fact by its board-specific name.
+    using tx_route = typename detail::tx_route_of<Extra...>::type;
 
     static_assert(routes::routable<tx_pin, Inst, signal::tx>,
                   "TX pin has no route to this UART on the selected chip "
