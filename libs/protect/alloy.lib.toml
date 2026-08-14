@@ -1,0 +1,15 @@
+[lib]
+name = "protect"
+version = "0.1.0"
+description = "Protection limits — thresholds folded to raw ADC counts at compile time, per-limit debounce and hysteresis, and a latched fault word that records every simultaneous fault"
+category = "control"
+license = "MIT"
+homepage = "https://en.wikipedia.org/wiki/Protective_relay"
+
+[requires]
+concepts = []
+alloy = ">=0.1"
+
+[headers]
+include = ["include"]
+namespace = "alloy::lib"

@@ -56,6 +56,13 @@ summary = "Runtime parameter registry — descriptor table, O(1) tick reads, str
 concepts = ["FlashController"]
 source = "path:libs/param"
 
+[protect]
+version = "0.1.0"
+category = "control"
+summary = "Protection limits — physical thresholds folded to raw ADC counts at compile time, per-limit debounce and hysteresis, and a latched fault word that records every simultaneous fault"
+concepts = []
+source = "path:libs/protect"
+
 [sht31]
 version = "0.1.0"
 category = "sensor"
