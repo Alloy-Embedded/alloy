@@ -40,12 +40,15 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
+#include <type_traits>
 
 #include "alloy/core/admit.hpp"
 #include "alloy/core/claim.hpp"
 #include "alloy/core/types.hpp"
+#include "alloy/dma.hpp"
 #include "alloy/hal/adc/adc_impl.hpp"
 
 namespace alloy::adc {
@@ -120,9 +123,87 @@ public:
     void disarm() const { hal::adc_impl<Inst>::template awd_disarm<N>(); }
 
 private:
-    template <class>
+    template <class, class>
     friend class handle;
     watchdog() = default;
+};
+
+// What the converter+route pair must offer before `adc.ring()` exists on it:
+// the driver's DMA-burst hooks (begin/kick/end + the data-register address)
+// AND a ring-capable controller behind the route (circular mode, half events,
+// live remaining-count — dma::ring_capable). Checked as ONE concept so the
+// facade's requires-gate names the whole contract, and checked inside a
+// requires-expression so a board whose binder carries no route (ConvRoute =
+// void) fails the probe instead of the build.
+template <class Inst, class Route>
+concept stream_capable = requires {
+    hal::adc_impl<Inst>::dma_burst_begin(std::uint8_t{});
+    hal::adc_impl<Inst>::dma_burst_kick();
+    hal::adc_impl<Inst>::dma_burst_end();
+    hal::adc_impl<Inst>::dr_addr();
+    typename Route::controller;
+    requires dma::ring_capable<typename Route::controller, Route::channel>;
+};
+
+// One continuously-converting channel streamed into a caller-owned ring by
+// DMA — the design's anchor 2.1 (docs/design/dma-streams.md §2.1). The CPU
+// never touches the sampling path: the converter free-runs (CONT + DMAEN),
+// every result is moved by the channel the board assigned to `adc.conv`, and
+// the consumer takes hardware-stable halves off the ring.
+//
+// This wrapper exists for the §4 TEARDOWN ORDER, which the bare ring cannot
+// provide alone: the peripheral's request stream must stop BEFORE the channel
+// does (a request landing mid-teardown on a disabled channel is how overrun
+// flags get stuck). C++ member-destruction order encodes it — this class's
+// destructor BODY (ADC side: ADSTP, DMAEN/CONT off — dma_burst_end) runs
+// first, then the `ring_` member's destructor stops the channel and releases
+// the claim. NOT movable, NOT copyable (the ring's ISRs hold a pointer into
+// it); guaranteed copy elision covers the factory-return spelling
+// `auto ring = adc.ring(samples);` — constructed in place, never moved.
+template <class Inst, class Route>
+class stream {
+public:
+    stream(const stream&) = delete;
+    stream& operator=(const stream&) = delete;
+    stream(stream&&) = delete;
+    stream& operator=(stream&&) = delete;
+
+    ~stream() { hal::adc_impl<Inst>::dma_burst_end(); }
+
+    // The control-loop discipline, forwarded from the ring (see alloy/dma.hpp
+    // for the full contract): block until a half is hardware-stable, hand it
+    // over, count every half the consumer failed to collect.
+    [[nodiscard]] std::span<const std::uint16_t> take() { return ring_.take(); }
+    [[nodiscard]] std::uint32_t missed() const { return ring_.missed(); }
+    [[nodiscard]] bool pending() const { return ring_.pending(); }
+
+    // ISR-context boundary hook — what alloy::async::ring_waiter registers.
+    void on_boundary(void (*fn)(void*), void* ctx = nullptr) {
+        ring_.on_boundary(fn, ctx);
+    }
+
+private:
+    template <class, class>
+    friend class handle;
+
+    // The ADC must be CONFIGURED for the stream before the channel arms
+    // (RM0444: DMAEN/CONT only writable while ADSTART=0, and the first request
+    // must not fire into an unarmed channel). This helper sequences that into
+    // the member-init list: begin() selects the channel and raises DMAEN/CONT,
+    // the ring constructor then claims + programs + starts the DMA channel,
+    // and the constructor BODY kicks ADSTART last — §4's arm order, encoded.
+    static Route begun(std::uint8_t channel) {
+        hal::adc_impl<Inst>::dma_burst_begin(channel);
+        return Route{};
+    }
+
+    template <std::size_t N>
+    explicit stream(std::uint8_t channel, dma::ring_storage<std::uint16_t, N>& storage)
+        : ring_(begun(channel), hal::adc_impl<Inst>::dr_addr(), storage) {
+        hal::adc_impl<Inst>::dma_burst_kick();
+    }
+
+    dma::ring<std::uint16_t, Route> ring_;
 };
 
 namespace detail {
@@ -145,7 +226,11 @@ consteval unsigned watchdog_count() {
 template <class Inst>
 inline constexpr unsigned watchdog_count = detail::watchdog_count<Inst>();
 
-template <class Inst>
+// ConvRoute is the board's `adc.conv` DMA assignment, attached to the binder
+// by the generator (docs/design/dma-streams.md §1) — `void` when the board
+// assigned none, which constrains ring() away so a portable program's
+// `requires` probe reports the missing route at compile time.
+template <class Inst, class ConvRoute = void>
 class handle {
 public:
     handle(const handle&) = delete;
@@ -178,6 +263,39 @@ public:
         return ok;
     }
 
+    // DMA ring: continuous conversions of one channel streamed into the
+    // caller's ring buffer, consumed as hardware-stable halves — the design's
+    // anchor 2.1, on the BOARD-ASSIGNED route (board.json "dma": "adc.conv").
+    // Claims the assigned channel, programs a circular p2m transfer of 16-bit
+    // items, arms the half + full interrupts, starts the converter's
+    // continuous conversion. Compile error (this method is constrained away)
+    // if the board assigned no route, the driver has no DMA hooks, or the
+    // routed controller cannot do circular + half events (today: SAME70
+    // XDMAC) — never a link error or a runtime surprise.
+    //
+    // `channel` is the ANALOG input to convert. It defaults to 0 so the
+    // anchor's spelling `adc.ring(samples)` is real; any other input is named
+    // explicitly, the same units read() takes.
+    template <std::size_t N>
+    [[nodiscard]] adc::stream<Inst, ConvRoute> ring(
+        dma::ring_storage<std::uint16_t, N>& storage, std::uint8_t channel = 0u) const
+        requires(!std::is_void_v<ConvRoute>) && stream_capable<Inst, ConvRoute>
+    {
+        return adc::stream<Inst, ConvRoute>(channel, storage);
+    }
+
+    // The explicit-route overload — the documented escape hatch for
+    // hand-wired projects (design §1): same stream, on a route the caller
+    // spelled out instead of the board's assignment.
+    template <class Route, std::size_t N>
+    [[nodiscard]] adc::stream<Inst, Route> ring(
+        Route, dma::ring_storage<std::uint16_t, N>& storage,
+        std::uint8_t channel = 0u) const
+        requires stream_capable<Inst, Route>
+    {
+        return adc::stream<Inst, Route>(channel, storage);
+    }
+
     // Arm one of this converter's analog watchdogs. Only offered where the
     // driver has the hooks — on an ADC without them the call is not a member,
     // not a member that quietly does nothing.
@@ -199,12 +317,14 @@ public:
     }
 
 private:
-    template <class, class>
+    template <class, class, class>
     friend struct bind;
     handle() = default;
 };
 
-template <class Inst, class Clock>
+// ConvRoute: the board's `adc.conv` DMA assignment (a generated
+// alloy::dma::route), or void when the board assigns none — see handle.
+template <class Inst, class Clock, class ConvRoute = void>
 struct bind {
     using instance = Inst;
 
@@ -223,11 +343,11 @@ struct bind {
         return Clock::sysclk_hz;
     }
 
-    static handle<Inst> open(config = {}) {
+    static handle<Inst, ConvRoute> open(config = {}) {
         // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
         alloy::claim::exclusive<Inst, alloy::claim::personality::adc>();
         hal::adc_impl<Inst>::enable(kernel_hz());
-        return handle<Inst>{};
+        return handle<Inst, ConvRoute>{};
     }
 };
 

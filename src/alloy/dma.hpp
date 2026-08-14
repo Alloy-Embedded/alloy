@@ -270,6 +270,17 @@ public:
         // Events BEFORE setup: the channel's config register may only be
         // written while the channel is disabled, so the driver folds the
         // interrupt enables in at setup based on what is registered by then.
+        //
+        // The ORDER of these two lines is deliberate. alloy::irq::attach
+        // PREPENDS to the shared-line chain, so dispatch runs the COMPLETION
+        // handler before the half handler. On silicon that order is
+        // immaterial — HTIF and TCIF are edge events half a buffer apart. On
+        // Renode's STM32G0DMA (the phase-1 witness) it is load-bearing:
+        // the model raises both flags together at the wrap and its per-flag
+        // clears also drop the sibling flag (CHTIF clears TransferComplete —
+        // read in the 1.16.1 source), so a half handler running first would
+        // eat the wrap's completion event. Swap these lines and the
+        // adc_stream emulation leg loses every FULL boundary.
         impl::template enable_half_irq<Ch>(&half_thunk, this);
         impl::template enable_complete_irq<Ch>(&full_thunk, this);
         impl::template setup<Ch>(impl::dir::periph_to_mem, /*circular=*/true,
