@@ -100,4 +100,59 @@ public:
     [[nodiscard]] bool done() const { return ch_.done(); }
 };
 
+// alloy::async::ring_waiter — turns a dma::ring's half/full boundary events
+// into `std::span<const T> half = co_await w.take();`. The ring keeps its own
+// two-slot latch and missed() accounting; this class only parks the task on
+// "a stable half is pending" and lets the ring's blocking take() do the
+// hand-over — which cannot spin after a resume, because the readiness the
+// task woke on IS take()'s spin condition.
+//
+// Unlike dma_waiter there is no start-inside-the-await: the ring was started
+// at construction and runs continuously, so the awaitable takes the
+// uart_reader shape — ready fast path when a half is already pending,
+// park-with-recheck-under-mask otherwise (waiter_slot closes the
+// await_ready→await_suspend window).
+//
+// Construct it once, after the ring, and keep it alive alongside the ring
+// (same lifetime rule as dma_waiter: the ring's ISR path holds the hook).
+// Single waiter, like every waiter_slot user. A consumer that co_awaits
+// slower than halves go stable does not deadlock — it wakes on the next
+// boundary, take() resynchronizes, and the skipped halves are in missed().
+//
+// Ring is any type exposing pending()/take()/on_boundary(void(*)(void*),
+// void*) — the alloy::dma::ring contract.
+template <class Ring>
+class ring_waiter {
+    Ring& ring_;
+    waiter_slot slot_;
+
+    // Boundary ISR context: the ring already updated its latch (readiness
+    // source); just hand the parked task to the executor.
+    static void on_boundary(void* ctx) {
+        static_cast<ring_waiter*>(ctx)->slot_.wake();
+    }
+
+public:
+    explicit ring_waiter(Ring& r) : ring_(r) {
+        ring_.on_boundary(&on_boundary, this);
+    }
+    ring_waiter(const ring_waiter&) = delete;
+    ring_waiter& operator=(const ring_waiter&) = delete;
+
+    struct take_awaiter {
+        ring_waiter& w;
+
+        bool await_ready() const noexcept { return w.ring_.pending(); }
+
+        bool await_suspend(std::coroutine_handle<> h) noexcept {
+            return w.slot_.park(h, [&] { return w.ring_.pending(); });
+        }
+
+        auto await_resume() const noexcept { return w.ring_.take(); }
+    };
+
+    // The next hardware-stable half (most recent, if the task fell behind).
+    take_awaiter take() noexcept { return {*this}; }
+};
+
 }  // namespace alloy::async

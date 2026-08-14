@@ -12,6 +12,9 @@
 #include <cstdint>
 #include <span>
 
+#include "alloy/async/dma.hpp"
+#include "alloy/async/executor.hpp"
+#include "alloy/async/task.hpp"
 #include "alloy/dma.hpp"
 #include "alloy_test.hpp"
 
@@ -388,6 +391,92 @@ struct dma_impl<no_half_ctrl> {
     // deliberately: no enable_half_irq / remaining
 };
 }  // namespace alloy::hal
+
+// ── the async surface: co_await w.take() ──────────────────────────────────
+
+namespace {
+
+// Consume `n` stable halves, recording where each one started.
+template <class W>
+alloy::async::task ring_consumer(alloy::async::task_storage<512>&, W& w,
+                                 const std::uint16_t** outs, int& got, int n) {
+    for (int i = 0; i < n; ++i) {
+        std::span<const std::uint16_t> half = co_await w.take();
+        outs[i] = half.data();
+        got = i + 1;
+    }
+}
+
+}  // namespace
+
+ALLOY_TEST(dma_ring_waiter_wakes_the_parked_task_per_boundary) {
+    struct tag {};
+    using impl = alloy::hal::dma_impl<fake_ctrl<tag>>;
+    static ring_storage<std::uint16_t, 8> buf;
+    ring r{route<fake_ctrl<tag>, 1, 5>{}, 0u, buf};
+    alloy::async::ring_waiter w{r};
+
+    alloy::async::executor<8> ex;
+    alloy::async::task_storage<512> st;
+    const std::uint16_t* outs[3] = {};
+    int got = 0;
+
+    alloy::async::task t = ring_consumer(st, w, outs, got, 3);
+    ex.spawn(t);
+    ex.run_once();  // starts -> nothing pending -> parks
+    ALLOY_CHECK_EQ(got, 0);
+
+    impl::fire_half();  // "ISR": first half stable
+    ex.run_once();
+    ALLOY_CHECK_EQ(got, 1);
+    ALLOY_CHECK_EQ(outs[0], &buf.data[0]);
+
+    impl::fire_full();
+    ex.run_once();
+    ALLOY_CHECK_EQ(got, 2);
+    ALLOY_CHECK_EQ(outs[1], &buf.data[4]);
+
+    impl::fire_half();
+    ex.run_once();
+    ALLOY_CHECK_EQ(got, 3);
+    ALLOY_CHECK_EQ(outs[2], &buf.data[0]);
+    ALLOY_CHECK_EQ(r.missed(), 0u);
+    ALLOY_CHECK(!st.in_use);  // task retired, storage back
+}
+
+ALLOY_TEST(dma_ring_waiter_ready_fast_path_and_slow_consumer_resync) {
+    struct tag {};
+    using impl = alloy::hal::dma_impl<fake_ctrl<tag>>;
+    static ring_storage<std::uint16_t, 8> buf;
+    ring r{route<fake_ctrl<tag>, 1, 5>{}, 0u, buf};
+    alloy::async::ring_waiter w{r};
+
+    alloy::async::executor<8> ex;
+    alloy::async::task_storage<512> st;
+    const std::uint16_t* outs[2] = {};
+    int got = 0;
+
+    // Boundary BEFORE the first await: the ready fast path — the task must
+    // collect it without ever parking.
+    impl::fire_half();
+    alloy::async::task t = ring_consumer(st, w, outs, got, 2);
+    ex.spawn(t);
+    ex.run_once();
+    ALLOY_CHECK_EQ(got, 1);
+    ALLOY_CHECK_EQ(outs[0], &buf.data[0]);
+
+    // Parked task sleeps through BOTH boundaries: one wake (the second is a
+    // no-op on an empty slot), and the resumed take() resynchronizes to the
+    // most recent half with the skipped one counted — same §4 story as the
+    // blocking path, witnessed through the awaitable.
+    impl::fire_full();
+    impl::fire_half();
+    ex.run_once();
+    ALLOY_CHECK_EQ(got, 2);
+    ALLOY_CHECK_EQ(outs[1], &buf.data[0]);  // most recent = first half again
+    ALLOY_CHECK_EQ(r.missed(), 1u);         // the full-boundary half, skipped
+    ALLOY_CHECK(!st.in_use);
+}
 
 // The design's compile-error promise (§1): a ring on a backend that cannot do
 // circular-with-half-events fails the PUBLIC ring_capable concept — the same
