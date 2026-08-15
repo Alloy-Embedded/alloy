@@ -933,12 +933,17 @@ def test_g071rb_keeps_a_channel_in_reserve() -> None:
 
 
 @skip_no_devices
-@pytest.mark.parametrize("board_id", _G0_BOARDS + ["nucleo_f722ze"])
+@pytest.mark.parametrize("board_id",
+                         _G0_BOARDS + ["nucleo_f722ze", "same70_xplained"])
 def test_a_duplex_role_never_ships_half_assigned(board_id: str) -> None:
     """The board-file discipline behind the pair: `spi.rx` and `spi.tx` are
     both stated or neither is. A board with one of them builds, and then
     `transfer_dma` is constrained away with nothing saying why the OTHER half
-    is missing — a half-configured board that looks configured."""
+    is missing — a half-configured board that looks configured.
+
+    Phase 5 adds the SAME70 here: the rule is about board files, not about
+    engines, so a third silicon joining the list is exactly the event this
+    parametrisation was shaped for."""
     board = json.loads(
         (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
     assigned = set(board.get("dma") or {})
@@ -1056,13 +1061,19 @@ def test_the_spi_tags_move_with_the_board_statement() -> None:
 
 @skip_no_devices
 @pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb",
-                                      "nucleo_f722ze", "nucleo_f767zi"])
+                                      "nucleo_f722ze", "nucleo_f767zi",
+                                      "same70_xplained"])
 def test_one_helper_spells_every_roles_tags(board_id: str) -> None:
     """Phase 4 made this the third and fourth facade to attach routes, so the
     attachment moved into one helper. The property that helper exists for:
     EVERY emitted tag is `alloy::<facade>::<signal>_dma<...>` where <facade>
     is the namespace of the binder it sits in — a per-role copy that drifted
-    would show up here as a tag in the wrong namespace."""
+    would show up here as a tag in the wrong namespace.
+
+    Phase 5 puts a THIRD engine through the same helper. That is the sharpest
+    form of the "a new silicon costs a board file" claim: this test does not
+    know what an XDMAC is, and it passes anyway, because the helper reads the
+    role's facade and the chip's data and nothing else."""
     out = _emit_shipped(board_id)
     for role, facade in (("debug_uart", "uart"), ("low_power_uart", "uart"),
                          ("spi", "spi"), ("i2c", "i2c")):
