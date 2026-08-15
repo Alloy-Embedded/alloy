@@ -38,9 +38,64 @@ are removed no earlier than the next MAJOR; each one names its replacement.
   bool, and the driver's shutdown dance over a memory-backed register file —
   each pinned by a mutation that turns it red. The engine moved to
   `st_spi_v2_body.hpp` to make that last one possible, the same seam
-  `st_dma_v1_body.hpp` already uses. No emulation leg and no silicon run yet;
-  the receive-FIFO drain has no host witness at all (draining is a read side
-  effect, which a memory-backed double cannot model).
+  `st_dma_v1_body.hpp` already uses. The receive-FIFO drain has no host
+  witness at all (draining is a read side effect, which a memory-backed double
+  cannot model), and no board has run this.
+  **AND NOW UNDER RENODE, on both engines** — `spi_read` gained the anchor's
+  third leg and the platform gained the request wire that feeds it, so
+  `spi_read.robot` is green on `nucleo_g071rb`, `nucleo_g0b1re` (dma1 channel
+  4/5, free router + DMAMUX) and `nucleo_f722ze` (dma2 streams 0/3, stream
+  engine + CHSEL) from one portable `main.cpp`, one robot, and nothing but
+  `board.json` `dma:` lines differing. The leg asserts the four DMA'd bytes
+  AND the peer's cursor afterwards, so a receive path fed by something other
+  than a real transmit cannot pass. **This is a bigger claim than phase 3
+  could make for a route**: three negative controls each take it red without
+  hanging — the wire moved by one index, the pair armed TX before RX (which
+  makes the design's RX-first rule a red/green fact rather than doctrine,
+  because the whole m2p block fires at the enable write and every request edge
+  then lands on a channel that is not armed), and `CR2.RXDMAEN` never raised.
+  **Unchanged honesty boundary**: the REQUEST id half of the route is still
+  unwitnessed on both engines — Renode models no DMAMUX at all, CHSEL routes
+  nothing in the generated stream model, and the platform wire and the
+  firmware route descend from the same board statement. `CR2.TXDMAEN` is
+  unwitnessed for the same reason the transmit half needs no wire: an m2p
+  transfer completes in full at the enable write in both models.
+
+- **DMA streams phase 4 — the I2C one-shot.** `i2c.read_dma()` /
+  `i2c.write_dma()` take a claimed channel and move the PAYLOAD only: SADD,
+  RD_WRN, NBYTES, AUTOEND and START stay CPU-written through the same
+  `cr2_base()` the polled and interrupt paths use, so the 255-byte refusal,
+  the STOPF completion and the NACK report are inherited rather than restated,
+  in one place, for all three paths. Order is arm-channel, raise the
+  direction's request enable, then the address phase; teardown is the exact
+  reverse and runs on EVERY exit path, so a failed transfer never leaves
+  `DMAEN` set on the bus. The wait is BOUNDED — unlike `dma::channel::wait()`,
+  which spins forever by design — because a bus that wedges must become an
+  honest `false`, not a hang. **Repeated start is a NAMED ABSENCE**:
+  `write_read_dma` is a deleted member, so calling it is a compile error that
+  names the function and a `requires` probe folds it away like any other
+  missing capability; the polled path hands off between phases on TC and
+  `CR1.TCIE` is deliberately uncurated in the register file. `i2c::bind` went
+  variadic with the same `rx_dma<>`/`tx_dma<>` tags. **Witnessed on the host
+  only, and the leg says so**: Renode 1.16.1's model of this IP exposes no DMA
+  request output at all (the upstream commit that adds one postdates the pin,
+  and the class is sealed), so nothing under emulation can ask the engine to
+  move a byte. `i2c_read.robot`'s new line therefore asserts the bounded
+  refusal itself — which is worth defending: remove the budget and the same
+  leg fails at 283 s where it passes in 14.
+
+- **Emitted Renode platforms carry the SPI receive request.** Where a board
+  assigns `spi.rx`, the platform wires `SPI.STM32SPI`'s request output to that
+  channel — one plain `.repl` line, no C# bridge and no access shim, because
+  unlike the ADC this model already has the GPIO and already gates it on the
+  enable bit the driver writes. One emitter path serves both engines (1-based
+  `channel`, 0-based `stream`; the index passes through untranslated on both).
+  The wire is inert while `CR2.RXDMAEN` is clear, so every existing SPI
+  assertion is untouched by construction. Note for whoever bumps the Renode
+  pin: the property name is the pinned release's MISSPELLING, `DMARecieve`;
+  upstream fixed the typo after 1.16.1, and emitting the corrected spelling
+  against the pin fails platform load outright. It is a named constant with a
+  test pinning it.
 
 - **DMA streams phase 3 — the F4/F7 anchors run.** The same portable
   `modbus_rtu_server` and `async_io` binaries that carry anchors 2.2/2.3 on
