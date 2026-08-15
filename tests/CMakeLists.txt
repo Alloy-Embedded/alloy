@@ -137,6 +137,7 @@ add_executable(alloy_unit_tests
     test_st_usart_v4_idle.cpp
     test_i2c_dma.cpp
     test_adc_stream.cpp
+    test_adc_opts.cpp
     test_uart_rx_stream.cpp
     test_net.cpp
     test_wwdt.cpp

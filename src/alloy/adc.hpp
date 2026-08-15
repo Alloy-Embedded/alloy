@@ -59,17 +59,40 @@ struct config {};
 // can program, in units the caller already has.
 //
 // `low`/`high` are RAW COUNTS on the same scale `read()` returns — inclusive
-// bounds, a sample strictly outside them trips. That equivalence holds while
-// the converter is not oversampling (ST's thresholds compare against the data
-// register's own scale, so an oversampled 16-bit result would need scaling);
-// no alloy adc driver turns oversampling on, and adc_v2's oversampling fields
-// are deliberately not curated, so there is no way through this facade to
-// reach the case where the two units diverge.
+// bounds, a sample strictly outside them trips.
+//
+// THAT SENTENCE USED TO CARRY A CAVEAT THAT IS NOW OBSOLETE, and it is
+// rewritten rather than annotated because a stale caveat is worse than none.
+// It said the scale question could not arise, "no alloy adc driver turns
+// oversampling on, and adc_v2's oversampling fields are deliberately not
+// curated". Both halves stopped being true when Layer 2 landed: the fields are
+// curated and `opts::oversample_ratio` turns the oversampler on. What keeps
+// the equivalence honest now is `handle::watchdog()`, which refuses to arm at
+// all when the configured `result_bits` exceed the 12-bit threshold field —
+// so within this facade the two units still cannot diverge, but the reason is
+// a refusal you can read rather than an absence you had to trust.
 //
 // Declared in hal/adc/adc_impl.hpp — the shared-vocabulary header both this
 // facade and every driver include — and named here, so a user never types
 // `hal`.
 using watchdog_config = hal::adc_watchdog_config;
+
+// Layer 2 — the vendor knobs this converter's IP actually has, as a
+// compile-time value. Empty on a driver that curates none, so
+// `open<Role::opts{}>()` compiles everywhere and costs nothing.
+//
+//   auto adc = board::adc::open<board::adc::opts{
+//                  .resolution_bits  = 12,
+//                  .oversample_ratio = 16,   // average 16 samples…
+//                  .oversample_shift = 4,    // …back onto the 12-bit scale
+//              }>();
+//
+// Spell the type at the call site (`Role::opts{…}`, not `open<{…}>()`): six
+// characters buy a diagnostic that names the member instead of "template
+// argument deduction/substitution failed". See the Layer-2 section of
+// docs/reference/peripheral-surface.md.
+template <class Inst>
+using opts = hal::adc_opts<Inst>;
 
 namespace detail {
 // Same two mechanisms as alloy/core/admit.hpp's other four: the named trap is
@@ -123,7 +146,7 @@ public:
     void disarm() const { hal::adc_impl<Inst>::template awd_disarm<N>(); }
 
 private:
-    template <class, class>
+    template <class I, class R, opts<I> O>
     friend class handle;
     watchdog() = default;
 };
@@ -186,7 +209,7 @@ public:
     }
 
 private:
-    template <class, class>
+    template <class I, class R, opts<I> O>
     friend class handle;
 
     // The ADC must be CONFIGURED for the stream before the channel arms
@@ -229,11 +252,33 @@ consteval unsigned watchdog_count() {
 template <class Inst>
 inline constexpr unsigned watchdog_count = detail::watchdog_count<Inst>();
 
+// What a converter's results are worth, in significant bits, after Layer 2 has
+// been applied. 12 for a driver that curates no knobs — every ADC alloy ships
+// converts at 12 bits by default, and a driver that can change it says so by
+// providing result_bits<O>().
+//
+// This is not decoration: it is what decides whether an analog watchdog is
+// still expressible, below.
+template <class Inst, opts<Inst> O>
+consteval unsigned result_bits() {
+    if constexpr (requires { hal::adc_impl<Inst>::template result_bits<O>(); }) {
+        return hal::adc_impl<Inst>::template result_bits<O>();
+    } else {
+        return 12u;
+    }
+}
+
 // ConvRoute is the board's `adc.conv` DMA assignment, attached to the binder
 // by the generator (docs/design/dma-streams.md §1) — `void` when the board
 // assigned none, which constrains ring() away so a portable program's
 // `requires` probe reports the missing route at compile time.
-template <class Inst, class ConvRoute = void>
+//
+// Opts travels with the handle because one Layer-2 value changes what a LATER
+// call means: oversampling moves the scale that `read()` returns and that the
+// analog watchdog compares against. A handle that forgot how its port was
+// configured could not check the pair, which is the whole reason watchdog()
+// can refuse below.
+template <class Inst, class ConvRoute = void, opts<Inst> Opts = {}>
 class handle {
 public:
     handle(const handle&) = delete;
@@ -311,6 +356,25 @@ public:
         // from the silicon the way a hand-written constant can.
         static_assert(N < Inst::feat::analog_watchdogs,
                       "this ADC does not have that many analog watchdogs");
+        // THE ONE PLACE TWO LAYER-2 KNOBS COLLIDE, and it is refused rather
+        // than papered over. The threshold registers are 12 bits wide — that
+        // is generated data, not a guess — so a converter configured to
+        // produce WIDER results than that has no way to express a window over
+        // its own full range: every threshold a caller could write is a value
+        // the converter passes through on its way to somewhere higher.
+        //
+        // What this deliberately does NOT do is scale the window by the
+        // oversampler's shift and carry on. Whether the silicon compares the
+        // pre-shift sum or the post-shift result against AWDnTR is a
+        // reference-manual fact, and inventing an answer to it would put a
+        // plausible wrong number in a guard whose entire job is to be right.
+        // Refusing is the honest half of that pair, and it is a compile error
+        // naming the combination rather than a runtime surprise.
+        static_assert(adc::result_bits<Inst, Opts>() <= 12u,
+                      "this ADC is configured to produce results wider than 12 bits "
+                      "(oversampling with a shift smaller than log2 of the ratio), and "
+                      "the analog watchdog's thresholds are a 12-bit field — raise "
+                      "oversample_shift to keep the 12-bit scale, or drop the watchdog");
         // Per INSTANCE and ORDINAL: two claimants of ONE watchdog would fight
         // over one window, and the second would win silently.
         alloy::claim::sub_exclusive<Inst, N, alloy::claim::personality::adc>();
@@ -346,12 +410,28 @@ struct bind {
         return Clock::sysclk_hz;
     }
 
-    static handle<Inst, ConvRoute> open(config = {}) {
+    // Layer 2 travels as a template argument, defaulted, so the empty case is
+    // the call every existing site already writes. The knobs are programmed
+    // INSIDE enable(), between the regulator coming up and ADEN — the only
+    // window in which this IP's configuration registers are writable — which
+    // is why there is no reconfigure() here and no stop/re-enable cycle.
+    template <opts<Inst> Opts = {}>
+    static handle<Inst, ConvRoute, Opts> open(config = {}) {
         // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
         alloy::claim::exclusive<Inst, alloy::claim::personality::adc>();
-        hal::adc_impl<Inst>::enable(kernel_hz());
-        return handle<Inst, ConvRoute>{};
+        if constexpr (requires { hal::adc_impl<Inst>::template enable<Opts>(0u); }) {
+            hal::adc_impl<Inst>::template enable<Opts>(kernel_hz());
+        } else {
+            hal::adc_impl<Inst>::enable(kernel_hz());
+        }
+        return handle<Inst, ConvRoute, Opts>{};
     }
+
+    // What one conversion is worth on this port, in significant bits, given
+    // the knobs. Portable code that scales a reading branches on this instead
+    // of assuming 12 — and it is a constant, so the branch costs nothing.
+    template <opts<Inst> Opts = {}>
+    static constexpr unsigned result_bits = adc::result_bits<Inst, Opts>();
 };
 
 }  // namespace alloy::adc
