@@ -308,18 +308,45 @@ def test_lifecycle_survives_the_runner_that_took_it_red(monkeypatch, tmp_path, c
         "legs, not firmware-bound like an ordinary boot")
 
 
-def test_every_phase_keeps_half_its_budget_in_reserve(monkeypatch, tmp_path, capsys):
+def test_no_phase_is_over_half_its_budget_on_a_healthy_runner(monkeypatch, tmp_path,
+                                                              capsys):
     """The guard that would have caught this while the job was still GREEN.
 
     On 2026-08-09 the refusal phase already ate 112 s of 150 s — 75% — while its
     neighbours ate 13%. Nothing reported that, so the first news was a red job
     five days later. A phase over half its budget is a phase about to fail.
+
+    Measured at the HEALTHY runner deliberately. The earlier spelling of this
+    test applied the 50% line to the RED runner instead, which compounds two
+    independent margins and demands every phase survive 1.55 x 2 = 3.1x. The
+    watchdog legs have 600/168 = 3.57x and would have tripped it at a runner
+    factor of 1.79 — against 1.70 already observed in CI on 2026-08-15. It would
+    have gone red within days, pointing at the watchdog legs, which are not this
+    bug and never were. Survival under a slow runner is the NEXT test's job;
+    this one asks only whether a phase is living too close to its ceiling when
+    everything is fine.
+    """
+    run_lifecycle(monkeypatch, tmp_path, GREEN_RUNNER)
+    costs = phase_costs(capsys.readouterr().out)
+    assert costs, "the harness printed no phase timings at all"
+    hot = {k: (t, b) for k, (t, b) in costs.items() if t > 0.5 * b}
+    assert not hot, f"phases with under 2x headroom on a healthy runner: {hot}"
+
+
+def test_every_phase_survives_the_slowest_runner_yet_observed(monkeypatch, tmp_path,
+                                                              capsys):
+    """And the other half: nothing may merely FIT at the worst runner seen.
+
+    RED_RUNNER is a measurement, not a guess, so a phase that exceeds its budget
+    here is a phase that is red in CI today. Kept separate from the reserve
+    check above so that when one of them fails, its name says which property
+    broke — a phase creeping toward its ceiling, or the ceiling being crossed.
     """
     run_lifecycle(monkeypatch, tmp_path, RED_RUNNER)
     costs = phase_costs(capsys.readouterr().out)
     assert costs, "the harness printed no phase timings at all"
-    hot = {k: (t, b) for k, (t, b) in costs.items() if t > 0.5 * b}
-    assert not hot, f"phases with under 2x headroom on the slowest measured runner: {hot}"
+    over = {k: (t, b) for k, (t, b) in costs.items() if t >= b}
+    assert not over, f"phases that do not survive a {RED_RUNNER}x runner: {over}"
 
 
 def test_the_double_reproduces_the_last_green_run(monkeypatch, tmp_path, capsys):
