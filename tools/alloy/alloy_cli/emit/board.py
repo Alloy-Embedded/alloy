@@ -366,6 +366,36 @@ def _dma_route_type(board: dict[str, Any], chip: dict[str, Any],
             f"{number}, /*request=*/{request}>")
 
 
+def _dma_binder_tags(board: dict[str, Any], chip: dict[str, Any], role: str,
+                     facade: str, indent: int) -> str:
+    """The role's `<role>.rx` / `<role>.tx` assignments as binder tag arguments,
+    ready to concatenate after `clock_profile`.
+
+    Design §1: the generator emits the constant AND attaches it to the role's
+    binder. The attachment is what makes the anchor spellings real —
+    `uart.rx_ring(buf)`, `spi.transfer_dma(tx, rx)` — because the handle then
+    knows its route without the user naming one, and it is what a PORTABLE
+    program probes: `requires { ... }` folds on the binder's dependent alias
+    (`Role::rx_route`) and cannot fold on the namespace-scope `board::dma`
+    constant (the phase-2 lesson, paid for once).
+
+    ONE helper for every role that carries routes, because phase 4 adds a
+    third and fourth facade that does this and a per-role copy is how the
+    spellings drift. Route types still come from `_dma_route_type`, so a
+    binder tag and its `board::dma` twin are the same text by construction.
+    No assignment -> no tag -> the facade's route parameter defaults to void
+    and the DMA method is constrained away with a named error instead of a
+    missing symbol.
+    """
+    tags = ""
+    for signal in ("rx", "tx"):
+        route = _dma_route_type(board, chip, f"{role}.{signal}")
+        if route:
+            tags += (f",\n{' ' * indent}"
+                     f"alloy::{facade}::{signal}_dma<{route}>")
+    return tags
+
+
 def _polarity(active: str) -> str:
     return "alloy::gpio::active_high_t" if active == "high" else "alloy::gpio::active_low_t"
 
@@ -774,27 +804,12 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         else:
             for key in ("tx", "rx"):
                 _require(key in uart, f"board {board['id']}: debug_uart missing '{key}'")
-            # The board's `debug_uart.rx` DMA assignment rides on the BINDER
-            # (design §1: the generator "attaches it to the role's binder" —
-            # the adc.conv precedent below) as an `alloy::uart::rx_dma<>` tag
-            # in the Extra... list, which is what makes the anchor-2.2
-            # spelling `uart.rx_ring(rxbuf)` real: the handle knows its route
-            # without the user naming one. No assignment -> no tag -> the
-            # handle's RxRoute defaults to void and rx_ring(storage) is
-            # constrained away, a named compile error at the facade's
-            # requires-gate. Same type spelling as the board::dma constant
-            # (_dma_route_type is the one place both come from — no drift).
-            rx_route = _dma_route_type(board, chip, "debug_uart.rx")
-            rx_tag = (f",\n                                     "
-                      f"alloy::uart::rx_dma<{rx_route}>") if rx_route else ""
-            # And `debug_uart.tx` the same way, as tx_dma<> -> the binder's
-            # `tx_route` — the dependent name portable code gates anchor 2.3
-            # on (the namespace-scope board::dma constant cannot fold inside
-            # a requires-probe; the binder alias can).
-            tx_route = _dma_route_type(board, chip, "debug_uart.tx")
-            if tx_route:
-                rx_tag += (f",\n                                     "
-                           f"alloy::uart::tx_dma<{tx_route}>")
+            # The board's `debug_uart.rx`/`.tx` assignments ride on the BINDER
+            # as `alloy::uart::rx_dma<>`/`tx_dma<>` tags in the Extra... list
+            # — what makes the anchor-2.2/2.3 spellings `uart.rx_ring(rxbuf)`
+            # and `uart.write_dma(...)` real. `_dma_binder_tags` is the one
+            # place any role does this (see its note).
+            rx_tag = _dma_binder_tags(board, chip, "debug_uart", "uart", 37)
             decls.append(
                 f"using debug_uart = alloy::uart::bind<alloy::dev::{uart['peripheral']}_t,\n"
                 f"                                     alloy::uart::tx<alloy::dev::{uart['tx']}_t>,\n"
@@ -873,17 +888,10 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         if "de" in lp_uart:
             de_tag = (f",\n                                         "
                       f"alloy::uart::de<alloy::dev::{lp_uart['de']}_t>")
-        # Same rx_dma<> attachment as debug_uart's, keyed `low_power_uart.rx`.
-        # No shipped board assigns it today; the tag exists so the day one
-        # does, the constant and the binder cannot disagree about the route.
-        lp_rx_route = _dma_route_type(board, chip, "low_power_uart.rx")
-        if lp_rx_route:
-            de_tag += (f",\n                                         "
-                       f"alloy::uart::rx_dma<{lp_rx_route}>")
-        lp_tx_route = _dma_route_type(board, chip, "low_power_uart.tx")
-        if lp_tx_route:
-            de_tag += (f",\n                                         "
-                       f"alloy::uart::tx_dma<{lp_tx_route}>")
+        # Same attachment as debug_uart's, keyed `low_power_uart.*`. No
+        # shipped board assigns it today; the tags exist so the day one does,
+        # the constant and the binder cannot disagree about the route.
+        de_tag += _dma_binder_tags(board, chip, "low_power_uart", "uart", 41)
         decls.append(
             f"using low_power_uart = alloy::uart::bind<alloy::dev::{lp_uart['peripheral']}_t,\n"
             f"                                         alloy::uart::tx<alloy::dev::{lp_uart['tx']}_t>,\n"
