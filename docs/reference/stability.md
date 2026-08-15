@@ -25,20 +25,31 @@ contractual support agreement.
 
 ### Tier 1 — application headers
 
-Headers under `src/alloy/` that application code includes directly. These are
-the ones the in-repo examples use, which is also how the list was built:
+Headers under `src/alloy/` that application code reaches — whether it includes
+them itself or gets them through `alloy/board.hpp`. The list is every
+application-facing header that ships today; it is checked against
+`ls src/alloy/*.hpp` rather than against memory, because it drifted once by
+ten names when the peripheral surface grew:
 
 ```
 alloy/board.hpp     alloy/time.hpp      alloy/delay.hpp     alloy/gpio.hpp
 alloy/uart.hpp      alloy/i2c.hpp       alloy/spi.hpp       alloy/adc.hpp
-alloy/dac.hpp       alloy/pwm.hpp       alloy/can.hpp       alloy/rtc.hpp
-alloy/dma.hpp       alloy/irq.hpp       alloy/wdt.hpp       alloy/flash.hpp
-alloy/log.hpp       alloy/sched.hpp     alloy/fault.hpp     alloy/secure.hpp
-alloy/ota.hpp       alloy/provision.hpp alloy/concepts.hpp  alloy/fastcode.hpp
-alloy/async/{task,executor,delay,i2c,spi,dma}.hpp
-alloy/net/{socket,http,lwip}.hpp        alloy/ota/{signed,uart_transport}.hpp
-alloy/drivers/…     alloy/dsp/…         alloy/util/…
+alloy/dac.hpp       alloy/pwm.hpp       alloy/bridge.hpp    alloy/encoder.hpp
+alloy/tick.hpp      alloy/can.hpp       alloy/rtc.hpp       alloy/dma.hpp
+alloy/irq.hpp       alloy/wdt.hpp       alloy/wwdt.hpp      alloy/flash.hpp
+alloy/crc.hpp       alloy/uid.hpp       alloy/log.hpp       alloy/sched.hpp
+alloy/fault.hpp     alloy/secure.hpp    alloy/ota.hpp       alloy/provision.hpp
+alloy/concepts.hpp  alloy/fastcode.hpp
+alloy/async/{task,executor,delay,uart,i2c,spi,dma,event,periodic,waiter}.hpp
+alloy/net/{socket,http,lwip}.hpp
+alloy/ota/{signed,uart_transport,crc32}.hpp
+alloy/drivers/…     alloy/dsp/…         alloy/util/…        alloy/control/…
 ```
+
+`alloy/bridge.hpp`, `alloy/encoder.hpp` and `alloy/tick.hpp` are the timer's
+three non-PWM [personalities](peripheral-surface.md#personalities-a-block-runs-in-one-mode-at-a-time);
+`alloy/wwdt.hpp` is a separate role from `alloy/wdt.hpp`, not a mode of it.
+All four are taught in the guide and all four are Tier 1.
 
 `alloy/board.hpp`, `alloy/device.hpp`, `alloy/product.hpp`,
 `alloy/product_nvm.hpp`, `alloy/slots.hpp`, `alloy/ota_key.hpp` and
@@ -180,6 +191,10 @@ flashes, and behaves differently on the bench with no version, no warning and
 no diff in your own repository.
 
 ### The pin
+
+The path, the digest and the file count below are **an example** — yours will
+differ, and a digest that does not match this one is not a sign that anything
+is wrong. Only the *shape* is the claim.
 
 ```console
 $ alloy devices

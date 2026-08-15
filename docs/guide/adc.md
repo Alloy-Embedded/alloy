@@ -265,11 +265,28 @@ for (;;) {
 }
 ```
 
-This exists only where the board assigned a DMA route *and* the routed
-controller can do circular transfers with half-transfer events. Otherwise the
-method is constrained away — a compile error, never a link error or a runtime
-surprise. See [the DMA streams design](../design/dma-streams.md) for the
-teardown ordering it encodes.
+This exists only where the board assigned an `adc.conv` DMA route *and* the
+routed controller can present a **ring** — circular refill, half-buffer events
+and a live remaining count (`alloy::dma::ring_capable`). Otherwise the method is
+constrained away: a compile error naming the capability, never a link error and
+never a runtime surprise.
+
+!!! note "`ring_capable` is not `supports_circular`"
+    The two are separate flags because they diverge. On the SAM E70 there is no
+    circular bit anywhere in the DMA controller, and a ring is nonetheless
+    available — it is built from two linked descriptors. Asking for
+    "circular mode" would give you the wrong answer on that part.
+
+**How far this is proven.** The ADC ring is Renode-proven by *blocking* CI legs
+on `nucleo_g071rb` and `nucleo_g0b1re`: the half event arrives before the full
+event, the full event arrives, the ring wraps, and each half is pinned to the
+millivolts fed to that channel. It is **not available at all** on the two F7
+boards — that family's chip data routes no `adc.conv` signal. And on
+`same70_xplained` it **compiles, links, and has never been run**, against a
+descriptor layout that no file in either repository curates. Read
+[Streaming data without the CPU](dma.md#read-this-one-first) before you ship
+that path to hardware; it also covers the consumption disciplines, the sharp
+edges and the teardown ordering this encodes.
 
 ---
 
