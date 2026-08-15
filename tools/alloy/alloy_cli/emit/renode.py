@@ -808,6 +808,66 @@ def _resolve_dma_v2(chip: dict[str, Any]):
     return out or None
 
 
+# The 1.16.1 spelling of SPI.STM32SPI's DMA-request output GPIO. It is
+# MISSPELLED in the pinned release — read out of the shipped assembly's IL,
+# where the backing field is `<DMARecieve>k__BackingField` — and upstream
+# renamed it to `DMAReceive` on 2026-05-07 (commit 2cab32e0fd, "[FIX]
+# STM32SPI: Fix typo DMARecieve"), AFTER v1.16.1 (2026-02-16) and still
+# unreleased. So this is a VERSION-PINNED STRING, not a house style: the day
+# the Renode pin in ci.yml moves past that commit, every platform carrying an
+# SPI DMA assignment stops loading with
+#     Error E13: Property 'DMARecieve' does not exist in
+#     'Antmicro.Renode.Peripherals.SPI.STM32SPI' or is not of the GPIO type
+# and this constant is the one line to flip. Named rather than inlined so the
+# grep that finds it lands on this paragraph.
+SPI_DMA_RX_GPIO = "DMARecieve"
+
+
+def _spi_rx_dma_wire(board: dict[str, Any], chip: dict[str, Any]):
+    """(controller, index) when the board assigns `spi.rx` to a DMA controller
+    this platform emits — free-router (`channel`, 1-based) or stream engine
+    (`stream`, 0-based), whichever this chip carries. None otherwise.
+
+    ONE helper for both engines, unlike the UART's pair of functions, because
+    the emitted line is byte-identical either way: the index is passed through
+    untranslated in BOTH shapes (STM32G0DMA.OnGPIO checks [1..count]; the
+    generated STM32DMA_CircularHalf.OnGPIO is 0-based), matching the board key
+    that names it. Same by-construction honesty as every other request wire
+    here: platform and firmware descend from the same board.json statement, so
+    the INDEX half of the route is load-bearing (move this wire by one and the
+    leg goes red — measured) and the REQUEST half is not (Renode 1.16.1 models
+    no DMAMUX at all, and CHSEL routes nothing in the generated stream model).
+
+    WHY ONLY RX. The transmit half of the pair gets no wire, and that is a
+    measured model fact rather than an omission: an m2p transfer completes
+    IN FULL at the CR/SxCR write that sets EN in both engines' models
+    (STM32G0DMA.DoTransfer's else-branch; STM32DMA_CircularHalf.HandleEnable
+    — see the DMA_V2_CS comment saying so), and the generated model's
+    OnRequest returns early for any direction that is not peripheral-to-memory.
+    A TX wire would therefore be inert at best. It is also unnecessary for the
+    duplex to run: DmaEngine writes a peripheral destination one unit at a
+    time, so an N-byte m2p into SPI->DR is N separate bus writes, each one a
+    slave Transmit, each Transmit a `DMARecieve` blink — one rising edge per
+    byte on the RX channel, which is exactly what makes the pair's
+    RX-armed-before-TX rule witnessable (arm TX first and all N edges land on
+    a disabled RX channel).
+
+    The wire is INERT for firmware that leaves CR2.RXDMAEN clear — the model
+    gates the blink on it — which is what keeps the polled and interrupt-driven
+    spi_read assertions untouched by construction."""
+    assign = (board.get("dma") or {}).get("spi.rx")
+    if not isinstance(assign, dict):
+        return None
+    dma = _resolve_dma(chip)
+    if dma is not None and assign.get("controller") == dma[0] and "channel" in assign:
+        return dma[0], int(assign["channel"])
+    ctrls = _resolve_dma_v2(chip)
+    if ctrls is not None and "stream" in assign:
+        if assign.get("controller") in {c[0] for c in ctrls}:
+            return str(assign["controller"]), int(assign["stream"])
+    return None
+
+
 def _uart_rx_dma_wire_v2(board: dict[str, Any], chip: dict[str, Any]):
     """(controller, stream) when the board assigns `debug_uart.rx` to a
     stream-engine controller this platform emits. The board key is `stream`
@@ -1094,6 +1154,17 @@ sram: Memory.MappedMemory @ sysbus {ram['base']}
 {spi_name}: {spi_model} @ sysbus {spi_base:#010x}
     IRQ -> nvic@{spi_irq}
 """
+        # The anchor-2.4 pair's RECEIVE request, only where the board assigns
+        # `spi.rx` — one plain wire, no C# bridge and no access shim, because
+        # unlike the ADC this model already has the output GPIO and already
+        # gates it on the enable bit the driver writes. What each half of the
+        # route does and does not prove, why the transmit half gets no wire at
+        # all, and why the property name is misspelled: _spi_rx_dma_wire and
+        # SPI_DMA_RX_GPIO above.
+        spi_wire = _spi_rx_dma_wire(board, chip)
+        if spi_wire is not None:
+            platform = platform.rstrip("\n") + (
+                f"\n    {SPI_DMA_RX_GPIO} -> {spi_wire[0]}@{spi_wire[1]}\n")
     adc = _resolve_adc(chip, board)
     if adc is not None:
         adc_name, adc_base, adc_model, adc_irq = adc
