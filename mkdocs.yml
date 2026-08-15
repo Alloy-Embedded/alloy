@@ -112,6 +112,7 @@ nav:
       - guide/examples.md
   - Guide:
       - guide/peripherals.md
+      - guide/adc.md
       - guide/async.md
       - guide/libraries.md
       - guide/products.md
