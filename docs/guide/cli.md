@@ -61,7 +61,7 @@ $ alloy build --board esp32_devkit
 | Command | What it does |
 | --- | --- |
 | `alloy size` — **JSON** | flash/RAM of the last build against the chip's real memories, and whether the image fits its update slot |
-| `alloy matrix [--boards a,b]` — **JSON** | build this project for **every** board and table the result |
+| `alloy matrix [--boards <id>,<id>]` — **JSON** | build this project for **every** board and table the result |
 | `alloy symbols [--board <id>]` | what is in the last build and **where** — sections with their load vs run addresses, the largest symbols, and any `[budget]` in `alloy.toml` |
 | `alloy frame-audit` | coroutine frame sizes vs the `task_storage<N>` you declared |
 | `alloy crash [--line "…"] [--pc 0x…] [--elf app.elf]` — **JSON** | decode a device's crash report: pc/lr to file:line via addr2line, CFSR bits into words — see [Crash reports](crash-reports.md) |
@@ -240,7 +240,7 @@ point: read [Security](security.md) before using `apply` — especially what `--
 
 | Command | What it does |
 | --- | --- |
-| `alloy ci-init [--boards a,b] [--all] [--force]` | write a GitHub Actions workflow for this project |
+| `alloy ci-init [--boards <id>,<id>] [--all] [--force]` | write a GitHub Actions workflow for this project |
 
 The framework's CI is what keeps every board building; a project built *on* alloy starts with
 nothing. This writes the equivalent — validate the boards it defines, then build its sources for

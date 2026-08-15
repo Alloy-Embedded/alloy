@@ -39,6 +39,7 @@ only write **one `board.json`**. Drop it in `boards/<your-board>/board.json`:
 
 Then build — the pin routes are checked at compile time, so a wrong pin fails loudly:
 
+<!-- docgate: placeholder my_board — the board this page is teaching you to write; it is not in boards/ and must not be -->
 ```console
 $ alloy build --board my_board
 ```
