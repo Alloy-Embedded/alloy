@@ -642,6 +642,19 @@ jobs:
           out="$PWD/.alloy/build-tree/nucleo_g071rb/out"
           echo "repl=$out/nucleo_g071rb.repl" >> "$GITHUB_ENV"
           echo "bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          # A platform may name C#-backed types (the ADC request bridge, the
+          # stream-engine DMA model), and Renode resolves those only if the .cs
+          # is compiled FIRST. `alloy emulate` puts the includes in the .resc it
+          # generates; the legs below hand-roll their own, so they have to carry
+          # the includes themselves. DISCOVERED, not named: a platform that grows
+          # a new shim tomorrow is picked up here without touching this file —
+          # which is the failure that took bootloader-e2e red the first time CI
+          # ran after the G0 platform gained DMA.STM32G0DMARequestBridge.
+          {
+            echo "cs_includes<<CSEOF"
+            for cs in "$out"/*.cs; do [ -e "$cs" ] && echo "include @$cs"; done
+            echo "CSEOF"
+          } >> "$GITHUB_ENV"
       - name: build a slot-A app + pack it with `alloy image`
         working-directory: alloy/examples/uart_echo
         run: |
@@ -673,6 +686,7 @@ jobs:
           cat > /tmp/full.resc <<EOF
           using sysbus
           mach create "boot"
+          $cs_includes
           machine LoadPlatformDescription @$repl
           sysbus LoadELF @$bl_elf
           sysbus LoadBinary @/tmp/app.img $slot_a
@@ -680,6 +694,7 @@ jobs:
           cat > /tmp/empty.resc <<EOF
           using sysbus
           mach create "bootE"
+          $cs_includes
           machine LoadPlatformDescription @$repl
           sysbus LoadELF @$bl_elf
           EOF
@@ -725,6 +740,7 @@ jobs:
             cat > /tmp/prov_$k.resc <<EOF
           using sysbus
           mach create "prov$k"
+          $cs_includes
           machine LoadPlatformDescription @$repl
           sysbus LoadELF @$bl_elf
           sysbus LoadBinary @/tmp/factory.img $slot_a
@@ -754,6 +770,12 @@ jobs:
           out="$PWD/.alloy/build-tree/nucleo_f722ze/out"
           echo "f7_repl=$out/nucleo_f722ze.repl" >> "$GITHUB_ENV"
           echo "f7_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          # See the G0 leg above for why these are discovered rather than named.
+          {
+            echo "f7_cs_includes<<CSEOF"
+            for cs in "$out"/*.cs; do [ -e "$cs" ] && echo "include @$cs"; done
+            echo "CSEOF"
+          } >> "$GITHUB_ENV"
           cd ../uart_echo
           uv run --project ../../tools/alloy alloy build --board nucleo_f722ze --slot a
           uv run --project ../../tools/alloy alloy image \
@@ -766,6 +788,7 @@ jobs:
           cat > /tmp/f7_full.resc <<EOF
           using sysbus
           mach create "f7A"
+          $f7_cs_includes
           machine LoadPlatformDescription @$f7_repl
           sysbus LoadELF @$f7_bl_elf
           sysbus LoadBinary @/tmp/f7_app.img $f7_slot_a
@@ -773,6 +796,7 @@ jobs:
           cat > /tmp/f7_empty.resc <<EOF
           using sysbus
           mach create "f7E"
+          $f7_cs_includes
           machine LoadPlatformDescription @$f7_repl
           sysbus LoadELF @$f7_bl_elf
           EOF
@@ -796,6 +820,13 @@ jobs:
           out="$PWD/.alloy/build-tree/same70_xplained/out"
           echo "s70_repl=$out/same70_xplained.repl" >> "$GITHUB_ENV"
           echo "s70_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
+          # Empty on this board today; present for the same reason as the G0 leg
+          # above — the point is that a future shim needs no edit here.
+          {
+            echo "s70_cs_includes<<CSEOF"
+            for cs in "$out"/*.cs; do [ -e "$cs" ] && echo "include @$cs"; done
+            echo "CSEOF"
+          } >> "$GITHUB_ENV"
           cd ../uart_echo
           uv run --project ../../tools/alloy alloy build --board same70_xplained --slot a
           uv run --project ../../tools/alloy alloy image \
@@ -813,6 +844,7 @@ jobs:
           cat > /tmp/s70_full.resc <<EOF
           using sysbus
           mach create "s70A"
+          $s70_cs_includes
           machine LoadPlatformDescription @$s70_repl
           sysbus LoadELF @$s70_bl_elf
           sysbus LoadBinary @/tmp/s70_app.img $s70_slot_a
@@ -820,6 +852,7 @@ jobs:
           cat > /tmp/s70_empty.resc <<EOF
           using sysbus
           mach create "s70E"
+          $s70_cs_includes
           machine LoadPlatformDescription @$s70_repl
           sysbus LoadELF @$s70_bl_elf
           EOF
@@ -831,6 +864,7 @@ jobs:
           cat > /tmp/s70_wire.resc <<EOF
           using sysbus
           mach create "upd"
+          $s70_cs_includes
           machine LoadPlatformDescription @$s70_repl
           macro reset
           """
@@ -864,6 +898,7 @@ jobs:
           cat > /tmp/wire.resc <<EOF
           using sysbus
           mach create "upd"
+          $cs_includes
           machine LoadPlatformDescription @$repl
           macro reset
           """
@@ -934,6 +969,16 @@ jobs:
           cp "$out/bootloader_uart.elf" /tmp/sg_bl.elf
           echo "sg_repl=/tmp/sg.repl" >> "$GITHUB_ENV"
           echo "sg_bl_elf=/tmp/sg_bl.elf" >> "$GITHUB_ENV"
+          # The C# shims the platform names travel WITH the copy — see the first
+          # bootloader leg for why these are discovered rather than named.
+          cp "$out"/*.cs /tmp/ 2>/dev/null || true
+          {
+            echo "sg_cs_includes<<CSEOF"
+            for cs in "$out"/*.cs; do
+              [ -e "$cs" ] && echo "include @/tmp/$(basename "$cs")"
+            done
+            echo "CSEOF"
+          } >> "$GITHUB_ENV"
           slot_a=$(grep -oE 'slot_a_base = 0x[0-9a-f]+' \
             .alloy/generated/nucleo_g071rb/alloy/slots.hpp | grep -oE '0x[0-9a-f]+')
           echo "sg_slot_a=$slot_a" >> "$GITHUB_ENV"
@@ -991,6 +1036,7 @@ jobs:
             cat > /tmp/sg_$k.resc <<EOF
           using sysbus
           mach create "sg$k"
+          $sg_cs_includes
           machine LoadPlatformDescription @$sg_repl
           sysbus LoadELF @$sg_bl_elf
           sysbus LoadBinary @/tmp/sg_$k.img $sg_slot_a
@@ -1004,6 +1050,7 @@ jobs:
             cat > /tmp/rot_$name.resc <<EOF
           using sysbus
           mach create "rot$name"
+          $sg_cs_includes
           machine LoadPlatformDescription @$sg_repl
           sysbus LoadELF @$rot_bl_elf
           sysbus LoadBinary @/tmp/$img.img $sg_slot_a
