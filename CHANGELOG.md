@@ -14,6 +14,72 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams phase 5b — `alloy::dma::ring` on the SAM E70, out of linked
+  descriptors instead of a circular bit. READ THE WITNESS PARAGRAPH BELOW
+  BEFORE USING IT.** The XDMAC has no circular mode, so a ring there is two
+  view-0 descriptors pointing at each other, each covering one half of the
+  caller's buffer, with the end-of-block interrupt serving as BOTH the half
+  event and the wrap — told apart by which descriptor just finished, tracked in
+  the ISR. `remaining()` stops being a register read and becomes a synthesis:
+  `CUBC` counts down through the CURRENT HALF, so the whole-buffer count is
+  `CUBC + N/2` while the first descriptor is live and `CUBC` while the second
+  is, read under a retry loop because the two sources are a software variable
+  and a hardware register with a block-end interrupt able to land between them.
+  Read raw it would be wrong by half a buffer for half of every lap, silently,
+  in the direction that hands a reader items the DMA has not written yet. The
+  descriptors are ENGINE-OWNED `.bss` statics, per channel, 24 bytes per RINGED
+  channel — not caller-owned like `ring_storage`, deliberately: they are this
+  engine's private encoding of "ring", they do not exist on either ST engine,
+  and threading them through `ring`'s constructor would put an XDMAC-shaped
+  parameter into the one portable type the design exists to keep portable.
+  Static storage also puts them in SRAM by construction, which the §4 safety
+  rule requires (this master cannot read the embedded flash) and outlives every
+  ring, which is stricter than a caller could promise. `stop()` now also breaks
+  the descriptor loop: the two descriptors point at each other forever, and the
+  ring's destructor releases the channel claim immediately after stopping, so a
+  disabled channel left with `CNDC.NDE` set is one stray `GE` — by the NEXT
+  claimant — away from chasing them into a dead buffer.
+  **The user-facing vocabulary did not change and that was the point**: the
+  same `alloy::dma::ring<T, Route>` an `adc_stream` on a G0 builds compiles
+  here, with the same `take()`/`missed()` and `cursor()`/`readable()`/
+  `consume()` disciplines, no descriptor argument and no second ring type.
+  **WITNESS, STATED PLAINLY: the ring path has none off the host, and one of
+  its inputs is unverified.** Renode 1.16.1 ships no XDMAC model and no
+  Microchip DMA controller of any kind, so there is no emulation leg — and
+  writing one would not help, because the view-0 descriptor's memory layout
+  (word order, and the bit packing of its own control word) is curated in
+  NEITHER repo: the registers that POINT at descriptors are fully curated with
+  datasheet provenance, the descriptor STRUCTURE is not a register and is not
+  there, and the pinned upstream pack carries zero of it. A model would encode
+  the same unverified reading the driver does and a green leg would prove only
+  that the two agree with each other. `tests/test_xdmac_v1_ring.cpp` (12 cases)
+  runs the real engine over a double that genuinely fetches and executes the
+  descriptors, and pins everything DOWNSTREAM of the layout — linkage, the
+  ping-pong parity, the cursor across a half boundary, teardown, and the
+  shipped `ring<T>` itself — with each load-bearing line proven by a revert
+  that turns it red. It cannot pin the layout. **Confirm the structure and the
+  `MBR_UBC` bit positions against DS60001527 before trusting a ring on
+  hardware.** One correction already: the design doc said 16 bytes per view-0
+  descriptor; it is 12 (three words — `NDA`, `UBC`, `TA`), and 16 is the
+  four-word view 1. `docs/design/dma-streams.md` §3.3, its §5 SAME70 row (which
+  claimed "XDMAC modelled" and never should have) and its phase-5 end-state row
+  are corrected to match.
+- **`alloy::dma::ring_capable` asks `supports_ring`, not `supports_circular`.**
+  The two look like one fact and are not. `supports_circular` is a statement
+  about SILICON — there is a config-register bit that reloads and wraps — and
+  it gates `start_m2p_circular_u16`, whose whole job is feeding 16-bit memory
+  items into 32-bit register writes. `supports_ring` is a statement about a
+  DRIVER: this engine can present `ring`'s contract, by whatever means. On both
+  ST engines they are the same fact spelled twice, so nothing changes there. On
+  the XDMAC they differ in both directions, which is why the split had to
+  happen before the ring could: that IP has no circular bit anywhere and ONE
+  transfer width for both sides of a channel, so `start_m2p_circular_u16` must
+  stay absent there permanently — and setting one flag for both would have made
+  it visible and TRAPPING, the exact inversion of the compile-error promise its
+  own comment makes. Backends that ring now say so; `test_dma_ring.cpp` gained
+  the two shapes that were inexpressible under one flag (rings-without-circular
+  and circular-without-rings) to pin which flag the concept reads.
+
 - **DMA streams phase 4 — the full-duplex pair, and `spi.transfer_dma()`.**
   `alloy::dma::pair` claims two channels as ONE unit — RX first, TX second, in
   one interrupts-masked section — so two claimants of an overlapping pair trap

@@ -262,11 +262,21 @@ item. Anchors 2.2/2.3 (UART) and 2.4 (SPI) have curated peripherals waiting.
   **Estimate: ~80 lines + the Renode witness.**
 - **Rings**: XDMAC has no circular bit; a ring is two linked view-0
   descriptors ping-ponging the halves, with the block-end interrupt as the
-  half event. 16 bytes of RAM per descriptor, descriptors must live in
-  DMA-visible RAM. `cursor()` degrades: `CUBC` gives position *within the
-  current half* and which descriptor is live must be tracked in the ISR —
-  workable, but the Modbus `readable()` path is more code than on ST.
-  **Estimate: 150–250 lines. Phase 5, after the IRQ.**
+  half event. ~~16 bytes~~ **12 bytes** of RAM per descriptor — corrected
+  while implementing: view 0 is THREE words (`MBR_NDA`, `MBR_UBC`, `MBR_TA`),
+  and 16 bytes is the four-word view 1 that carries `SA` and `DA`
+  separately. Descriptors must live in DMA-visible RAM (they are engine-owned
+  `.bss` statics, per channel, so this is true by construction rather than by
+  a caller's discipline). `cursor()` degrades: `CUBC` gives position *within
+  the current half* and which descriptor is live is tracked in the ISR —
+  `remaining()` becomes a synthesis of the two rather than a register read.
+  **Landed at ~250 lines. THE DESCRIPTOR LAYOUT IS UNCURATED AND THE WHOLE
+  PATH IS UNWITNESSED** — see the §5 SAME70 row and the warning at the top of
+  `src/alloy/hal/dma/microchip_xdmac_v1_body.hpp`.
+- **Capability**: the ring is gated on a `supports_ring` flag SEPARATE from
+  `supports_circular`, because on this IP the two have different answers and
+  folding them would make `start_m2p_circular_u16` — which needs two different
+  transfer widths XDMAC does not have — visible and trapping.
 
 ### 3.4 RP2040 — curation from zero
 
@@ -346,7 +356,7 @@ Honest per-leg statements of what a green run actually proves:
 |---|---|---|---|
 | G0 | native `DMA.STM32G0DMA` | one-shot m2p bytes on the UART, completion IRQ fired (proven leg, in CI); phase 1 adds: half-IRQ then full-IRQ ordering, ring wrap (pattern written twice), ADC ring data | one-shot **proven**; ring events **expected but unverified** until the phase-1 leg runs — the model's HTIF behavior has not been exercised by us |
 | F4/F7 | stock `DMA.STM32DMA` **measured, then replaced** by a generated model (phase 3) | probe day found: per-request P2M through a `ReceiveDmaRequest` wire, immediate M2P, TCIF + per-stream NVIC all work on stock; **CIRC and HTIF are tagged no-ops** (circular p2m stalls after one buffer) and the class is sealed — so the platform emits `DMA_V2_CS` (emit/renode.py): stock behaviours + CIRC reload + HTIF, CHSEL routing by-construction unwitnessable (the G0 DMAMUX caveat) | anchors 2.2/2.3 **proven in emulation** on both F7 Nucleos (modbus ring + route-claimed TX, every G0 assertion unchanged), DMAR negative control red-not-hung. **A route is witnessed by halves**, measured by adversarial control: the STREAM index is load-bearing end-to-end (move the model's request wire by one stream and modbus fails red), the REQUEST id is NOT (delete the CHSEL write from the driver and the leg stays green) — so on F7 emulation proves the stream, and only silicon can prove the request |
-| SAME70 | XDMAC modelled | poll-mode transfers proven; completion-IRQ leg is the phase-5a witness; descriptor ping-pong fidelity unknown | partial |
+| SAME70 | **no model at all** — this row used to say "XDMAC modelled" and that was never true. Renode 1.16.1 ships no XDMAC and no Microchip DMA controller of any kind (measured two ways: every plausible type name fails to resolve, and the complete `SAM*` type set in its Infrastructure assembly is 19 peripherals, none of them a DMA engine), and alloy's emitter generates none either | **nothing, today.** The "poll-mode transfers proven" this row used to claim was a SILICON fact — the flash-read bus error recorded at the top of `microchip_xdmac_v1_body.hpp` was found on a real Xplained — sitting in a MODEL column, and a reader sizing phase 5a from it under-sized it by an entire Renode model. **5a (completion IRQ)** is witnessed on the host (`test_xdmac_v1_latch.cpp`, every latch line proven by revert) and on the linked ELF; a leg needs a generated C# model first (prototyped at ~200 lines, green, not landed). **5b (rings)** has NO leg and cannot honestly be given one: the view-0 descriptor layout is curated in neither repo, so a model would encode the same unverified reading as the firmware and a green run would prove only that the two agree with each other. Its witness is `test_xdmac_v1_ring.cpp` (bookkeeping, ping-pong, cursor, teardown — each line proven by revert) plus a datasheet confirmation nobody has done | honest gap — and PERID is worse here than the G0/F7 "witnessed by halves" boundary: with no model to consume a request wire, the request half is unwitnessable **by construction**, not by coincidence |
 | RP2040 | **no model** | nothing under Renode. Witness = host unit tests against register doubles (the `tests/doubles.hpp` pattern) + an on-hardware checklist in the PR | honest gap — a green CI on RP2040 DMA proves compilation and register-sequence intent, **not** behavior |
 
 Rule inherited from the fault-report work: a leg asserts what it measures and
@@ -361,7 +371,7 @@ bytes crossed, this IRQ fired, in this order".
 | **2** | `uart.rx_ring()` + IDLE wake + `cursor()/readable()/consume()`; route-claiming `alloy::dma::claim(route)` for the shipped TX path | anchor 2.2: Modbus RTU frames received with no per-byte ISR under the existing `modbus_rtu.robot`; anchor 2.3 async TX |
 | **3** | alloy-devices: `dma_routes` rename [DONE phase 1] + shipped-chip regen; `st/dma_v2` curation; `st_dma_v2.hpp`; F7 board assignments | **[DONE]** anchors 2.2/2.3 on `nucleo_f767zi` (and f722ze) under Renode; same portable main.cpp, one config line changed — with two driver-side findings the promise turned out to need: `st_usart_v3` had no RX-DMA/IDLE hooks (now inherits the witnessed shared body) and `write_dma` sourced its request only from chip-wide `Inst::dmareq_tx`, which cannot exist on a stream engine (now falls back to the binder's matched-route request) |
 | **4** | pair claim + `spi.transfer_dma()`; `i2c` one-shot DMA read/write | **[DONE]** anchor 2.4 green on `nucleo_g071rb`, `nucleo_g0b1re` (dma1 channel 4/5, free router) and `nucleo_f722ze` (dma2 streams 0/3, stream engine) — one portable `spi_read` and one robot across both engines, differing by nothing but `board.json` `dma:` lines. Stronger than phase 3 could claim: besides the channel/stream INDEX, the leg witnesses the **RX-before-TX arming order** of the pair above (arm TX first and every request edge lands on a channel that is not enabled yet — red) and `CR2.RXDMAEN` (red without it). Still unwitnessed, unchanged: the REQUEST id, on either engine. The **i2c one-shot** landed with host witnesses only, and its leg asserts a bounded refusal rather than a transfer: Renode 1.16.1's model of that IP exposes no DMA request output at all, so nothing can ask the engine to move a byte — see the two options recorded in `tests/emulation/i2c_read.robot`. `write_read_dma` (repeated start) is a **named absence**: a deleted member, because the polled path hands off on TC and `CR1.TCIE` is deliberately uncurated |
-| **5** | SAME70: completion IRQ (5a), then linked-list rings (5b) | dma_uart leg on same70_xplained asserts the IRQ instead of printing "not available"; then anchor 2.1 on SAME70 |
+| **5** | SAME70: completion IRQ (5a), then linked-list rings (5b) | ~~dma_uart leg on same70_xplained asserts the IRQ instead of printing "not available"; then anchor 2.1 on SAME70~~ **NEITHER END-STATE WAS REACHABLE AS WRITTEN, and both halves failed for the same reason the §5 row above had wrong** — this table was drafted against "XDMAC modelled". 5a's driver landed and the requires-gate flipped (measured on the ELF: the "not available" string is gone, `complete_isr<1>` is linked at IRQ58), but the LEG needs a Renode XDMAC model that does not exist. 5b's ring landed with a host witness and can never have a leg at all (see §5). And "then anchor 2.1 on SAME70" needs an AFEC model on top of that — `RENODE_ADC` is ST-only and Renode's `Analog.SAM4S_ADC` is a different block. **Honest end-state for phase 5: both drivers landed, host-witnessed, revert-proven; the emulation legs and the descriptor-layout confirmation are open and named.** |
 | **6** | RP2040: curation from zero + `rp_dma_v1` + poll-mode ring | host-double tests green; hardware checklist executed on the owned Pico |
 
 Ordering rationale: phases 1–2 land the maintainer's two product cases on the
