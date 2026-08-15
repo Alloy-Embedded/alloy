@@ -5,13 +5,21 @@
   "chip": "raspberrypi/rp2040",
   "clock_profile": "pll_125mhz",
   "roles": {
-    "led": { "pin": "pa25", "active": "high", "label": "onboard LED (GPIO25)" },
+    "led": {
+      "pin": "pa25",
+      "active": "high",
+      "label": "onboard LED (GPIO25)"
+    },
     "debug_uart": {
       "peripheral": "uart0",
       "tx": "pa0",
       "rx": "pa1",
       "baud": 115200,
-      "label": "UART0 on GP0/GP1 (header pins 1/2 — needs external USB-serial adapter)"
+      "label": "UART0 on GP0/GP1 (header pins 1/2 \u2014 needs external USB-serial adapter)"
+    },
+    "adc": {
+      "peripheral": "adc",
+      "label": "on-die temperature sensor (input 4); GPIO26..29 need their pads disabled first"
     }
   },
   "probe": {
