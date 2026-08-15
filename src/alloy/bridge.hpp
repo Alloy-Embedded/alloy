@@ -356,6 +356,20 @@ public:
     void emergency_stop() const { hal::bridge_impl<Inst>::force_break(); }
 
     //: Counter ticks in one period. The resolution `set_duty` actually has.
+    //: Move the trigger point inside the switching period. Only exists when
+    //: this timer HAS a trigger output — `feat::trgo` is a generated number
+    //: from the IP's curated data, so a block without one is a compile error
+    //: naming the instance rather than a write that does nothing.
+    //:
+    //: It does NOT check that `config::trigger` was `on_compare`: that is a
+    //: runtime value and this is a compile-time gate. Calling it on a bridge
+    //: configured `none` moves CCR4 and publishes nothing, which is inert.
+    void set_sample_point(std::uint16_t point) const
+        requires (Inst::feat::trgo != 0u)
+    {
+        hal::bridge_impl<Inst>::set_sample_point(point);
+    }
+
     [[nodiscard]] std::uint32_t period_ticks() const {
         return hal::bridge_impl<Inst>::period_ticks;
     }

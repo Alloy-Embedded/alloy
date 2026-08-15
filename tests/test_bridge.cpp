@@ -303,6 +303,17 @@ template <int N>
 struct fake_timer {
     using ip = fake_ip;
     static constexpr alloy::clock_node kernel = alloy::clock_node::apb;
+    // The DEGREE block a real instance gets from the IP's curated data. Only
+    // `trgo` is read by the facade under test (the sample point is gated on
+    // it); the others are here so this fake looks like what codegen emits for
+    // an advanced timer rather than like the minimum that compiles.
+    struct feat {
+        static constexpr std::uint32_t channels = 4u;
+        static constexpr std::uint32_t complementary_channels = 3u;
+        static constexpr std::uint32_t break_inputs = 2u;
+        static constexpr std::uint32_t trgo = 1u;
+        static constexpr std::uint32_t moe = 1u;
+    };
 };
 
 template <int N>
@@ -342,6 +353,7 @@ struct bridge_log {
     bool bif = false;
     unsigned forced_breaks = 0;
     std::uint16_t duty[4] = {0, 0, 0, 0};
+    std::uint16_t sample_point = 0;
 
     // WHAT HAPPENED IN WHICH ORDER, which for this facade is a safety
     // property and not a detail: a pin muxed to a timer whose BDTR has not
@@ -402,6 +414,7 @@ struct bridge_impl<fake_timer<T>> {
     static void set_duty(unsigned phase, std::uint16_t duty) {
         if (phase >= 1u && phase <= 4u) { log.duty[phase - 1u] = duty; }
     }
+    static void set_sample_point(std::uint16_t point) { log.sample_point = point; }
     static void outputs_on() { log.moe = true; }
     static void outputs_off() { log.moe = false; }
     static bool outputs_enabled() { return log.moe; }
@@ -832,4 +845,68 @@ ALLOY_TEST(a_bridge_opens_a_timer_nobody_else_wants) {
     ALLOY_CHECK_EQ(inv.period_ticks(), 1600u);
     ALLOY_CHECK((alloy::claim::held<fake_timer<23>,
                                     alloy::claim::personality::bridge>()));
+}
+
+// ── The trigger output ───────────────────────────────────────────────────
+//
+// A control loop's question is not "can I start a conversion" but WHERE IN
+// THE PERIOD it samples: current in a switching leg only means something away
+// from the edges, and a conversion the CPU starts lands wherever the CPU got
+// to. These pin the FACADE half — the choice reaching the driver, and the
+// sample point being its own register. The REGISTER half (that CR2 carries
+// MMS and every idle bit stays zero) cannot be reached from here: the driver
+// needs a generated alloy/ip/st/tim_adv.hpp, and this file deliberately never
+// reads generated headers. It is pinned by the mask assertion in the driver.
+
+ALLOY_TEST(a_bridge_defaults_to_publishing_nothing) {
+    // A bridge nobody asked to trigger anything should not broadcast events
+    // onto a bus some other peripheral may be slaved to.
+    auto inv = inverter<40>::open(good);
+    (void)inv;
+    ALLOY_CHECK(alloy::hal::log.cfg.trigger == alloy::hal::bridge_trigger::none);
+}
+
+ALLOY_TEST(the_trigger_choice_reaches_the_driver) {
+    constexpr alloy::bridge::config triggered{
+        .freq_hz = 20'000u,
+        .dead_time = alloy::bridge::dead_time::ns(500u),
+        .trigger = alloy::hal::bridge_trigger::on_compare,
+    };
+    auto inv = inverter<41>::open(triggered);
+    (void)inv;
+    ALLOY_CHECK(alloy::hal::log.cfg.trigger ==
+                alloy::hal::bridge_trigger::on_compare);
+    // …and the fields around it are untouched by the new one.
+    ALLOY_CHECK_EQ(alloy::hal::log.cfg.freq_hz, 20'000u);
+    ALLOY_CHECK(alloy::hal::log.cfg.align == alloy::hal::bridge_alignment::center);
+    ALLOY_CHECK(alloy::hal::log.cfg.when_off ==
+                alloy::hal::bridge_off_state::drive_idle_level);
+}
+
+ALLOY_TEST(the_sample_point_is_its_own_register) {
+    auto inv = inverter<42>::open(good);
+    inv.set_sample_point(0xFFFFu);
+    ALLOY_CHECK_EQ(alloy::hal::log.sample_point, 0xFFFFu);
+    inv.set_sample_point(0u);
+    ALLOY_CHECK_EQ(alloy::hal::log.sample_point, 0u);
+    // Moving the sample point must not disturb a duty. On a live bridge that
+    // would be a torn frame — one phase updated, the others not.
+    inv.template set_duty<1>(0x4000u);
+    inv.template set_duty<2>(0x8000u);
+    inv.set_sample_point(0x2000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[0], 0x4000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[1], 0x8000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.sample_point, 0x2000u);
+}
+
+ALLOY_TEST(the_sample_point_is_gated_on_a_generated_number) {
+    // The gate is `feat::trgo`, from the IP's curated data — the same shape
+    // alloy::tick::trigger_on_update uses. A block whose data says 0 does not
+    // get the method at all, which is a compile error naming the instance
+    // instead of a register write that quietly does nothing.
+    using handle_t = decltype(inverter<43>::open(good));
+    static_assert(requires(handle_t h) { h.set_sample_point(0u); },
+                  "a timer whose feat::trgo is non-zero must offer this");
+    static_assert(fake_timer<43>::feat::trgo != 0u);
+    ALLOY_CHECK(true);
 }

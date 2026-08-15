@@ -126,6 +126,28 @@ struct bridge_impl<Inst> {
     // (alloy-devices registers/st/tim_adv.yaml), not a number written here,
     // so a timer with one pair rather than three gets the right answer with
     // no edit and a timer with none is refused by the facade's static_assert.
+    // THE ONLY BITS OF CR2 THIS DRIVER MAY EVER WRITE. Everything else in
+    // that register — every OISx/OISxN, CCPC, and whatever gets curated
+    // later — must read back zero, because the idle pattern is what the pins
+    // are driven to after a break and "both off" is the only safe one.
+    static constexpr std::uint32_t kPermittedCr2 = IP::mms.wide_mask;
+
+    //: Layer 1's `bridge_trigger` in this silicon's vocabulary. `on_compare`
+    //: is OC4REF: channel 4 is the one a three-phase bridge leaves unbound,
+    //: and OC4REF is an internal signal, so it costs no pin and needs no
+    //: CC4E. Where in the period it fires is CCR4, written at runtime.
+    static constexpr std::uint32_t mms_bits(hal::bridge_trigger t) {
+        switch (t) {
+            case hal::bridge_trigger::on_update:
+                return static_cast<std::uint32_t>(IP::cr2::mms_update);
+            case hal::bridge_trigger::on_compare:
+                return static_cast<std::uint32_t>(IP::cr2::mms_oc4ref);
+            case hal::bridge_trigger::none:
+                break;
+        }
+        return 0u;
+    }
+
     static constexpr unsigned phases = Inst::feat::complementary_channels;
     static constexpr unsigned break_inputs = Inst::feat::break_inputs;
 
@@ -257,8 +279,25 @@ struct bridge_impl<Inst> {
         alloy::gate_on(Inst::gate);
         IP::cen.clear(r());
 
-        // (2) idle levels: all six low. See the comment above.
-        r().CR2 = 0u;
+        // (2) idle levels: all six low, and the trigger output if one was
+        // asked for. See the comment above for why the idle bits are not a
+        // knob — that has not changed. What changed is that the zero is no
+        // longer a bare literal: CR2 is built from a PERMITTED SET and
+        // checked against it, so the rule "this register carries MMS and
+        // nothing else the caller can reach" is stated in code rather than
+        // in a comment a later edit can widen past.
+        //
+        // The check is an ALLOWLIST on purpose. "Does not touch an OIS bit"
+        // is a negative, and a negative admits whatever is curated next —
+        // CCPC, TI1S, CCUS — silently, which is how a guard stops guarding
+        // without anyone noticing.
+        const std::uint32_t cr2 = mms_bits(c.trigger);
+        static_assert((IP::mms.wide_mask & ~kPermittedCr2) == 0u,
+                      "MMS is outside the permitted CR2 set");
+        if ((cr2 & ~kPermittedCr2) != 0u) {
+            alloy::trap<alloy::trap_code::impossible_config>();
+        }
+        r().CR2 = cr2;
 
         const bool center = c.align == bridge_alignment::center;
 
@@ -373,6 +412,21 @@ struct bridge_impl<Inst> {
             case 3: r().CCR3 = ccr; break;
             default: break;
         }
+    }
+
+    //: Where in the period OC4REF fires, in the same 0..0xFFFF units as a
+    //: duty, so a caller reasons in one scale. CCR4 only — channel 4 drives
+    //: no pin here (CC4E is never set), so this moves an event and nothing
+    //: else. Meaningless unless `config::trigger` was `on_compare`, and the
+    //: facade is what refuses to offer it otherwise.
+    //:
+    //: CENTRE-ALIGNED CHANGES WHAT THE NUMBER MEANS and the facade says so:
+    //: the counter passes every compare value TWICE per period, up and down,
+    //: so 0 is the two edges and 0xFFFF is the middle of the ON time. For a
+    //: shunt in a leg, sampling near the counter's peak — full scale here —
+    //: is the far side of both switching edges.
+    static void set_sample_point(std::uint16_t point) {
+        r().CCR4 = (static_cast<std::uint32_t>(point) * period_ticks) / 65'535u;
     }
 
     static void outputs_on() { IP::moe.set(r()); }

@@ -188,6 +188,21 @@ private:
 //     is not "both transistors off" is "both transistors on".
 //   * the write-once configuration LOCK. Layer 2, because which fields each
 //     of the three lock levels covers is per-IP.
+//: What, if anything, this timer publishes on its trigger output. A control
+//: loop's real question is not "can I start an ADC" but WHERE IN THE PERIOD
+//: it samples: current in a switching leg is only meaningful away from the
+//: edges, and a conversion started by the CPU lands wherever the CPU got to.
+//:
+//: `on_compare` is the one worth having and it uses channel 4 — the channel a
+//: three-phase bridge does not bind. Its compare event needs no output pin
+//: (OC4REF is the comparator's internal signal; CC4E only gates the pad), so
+//: the sample point is a number you write, not a pin you spend.
+//:
+//: LAYER 1, not layer 2, because "trigger on update" and "trigger on a
+//: compare" are what every timer with a trigger output offers. WHICH compare
+//: source encodes it is the silicon's vocabulary and stays in the driver.
+enum class bridge_trigger : std::uint8_t { none, on_update, on_compare };
+
 struct bridge_config {
     //: Switching frequency of the bridge, in hertz. BLOCK-scoped by nature —
     //: there is one prescaler and one auto-reload behind all three phases —
@@ -200,6 +215,9 @@ struct bridge_config {
     hal::bridge_alignment align = bridge_alignment::center;
     //: What the pins do while the outputs are off, including after a break.
     hal::bridge_off_state when_off = bridge_off_state::drive_idle_level;
+    //: Trigger output. `none` by default — a bridge that nobody asked to
+    //: trigger anything should not be publishing events.
+    hal::bridge_trigger trigger = bridge_trigger::none;
 };
 
 // ── Layer 2 ─────────────────────────────────────────────────────────────
