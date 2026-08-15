@@ -182,11 +182,39 @@ def _dma_class_controllers(chip: dict[str, Any],
         if p.get("ip") and registers.get(p["ip"], {}).get("class") == "dma")
 
 
+def _dma_channel_geometry(chip: dict[str, Any],
+                          controller: str) -> tuple[int, int | None]:
+    """The controller's channel numbering as (first, count) — the ONE place the
+    base is decided, and it is decided by DATA.
+
+    `channels: {count: N}` is the geometry every dma-class controller states;
+    `first` is the base, and it defaults to 1 because that is what dma_v1 and
+    XDMAC number from and what every chip file curated before RP2040 therefore
+    left unsaid. RP2040's 12 channels are numbered 0..11 in the vendor's own
+    SVD, in pico-sdk, and in every RP2040 example anyone will ever read, so its
+    chip file says `channels: {count: 12, first: 0}` and this function reports
+    a base of 0 for it. Renumbering that family 1-based in the data to spare
+    this expression an argument would be exactly the off-by-one that
+    st_dma_v2_body.hpp exists to avoid ("There is no off-by-one adjustment
+    anywhere in this file, and that absence is the design").
+
+    A controller with no `count` (geometry not curated yet) gets no range check
+    rather than a made-up one; its base is still honest."""
+    geometry = (chip["peripherals"].get(controller) or {}).get("channels") or {}
+    first = geometry.get("first", 1)
+    if isinstance(first, bool) or not isinstance(first, int):
+        first = 1
+    count = geometry.get("count")
+    if isinstance(count, bool) or not isinstance(count, int):
+        count = None
+    return first, count
+
+
 def dma_signal_candidates(board: dict[str, Any], chip: dict[str, Any]) -> list[str]:
     """Every 'role.signal' this board could legally assign: a declared role whose
     bound peripheral advertises the signal under `dma_requests` (free-router
-    shape — G0/G4 DMAMUX, SAME70 XDMAC) or `dma_routes` (stream-engine shape,
-    F4/F7)."""
+    shape — G0/G4 DMAMUX, SAME70 XDMAC, RP2040 TREQ_SEL) or `dma_routes`
+    (stream-engine shape, F4/F7)."""
     out: list[str] = []
     for role, cfg in (board.get("roles") or {}).items():
         if not isinstance(cfg, dict) or not isinstance(cfg.get("peripheral"), str):
@@ -231,8 +259,10 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
 
     - Free router (`dma_requests`): the request id is a per-peripheral fact and
       ANY channel of ANY dma-class controller may carry it, so the only
-      inter-assignment rule is collision. Channels are 1-BASED (dma_v1).
-      Silicon here: STM32 G0/G4 (dma_v1 + DMAMUX) and SAME70 (XDMAC).
+      inter-assignment rule is collision. The channel BASE is data
+      (`channels: {first: N}`, defaulting to 1 — see _dma_channel_geometry).
+      Silicon here: STM32 G0/G4 (dma_v1 + DMAMUX, 1-based), SAME70 (XDMAC,
+      1-based) and RP2040 (TREQ_SEL, 0-BASED).
     - Stream engine (F4/F7, `dma_routes` — the phase-3 extension this point
       was marked for): one signal reaches ONLY its triples, so the stated
       (controller, stream) must match one, the matched triple supplies the
@@ -254,6 +284,34 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
     an XDMAC channel serves one signal at a time, and the chip states its
     geometry as `channels: {count: 24}` — are the two things this branch
     already reads from data rather than hardcoding.
+
+    WHY RP2040 NEEDED NO THIRD BRANCH EITHER, AND THE ONE THING IT DID NEED
+    (phase 6, doc §3.4 — stated here rather than left for a reviewer to infer
+    from a diff whose only visible logic is a `first` appearing from nowhere).
+    §3.4 predicted the RP2040 DREQ would land as `dma_requests`, the SAME key
+    as the G0, because the meaning matches: chip-wide id, any channel. That
+    was VERIFIED rather than assumed, by running this function against the
+    real chip data. RP2040's DMA selects its source with TREQ_SEL, a 6-bit
+    field of the channel's own CTRL_TRIG register — the identical arrangement
+    to XDMAC's PERID one paragraph up — its 12 channels are interchangeable,
+    and the ids are per-peripheral facts under `dma_requests` (adc.conv = 36,
+    uart0.tx = 20, uart0.rx = 21). Every RP2040 signal resolves through
+    `_stream_triples() is None`, so the legality QUESTION this branch answers
+    ("is that channel index in range, and is it free?") is word for word the
+    RP2040 question. No third branch. THREE families, two branches, still.
+
+    What it DID need, and it is the one place the phase-5 result did not
+    repeat: the NUMBERING is not the same. This branch used to hardcode the
+    base — `1 <= channel <= count`, suggestions out of `range(1, count + 1)`,
+    and two error strings that said "1-based" in words — which is true of
+    dma_v1, true of XDMAC, and false of RP2040. Measured before the fix, at
+    alloy 0b82dbf against alloy-devices b411280: `{"controller": "dma",
+    "channel": 0}` — a real, legal RP2040 channel — was REFUSED with "dma has
+    channels 1..12, not 0", while `"channel": 12` — a channel this silicon
+    does not have — was ACCEPTED and emitted a route. Wrong at both ends of
+    the range, and the wrong end at the top failed SILENTLY into generated
+    code. So the base is now data too, beside the count that already was, and
+    the errors say which base they mean on every family.
     """
     problems: list[dict[str, Any]] = []
     assignments = board.get("dma") or {}
@@ -329,32 +387,40 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
             continue
 
         # Free-router shape (dma_requests): any channel of any dma-class
-        # controller. The parenthetical names both routers on purpose — this
-        # message is reached on SAME70, which has no DMAMUX, and a refusal
-        # that names hardware the board does not have sends the reader to the
-        # wrong chapter of the wrong manual.
+        # controller. The parenthetical names all THREE routers on purpose —
+        # this message is reached on SAME70, which has no DMAMUX, and on
+        # RP2040, which has neither, and a refusal that names hardware the
+        # board does not have sends the reader to the wrong chapter of the
+        # wrong manual. The base comes from the chip (_dma_channel_geometry),
+        # so on a 0-based free router this message no longer claims a
+        # 1-basedness the silicon does not have — there the two keys share a
+        # base and only the SHAPE tells them apart, which is what it then says.
+        first, count = _dma_channel_geometry(chip, controller)
         if "stream" in assign and "channel" not in assign:
             bad(key, f"{periph} '{signal}' routes through a free router "
-                     f"(DMAMUX on ST; PERID on XDMAC): the key is 'channel' "
-                     f"(1-based, dma_v1 numbering), not 'stream' (the stream "
-                     f"engines' 0-based key)", [])
+                     f"(DMAMUX on ST; PERID on XDMAC; TREQ_SEL on RP2040): "
+                     f"the key is 'channel' ({first}-based here — "
+                     f"{controller} numbers its channels from {first}), not "
+                     f"'stream' (the stream engines' key, 0-based per ST "
+                     f"stream numbering)", [])
             continue
         channel = assign.get("channel")
         if isinstance(channel, bool) or not isinstance(channel, int):
             bad(key, "'channel' must be an integer", [])
             continue
-        # dma_v1 channels are 1-based; `channels.count` is the chip's geometry.
-        # A dma-class controller without a count (no geometry curated yet) gets
+        # `channels: {count, first}` is the chip's geometry, base included. A
+        # dma-class controller without a count (no geometry curated yet) gets
         # no range check rather than a made-up one.
-        count = ((chip["peripherals"][controller].get("channels") or {}).get("count"))
-        if isinstance(count, int) and not 1 <= channel <= count:
-            bad(key, f"{controller} has channels 1..{count}, not {channel}",
-                [str(c) for c in range(1, count + 1)
+        last = None if count is None else first + count - 1
+        if last is not None and not first <= channel <= last:
+            bad(key, f"{controller} has channels {first}..{last}, not {channel}",
+                [str(c) for c in range(first, last + 1)
                  if (controller, c) not in taken])
             continue
         prev = taken.setdefault((controller, channel), str(key))
         if prev != str(key):
-            free = [str(c) for c in range(1, (count or channel) + 1)
+            free = [str(c) for c in range(first, (channel if last is None
+                                                  else last) + 1)
                     if (controller, c) not in taken]
             bad(key, f"{controller} channel {channel} already serves '{prev}' — "
                      f"one channel moves one stream", free)
@@ -375,7 +441,10 @@ def _dma_route_type(board: dict[str, Any], chip: dict[str, Any],
     periph = (board.get("roles") or {})[role_name]["peripheral"]
     triples = _stream_triples(chip, periph, signal)
     if triples is None:
-        # G0 shape: chip-wide request id, board-chosen channel (1-based).
+        # Free-router shape: chip-wide request id, board-chosen channel. The
+        # channel is passed THROUGH, never adjusted — the board states the
+        # number the datasheet uses (1-based on dma_v1/XDMAC, 0-based on
+        # RP2040) and the engine indexes with the same number.
         number = int(assign["channel"])
         request = int(chip["peripherals"][periph]["dma_requests"][signal])
     else:

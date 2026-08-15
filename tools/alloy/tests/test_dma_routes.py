@@ -10,8 +10,10 @@ directly and then pin both consumers to it.
 Two silicon shapes, each with its own fixture die:
 
 - DMAMUX / free-router (G0/G4, `dma_requests`): any dma-class channel may
-  serve any request; the only inter-assignment rule is collision. Channels
-  are 1-BASED (dma_v1).
+  serve any request; the only inter-assignment rule is collision. The channel
+  BASE is data (`channels: {first: N}`) and DEFAULTS to 1, which is what
+  dma_v1 and XDMAC number from; RP2040 says `first: 0` and the errors follow
+  it. Phase 6's section at the bottom pins that both ways.
 - Stream engine (F4/F7, `dma_routes` triples — phase 3, filling the marked
   extension point): one signal reaches ONLY its triples, the matched triple
   supplies the request (CHSEL), refusal prints every legal
@@ -149,7 +151,9 @@ def test_a_controller_that_is_not_dma_class_is_refused() -> None:
 
 
 def test_a_channel_outside_the_controllers_geometry_is_refused() -> None:
-    """dma_v1 channels are 1-based: 0 is as illegal as count+1."""
+    """dma_v1 channels are 1-based: 0 is as illegal as count+1. The base is a
+    DEFAULT here, not a constant — this die states no `first`, so it gets 1.
+    The die that states otherwise is in the RP2040 section at the bottom."""
     for channel in (0, 8, -1):
         problems = _problems({"adc.conv": {"controller": "dma1", "channel": channel}})
         assert len(problems) == 1
@@ -1366,3 +1370,235 @@ def test_the_same70_emitter_and_validator_agree_on_a_bad_channel() -> None:
     problems = dma_assignment_problems(board, chip, registers)
     assert [p["key"] for p in problems] == ["debug_uart.tx"]
     assert "channels 1..24" in problems[0]["message"]
+
+
+# ------------- the free-router shape's FOURTH silicon, and its FIRST 0-base
+#
+# Phase 6 (doc §3.4). RP2040 is the third silicon on the free-router branch
+# and the first one that does not count its channels from 1. Two claims live
+# in this section and they pull in opposite directions, which is why both are
+# tested rather than one asserted:
+#
+#   1. §3.4's prediction HELD. The DREQ lands as `dma_requests`, the same key
+#      as the G0, because the meaning matches — TREQ_SEL is a field of the
+#      channel's own CTRL_TRIG register exactly as PERID is a field of
+#      XDMAC's CC, and all 12 channels are interchangeable. Every RP2040
+#      signal resolves through `_stream_triples() is None`. NO THIRD BRANCH.
+#
+#   2. §3.4's prediction did NOT cover the numbering, and there the branch was
+#      wrong at BOTH ends. Measured at alloy 0b82dbf / alloy-devices b411280,
+#      before the fix in the same commit as these tests: `channel: 0` — a
+#      real, legal RP2040 channel — was refused ("dma has channels 1..12, not
+#      0"), and `channel: 12` — a channel this die does not have — was
+#      ACCEPTED and emitted a route. The second failure is the dangerous one
+#      because it is silent. The base is now data (`channels: {first: 0}`),
+#      defaulting to 1 so no ST or Microchip chip file changed, and the two
+#      tests below are the regression for exactly those two measurements.
+#
+# WHAT THIS SECTION IS NOT ENTITLED TO CLAIM (doc §5's RP2040 row). Renode
+# 1.16.1 ships no RP2040 peripheral model of any kind, so nothing downstream
+# of these tests is witnessed by an emulator, and no on-hardware run has
+# happened. These tests prove the ROUTE DATA is legal, deterministic and read
+# from where it is supposed to be read from. They prove nothing whatever
+# about a transfer, and the three TREQ ids they assert by value are as
+# unwitnessed here as CHSEL is on the F7 and PERID is on the SAME70.
+
+_RP2040_BOARDS = ["raspberry_pi_pico", "rp2040_zero"]
+
+
+def _rp_board(board_id: str = "raspberry_pi_pico") -> dict[str, Any]:
+    return json.loads(
+        (ALLOY_ROOT / "boards" / board_id / "board.json").read_text())
+
+
+def _rp_problems(dma: dict[str, Any],
+                 board_id: str = "raspberry_pi_pico") -> list[dict[str, Any]]:
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = _rp_board(board_id)
+    board["dma"] = dma
+    return dma_assignment_problems(board, load_chip(DEVICES_ROOT, board["chip"]),
+                                   load_registers(DEVICES_ROOT))
+
+
+@skip_no_devices
+def test_rp2040_takes_the_free_router_branch_not_a_third_one() -> None:
+    """The structural claim, pinned where a refactor would trip on it, and the
+    direct verification §3.4 asked for instead of an assumption: every RP2040
+    signal resolves through `_stream_triples() is None`, i.e. the free-router
+    path, because the chip states `dma_requests` and no `dma_routes`. The
+    controller is found by the register file's `class: dma`, never by a name
+    that sounds plausible."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import _dma_class_controllers, _stream_triples
+
+    board = _rp_board()
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    assert board["chip"] == "raspberrypi/rp2040"
+    for periph, signals in (("adc", ("conv",)), ("uart0", ("rx", "tx"))):
+        for signal in signals:
+            assert _stream_triples(chip, periph, signal) is None
+            assert signal in chip["peripherals"][periph]["dma_requests"]
+    assert _dma_class_controllers(chip, load_registers(DEVICES_ROOT)) == ["dma"]
+    assert chip["peripherals"]["dma"]["ip"] == "raspberrypi/dma_v1"
+
+
+@skip_no_devices
+def test_the_rp2040_channel_base_comes_from_the_chip() -> None:
+    """The one thing that DID differ from the phase-5 result, read from data:
+    12 channels numbered from 0. `first` is stated in the chip file (it is the
+    vendor's own numbering, in the SVD and in pico-sdk); `count` was already
+    data. The emitter reads both through one helper so there is one place to
+    get it wrong."""
+    from alloy_cli.devices import load_chip
+    from alloy_cli.emit.board import _dma_channel_geometry
+
+    chip = load_chip(DEVICES_ROOT, "raspberrypi/rp2040")
+    assert chip["peripherals"]["dma"]["channels"] == {"count": 12, "first": 0}
+    assert _dma_channel_geometry(chip, "dma") == (0, 12)
+
+
+@skip_no_devices
+@pytest.mark.parametrize("channel", [0, 1, 6, 11])
+def test_every_real_rp2040_channel_is_accepted(channel: int) -> None:
+    """THE REGRESSION, half one. Channel 0 is a real RP2040 channel and used
+    to be refused outright — a board that named it could not generate at all,
+    so the honest curation had no honest board to go with it."""
+    assert _rp_problems({"adc.conv": {"controller": "dma", "channel": channel}}) == []
+
+
+@skip_no_devices
+@pytest.mark.parametrize("channel", [12, 13, -1, 100])
+def test_no_channel_this_die_lacks_is_accepted(channel: int) -> None:
+    """THE REGRESSION, half two — the dangerous half, because it used to fail
+    SILENTLY: `channel: 12` is one past the top of a 0..11 range and was
+    accepted, emitting `route<dma_t, 12, ...>` for hardware that has no such
+    channel. The refusal now names the range the silicon actually has, and
+    every suggestion is a channel that exists."""
+    problems = _rp_problems({"adc.conv": {"controller": "dma",
+                                          "channel": channel}})
+    assert len(problems) == 1
+    assert problems[0]["message"] == f"dma has channels 0..11, not {channel}"
+    assert problems[0]["suggestions"] == [str(c) for c in range(0, 12)]
+
+
+@skip_no_devices
+def test_the_1_based_families_did_not_move_when_the_base_became_data() -> None:
+    """The other side of the same change, and the reason `first` defaults to 1
+    rather than being required: not one ST or Microchip chip file states a
+    base, and all of them must keep reporting the one they always did."""
+    from alloy_cli.devices import load_chip
+    from alloy_cli.emit.board import _dma_channel_geometry
+
+    for part, controller, want in (("st/stm32g071rb", "dma1", (1, 7)),
+                                   ("st/stm32g0b1re", "dma1", (1, 7)),
+                                   ("microchip/atsame70q21", "xdmac", (1, 24))):
+        chip = load_chip(DEVICES_ROOT, part)
+        assert "first" not in (chip["peripherals"][controller]["channels"])
+        assert _dma_channel_geometry(chip, controller) == want
+
+
+def test_a_synthetic_base_moves_the_whole_refusal_with_it() -> None:
+    """The base is not a two-value choice between 0 and 1 that someone could
+    re-hardcode as an `if`: perturb the fixture die to an absurd base and the
+    range, the suggestions and BOTH error strings must all follow it. This is
+    the mutation that would notice a `if first == 0` creeping in."""
+    from copy import deepcopy
+
+    chip = deepcopy(CHIP)
+    chip["peripherals"]["dma1"]["channels"] = {"count": 3, "first": 4}
+    board = _board({"adc.conv": {"controller": "dma1", "channel": 4},
+                    "debug_uart.rx": {"controller": "dma1", "channel": 7}})
+    problems = dma_assignment_problems(board, chip, REGISTERS)
+    assert [p["key"] for p in problems] == ["debug_uart.rx"]
+    assert problems[0]["message"] == "dma1 has channels 4..6, not 7"
+    assert problems[0]["suggestions"] == ["5", "6"]
+    # And a channel below the base is refused by the same expression.
+    board = _board({"adc.conv": {"controller": "dma1", "channel": 3}})
+    assert (dma_assignment_problems(board, chip, REGISTERS)[0]["message"]
+            == "dma1 has channels 4..6, not 3")
+
+
+def test_a_controller_with_no_curated_geometry_still_gets_no_range_check() -> None:
+    """Unchanged behaviour, kept explicit because the range check was rewritten
+    around it: a dma-class controller whose chip file states no `count` gets no
+    range check rather than a made-up one, and the collision suggestions then
+    stop at the highest channel anyone named."""
+    from copy import deepcopy
+
+    chip = deepcopy(CHIP)
+    del chip["peripherals"]["dma1"]["channels"]
+    board = _board({"adc.conv": {"controller": "dma1", "channel": 99}})
+    assert dma_assignment_problems(board, chip, REGISTERS) == []
+    board = _board({"adc.conv": {"controller": "dma1", "channel": 3},
+                    "debug_uart.rx": {"controller": "dma1", "channel": 3}})
+    problems = dma_assignment_problems(board, chip, REGISTERS)
+    assert [p["key"] for p in problems] == ["debug_uart.rx"]
+    assert problems[0]["suggestions"] == ["1", "2"]
+
+
+@skip_no_devices
+def test_a_stream_key_on_rp2040_names_the_base_it_actually_has() -> None:
+    """The reverse-confusion refusal, on the family where the old text was a
+    lie: it used to say the channel key is "1-based, dma_v1 numbering" — false
+    here, and false in a way that would have sent a Pico reader looking for an
+    off-by-one that does not exist. It must now name THIS controller's base,
+    and it must not send an RP2040 reader to a DMAMUX or a PERID chapter that
+    is not in their datasheet either, so all three routers are listed."""
+    problems = _rp_problems({"adc.conv": {"controller": "dma", "stream": 0}})
+    assert len(problems) == 1
+    message = problems[0]["message"]
+    assert "free router" in message
+    assert "TREQ_SEL on RP2040" in message
+    assert "'channel' (0-based here — dma numbers its channels from 0)" in message
+    assert "1-based" not in message
+    # The stream key's own base is still named, because that is the half the
+    # writer got wrong; here the two happen to agree and only the SHAPE
+    # separates them, which is what the message says rather than hiding.
+    assert "'stream' (the stream engines' key, 0-based" in message
+
+
+@skip_no_devices
+def test_the_1_based_refusal_text_still_says_1_based() -> None:
+    """Rendering the base from data must not quietly stop being true where it
+    already was: on the G0 and on the SAME70 the same sentence still names 1,
+    and still names the router that board actually has."""
+    problems = _problems({"adc.conv": {"controller": "dma1", "stream": 1}})
+    assert "'channel' (1-based here — dma1 numbers its channels from 1)" in \
+        problems[0]["message"]
+    problems = _same70_problems({"debug_uart.tx": {"controller": "xdmac",
+                                                   "stream": 0}})
+    assert "'channel' (1-based here — xdmac numbers its channels from 1)" in \
+        problems[0]["message"]
+    assert "PERID on XDMAC" in problems[0]["message"]
+
+
+@skip_no_devices
+def test_two_rp2040_signals_on_one_channel_collide_from_zero() -> None:
+    """One channel moves one signal here as everywhere. The interesting part
+    is the suggestion list: it must start at 0, which it could not do while
+    the base was a literal."""
+    problems = _rp_problems({"adc.conv": {"controller": "dma", "channel": 0},
+                             "debug_uart.rx": {"controller": "dma", "channel": 0}})
+    assert [p["key"] for p in problems] == ["debug_uart.rx"]
+    assert problems[0]["message"] == ("dma channel 0 already serves 'adc.conv' "
+                                      "— one channel moves one stream")
+    assert problems[0]["suggestions"] == [str(c) for c in range(1, 12)]
+
+
+@skip_no_devices
+def test_the_rp2040_candidates_are_the_three_curated_signals() -> None:
+    """Suggestion machinery needed no new knowledge for a third family either.
+    Only two DREQ-driving peripherals are curated on this die, so the whole
+    legal surface is three keys — `led` is a declared role with no peripheral
+    and is absent, which is the honest answer, not an oversight."""
+    from alloy_cli.devices import load_chip
+
+    board = _rp_board()
+    assert dma_signal_candidates(board, load_chip(DEVICES_ROOT,
+                                                  board["chip"])) == [
+        "adc.conv", "debug_uart.rx", "debug_uart.tx"]
+    board = _rp_board("rp2040_zero")
+    assert dma_signal_candidates(board, load_chip(DEVICES_ROOT,
+                                                  board["chip"])) == [
+        "debug_uart.rx", "debug_uart.tx"]
