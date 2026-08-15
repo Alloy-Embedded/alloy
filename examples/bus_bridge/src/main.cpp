@@ -46,6 +46,7 @@ namespace {
 bus::bridge<512> uplink;
 bus::bridge_route<messages::ping_wire> ping_route{uplink};
 bus::bridge_route<messages::pong_wire> pong_route{uplink};
+bus::bridge_route<messages::status_wire> status_route{uplink};
 
 // The service's inbox. It subscribes to the TOPIC — whether a ping came
 // from this image or across the wire is invisible here, which is the point.
@@ -127,6 +128,7 @@ int main() {
     std::uint32_t last_bad = 0, last_lost = 0, last_missed = 0, last_txm = 0,
                   last_ovf = 0;
     std::uint32_t quiet_since = 0;
+    std::uint32_t last_status_ms = 0;
     for (;;) {
         // Feed the link whatever the uart has (byte-at-a-time ByteStream
         // floor; a DMA board would hand readable() spans instead).
@@ -161,6 +163,17 @@ int main() {
             for (const std::uint8_t out : frame) {
                 uart.write(out);
             }
+        }
+
+        // Telemetry, once a second: the device publishes its own status on
+        // the bus and the bridge forwards it because a route says so. No
+        // peer asked for it — this is the sniffing shape, and what a host
+        // running `alloy monitor` decodes live against bus.toml.
+        const std::uint32_t now_ms = alloy::uptime_ms();
+        if (now_ms - last_status_ms >= 1000u) {
+            last_status_ms = now_ms;
+            (void)bus::publish(messages::status{now_ms / 1000u, served,
+                                                uplink.rx_lost()});
         }
 
         // Report the witnesses only when one MOVES, and only after the line

@@ -21,3 +21,15 @@ fields = [
   { name = "token", type = "u32" },
   { name = "count", type = "u32" },
 ]
+
+# Telemetry: published on a timer by the device itself, forwarded by the
+# same bridge. Nobody asks for it — which is the point. This is what a
+# sniffing route looks like, and what `alloy monitor` decodes live.
+[messages.status]
+id = 0x0303
+version = 1
+fields = [
+  { name = "uptime_s", type = "u32" },
+  { name = "served",   type = "u32" },
+  { name = "lost",     type = "u32" },
+]

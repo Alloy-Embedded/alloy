@@ -122,6 +122,12 @@ alloy bus_bridge ready
 [bus] reading  seq=12  centi_c=2543  ok=true
 ```
 
+That is real output, from a SAME70 publishing a `status` message on a timer
+that a `bridge_route` forwards — nobody asked for it, which is what makes it
+a sniffer rather than a reply. `alloy monitor --json` shows the same thing
+with `"bus_decode": true` on the open event and one object per message, which
+is what the VS Code panel renders.
+
 Decoding happens in the CLI, against the same `bus.toml` the firmware
 compiled from — automatically, whenever the project has one. Bytes that are
 not a complete, CRC-valid frame pass through as ordinary log text, so a

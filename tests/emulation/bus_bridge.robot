@@ -16,6 +16,12 @@ Documentation     Bus bridge conformance in emulation: the robot plays the PEER
 ...               message id each earn TOTAL SILENCE and cost exactly one
 ...               frame — the next ping is answered as if nothing happened.
 ...
+...               The firmware also PUBLISHES telemetry on a timer, which the
+...               same bridge forwards, so the link is never idle. Assertions
+...               therefore filter by message id: "silence" means the server
+...               did not ANSWER, not that no byte moved — telemetry nobody
+...               asked for is exactly what a sniffing route is for.
+...
 ...               Injection uses uart.WriteChar and capture hooks
 ...               uart.CharReceived; each phase runs under `emulation RunFor`,
 ...               so timing is virtual and deterministic. RESC/UART/BANNER
@@ -101,33 +107,45 @@ Bus Bridge Round Trips Datagrams Through The Local Bus
     ...  ${SPACE*4}for tok in hexbytes.split():
     ...  ${SPACE*8}uart.WriteChar(int(tok, 16))
     ...
-    ...  def mc_bus_expect_pong(token, count):
+    ...  def _frames():
     ...  ${SPACE*4}got = list(collected)
     ...  ${SPACE*4}del collected[:]
-    ...  ${SPACE*4}if len(got) < 9 or got[0] != 0x7E:
-    ...  ${SPACE*8}print "BUS-FAIL frame shape %s" % got
-    ...  ${SPACE*8}return
-    ...  ${SPACE*4}ln = got[3] | (got[4] << 8)
-    ...  ${SPACE*4}if len(got) != 9 + ln:
-    ...  ${SPACE*8}print "BUS-FAIL length got=%d want=%d bytes=%s" % (len(got), 9 + ln, got)
-    ...  ${SPACE*8}return
-    ...  ${SPACE*4}crc = got[5+ln] | (got[6+ln] << 8) | (got[7+ln] << 16) | (got[8+ln] << 24)
-    ...  ${SPACE*4}if _crc32(got[1:5+ln]) != crc:
-    ...  ${SPACE*8}print "BUS-FAIL independent crc disagrees"
+    ...  ${SPACE*4}out = []
+    ...  ${SPACE*4}i = 0
+    ...  ${SPACE*4}while i + 9 <= len(got):
+    ...  ${SPACE*8}if got[i] != 0x7E:
+    ...  ${SPACE*12}i += 1
+    ...  ${SPACE*12}continue
+    ...  ${SPACE*8}ln = got[i+3] | (got[i+4] << 8)
+    ...  ${SPACE*8}if ln > 131 or i + 9 + ln > len(got):
+    ...  ${SPACE*12}i += 1
+    ...  ${SPACE*12}continue
+    ...  ${SPACE*8}f = got[i:i+9+ln]
+    ...  ${SPACE*8}crc = f[5+ln] | (f[6+ln] << 8) | (f[7+ln] << 16) | (f[8+ln] << 24)
+    ...  ${SPACE*8}if _crc32(f[1:5+ln]) != crc:
+    ...  ${SPACE*12}i += 1
+    ...  ${SPACE*12}continue
+    ...  ${SPACE*8}out.append((f[5] | (f[6] << 8), f[5:5+ln]))
+    ...  ${SPACE*8}i += 9 + ln
+    ...  ${SPACE*4}return out
+    ...
+    ...  def mc_bus_expect_pong(token, count):
+    ...  ${SPACE*4}pongs = [p for (mid, p) in _frames() if mid == 0x0302]
+    ...  ${SPACE*4}if len(pongs) != 1:
+    ...  ${SPACE*8}print "BUS-FAIL expected 1 pong, got %d" % len(pongs)
     ...  ${SPACE*8}return
     ...  ${SPACE*4}want = [0x02, 0x03, 0x01] + _le32(int(token, 16)) + _le32(int(count))
-    ...  ${SPACE*4}if got[5:5+ln] != want:
-    ...  ${SPACE*8}print "BUS-FAIL payload got=%s want=%s" % (got[5:5+ln], want)
+    ...  ${SPACE*4}if list(pongs[0]) != want:
+    ...  ${SPACE*8}print "BUS-FAIL payload got=%s want=%s" % (list(pongs[0]), want)
     ...  ${SPACE*8}return
     ...  ${SPACE*4}print "BUS-OK"
     ...
     ...  def mc_bus_expect_silence():
-    ...  ${SPACE*4}got = list(collected)
-    ...  ${SPACE*4}del collected[:]
-    ...  ${SPACE*4}if len(got) == 0:
+    ...  ${SPACE*4}pongs = [p for (mid, p) in _frames() if mid == 0x0302]
+    ...  ${SPACE*4}if len(pongs) == 0:
     ...  ${SPACE*8}print "BUS-OK"
     ...  ${SPACE*4}else:
-    ...  ${SPACE*8}print "BUS-FAIL unexpected bytes %s" % got
+    ...  ${SPACE*8}print "BUS-FAIL answered when it should not: %s" % pongs
     ...  """
     Execute Command           ${peer}
     Execute Command           bus_hook "${UART}"
