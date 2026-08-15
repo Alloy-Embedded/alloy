@@ -276,3 +276,78 @@ def test_deep_copy_is_not_needed_for_isolation() -> None:
     b = _load("nucleo_g071rb")
     assert b["roles"]["led"]["pin"] != "pz99"
     assert copy.deepcopy(b) == b
+
+
+# --- pads a role drives without naming them ------------------------------
+# The "pins claimed twice" warning only ever saw pins a role SPELLS OUT in
+# board.json. Some peripherals carry a fixed pin bank in CHIP data instead —
+# an RMII MAC picks its pads from the silicon, not from the board — and the
+# emitter muxes that whole bank at open(). Those pads had no owner, so a second
+# role could take one in silence. It happened: nucleo_f767zi's bridge took pb13
+# as CH1N while the same board's ethernet muxes pb13 as RMII_TXD1.
+
+
+@skip_no_devices
+def test_an_implicit_pin_bank_owns_its_pads() -> None:
+    """The regression, on the real board that had it."""
+    board = _load("nucleo_f767zi")
+    chip, registers = _chip_and_registers(board)
+    rmii = set(chip["peripherals"]["eth"]["rmii"]["pins"])
+    assert "pb13" in rmii, "this test's premise moved into chip data"
+    assert board["roles"]["bridge"]["al"] == "pb13", \
+        "the collision this test guards is no longer in the board"
+
+    shared = [i for i in validate_board(board, chip, registers)
+              if i["pin"] == "pb13"]
+    assert shared, "pb13 is muxed by two roles and validate said nothing"
+    # Naming the BANK is the difference between a puzzle and an answer: the
+    # ethernet role never mentions pb13, so "ethernet uses pb13" would send a
+    # reader looking through board.json for a line that is not there.
+    assert "rmii" in shared[0]["message"]
+    assert "bridge" in shared[0]["message"]
+
+
+@skip_no_devices
+def test_an_implicit_bank_is_a_warning_not_an_error() -> None:
+    """One pad with two owners is only a DEFECT if one program opens both, and
+    a board is allowed to describe both. P1 must still hold — this board has to
+    keep generating — or the check would have made a true statement fatal."""
+    board = _load("nucleo_f767zi")
+    chip, registers = _chip_and_registers(board)
+    assert not _errors(board, chip, registers)
+    assert _generates(board, chip, registers)
+
+
+@skip_no_devices
+def test_the_bank_check_reads_data_not_a_hard_coded_name() -> None:
+    """`rmii` is not spelled in the checker. A peripheral that arrives with its
+    own fixed bank must be covered by the data it ships with."""
+    board = _load("nucleo_f767zi")
+    chip, registers = _chip_and_registers(board)
+    chip = copy.deepcopy(chip)
+    # A bank under a name nothing in the tree has ever used, on the peripheral
+    # the adc role already names, colliding with the debug UART's tx pad.
+    tx = board["roles"]["debug_uart"]["tx"]
+    chip["peripherals"]["adc1"]["some_future_bank"] = {"af": 3, "pins": [tx]}
+
+    shared = [i for i in validate_board(board, chip, registers) if i["pin"] == tx]
+    assert shared, "a bank under an unknown name owned nothing"
+    assert "some_future_bank" in shared[0]["message"]
+
+
+@skip_no_devices
+def test_a_bank_on_an_unopened_peripheral_owns_nothing() -> None:
+    """Ownership follows the ROLE, not the silicon: a bank on a peripheral no
+    role names is not muxed by anyone, and must not manufacture a warning."""
+    board = _load("nucleo_f767zi")
+    chip, registers = _chip_and_registers(board)
+    chip = copy.deepcopy(chip)
+    named = {cfg.get("peripheral") for cfg in board["roles"].values()
+             if isinstance(cfg, dict)}
+    spare = next(p for p in chip["peripherals"] if p not in named)
+    led = board["roles"]["led"]["pin"]
+    chip["peripherals"][spare]["idle_bank"] = {"pins": [led]}
+
+    shared = [i for i in validate_board(board, chip, registers)
+              if i["pin"] == led and "idle_bank" in i["message"]]
+    assert not shared, f"{spare} is opened by no role but claimed {led}"

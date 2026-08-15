@@ -195,6 +195,30 @@ def _check_image_config(board: dict[str, Any], chip: dict[str, Any]) -> list[dic
     return out
 
 
+def _implicit_pin_banks(cfg: dict[str, Any], spec,
+                        chip: dict[str, Any]) -> list[tuple[str, list[str]]]:
+    """The pads a role drives WITHOUT naming them, from chip data.
+
+    A fixed pin bank is a property of the silicon, not of the board — an RMII
+    MAC has one bank and the board only picks the PHY — so it lives under the
+    chip's peripheral rather than in board.json. The emitter muxes the whole
+    bank at open(), which makes every pad in it as owned as one the role spells
+    out. Returns (bank name, pins) so the message can say WHICH bank, because
+    "ethernet uses pb13" is a puzzle and "ethernet (rmii) uses pb13" is not.
+    """
+    if spec.kind != "peripheral":
+        return []
+    periph = cfg.get("peripheral")
+    data = ((chip.get("peripherals") or {}).get(periph) or {}) if periph else {}
+    if not isinstance(data, dict):
+        return []
+    banks: list[tuple[str, list[str]]] = []
+    for name, value in sorted(data.items()):
+        if isinstance(value, dict) and isinstance(value.get("pins"), list):
+            banks.append((name, [p for p in value["pins"] if isinstance(p, str)]))
+    return banks
+
+
 def validate_board(board: dict[str, Any], chip: dict[str, Any],
                    registers: dict[str, dict[str, Any]],
                    settings: dict[str, Any] | None = None) -> list[dict[str, Any]]:
@@ -376,6 +400,17 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
     # NOT an error: a board may deliberately expose one LED as both a GPIO and a
     # PWM output (every shipped Nucleo does). Worth saying out loud, because the
     # app must then use one or the other.
+    #
+    # A role does not always NAME the pads it drives. Some peripherals carry a
+    # fixed pin bank in CHIP data and the emitter muxes the whole bank at open()
+    # — an RMII MAC is the case in the tree — so those pads had no owner here
+    # and could be claimed a second time in silence. This check missed exactly
+    # that: nucleo_f767zi's bridge took pb13 as CH1N while the same board's
+    # ethernet role muxes pb13 as RMII_TXD1, and nothing said a word.
+    #
+    # Any sub-table with a `pins` list counts, rather than a hard-coded "rmii",
+    # so the next peripheral that arrives with a fixed bank is covered by the
+    # data it ships with instead of by an edit here.
     owners: dict[str, list[str]] = {}
     for role, cfg in roles.items():
         spec = ROLES.get(role)
@@ -383,8 +418,12 @@ def validate_board(board: dict[str, Any], chip: dict[str, Any],
             continue
         claimed = [cfg.get(f) for f in role_pin_fields(spec)]
         claimed += list(cfg.get(spec.pin_list_field) or []) if spec.pin_list_field else []
+        for bank, pin_list in _implicit_pin_banks(cfg, spec, chip):
+            claimed += [(pin, bank) for pin in pin_list]
         for pin in claimed:
-            if isinstance(pin, str):
+            if isinstance(pin, tuple):
+                owners.setdefault(pin[0], []).append(f"{role} ({pin[1]})")
+            elif isinstance(pin, str):
                 owners.setdefault(pin, []).append(role)
     for pin, sharing in sorted(owners.items()):
         if len(sharing) > 1:
