@@ -83,3 +83,24 @@ so the same file adapts to whatever the board offers:
 On a board with a DMA controller and an ADC, this streams 32 conversions into RAM while the CPU
 does nothing else; on a board without them, the whole block compiles away and prints the honest
 fallback. No `#ifdef` in sight.
+
+### What folds away on the RP2040, and why
+
+The folding is the design, so it is worth reading one board's answers in full rather than
+assuming a controller means every DMA example lights up. On `raspberry_pi_pico` and
+`rp2040_zero`, with the RP2040 DMA driver present:
+
+| example | on an RP2040 | why |
+|---|---|---|
+| `dma_uart` | **DMA path** — prints `dma via DMA` | `write_dma()` needs the driver's TX-DMA hooks plus a TX request id; the PL011 has both |
+| `dma_probe` | **DMA path for the UART branch**; ADC-burst and PWM branches print their fallback | neither the RP2040 ADC driver nor its PWM driver has DMA hooks |
+| `adc_stream` | fallback: `adc ring: not available on this board` | `adc::stream` is built entirely from `take()`/`missed()`/`pending()` — half-buffer events — and this DMA controller has **no half-transfer event at all** |
+| `modbus_rtu_server` | fallback: the polled server, no ring | `rx_ring()` needs a ring *and* a frame-gap (IDLE) event; the PL011's `RTIM` analogue cannot be sourced as firing while DMA drains the FIFO |
+
+None of those fallbacks is a workaround or a special case in the example — each one is the same
+`if constexpr (requires { … })` probe returning `false`, and the compile error you would get by
+calling the method anyway names the missing capability
+(`nested requirement 'ring_capable<…>' is not satisfied`). The full reasoning, and what would
+have to become true to change any row, is in `docs/design/dma-streams.md` §3.4; the behavioural
+evidence that is still owed for this family is in
+[the RP2040 DMA hardware checklist](rp2040-dma-hardware-checklist.md).
