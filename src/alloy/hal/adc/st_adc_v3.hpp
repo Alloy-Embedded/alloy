@@ -29,6 +29,28 @@
 
 namespace alloy::hal {
 
+// ── Layer 2 for st/adc_v3 ───────────────────────────────────────────────
+//
+// SAME NAMES, SAME UNITS as st_adc_v2's and st_adc_g4's — a libs/ driver that
+// writes `{.oversample_ratio = 16, .oversample_shift = 0}` now compiles on
+// three IPs from three ST families with no preprocessor.
+//
+// THE DEFAULTS ARE NOT `off`, AND THAT IS DELIBERATE. This driver has always
+// forced 16x oversampling with no post-shift, so every read() spans the full
+// 16-bit range (12-bit code x16) — a decision baked into a HAL driver for its
+// first consumer, high-impedance NTC ladders. Turning it into a knob must not
+// change what existing callers get, so the defaults reproduce the old body
+// exactly and a port that asks for nothing is programmed with the same writes
+// it always was. What changes is that the decision is now VISIBLE and
+// overridable instead of being a comment.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::st::adc_v3>
+struct adc_opts<Inst> {
+    std::uint8_t resolution_bits = 12;
+    std::uint16_t oversample_ratio = 16;  // the historical default, not "off"
+    std::uint8_t oversample_shift = 0;    // ...and no post-shift, so DR is 16-bit
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::adc_v3>
 struct adc_impl<Inst> {
@@ -53,6 +75,13 @@ struct adc_impl<Inst> {
         return v;
     }
 
+    [[nodiscard]] static consteval unsigned log2_of(std::uint32_t v) {
+        unsigned n = 0;
+        while (v > 1u) { v >>= 1u; ++n; }
+        return n;
+    }
+
+    template <adc_opts<Inst> Opts = {}>
     static void enable(std::uint32_t kernel_hz) {
         alloy::gate_on(Inst::gate);
         Common::ip::ckmode.write(c(), 0u);  // async kernel clock (CCIPR.ADCSEL)
@@ -69,10 +98,28 @@ struct adc_impl<Inst> {
         }
         r().SMPR1 = all_slow();
         r().SMPR2 = all_slow();
-        // 16x oversample, no shift: 12-bit codes fill the 16-bit range.
-        IP::ovsr.write(r(), 3u);
-        IP::ovss.write(r(), 0u);
-        IP::rovse.set(r());
+        // Layer 2, with the converter still disabled — the only state in
+        // which CFGR/CFGR2 accept writes. The defaults are 16x with no shift,
+        // which is the write this driver has always made.
+        static_assert(Opts.resolution_bits == 12u || Opts.resolution_bits == 10u ||
+                          Opts.resolution_bits == 8u || Opts.resolution_bits == 6u,
+                      "st/adc_v3 converts at 12, 10, 8 or 6 bits");
+        constexpr std::uint32_t res_code = (12u - Opts.resolution_bits) / 2u;
+        static_assert(res_code <= IP::res.raw_mask, "resolution code exceeds CFGR.RES");
+        if constexpr (res_code != 0u) {
+            IP::res.write(r(), res_code);
+        }
+        static_assert(Opts.oversample_ratio >= 1u && Opts.oversample_ratio <= 256u,
+                      "st/adc_v3 oversamples 2 to 256 samples per result (1 = off)");
+        static_assert((Opts.oversample_ratio & (Opts.oversample_ratio - 1u)) == 0u,
+                      "st/adc_v3's oversampling ratio is a power of two");
+        static_assert(Opts.oversample_shift <= 8u,
+                      "st/adc_v3 shifts an oversampled sum right by at most 8 bits");
+        if constexpr (Opts.oversample_ratio > 1u) {
+            IP::ovsr.write(r(), log2_of(Opts.oversample_ratio) - 1u);
+            IP::ovss.write(r(), Opts.oversample_shift);
+            IP::rovse.set(r());
+        }
 
         r().ISR = IP::adrdy.mask;  // w1c any stale ready flag
         IP::aden.set(r());
@@ -87,6 +134,21 @@ struct adc_impl<Inst> {
         while (IP::eoc.read(r()) == 0u) {
         }
         return static_cast<std::uint16_t>(r().DR);
+    }
+
+    // With the DEFAULTS this is 16 — which is why the analog watchdog is not
+    // offered on this IP even though the silicon has three: handle::watchdog()
+    // refuses a port whose results are wider than the 12-bit threshold field,
+    // and this driver's historical default is exactly that port.
+    template <adc_opts<Inst> Opts>
+    [[nodiscard]] static consteval unsigned result_bits() {
+        unsigned bits = Opts.resolution_bits;
+        if (Opts.oversample_ratio > 1u) {
+            const unsigned gained = log2_of(Opts.oversample_ratio);
+            bits = bits + gained -
+                   (Opts.oversample_shift < gained ? Opts.oversample_shift : gained);
+        }
+        return bits > 16u ? 16u : bits;
     }
 };
 
