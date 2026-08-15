@@ -166,7 +166,8 @@ driver matrix, and [Testing](guide/testing.md) for how alloy separates *built* f
 
 ## What you get
 
-- **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM — [coverage varies by family](https://github.com/Alloy-Embedded/alloy#peripheral-drivers-by-vendor-and-family); GPIO and UART are everywhere, CAN and DAC are one chip.
+- **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM — [coverage varies by family](https://github.com/Alloy-Embedded/alloy#peripheral-drivers-by-vendor-and-family); GPIO and UART are everywhere, CAN and DAC are one chip.
+- **Data off the CPU**: [DMA rings](guide/dma.md) behind `adc.ring()` and `uart.rx_ring()`, with a per-board availability table and a per-capability witness table — because how well that path is proven differs on every engine.
 - **Async without an RTOS**: C++20 coroutines with [no heap and no dynamic allocation](guide/async.md).
 - **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `image`, `update`, `test` — [see all commands](guide/cli.md).
 - **A library ecosystem**: 13 packages you [vendor with one command](guide/libraries.md) — sensors, a display and an RTC, plus a Modbus RTU stack, a pub/sub [message bus](guide/bus.md), AC metering, a grid PLL, protection limits and a runtime parameter registry. Grown outside the core, portable by construction.

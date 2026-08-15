@@ -307,9 +307,10 @@ code in the image at all — not disabled, absent. That is what replaces `#ifdef
 !!! tip "One sample per second is the slow way"
     Polling the ADC from the main loop costs you a CPU that is awake for nothing. When you need
     a *stream* — a control loop sampling under a PWM carrier, say — `adc.ring()` hands the
-    conversions to a DMA engine and gives you filled halves. See [ADC](guide/adc.md); read
-    [what is proven](#before-you-trust-it) first, because how well that path is witnessed
-    differs on every engine.
+    conversions to a DMA engine and gives you filled halves to work on. See
+    [Streaming data without the CPU](guide/dma.md), which carries a per-board table of what is
+    available and a per-capability table of what has actually been witnessed. Read the second
+    one before you build a product on it: how well that path is proven differs on every engine.
 
 ## Move it to another MCU
 
@@ -502,9 +503,10 @@ assertions rather than claiming a family "works".
 
     ---
 
-    `adc.ring()` and DMA-fed buffers, for a control loop that must not miss a conversion.
+    `adc.ring()`, `uart.rx_ring()` and DMA-fed buffers — with a per-board table of what
+    exists and a per-capability table of what is proven.
 
-    [:octicons-arrow-right-24: ADC](guide/adc.md)
+    [:octicons-arrow-right-24: Streaming data without the CPU](guide/dma.md)
 
 -   :material-package-variant:{ .lg .middle } __Add a part__
 
