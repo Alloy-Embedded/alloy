@@ -452,6 +452,10 @@ Three words, used precisely, for the rest of this page:
 - **Compiles only** — the branch was selected at compile time and linked.
   Nothing has observed it move a byte.
 
+The same three words are used everywhere in these docs, and the framework-wide
+version of the table below — every capability, not just the streaming ones —
+is **[What is proven, and how](../reference/proof.md)**.
+
 And a footer on all of it, in the words `alloy chip-status` closes with:
 **none of this is evidence from silicon.** No DMA stream in this framework —
 no ring, no pair, no `rx_ring` — has ever run on a real part. (The one

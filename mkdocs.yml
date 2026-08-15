@@ -137,6 +137,10 @@ nav:
       - guide/cli.md
       - guide/vscode.md
   - Concepts:
+      # First in this section on purpose: it is the page a reader shipping a
+      # product opens before trusting any other one. Every capability, the
+      # strongest witness that exists for it, and what that witness cannot reach.
+      - reference/proof.md
       - reference/architecture.md
       - reference/chip-coverage.md
       - reference/peripheral-surface.md

@@ -64,7 +64,9 @@ hardware CI runner**, and almost nothing here has been run on physical silicon b
 the [message bus](guide/bus.md) on a SAM E70 is the exception. What *is* automated is strong and
 unusual: CI boots firmware under Renode on emulated dies and asserts on real UART output, on
 every push. Every page states which of the two it has. Start with
-[what "proven" means here](getting-started.md#before-you-trust-it).
+[what "proven" means here](getting-started.md#before-you-trust-it), and when you are deciding
+whether to build a product on this, read [What is proven, and how](reference/proof.md) — one row
+per capability, the strongest witness that exists for it, and what that witness cannot reach.
 
 ## Why alloy
 
@@ -143,7 +145,8 @@ board, not asserted.
     [async](guide/async.md), [firmware update](guide/firmware-update.md),
     [security](guide/security.md)). <span class="status-pill beta">emulation</span> means a
     blocking CI leg runs it under [Renode](guide/emulation.md), which is the strongest
-    *automated* evidence this project has.
+    *automated* evidence this project has. The whole picture, capability by capability, is
+    [What is proven, and how](reference/proof.md).
 
 | Family | Core | Board | Reported working |
 | --- | --- | --- | --- |
