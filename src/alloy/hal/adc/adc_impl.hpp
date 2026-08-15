@@ -53,9 +53,15 @@ struct adc_watchdog_config {
 // admits against it. The sentinel alone only makes a wrong read detectable;
 // the refusal is what makes it a diagnostic.
 //
-// ONE FACT, TWO SPELLINGS, and that is a known seam: the emitter writes the
-// literal 255u and this is the name. They cannot drift silently in a way any
-// test would catch today — if the value ever moves, it moves in both places.
+// ONE FACT, ONE SPELLING — and it took a second pass to get there. This
+// header first shipped alongside an emitter that wrote the literal `255u`,
+// which is two spellings of one fact with nothing testing that they agree:
+// move the value here and the generated constant keeps the old one, and the
+// admission below quietly stops firing. The emitter now writes
+// `alloy::adc::channel_none` by name (emit/board.py, alloy dae45e2), so the
+// constant a board emits IS this object and the drift has no room to happen.
+// Recorded rather than deleted because the seam is the kind that reads as
+// harmless right up until the guard silently stops guarding.
 inline constexpr std::uint8_t adc_channel_none = 0xFFu;
 
 // ── Layer 2: the per-IP knob bag ────────────────────────────────────────
