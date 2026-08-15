@@ -85,9 +85,15 @@ So the path folds open **from `board.json` alone, with no preprocessor**:
 Both measured by building `examples/dma_uart` at the parent commit and at HEAD
 and reading the strings out of the two ELFs.
 
-**Two shipped examples now reach the engine on this family**, and both are
+**Two shipped examples now reach the engine on this family**, and both were
 already in the `build` matrix in `.github/workflows/ci.yml` for both RP2040
-boards — no CI change was needed and none was made:
+boards — so **no emulation leg was added and none may be** (see above). One CI
+step *was* added, and it is a compile-branch assertion rather than a witness:
+because every DMA example folds by design, a broken hook would leave `dma_uart`
+compiling, linking and silently printing the fallback forever, and the build
+loop cannot see that. The step reads the linked ELF and fails if the fallback
+string is present. It proves the branch was selected; it proves nothing about
+bytes moving, which is what this sheet is for.
 
 - **`examples/dma_uart`** — the sheet's main instrument. Claims
   `alloy::dma::channel<board::dma_t, 1>`, arms a completion callback, sends
