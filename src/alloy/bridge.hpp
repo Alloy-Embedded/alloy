@@ -115,6 +115,12 @@ using dead_time = hal::bridge_dead_time;
 using alignment = hal::bridge_alignment;
 using off_state = hal::bridge_off_state;
 using break_polarity = hal::bridge_break_polarity;
+//: Added with the field, one commit late: `config::trigger` shipped and its
+//: TYPE did not, so the only way to name a value was `alloy::hal::
+//: bridge_trigger::on_update` — reaching into `hal` from a call site, which is
+//: exactly what every other alias on this list exists to prevent. Writing the
+//: user guide is what surfaced it.
+using trigger = hal::bridge_trigger;
 
 // LAYER 2 — the vendor knobs, keyed by INSTANCE. Surfaced on the binder as
 // `Role::opts`; naming the type at the call site is what buys the good

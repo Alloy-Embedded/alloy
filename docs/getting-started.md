@@ -140,6 +140,15 @@ stub or a compile-time error), which is why the *same file* works everywhere.
 
     [:octicons-arrow-right-24: Peripherals](guide/peripherals.md)
 
+-   :material-fan:{ .lg .middle } __Drive a motor__
+
+    ---
+
+    Carrier resolution, centre-aligned counting, an ADC trigger, and the
+    three-phase bridge with a dead time you cannot forget to state.
+
+    [:octicons-arrow-right-24: PWM and motor control](guide/pwm.md)
+
 </div>
 
 ## Try it without hardware

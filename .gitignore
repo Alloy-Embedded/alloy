@@ -21,3 +21,6 @@ dist/
 .vscode/
 .idea/
 compile_commands.json
+
+# mkdocs build output (docs/ is the source; this is generated)
+site/

@@ -167,10 +167,16 @@ std::uint16_t counts = adc.read(board::adc_vref_channel);
 
 ## PWM
 
+Duty is **normalized**, not a percentage: `0` is off and `0xFFFF` is always on,
+whatever the timer's real resolution turns out to be.
+
 ```cpp
 auto pwm = board::led_pwm::open({.freq_hz = 1'000});
-pwm.set_duty(50);               // 50% — LED at half brightness
+pwm.set_duty(0x8000);           // half — LED at half brightness
 ```
+
+Centre-aligned counting, a trigger output for the ADC, and the three-phase
+complementary bridge are all in **[PWM and motor control](pwm.md)**.
 
 ## DMA
 
