@@ -50,6 +50,12 @@
 //    count the polls, but whether the hardware's in-flight transfers are
 //    actually flushed by then is the SVD's claim, not this file's.
 //
+// Those three are exactly rows 5, 4 and 6 of
+// docs/guide/rp2040-dma-hardware-checklist.md, which carries a falsifier for
+// each and the firmware to run them. Nothing on that sheet has been executed,
+// and no shipped example even reaches this driver — so today this file is the
+// entire evidence base, and it is an evidence base about register sequences.
+//
 // What it DOES pin is everything a wrong line would break silently: which
 // register gets which value, in which order; that configuration never touches a
 // trigger; that the start is one store to MULTI_CHAN_TRIGGER; that chaining is

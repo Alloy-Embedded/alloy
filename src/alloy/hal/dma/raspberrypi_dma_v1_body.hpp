@@ -37,6 +37,14 @@
 // view-0xC registers as triggers and not this one). Everything below about
 // configuring through a non-trigger alias rests on that inference.
 //
+// WHAT WOULD SETTLE IT: docs/guide/rp2040-dma-hardware-checklist.md, which
+// names the three unwitnessed claims (that CH_CTRL_TRIG triggers, the three
+// DREQ ids, and that CHAN_ABORT flushes anything), gives each a falsifier, and
+// carries the firmware to run them — because NO SHIPPED EXAMPLE REACHES THIS
+// DRIVER yet: dma_uart and dma_probe both guard on uart.write_dma /
+// adc.read_burst, and neither RP2040 facade driver has those hooks. Nothing on
+// that sheet has been executed.
+//
 // ── WHAT THIS SILICON DOES NOT HAVE, and what follows from it ──────────────
 //
 // Proven by exhaustion over the curated register set (the curation enumerated
