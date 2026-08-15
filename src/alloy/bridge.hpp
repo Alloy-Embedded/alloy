@@ -356,6 +356,36 @@ public:
     void emergency_stop() const { hal::bridge_impl<Inst>::force_break(); }
 
     //: Counter ticks in one period. The resolution `set_duty` actually has.
+    //: Write every phase's duty and say whether they will land TOGETHER.
+    //:
+    //: The three compare registers are preloaded, so each write takes effect
+    //: at the next update event — which means three writes that straddle one
+    //: produce a TORN FRAME: two phases from the new set, one from the old.
+    //: On a motor that is a vector nobody asked for, once, and it is invisible
+    //: afterwards because the next frame is correct.
+    //:
+    //: This does NOT make the write atomic. Nothing on this timer can: there
+    //: is no commit register for compare VALUES (CCPC preloads the enable and
+    //: mode bits, not CCRx). What it does is WITNESS the straddle — clear the
+    //: update flag, write, read it back — so a caller who cares can retry, and
+    //: one who does not is no worse off than before. Returning true is not a
+    //: promise the hardware made; it is the flag saying no reload happened in
+    //: between.
+    //:
+    //: Cost: two register accesses around the writes. A loop that already runs
+    //: from the update interrupt is inside the window by construction and can
+    //: keep using set_duty<N>() and ignore this entirely.
+    template <class... Duties>
+        requires (sizeof...(Duties) == Phases)
+    [[nodiscard]] bool set_duties_coherent(Duties... duties) const
+        requires requires { hal::bridge_impl<Inst>::update_elapsed(); }
+    {
+        hal::bridge_impl<Inst>::clear_update();
+        unsigned n = 0u;
+        (hal::bridge_impl<Inst>::set_duty(++n, static_cast<std::uint16_t>(duties)), ...);
+        return !hal::bridge_impl<Inst>::update_elapsed();
+    }
+
     //: Move the trigger point inside the switching period. Only exists when
     //: this timer HAS a trigger output — `feat::trgo` is a generated number
     //: from the IP's curated data, so a block without one is a compile error

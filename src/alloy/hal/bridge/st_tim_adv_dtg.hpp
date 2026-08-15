@@ -169,6 +169,22 @@ struct tim_adv_timebase {
     std::uint32_t arr;
 };
 
+//: REP for "an update every `periods` switching periods". Here rather than in
+//: the driver so a host test can sweep it: the driver proper needs a
+//: generated ip header this file exists to avoid.
+//:
+//: A centre-aligned counter meets its update condition twice per period, so
+//: `periods` costs 2N-1; edge-aligned costs N-1. `periods == 0` is nonsense
+//: and is treated as 1 rather than wrapping to a REP of 65535, which would be
+//: one update every ~32k periods — a bridge that looks alive and ignores
+//: every duty written to it.
+[[nodiscard]] constexpr std::uint32_t tim_adv_rep_for(std::uint32_t periods,
+                                                      bool center) {
+    const std::uint32_t n = periods == 0u ? 1u : periods;
+    const std::uint32_t rep = center ? (2u * n - 1u) : (n - 1u);
+    return rep > 0xFFFFu ? 0xFFFFu : rep;
+}
+
 [[nodiscard]] constexpr tim_adv_timebase tim_adv_timebase_for(
     std::uint32_t kernel_hz, std::uint32_t freq_hz, bool center,
     std::uint32_t max_period_ticks) {

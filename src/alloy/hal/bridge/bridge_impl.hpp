@@ -218,6 +218,21 @@ struct bridge_config {
     //: Trigger output. `none` by default — a bridge that nobody asked to
     //: trigger anything should not be publishing events.
     hal::bridge_trigger trigger = bridge_trigger::none;
+    //: How many SWITCHING PERIODS pass between update events — the moment
+    //: preloaded duties take effect and, if a trigger is armed, the moment it
+    //: fires. 1 means every period.
+    //:
+    //: Stated in periods rather than in the counter's own units on purpose. A
+    //: centre-aligned counter reaches its update condition TWICE per period
+    //: (overflow and underflow) and an edge-aligned one once, so the register
+    //: value for "every period" is not the same number in the two modes. A
+    //: control loop thinks in periods; the driver does that conversion.
+    //:
+    //: Raising it is how a loop that runs slower than the carrier stops being
+    //: interrupted — and it is also how the duty a caller wrote stays on the
+    //: bridge for N periods rather than one, which is a torque ripple if it
+    //: was not intended. Hence the default of 1 and no cleverness.
+    std::uint16_t update_every = 1u;
 };
 
 // ── Layer 2 ─────────────────────────────────────────────────────────────

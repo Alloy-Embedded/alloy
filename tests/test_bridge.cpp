@@ -354,6 +354,11 @@ struct bridge_log {
     unsigned forced_breaks = 0;
     std::uint16_t duty[4] = {0, 0, 0, 0};
     std::uint16_t sample_point = 0;
+    bool uif = false;
+    //: Which phase write the counter reloads on, 0 = none. Models the straddle
+    //: the coherent write exists to witness: the flag has to be set BETWEEN the
+    //: first and last write, not before the call — the call clears it first.
+    unsigned tear_on_phase = 0;
 
     // WHAT HAPPENED IN WHICH ORDER, which for this facade is a safety
     // property and not a detail: a pin muxed to a timer whose BDTR has not
@@ -413,8 +418,11 @@ struct bridge_impl<fake_timer<T>> {
     }
     static void set_duty(unsigned phase, std::uint16_t duty) {
         if (phase >= 1u && phase <= 4u) { log.duty[phase - 1u] = duty; }
+        if (log.tear_on_phase == phase) { log.uif = true; }
     }
     static void set_sample_point(std::uint16_t point) { log.sample_point = point; }
+    static bool update_elapsed() { return log.uif; }
+    static void clear_update() { log.uif = false; }
     static void outputs_on() { log.moe = true; }
     static void outputs_off() { log.moe = false; }
     static bool outputs_enabled() { return log.moe; }
@@ -592,9 +600,20 @@ ALLOY_TEST(a_bridge_with_no_stated_dead_time_is_refused) {
     // The whole reason `config::dead_time` is a three-state type instead of a
     // number: `config{}` must not be openable.
     ALLOY_CHECK(refuses([] {
+        // The dead time must be opaque too, not just the frequency. This case
+        // is the one where every OTHER field is a compile-time constant, so an
+        // optimiser that can see `dead_time` is unstated fires the
+        // [[gnu::error]] admission and the file stops compiling — which tests
+        // the compile-time arm and destroys the runtime one. (It did exactly
+        // that at -O1 the moment `config` grew a field: the header's own note
+        // says that admission is "a bonus, not a promise", and this is what
+        // that costs.) Leaving the value unknowable keeps the RUNTIME trap —
+        // the guarantee this test is about — reachable.
         volatile std::uint32_t freq = 20'000u;
+        volatile int state_it = 0;
         alloy::bridge::config c{};
         c.freq_hz = freq;
+        if (state_it) { c.dead_time = alloy::bridge::dead_time::ns(500u); }
         (void)inverter<6>::open(c);
     }));
 }
@@ -908,5 +927,97 @@ ALLOY_TEST(the_sample_point_is_gated_on_a_generated_number) {
     static_assert(requires(handle_t h) { h.set_sample_point(0u); },
                   "a timer whose feat::trgo is non-zero must offer this");
     static_assert(fake_timer<43>::feat::trgo != 0u);
+    ALLOY_CHECK(true);
+}
+
+// ── Update cadence and coherent duty writes ──────────────────────────────
+
+ALLOY_TEST(rep_says_every_period_in_both_alignments) {
+    // The asymmetry the config exists to hide: a centre-aligned counter meets
+    // its update condition twice per period, so "every period" is a different
+    // register value in the two modes. Getting this backwards halves or
+    // doubles a control loop's rate silently.
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(1u, true), 1u);   // centre, every period
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(1u, false), 0u);  // edge, every period
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(2u, true), 3u);
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(2u, false), 1u);
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(8u, true), 15u);
+}
+
+ALLOY_TEST(rep_of_zero_periods_is_one_not_a_wrap) {
+    // 0 periods is nonsense. Unsigned arithmetic would make it 65535 — one
+    // update every ~32k periods, a bridge that looks alive and ignores every
+    // duty written to it. It must clamp to "every period" instead.
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(0u, true), 1u);
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(0u, false), 0u);
+}
+
+ALLOY_TEST(rep_saturates_inside_the_field) {
+    // REP is 16 bits on this IP. A request past it must clamp, not truncate:
+    // truncation gives a SHORTER cadence than asked, which is the direction
+    // that surprises a loop.
+    ALLOY_CHECK_EQ(dt::tim_adv_rep_for(40'000u, true), 0xFFFFu);
+    ALLOY_CHECK(dt::tim_adv_rep_for(100'000u, false) <= 0xFFFFu);
+}
+
+ALLOY_TEST(the_update_cadence_reaches_the_driver) {
+    constexpr alloy::bridge::config slow{
+        .freq_hz = 20'000u,
+        .dead_time = alloy::bridge::dead_time::ns(500u),
+        .update_every = 4u,
+    };
+    auto inv = inverter<44>::open(slow);
+    (void)inv;
+    ALLOY_CHECK_EQ(alloy::hal::log.cfg.update_every, 4u);
+    // …and the default is still one, for a bridge that says nothing.
+    ALLOY_CHECK_EQ(good.update_every, 1u);
+}
+
+ALLOY_TEST(a_coherent_write_reports_a_frame_that_did_not_straddle) {
+    auto inv = inverter<45>::open(good);
+    alloy::hal::log.uif = false;
+    ALLOY_CHECK(inv.set_duties_coherent(0x1000u, 0x2000u, 0x3000u));
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[0], 0x1000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[1], 0x2000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[2], 0x3000u);
+}
+
+ALLOY_TEST(a_coherent_write_reports_a_TORN_frame) {
+    // The case the method exists for: an update landed between the first and
+    // last write, so two phases carry the new set and one the old. The duties
+    // are still written — this reports, it does not roll back — and the caller
+    // decides whether to repeat them.
+    auto inv = inverter<46>::open(good);
+    // The counter reloads while phase 2 is being written: phase 1 is from the
+    // new frame, phases 2 and 3 land after the reload. Setting the flag BEFORE
+    // the call would prove nothing — the call clears it first, which is what
+    // makes the answer about THIS write and not about history.
+    alloy::hal::log.tear_on_phase = 2u;
+    ALLOY_CHECK(!inv.set_duties_coherent(0x1000u, 0x2000u, 0x3000u));
+    // Reported, not rolled back: every duty was still written, and the caller
+    // decides whether to repeat them.
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[0], 0x1000u);
+    ALLOY_CHECK_EQ(alloy::hal::log.duty[2], 0x3000u);
+    alloy::hal::log.tear_on_phase = 0u;
+}
+
+ALLOY_TEST(a_coherent_write_takes_one_duty_per_phase) {
+    // Arity is checked against the bind's phase count, so a bridge cannot be
+    // handed the wrong number of duties and quietly drop or invent one.
+    //
+    // Only the POSITIVE case is asserted here. The negative one is not a
+    // requires-expression that evaluates false — clang reports the failed
+    // overload as a hard error rather than substituting, so writing it that
+    // way breaks the build instead of testing it. Its witness is the compiler
+    // diagnostic itself, which names the constraint:
+    //     note: because 'sizeof...(Duties) == 3U' (2 == 3) evaluated to false
+    // A wrong-arity call belongs in scripts/check_compile_errors.py, where a
+    // refusal is the expected result, not here.
+    // The handle type is NAMED rather than taken from decltype(open(...)):
+    // instantiating open() in an unevaluated context still fires its
+    // [[gnu::error]] admissions, so decltype of a call is not free here.
+    using three = alloy::bridge::handle<fake_timer<47>, 3u>;
+    static_assert(requires(three h) { h.set_duties_coherent(0u, 0u, 0u); },
+                  "a three-phase bridge must accept exactly three duties");
     ALLOY_CHECK(true);
 }

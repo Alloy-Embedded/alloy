@@ -148,6 +148,10 @@ struct bridge_impl<Inst> {
         return 0u;
     }
 
+    static constexpr std::uint32_t rep_for(std::uint16_t periods, bool center) {
+        return detail::tim_adv_rep_for(periods, center);
+    }
+
     static constexpr unsigned phases = Inst::feat::complementary_channels;
     static constexpr unsigned break_inputs = Inst::feat::break_inputs;
 
@@ -310,7 +314,11 @@ struct bridge_impl<Inst> {
         // its update condition twice per period (overflow and underflow), so
         // REP = 1 halves that back to once — which is what a control loop
         // sampling "one new duty per period" means by a period.
-        r().RCR = center ? 1u : 0u;
+        // REP counts UPDATE CONDITIONS, not periods, and a centre-aligned
+        // counter meets one twice per period. So "every period" is REP = 1
+        // there and REP = 0 edge-aligned — the asymmetry the caller should
+        // never have to know, which is why config states periods instead.
+        r().RCR = rep_for(c.update_every, center);
 
         r().CCR1 = 0u;
         r().CCR2 = 0u;
@@ -413,6 +421,13 @@ struct bridge_impl<Inst> {
             default: break;
         }
     }
+
+    //: Did an update event land since this was last cleared? The flag is set
+    //: by hardware and stays set, so it answers "has the counter reloaded
+    //: since I looked", which is what a caller writing three duties needs to
+    //: know — not "is it reloading now".
+    [[nodiscard]] static bool update_elapsed() { return IP::uif.read(r()) != 0u; }
+    static void clear_update() { IP::uif.clear(r()); }
 
     //: Where in the period OC4REF fires, in the same 0..0xFFFF units as a
     //: duty, so a caller reasons in one scale. CCR4 only — channel 4 drives
