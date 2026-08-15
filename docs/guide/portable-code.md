@@ -34,11 +34,16 @@ Not every board has every role. Instead of `#ifdef`, alloy exposes compile-time 
 
 ```cpp
 if constexpr (board::caps::button) {
-    if (board::button.pressed()) {
+    if (board::button.is_active()) {   // polarity-aware: true when pressed
         board::led.on();
     }
 }
 ```
+
+!!! note "`is_active()` vs `is_high()`"
+    `is_active()` knows the board's `"active": "low"` fact and returns `true` when the button is
+    *pressed*, whichever way the PCB wired it. `is_high()` is the raw pin level, for when you
+    want the electrical truth and not the logical one.
 
 The discarded branch is **removed at compile time**, so code guarded this way costs nothing on
 boards that lack the role — and the file compiles identically everywhere.
@@ -54,12 +59,18 @@ Portability is only useful if mistakes are caught early. Bind a UART to a pin th
 to it and the compiler stops you, **naming the pin**:
 
 ```
-error: static assertion failed: TX pin has no route to this UART on the selected chip
-   note: in instantiation of 'uart::bind<usart2_t, tx<pa5_t>, rx<pa3_t>, ...>'
+alloy/src/alloy/uart.hpp: In instantiation of 'struct alloy::uart::bind<alloy::dev::usart2_t,
+  alloy::uart::tx<alloy::dev::pa5_t>, alloy::uart::rx<alloy::dev::pa3_t>, board::clock_profile>':
+src/main.cpp:7:32:   required from here
+alloy/src/alloy/uart.hpp:502:27: error: static assertion failed: TX pin has no route to this
+  UART on the selected chip (check the chip's route table in alloy-devices)
 ```
 
-This "wrong route → readable compile error" is a CI-enforced acceptance test, not a
-nice-to-have — see [Architecture](../reference/architecture.md).
+That is the verbatim output of `alloy build --board nucleo_g071rb` on a project that binds
+USART2's TX to PA5, which the STM32G071 has no route for. This "wrong route → readable compile
+error" is a CI-enforced acceptance test, not a nice-to-have — `scripts/check_compile_errors.py`
+fails the build if the diagnostic stops naming the pin. See
+[Architecture](../reference/architecture.md).
 
 ## Putting it together
 
@@ -77,7 +88,8 @@ int main() {
 
         if constexpr (board::caps::adc) {           // only where an ADC role exists
             auto adc = board::adc::open();
-            uart.write("sample ok\r\n");
+            const std::uint16_t raw = adc.read(3);
+            uart.write(raw != 0u ? "sample\r\n" : "sample zero\r\n");
         }
 
         alloy::sleep_for(500ms);
@@ -87,3 +99,8 @@ int main() {
 
 Compile this for a Nucleo-G071RB, a SAM E70, an RP2040 or an ESP32 DevKit — same bytes of
 source, no edits. The ADC block simply vanishes on a board without that role.
+
+!!! warning "Open peripherals once, not once per loop"
+    The snippet above opens the ADC inside the loop to keep the `if constexpr` short. Real code
+    should open it *before* the loop, and [ADC](adc.md) shows the streaming version that takes
+    the CPU out of the sampling path entirely.

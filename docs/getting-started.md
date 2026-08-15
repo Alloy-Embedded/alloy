@@ -26,13 +26,45 @@ ESP32). Toolchains install into `~/.alloy/tools` and never touch your system:
 $ alloy setup
 ```
 
+`alloy setup --check` tells you where you stand without downloading anything — it covers the two
+cross-toolchains plus the three host tools alloy shells out to:
+
+```console
+$ alloy setup --check
+arm-gnu-toolchain    ok (PATH)                /…/bin/arm-none-eabi-gcc
+xtensa-esp-elf       ok (~/.alloy/tools)      /…/.alloy/tools/xtensa-esp-elf/bin/xtensa-esp-elf-gcc
+openocd              ok (PATH)                /opt/homebrew/bin/openocd
+cmake                ok (PATH)                /opt/homebrew/bin/cmake
+ninja                ok (PATH)                /opt/homebrew/bin/ninja
+```
+
+**CMake** and **Ninja** are required for every build; **OpenOCD** only for the flash path on
+boards whose probe runner needs it. All three are one package away on every OS.
+
 !!! note "Integrity-checked downloads"
     `alloy setup` refuses to install a toolchain whose checksum is not pinned. If you are
     working from an unreleased checkout you can opt in for a one-off with
     `ALLOY_ALLOW_UNPINNED=1 alloy setup`.
 
-You will also need **CMake** and **Ninja** on your `PATH` (both are one package away on every
-OS).
+!!! warning "Working from a git checkout instead of the wheel"
+    The published wheel embeds the framework, so an installed `alloy` finds itself. A checkout
+    does not — run `alloy new` outside the repo and you get:
+
+    ```
+    error: could not find the alloy framework — run inside the repo, set ALLOY_ROOT, or
+    install the alloy package (the wheel embeds the framework)
+    ```
+
+    Point it at your checkouts once and the error goes away:
+
+    ```console
+    $ export ALLOY_ROOT=/path/to/alloy
+    $ export ALLOY_DEVICES_ROOT=/path/to/alloy-devices   # only if you also cloned the chip DB
+    ```
+
+    Only `alloy new` needs this. The project it scaffolds records the framework path in its
+    `alloy.toml`, so `alloy build`, `alloy test` and `alloy emulate` work inside it with no
+    environment at all.
 
 ## Create a project
 
@@ -41,7 +73,7 @@ that CI compiles for every board, so it is guaranteed to build:
 
 ```console
 $ alloy new hello --board nucleo_g071rb
-created hello/ (board: nucleo_g071rb)
+created hello/ (board: nucleo_g071rb, framework: /…/alloy)
 next:  cd hello && alloy run
 ```
 
@@ -59,10 +91,19 @@ Don't know the board id? List them:
 
 ```console
 $ alloy boards
-nucleo_g071rb   ST Nucleo-G071RB   chip=st/stm32g071rb
-same70_xplained SAM E70 Xplained   chip=microchip/atsame70q21
-...
+esp32_devkit             ESP32 DevKit (WROOM-32, 30-pin)  chip=espressif/esp32
+esp_wrover_kit           Espressif ESP-WROVER-KIT         chip=espressif/esp32
+nucleo_f722ze            ST Nucleo-F722ZE (Nucleo-144)    chip=st/stm32f722
+nucleo_f767zi            ST Nucleo-F767ZI (Nucleo-144)    chip=st/stm32f767
+nucleo_g071rb            ST Nucleo-G071RB                 chip=st/stm32g071rb
+nucleo_g0b1re            ST Nucleo-G0B1RE                 chip=st/stm32g0b1re
+raspberry_pi_pico        Raspberry Pi Pico                chip=raspberrypi/rp2040
+rp2040_zero              Waveshare RP2040-Zero            chip=raspberrypi/rp2040
+same70_xplained          Microchip SAM E70 Xplained       chip=microchip/atsame70q21
 ```
+
+Nine boards ship curated. If yours is not one of them, `alloy new mychip --chip st/stm32g431rb`
+scaffolds an editable board you fill in yourself — see [Adding a board](guide/adding-a-board.md).
 
 ## Build, flash, run
 
@@ -157,10 +198,14 @@ Don't have the board yet? alloy can boot your firmware in the [Renode](https://r
 emulator:
 
 ```console
-$ alloy emulate --board nucleo_f722ze
-...
-alloy uart_echo ready
+$ alloy emulate
+…
+17:55:33.6919 [INFO] nucleo_g071rb: Machine started.
+17:55:33.8461 [INFO] usart2: […] alloy hello: blinking + echoing
 ```
+
+That last line is your firmware's own banner, coming out of an emulated USART2. Type `q` at the
+Renode prompt to quit.
 
 The emulated machine is generated from the same chip data your firmware compiles against — see
 [Emulation](guide/emulation.md), which is also how alloy's own CI proves driver behaviour.

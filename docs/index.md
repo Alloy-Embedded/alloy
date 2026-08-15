@@ -102,10 +102,22 @@ $ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
 
 ## Supported boards
 
-The same 14-line `main.cpp` runs on all of these. The last column says how far each has actually
-been proven — a distinction alloy keeps everywhere.
+The `main.cpp` at the top of this page compiles for every one of these — verified board by
+board, not asserted.
 
-| Family | Core | Board | Proven |
+!!! warning "Read this column before you trust it"
+    A <span class="status-pill ok">silicon</span> cell means **the maintainer reports the
+    peripheral running on that named board** during bring-up, with observed register values or
+    byte-level results. There is no hardware CI runner: nothing in that column is re-checked by a
+    machine, and none of it is re-checked at all once it is written down. Where a feature page
+    disagrees with this table, **the feature page wins** — several of them state plainly that
+    they have never touched silicon ([PWM bridge](guide/pwm.md#what-has-actually-been-proven-and-what-has-not),
+    [async](guide/async.md), [firmware update](guide/firmware-update.md),
+    [security](guide/security.md)). <span class="status-pill beta">emulation</span> means a
+    blocking CI leg runs it under [Renode](guide/emulation.md), which is the strongest
+    *automated* evidence this project has.
+
+| Family | Core | Board | Reported working |
 | --- | --- | --- | --- |
 | ST STM32G0 | Cortex-M0+ | Nucleo-G0B1RE | <span class="status-pill ok">silicon</span> I²C, ADC, DMA, PWM, RTC, DAC, CAN, watchdog, flash |
 | ST STM32G0 | Cortex-M0+ | Nucleo-G071RB | <span class="status-pill ok">silicon</span> PLL, GPIO, UART echo · 8 emulation gates |
@@ -116,11 +128,8 @@ been proven — a distinction alloy keeps everywhere.
 | Raspberry Pi RP2040 | 2× Cortex-M0+ | Raspberry Pi Pico | <span class="status-pill beta">compiles</span> hardware validation pending |
 | ST STM32F7 | Cortex-M7 | Nucleo-F767ZI | <span class="status-pill beta">compiles</span> the network examples only |
 
-!!! note "What “silicon” means here"
-    A commit reports the peripheral running on that named board, with observed register values or
-    byte-level results. These are maintainer self-reports — there is no hardware CI runner. See the
-    [README](https://github.com/Alloy-Embedded/alloy#supported-silicon) for the per-family driver
-    matrix.
+See the [README](https://github.com/Alloy-Embedded/alloy#supported-silicon) for the per-family
+driver matrix, and [Testing](guide/testing.md) for how alloy separates *built* from *proven*.
 
 !!! tip "Your board isn't listed?"
     alloy is designed so a new board is **data, not code**. See
