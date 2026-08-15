@@ -14,6 +14,34 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams phase 4 — the full-duplex pair, and `spi.transfer_dma()`.**
+  `alloy::dma::pair` claims two channels as ONE unit — RX first, TX second, in
+  one interrupts-masked section — so two claimants of an overlapping pair trap
+  deterministically instead of by race, and destruction stops both and releases
+  both (the ring's precedent). `spi.transfer_dma(tx, rx)` is the design's
+  anchor 2.4 spelled verbatim: it claims the board's pair, arms in the RM's
+  full-duplex order (RX channel, RXDMAEN, TX channel, TXDMAEN — that last write
+  starts the traffic), waits both, drains the port and releases both.
+  **The bool means something**: false when either channel errored, when either
+  never moved, or when the port failed to drain. The last of those is the
+  classic trap and `st_spi_v2` now closes it — DMA completion means the last
+  byte reached the FIFO, not the wire, so `dma_end()` waits for FTLVL to empty
+  and BSY to fall before dropping the request enables, bounded, reporting
+  rather than hanging. `spi::bind` grew the UART's variadic `rx_dma<>`/
+  `tx_dma<>` tag pack (untagged binders open exactly the handle they always
+  did), and `transfer_dma` follows the same two-source request rule
+  `uart.write_dma` does: chip-wide `dmareq_*` on a free router, the MATCHED
+  route's request on a stream engine where CHSEL is per-stream and no chip-wide
+  id can exist. **Witnessed on the host only, so far**: the claim order (proven
+  through the trap's own signal handler, since a losing claim kills the
+  process), the arm order, the teardown order, all four false cases of the
+  bool, and the driver's shutdown dance over a memory-backed register file —
+  each pinned by a mutation that turns it red. The engine moved to
+  `st_spi_v2_body.hpp` to make that last one possible, the same seam
+  `st_dma_v1_body.hpp` already uses. No emulation leg and no silicon run yet;
+  the receive-FIFO drain has no host witness at all (draining is a read side
+  effect, which a memory-backed double cannot model).
+
 - **DMA streams phase 3 — the F4/F7 anchors run.** The same portable
   `modbus_rtu_server` and `async_io` binaries that carry anchors 2.2/2.3 on
   the G0 now open on `nucleo_f722ze`/`nucleo_f767zi` from nothing but the
