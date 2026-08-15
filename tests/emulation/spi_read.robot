@@ -8,6 +8,30 @@ Documentation     SPI driver conformance in emulation — the full-duplex siblin
 ...               byte out AND read back the exact value the slave was primed with (a
 ...               different primed value would print a different byte, so this can't
 ...               pass by coincidence). No hardware. RESC/UART from `alloy emulate`.
+...
+...               A THIRD leg is anchor 2.4 of docs/design/dma-streams.md — the same
+...               exchange with the CPU out of the data phase, over the PAIR of DMA
+...               channels the board assigned to spi.rx/spi.tx. WHAT THIS LEG PROVES,
+...               and it is more than phase 3 could claim for a route:
+...                 * the CHANNEL/STREAM INDEX — the platform's request wire is
+...                   `DMARecieve -> <controller>@<index>`, and moving it by one
+...                   leaves the receive buffer all zeros (measured);
+...                 * the RX-BEFORE-TX ARMING ORDER that design §1 states as doctrine.
+...                   Renode's DmaEngine writes a peripheral destination one unit at a
+...                   time, so an m2p block into SPI->DR is N separate slave Transmits
+...                   and N request edges — but the WHOLE m2p block runs inside the
+...                   write that sets EN. Arm transmit first and all N edges land on a
+...                   channel that is not yet enabled: buffer all zeros, leg red;
+...                 * CR2.RXDMAEN — the model gates the request edge on it, so a
+...                   driver that forgets it moves nothing.
+...               WHAT IT DOES NOT PROVE, same boundary as every other leg here: the
+...               REQUEST ID half of the route. Renode 1.16.1 models no DMAMUX at all
+...               (the G0's DMAMUX window logs as a non-existent peripheral) and CHSEL
+...               routes nothing in the generated stream model, and in any case the
+...               platform wire and the firmware's route descend from the SAME
+...               board.json statement, so they cannot disagree. Only silicon witnesses
+...               that half. CR2.TXDMAEN is unwitnessed for the same reason the
+...               transmit request wire is absent: m2p self-runs at EN in both models.
 Suite Setup       Setup
 Suite Teardown    Teardown
 Resource          ${RENODEKEYWORDS}
@@ -24,6 +48,17 @@ SPI Driver Exchanges A Byte With A Device
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xDE
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xAD
     Execute Command           sysbus.spi1.spidev EnqueueValue 0xBE
+    # Four more for the DMA pair, and then ONE marker byte. The mock answers
+    # from a queue that advances once per byte it is clocked, and it keeps no
+    # record of what it received — so the marker is the duplex witness: it can
+    # only come back if the transmit channel really clocked FOUR cycles into
+    # the device, leaving the cursor exactly here. A stub that filled the
+    # receive buffer without driving MOSI would answer 0xf3.
+    Execute Command           sysbus.spi1.spidev EnqueueValue 0xF0
+    Execute Command           sysbus.spi1.spidev EnqueueValue 0xF1
+    Execute Command           sysbus.spi1.spidev EnqueueValue 0xF2
+    Execute Command           sysbus.spi1.spidev EnqueueValue 0xF3
+    Execute Command           sysbus.spi1.spidev EnqueueValue 0x9E
     Create Terminal Tester    ${UART}
     Start Emulation
     Wait For Line On Uart     alloy spi_read    timeout=30
@@ -38,3 +73,17 @@ SPI Driver Exchanges A Byte With A Device
     # so a driver that forgot to arm the interrupt prints "NOT fired", which does
     # not match, and neither does silence.
     Wait For Line On Uart     spi irq: fired    timeout=30
+    # ANCHOR 2.4. Four bytes exchanged with the CPU touching neither DR nor any
+    # channel register after the call: `spi.transfer_dma(tx, rx)` claimed both
+    # board-assigned channels as one unit. The exact pattern is the four values
+    # primed above, in order — a different index on the platform's request wire,
+    # a transmit channel armed before the receive one, or a missing RXDMAEN each
+    # leave this buffer all zeros, so "0x00000000" (which does not match) is what
+    # a broken pair prints. It is also a marker no other leg in this firmware can
+    # produce: the polled and interrupt paths print "spi:" and "spi async:".
+    Wait For Line On Uart     spi dma: 0xf0f1f2f3    timeout=30
+    # The duplex half, read back OUT of the peer rather than asserted about it:
+    # one ordinary polled exchange after the DMA one, whose answer is wherever
+    # the device's cursor now stands. 0x9e means it stands five past the async
+    # leg — four cycles clocked by the transmit channel, then this one.
+    Wait For Line On Uart     spi dma peer: 0x9e    timeout=30
