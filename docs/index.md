@@ -33,10 +33,38 @@ int main() {
 
 ```console
 $ uv tool install alloy-embedded         # or: pipx install alloy-embedded
-$ alloy new hello --board esp32_devkit && cd hello
+$ alloy new hello --board nucleo_g071rb && cd hello
 $ alloy run                              # build + flash + serial monitor
-$ alloy build --board nucleo_g071rb      # same code, different MCU — one flag
+$ alloy emulate                          # no board? boot it in Renode instead
+$ alloy build --board esp32_devkit       # same code, another ISA — one flag
 ```
+
+No hardware on your desk? **[Get started](getting-started.md) has a no-board path at every
+step.** `alloy emulate` boots your firmware on a machine generated from the same chip data it
+was compiled against — which is also how alloy's own CI proves its drivers. It works for seven
+of the nine shipped boards; the two ESP32 boards have no Renode model and build only.
+
+## In ten seconds
+
+**What it is.** A C++23 firmware framework plus one CLI. Peripheral drivers are hand-written;
+everything chip-specific around them — memory map, pin routes, clock tree, interrupt vectors,
+linker script, CMake, even a [Renode](guide/emulation.md) machine to run it on — is generated
+from a chip database of over 400 MCUs. No heap, no RTOS required, no vendor IDE, no HAL to
+vendor into your tree.
+
+**Who it is for.** Someone shipping a product on a microcontroller who wants their application
+to outlive the part number: a supply shortage, a second SKU on a cheaper die, a bench board that
+is not the production board. If you have ever `#ifdef`-ed a driver across two families, that is
+the pain this is aimed at. It is *not* a Linux-class platform, and it does not try to be
+Zephyr — see [where alloy is behind the
+alternatives](https://github.com/Alloy-Embedded/alloy#status).
+
+**What state it is in.** An active greenfield rebuild, honest about its evidence. There is **no
+hardware CI runner**, and almost nothing here has been run on physical silicon by this project —
+the [message bus](guide/bus.md) on a SAM E70 is the exception. What *is* automated is strong and
+unusual: CI boots firmware under Renode on emulated dies and asserts on real UART output, on
+every push. Every page states which of the two it has. Start with
+[what "proven" means here](getting-started.md#before-you-trust-it).
 
 ## Why alloy
 
@@ -141,7 +169,7 @@ driver matrix, and [Testing](guide/testing.md) for how alloy separates *built* f
 - **Peripherals**: GPIO, UART, SPI, I²C, ADC, PWM, DMA, timers, watchdog, RTC, DAC, CAN, on-chip flash/NVM — [coverage varies by family](https://github.com/Alloy-Embedded/alloy#peripheral-drivers-by-vendor-and-family); GPIO and UART are everywhere, CAN and DAC are one chip.
 - **Async without an RTOS**: C++20 coroutines with [no heap and no dynamic allocation](guide/async.md).
 - **A single CLI**: `new`, `build`, `flash`, `monitor`, `run`, `emulate`, `image`, `update`, `test` — [see all commands](guide/cli.md).
-- **A driver ecosystem**: sensors, displays and clocks you [vendor with one command](guide/libraries.md) — grown outside the core, portable by construction.
+- **A library ecosystem**: 13 packages you [vendor with one command](guide/libraries.md) — sensors, a display and an RTC, plus a Modbus RTU stack, a pub/sub [message bus](guide/bus.md), AC metering, a grid PLL, protection limits and a runtime parameter registry. Grown outside the core, portable by construction.
 - **Field updates**: A/B slots, trial boot with automatic rollback, and [signed images](guide/firmware-update.md).
 - **An IDE, if you want one**: a [VS Code extension](guide/vscode.md) with a visual pin/clock configurator — driven entirely by the CLI.
 - **Host-testable app logic**: the scheduler and drivers run on your laptop against fakes, so you unit-test without hardware.
