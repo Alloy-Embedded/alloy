@@ -215,6 +215,16 @@ jobs:
           # prints "i2c irq: NOT fired" and the leg FAILS in ~31s instead of
           # passing in ~1s, verified locally.
           # Green in CI + locally, with a negative control (no slave → "no ack").
+          # PHASE 4 added one line at the end: the one-shot DMA read, asserted
+          # as the BOUNDED REFUSAL it honestly is. The pinned model of this IP
+          # has NO DMA request output (1.16.1's I2C.STM32F7_I2C exposes only
+          # EventInterrupt/ErrorInterrupt; upstream added one after the
+          # release), so no byte can move and the leg asserts that the facade
+          # says so in ~8 s of emulated time rather than hanging. The run cost
+          # 2.67 s -> 11.52 s locally; with the wait's budget removed the same
+          # leg FAILS at 283 s. That is what the line defends. See the robot's
+          # Documentation for the two ways to make it actually witnessable —
+          # both are maintainer calls.
           - board: nucleo_g071rb
             example: i2c_read
             robot: i2c_read.robot
@@ -233,10 +243,51 @@ jobs:
           # a driver that forgets RXNEIE prints "spi irq: NOT fired" and the leg
           # fails — verified locally by deliberately not arming it. Green on the
           # pinned Renode 1.16.1 in CI and locally — BLOCKING.
+          #
+          # PHASE 4 / ANCHOR 2.4 added a third leg to the same robot: four bytes
+          # exchanged over the PAIR of channels the board assigns to
+          # spi.rx/spi.tx, with the CPU touching neither DR nor a channel
+          # register. "spi dma: 0xf0f1f2f3" is the four primed values arriving
+          # by DMA; "spi dma peer: 0x9e" is where the device's cursor stands
+          # afterwards, which only reaches that value if the transmit channel
+          # clocked four cycles. The existing three assertions are byte-for-byte
+          # unchanged — the platform's new request wire is inert while
+          # CR2.RXDMAEN is clear, so the polled and interrupt paths cannot see
+          # it. KEPT BLOCKING on this board rather than staged experimental:
+          # same board, same pinned emulator, run locally end to end (2.54 s),
+          # and THREE negative controls each taking it red without hanging —
+          # the wire moved by one index (2.46 s), the pair armed TX before RX
+          # (32.8 s, the design's §1 order as a red/green fact rather than
+          # doctrine), CR2.RXDMAEN never raised (32.8 s). If you would rather
+          # stage it, move the DMA assertions behind a --variable like
+          # async_io's SPI_LEG and add an experimental twin.
           - board: nucleo_g071rb
             example: spi_read
             robot: spi_read.robot
             banner: alloy spi_read
+          # THE SAME ANCHOR ON THE SECOND G0 and on the F7 — one portable
+          # main.cpp and one robot across BOTH DMA engines: the G0s ride dma1
+          # CHANNEL 4 (1-based, free router, DMAMUX) and the F7 rides dma2
+          # STREAM 0 (0-based, CHSEL, through alloy's own generated stream
+          # model). Nothing but board.json dma: lines differ, which is the
+          # design's whole promise for a new board. NOT witnessed on either:
+          # the request-id half of the route — Renode models no DMAMUX at all
+          # and CHSEL routes nothing in the generated model, and the platform
+          # wire and the firmware route come from the same board statement.
+          # `experimental` per the convention above: new board+robot pairs,
+          # green locally (g0b1re 2.25 s, f722ze 6.85 s; pinned Renode 1.16.1,
+          # arm64), plus a wire-moved-by-one control on the F7 (red in 34.6 s).
+          # PROMOTE after a few green CI runs.
+          - board: nucleo_g0b1re
+            example: spi_read
+            robot: spi_read.robot
+            banner: alloy spi_read
+            experimental: true
+          - board: nucleo_f722ze
+            example: spi_read
+            robot: spi_read.robot
+            banner: alloy spi_read
+            experimental: true
           # ADC DRIVER CONFORMANCE — BLOCKING — against Renode's OWN
           # Analog.STM32G0_ADC (the inline Python model this project used to
           # write is gone). The robot feeds distinct voltages to distinct
