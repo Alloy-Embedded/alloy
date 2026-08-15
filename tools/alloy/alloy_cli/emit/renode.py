@@ -178,6 +178,40 @@ RENODE_DMA = {"st/dma_v1": "DMA.STM32G0DMA"}
 # CANNOT witness is stated at the emission block: CHSEL request routing.
 RENODE_DMA_V2 = {"st/dma_v2": "DMA.STM32DMA_CircularHalf"}
 
+# The SAME70 XDMAC. The bar for a model this project writes is "the stock one
+# measurably lacks X"; here there IS no stock one, and that too is measured
+# rather than assumed — three independent ways, on the pinned 1.16.1:
+#
+#  * TYPE RESOLUTION: DMA.XDMAC, DMA.SAM_XDMAC, DMA.SAMXDMAC, DMA.AtmelXDMAC,
+#    DMA.SAME70_XDMAC, DMA.SAM_DMAC, DMA.SAME70_DMAC and
+#    Miscellaneous.SAM_XDMAC all answer "Error E04: Could not resolve type".
+#  * ASSEMBLY ENUMERATION: the single-file bundle extracted (DOTNET_BUNDLE_-
+#    EXTRACT_BASE_DIR, then one renode run — `strings` on the raw binary sees
+#    NOTHING because the assemblies are compressed, which is a trap worth
+#    naming), and the COMPLETE SAM* type set in Infrastructure.dll is 19
+#    peripherals: SAM4S_ADC, SAM4S_CRCCU, SAM4S_DACC, SAM4S_EEFC, SAM4S_PIO,
+#    SAM4S_RSTC, SAM4S_TWI, SAM4S_WDT, SAMD20_UART, SAMD21_GPIO, SAMD21_I2C,
+#    SAMD21_RTC, SAMD21_Timer, SAMD5_UART, SAM_PDC, SAM_SPI, SAM_TC, SAM_TRNG,
+#    SAM_USART. None of them is a DMA controller. (SAM_PDC is the SAM3/SAM4
+#    Peripheral DMA Controller — a different block, which the SAME70 does not
+#    use for USART.) The only "xdmac" substring across every DLL is the false
+#    positive `MaxDMAChannels`.
+#  * Renode's own platforms/cpus/sam_e70.repl instantiates no DMA at all.
+#
+# The cheaper tiers were tried FIRST and both fail on the one thing the leg
+# asserts. An unmapped region is not a stub: Renode returns 0 for reads of
+# nothing, so `complete()` reading GS gets 0 — "the channel already finished" —
+# and write_dma returns true having moved no bytes. And the EFC tier (a
+# `Python.PythonPeripheral`, which is how this same platform models its flash
+# controller) CANNOT assert an interrupt:
+#     Error E13: Property 'IRQ' does not exist in
+#     'Antmicro.Renode.Peripherals.Python.PythonPeripheral' or is not of the
+#     GPIO type
+# — and the phase-5 demonstrable IS the NVIC line. So a generated C# model is
+# not the convenient tier here, it is the only one, and it is scoped to the
+# one-shot path the legs actually drive (see XDMAC_CS for what it refuses).
+RENODE_XDMAC = {"microchip/xdmac_v1": "DMA.SAME70_XDMAC"}
+
 # Flash CONTROLLER model. MTD's F4 model covers the F7 (same CR/SR + sector map
 # at each size) and services REAL sector erases against the MappedMemory. The G0
 # is deliberately absent — see the emission block.
@@ -205,8 +239,8 @@ def renode_models() -> dict[str, str]:
     """
     models: dict[str, str] = {}
     for table in (RENODE_UART, RENODE_I2C, RENODE_SPI, RENODE_EXTI, RENODE_ADC,
-                  RENODE_WDG, RENODE_DMA, RENODE_DMA_V2, RENODE_FLASH,
-                  RENODE_EFC, RENODE_GPIO):
+                  RENODE_WDG, RENODE_DMA, RENODE_DMA_V2, RENODE_XDMAC,
+                  RENODE_FLASH, RENODE_EFC, RENODE_GPIO):
         models.update(table)
     return models
 
@@ -779,6 +813,345 @@ namespace Antmicro.Renode.Peripherals.DMA
 """
 
 
+# The generated SAME70 XDMAC model — see RENODE_XDMAC for the three measured
+# ways Renode 1.16.1 was shown to ship none, and for why the two cheaper tiers
+# (unmapped region, Python peripheral) cannot serve.
+#
+# SCOPE: the one-shot single-microblock peripheral transfer and its COMPLETION
+# INTERRUPT — exactly what alloy::dma::channel programs and what the dma_uart
+# leg asserts. The register semantics it implements are the ones alloy-devices
+# curates with datasheet provenance (registers/microchip/xdmac_v1.yaml), which
+# is what keeps the witness from being circular: the model and the firmware
+# derive from a common independently-recorded fact rather than from each other.
+#
+# WHAT IT DELIBERATELY REFUSES, loudly rather than plausibly:
+#
+#  * DESCRIPTOR FETCH (CNDC.NDE — the linked-list ring of design §3.3). A GE on
+#    a channel with NDE set logs a WARNING and moves nothing. This is not
+#    laziness: what a view-0 descriptor CONTAINS in memory is curated NOWHERE
+#    (the pinned same70-dfp ATPACK carries the CNDC.NDVIEW value group and
+#    every register bit, and zero descriptor-structure content), so a model
+#    that fetched descriptors would encode the SAME unverified reading
+#    microchip_xdmac_v1_body.hpp does, and a green ring leg would prove only
+#    that the two agree with each other. A loud refusal keeps a future ring
+#    attempt visibly unwitnessed instead of quietly self-confirming.
+#  * PERID (CC bits 31:24) SELECTS NOTHING. It is stored, logged, and never
+#    acted on: GE runs the whole microblock immediately, nothing paces it. On
+#    the ST engines the request half is unwitnessed because the platform wire
+#    and the firmware route descend from the same board.json statement; here it
+#    is unwitnessed BY CONSTRUCTION and more permanently, because
+#    UART.SAM_USART exposes no DMA-request output at all to pace against
+#    ("Property 'ReceiveDmaRequest' does not exist in
+#    'Antmicro.Renode.Peripherals.UART.SAM_USART'"). Only silicon proves it.
+#  * No block count (CBC), no striding (CSUS/CDUS), no memset, no bursts/chunk
+#    sizes, no flush/suspend (GRS/GWS/GSWF), no clock gating: the driver
+#    programs none of them, so modelling them would be fiction.
+#
+# ONE MEASURED MODEL FACT worth carrying, third of the "word-access shim"
+# family after the phase-1 G0 ADC and the phase-3 F7 probe: UART.SAM_USART
+# REFUSES BYTE WRITES to THR ("Attempted Byte write isn't supported by the
+# peripheral. Offset 0x1C, value 0x61"), and a byte-wide write to it silently
+# moves nothing — which shows up as a perfect completion interrupt with no
+# bytes on the wire, a very misleading failure shape. So the FIXED side of a
+# transfer (the peripheral register) is always accessed as a DoubleWord, with
+# DWIDTH picking the byte lane, which is also what the real AHB->APB bridge
+# does; the INCREMENTING side keeps the DWIDTH width.
+XDMAC_CS_NAME = "same70_xdmac_model.cs"
+
+XDMAC_CS = """\
+// GENERATED by alloy — DO NOT EDIT (see emit/renode.py RENODE_XDMAC / XDMAC_CS
+// for the measured 1.16.1 facts that make this necessary, and for the list of
+// things this model refuses to pretend about).
+using Antmicro.Renode.Core;
+using Antmicro.Renode.Logging;
+using Antmicro.Renode.Peripherals.Bus;
+
+namespace Antmicro.Renode.Peripherals.DMA
+{
+    // The Microchip SAME70 XDMAC, one-shot peripheral-transfer subset: 24
+    // interchangeable channels behind ONE NVIC line, with the clear-on-read
+    // CIS that makes the driver's latch mandatory rather than defensive.
+    public sealed class SAME70_XDMAC : IDoubleWordPeripheral, IKnownSize
+    {
+        public SAME70_XDMAC(IMachine machine)
+        {
+            this.machine = machine;
+            IRQ = new GPIO();
+            Reset();
+        }
+
+        // ONE line for the whole controller (chip data: XDMAC = a single
+        // vector), so the .repl wires `IRQ -> nvic@<n>` and every channel's
+        // handler shares it — which is what makes the driver's GIS guard
+        // load-bearing.
+        public GPIO IRQ { get; private set; }
+
+        public long Size => 0x1000;
+
+        public void Reset()
+        {
+            for(var ch = 0; ch < Channels; ch++)
+            {
+                csa[ch] = 0; cda[ch] = 0; cubc[ch] = 0; cbc[ch] = 0; cc[ch] = 0;
+                cnda[ch] = 0; cndc[ch] = 0; cim[ch] = 0; cis[ch] = 0;
+            }
+            gim = 0;
+            gs = 0;
+            IRQ.Unset();
+        }
+
+        public uint ReadDoubleWord(long offset)
+        {
+            if(offset < ChannelBase)
+            {
+                switch(offset)
+                {
+                    case GlobalIM: return gim;
+                    case GlobalIS: return PendingMask();
+                    case GlobalS:  return gs;
+                    default:       return 0;
+                }
+            }
+            var ch = (int)((offset - ChannelBase) / ChannelStride);
+            if(ch >= Channels)
+            {
+                return 0;
+            }
+            switch((offset - ChannelBase) % ChannelStride)
+            {
+                case ChIM: return cim[ch];
+                // CIS IS CLEARED BY READING. This single line is the whole
+                // reason the driver latches: whoever reads first consumes the
+                // evidence, so a poller that read it would destroy the flag the
+                // interrupt handler needs. Modelled faithfully so the hazard is
+                // real here and not only on silicon.
+                case ChIS:
+                {
+                    var v = cis[ch];
+                    cis[ch] = 0;
+                    Update();
+                    return v;
+                }
+                case ChSA:   return csa[ch];
+                case ChDA:   return cda[ch];
+                case ChNDA:  return cnda[ch];
+                case ChNDC:  return cndc[ch];
+                case ChUBC:  return cubc[ch];
+                case ChBC:   return cbc[ch];
+                case ChC:    return cc[ch];
+                default:     return 0;
+            }
+        }
+
+        public void WriteDoubleWord(long offset, uint value)
+        {
+            if(offset < ChannelBase)
+            {
+                switch(offset)
+                {
+                    case GlobalIE: gim |= value; Update(); return;   // write-SET
+                    case GlobalID: gim &= ~value; Update(); return;  // write-CLEAR
+                    case GlobalE:  Enable(value); return;
+                    case GlobalD:  gs &= ~value; return;
+                    default:       return;
+                }
+            }
+            var ch = (int)((offset - ChannelBase) / ChannelStride);
+            if(ch >= Channels)
+            {
+                return;
+            }
+            switch((offset - ChannelBase) % ChannelStride)
+            {
+                case ChIE:  cim[ch] |= value; Update(); return;   // write-SET
+                case ChID:  cim[ch] &= ~value; Update(); return;  // write-CLEAR
+                case ChSA:  csa[ch] = value; return;
+                case ChDA:  cda[ch] = value; return;
+                case ChNDA: cnda[ch] = value; return;
+                case ChNDC: cndc[ch] = value; return;
+                case ChUBC: cubc[ch] = value; return;
+                case ChBC:  cbc[ch] = value; return;
+                case ChC:   cc[ch] = value; return;
+                default:    return;
+            }
+        }
+
+        // GE runs the whole single microblock at once and the channel then
+        // AUTO-DISABLES (its GS bit falls back to 0 — which is what the
+        // driver's poll-mode `complete()` reads) with CIS.BIS set. Nothing
+        // paces it: see the emitter comment on PERID.
+        private void Enable(uint mask)
+        {
+            for(var ch = 0; ch < Channels; ch++)
+            {
+                if((mask & (1U << ch)) == 0)
+                {
+                    continue;
+                }
+                if((cndc[ch] & NdeBit) != 0)
+                {
+                    // REFUSED ON PURPOSE — see the emitter comment. The
+                    // descriptor's memory layout is curated nowhere, so a model
+                    // that chased the list would only agree with the firmware's
+                    // own unverified reading of it.
+                    this.Log(LogLevel.Warning,
+                        "XDMAC ch{0}: linked-list mode (CNDC.NDE) is NOT modelled — "
+                        + "the view-0 descriptor layout is uncurated, so this model "
+                        + "refuses rather than confirm the driver against itself. "
+                        + "Nothing was transferred.", ch);
+                    continue;
+                }
+                gs |= (1U << ch);
+                var width = 1 << (int)((cc[ch] >> DwidthShift) & 0x3);
+                var srcInc = ((cc[ch] >> SamShift) & 0x3) != 0;
+                var dstInc = ((cc[ch] >> DamShift) & 0x3) != 0;
+                var units = cubc[ch] & UblenMask;
+                this.Log(LogLevel.Debug,
+                    "XDMAC ch{0}: {1} x {2}B {3:X}->{4:X} sinc={5} dinc={6} perid={7}",
+                    ch, units, width, csa[ch], cda[ch], srcInc, dstInc,
+                    (cc[ch] >> PeridShift) & 0x7F);
+                var bus = machine.GetSystemBus(this);
+                var src = csa[ch];
+                var dst = cda[ch];
+                for(var i = 0U; i < units; i++)
+                {
+                    // The FIXED side is a peripheral register and is accessed
+                    // as a DoubleWord — measured requirement, see the emitter
+                    // comment (UART.SAM_USART refuses byte writes to THR).
+                    var v = srcInc ? ReadWidth(bus, src, width) : bus.ReadDoubleWord(src);
+                    if(dstInc)
+                    {
+                        WriteWidth(bus, dst, v, width);
+                        dst += (uint)width;
+                    }
+                    else
+                    {
+                        bus.WriteDoubleWord(dst, v);
+                    }
+                    if(srcInc)
+                    {
+                        src += (uint)width;
+                    }
+                }
+                cubc[ch] = 0;               // reads back the remaining count
+                gs &= ~(1U << ch);          // auto-disable at end of block
+                cis[ch] |= BisBit;          // end of block == completion
+            }
+            Update();
+        }
+
+        private static uint ReadWidth(IBusController bus, ulong addr, int width)
+        {
+            return width == 4 ? bus.ReadDoubleWord(addr)
+                 : width == 2 ? (uint)bus.ReadWord(addr)
+                 : (uint)bus.ReadByte(addr);
+        }
+
+        private static void WriteWidth(IBusController bus, ulong addr, uint v, int width)
+        {
+            if(width == 4) { bus.WriteDoubleWord(addr, v); }
+            else if(width == 2) { bus.WriteWord(addr, (ushort)v); }
+            else { bus.WriteByte(addr, (byte)v); }
+        }
+
+        // GIS: one bit per channel, set when that channel has an UNMASKED
+        // pending event. A channel whose CIM was cleared therefore disappears
+        // from GIS while its CIS bit stays set — which is exactly the state the
+        // driver's shared-line guard exists for.
+        private uint PendingMask()
+        {
+            uint m = 0;
+            for(var ch = 0; ch < Channels; ch++)
+            {
+                if((cis[ch] & cim[ch]) != 0)
+                {
+                    m |= (1U << ch);
+                }
+            }
+            return m;
+        }
+
+        private void Update()
+        {
+            IRQ.Set((PendingMask() & gim) != 0);
+        }
+
+        private readonly IMachine machine;
+
+        private const int Channels = 24;
+        private const long ChannelBase = 0x50;
+        private const long ChannelStride = 0x40;
+
+        // Global block offsets (registers/microchip/xdmac_v1.yaml).
+        private const long GlobalIE = 0x0C;
+        private const long GlobalID = 0x10;
+        private const long GlobalIM = 0x14;
+        private const long GlobalIS = 0x18;
+        private const long GlobalE  = 0x1C;
+        private const long GlobalD  = 0x20;
+        private const long GlobalS  = 0x24;
+
+        // Per-channel offsets within the stride.
+        private const long ChIE  = 0x00;
+        private const long ChID  = 0x04;
+        private const long ChIM  = 0x08;
+        private const long ChIS  = 0x0C;
+        private const long ChSA  = 0x10;
+        private const long ChDA  = 0x14;
+        private const long ChNDA = 0x18;
+        private const long ChNDC = 0x1C;
+        private const long ChUBC = 0x20;
+        private const long ChBC  = 0x24;
+        private const long ChC   = 0x28;
+
+        private const uint BisBit = 0x1;        // CIS.BIS  — end of block
+        private const uint NdeBit = 0x1;        // CNDC.NDE — linked-list mode
+        private const uint UblenMask = 0xFFFFFF;
+        private const int DwidthShift = 11;     // CC.DWIDTH
+        private const int SamShift = 16;        // CC.SAM
+        private const int DamShift = 18;        // CC.DAM
+        private const int PeridShift = 24;      // CC.PERID — stored, never acted on
+
+        private readonly uint[] csa = new uint[Channels];
+        private readonly uint[] cda = new uint[Channels];
+        private readonly uint[] cubc = new uint[Channels];
+        private readonly uint[] cbc = new uint[Channels];
+        private readonly uint[] cc = new uint[Channels];
+        private readonly uint[] cnda = new uint[Channels];
+        private readonly uint[] cndc = new uint[Channels];
+        private readonly uint[] cim = new uint[Channels];
+        private readonly uint[] cis = new uint[Channels];
+        private uint gim;
+        private uint gs;
+    }
+}
+"""
+
+
+def _resolve_xdmac(chip: dict[str, Any]):
+    """The XDMAC controller if this chip declares one Renode has no model for,
+    as (name, base, model, nvic_number). None otherwise.
+
+    DMA is a capability keyed off the chip peripheral, not a board role — same
+    philosophy as _resolve_dma / _resolve_dma_v2. Unlike both of them the
+    controller has ONE vector for all its channels, so there is nothing to
+    group and no CombinedInput OR-gate: the single `irq` name off the chip's
+    own peripheral entry is the whole wiring. A controller whose vector name is
+    not in the chip's interrupt table is left out — data too thin to wire an
+    interrupt, and this model's entire purpose is the interrupt.
+    """
+    irqs = {i["name"]: i["number"] for i in chip.get("interrupts", [])}
+    for name, periph in sorted((chip.get("peripherals") or {}).items()):
+        if periph.get("uncurated") or periph.get("ip") not in RENODE_XDMAC:
+            continue
+        vector = irqs.get(periph.get("irq"))
+        if vector is None:
+            continue
+        return (name, int(periph["base"], 16), RENODE_XDMAC[periph["ip"]],
+                int(vector))
+    return None
+
+
 def _resolve_dma_v2(chip: dict[str, Any]):
     """Every curated stream-engine (st/dma_v2) controller this chip declares,
     as [(name, base, model, [(stream, nvic_number), ...])], sorted by name.
@@ -935,12 +1308,15 @@ def _uart_rx_dma_wire(board: dict[str, Any], chip: dict[str, Any]):
 def renode_support_files(chip: dict[str, Any], board: dict[str, Any]) -> dict[str, str]:
     """Extra files the .resc includes, written next to the .repl by the
     caller: the ADC-DMA C# shims where that wiring is live, and the generated
-    stream-engine DMA model wherever the platform emits one."""
+    DMA models — the ST stream engine and the SAME70 XDMAC — wherever the
+    platform emits one."""
     files: dict[str, str] = {}
     if _adc_dma_wire(board, chip) is not None:
         files[ADC_DMA_SHIM_CS_NAME] = ADC_DMA_SHIM_CS
     if _resolve_dma_v2(chip) is not None:
         files[DMA_V2_CS_NAME] = DMA_V2_CS
+    if _resolve_xdmac(chip) is not None:
+        files[XDMAC_CS_NAME] = XDMAC_CS
     return files
 
 
@@ -1254,6 +1630,23 @@ nvicInput{line47}: Miscellaneous.CombinedInput @ none
 {v2_name}: {v2_model} @ sysbus {v2_base:#010x}
 {conns}
 """
+    # SAME70 XDMAC (microchip/xdmac_v1): the generated model — see RENODE_XDMAC
+    # for the three measured ways Renode 1.16.1 was shown to ship none, and
+    # XDMAC_CS for what it refuses to pretend about. ONE NVIC line for the whole
+    # controller, straight from the chip's own `irq` name, so there is no OR
+    # gate here: the channels share the vector inside the model, and the
+    # driver's per-channel handler reads GIS to find out whether the pending
+    # event is its own. No request wire is emitted and none could be —
+    # UART.SAM_USART exposes no DMA-request output — so PERID routing is
+    # unwitnessable on this platform BY CONSTRUCTION, more permanently than the
+    # G0 DMAMUX / F7 CHSEL case; the leg documentation says so.
+    xdmac = _resolve_xdmac(chip)
+    if xdmac is not None:
+        xd_name, xd_base, xd_model, xd_vector = xdmac
+        platform += f"""
+{xd_name}: {xd_model} @ sysbus {xd_base:#010x}
+    IRQ -> nvic@{xd_vector}
+"""
     exti = _resolve_exti(chip)
     if exti is not None:
         (exti_name, exti_base, exti_model, exti_groups, exti_ports, exti_ap,
@@ -1488,6 +1881,15 @@ def emit_renode_script(chip: dict[str, Any], board: dict[str, Any],
             f'# behaviours) — see emit/renode.py RENODE_DMA_V2 for the measured\n'
             f'# 1.16.1 facts that force a generated model here.\n'
             f'include @{v2_ref}\n')
+    if _resolve_xdmac(chip) is not None:
+        xd_path = str(Path(repl_path).with_name(XDMAC_CS_NAME))
+        xd_ref = xd_path if space_free else Path(xd_path).name
+        cs_include += (
+            f'# SAME70 XDMAC model — Renode ships NO XDMAC and no Microchip DMA\n'
+            f'# model at all; see emit/renode.py RENODE_XDMAC for how that was\n'
+            f'# measured and why the Python-peripheral tier cannot serve (it has\n'
+            f'# no IRQ property, and the NVIC line is the whole assertion).\n'
+            f'include @{xd_ref}\n')
     return f"""{_RESC_BANNER}# Headless machine for {board['id']}: platform is generated from chip data.
 using sysbus
 mach create "{board['id']}"
