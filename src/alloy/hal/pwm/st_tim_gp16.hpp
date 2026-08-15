@@ -11,6 +11,7 @@
 
 #include "alloy/core/types.hpp"
 #include "alloy/hal/pwm/pwm_impl.hpp"
+#include "alloy/hal/pwm/st_tim_timebase.hpp"
 #include "alloy/ip/st/tim_gp16.hpp"
 
 namespace alloy::hal {
@@ -26,12 +27,22 @@ struct pwm_impl<Inst> {
 
     static inline std::uint32_t period_ticks = 0;
 
+    //: The counter's span, from the CURATED field width rather than from the
+    //: constant 65536 — a narrower ARR needs no edit here.
+    static constexpr std::uint32_t max_period_ticks = IP::arr.wide_raw_mask + 1u;
+
     static void enable(std::uint32_t kernel_hz, std::uint32_t freq_hz, unsigned channel) {
         alloy::gate_on(Inst::gate);
-        // 1 MHz timer tick; period in ticks caps at 16 bits.
-        r().PSC = kernel_hz / 1'000'000u - 1u;
-        period_ticks = 1'000'000u / freq_hz;
-        r().ARR = period_ticks - 1u;
+        // The prescaler is DERIVED, not fixed. This used to pin a 1 MHz tick,
+        // which at 20 kHz leaves fifty counts of duty — under six bits, and
+        // invisible from an API that still takes a 16-bit number. Now PSC is
+        // the smallest that makes the period fit, so the caller gets every
+        // count the silicon has (3200 at 64 MHz / 20 kHz).
+        const detail::tim_timebase tb =
+            detail::tim_timebase_for(kernel_hz, freq_hz, max_period_ticks);
+        r().PSC = tb.psc;
+        period_ticks = tb.arr + 1u;
+        r().ARR = tb.arr;
 
         constexpr std::uint32_t kPwmMode1 = 6u;
         switch (channel) {

@@ -115,6 +115,7 @@ add_executable(alloy_unit_tests
     test_claim_tu2.cpp
     test_encoder.cpp
     test_bridge.cpp
+    test_pwm_timebase.cpp
     test_tick.cpp
     test_nvm.cpp
     test_gpio_bus.cpp
