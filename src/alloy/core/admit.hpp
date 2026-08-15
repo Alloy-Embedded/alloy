@@ -189,4 +189,23 @@ void bridge_freq();
     "backstop, the peripheral you wanted is alloy::wdt (the IWDG)")]]
 void wwdt_window();
 
+// The only one of these that admits a value the GENERATOR produced rather
+// than one the user typed. A board whose chip data carries no map for an
+// internal source still emits `board::adc_<source>_channel`, because the
+// portable idiom guards the READ with `if constexpr (board::adc_has_<source>)`
+// in main() — and outside a template, a discarded if-constexpr branch is
+// still type-checked, so an absent symbol would break the code that is doing
+// the right thing. The constant therefore carries an impossible channel
+// (alloy::adc::channel_none, 0xFF) and this fires when someone reaches for it
+// without the guard.
+[[gnu::error(
+    "alloy::adc::read: this board has no such ADC channel. The channel number "
+    "is 0xFF, the value a board emits for an internal source (VREFINT, "
+    "temperature, VBAT) that its CHIP DATA DOES NOT MAP — not a channel the "
+    "silicon lacks, necessarily, but one nobody has curated a number for. "
+    "Guard the read with `if constexpr (board::adc_has_vref)` (or _temp, "
+    "_vbat), which is what the generated has-flag exists for; converting this "
+    "value would sample whatever pin happens to sit at 255 on a future part")]]
+void adc_channel();
+
 }  // namespace alloy::core::admit

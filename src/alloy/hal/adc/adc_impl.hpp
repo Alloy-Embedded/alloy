@@ -32,6 +32,32 @@ struct adc_watchdog_config {
     std::uint16_t high = 0;
 };
 
+// THE "NO SUCH CHANNEL" SENTINEL, and the reason it is a value rather than an
+// absent symbol.
+//
+// A board whose chip data carries no internal-channel map still has to emit
+// `board::adc_vref_channel` — because the portable idiom is
+//
+//     if constexpr (board::adc_has_vref) { adc.read(board::adc_vref_channel); }
+//
+// written in main(), NOT in a template, and a discarded if-constexpr branch
+// outside a template is still name-looked-up and type-checked. Omitting the
+// symbol, or giving it a type that refuses to convert, breaks exactly the
+// guarded code that is doing the right thing. So the constant stays a
+// well-typed std::uint8_t and carries an IMPOSSIBLE VALUE instead: 0xFF is
+// outside every channel range alloy curates, on every ADC it ships.
+//
+// That is core/admit.hpp's doctrine applied to GENERATED data rather than to
+// a user-typed argument, and it takes two halves to be worth anything: the
+// generator emits this value (emit/board.py), and `alloy::adc::handle::read()`
+// admits against it. The sentinel alone only makes a wrong read detectable;
+// the refusal is what makes it a diagnostic.
+//
+// ONE FACT, TWO SPELLINGS, and that is a known seam: the emitter writes the
+// literal 255u and this is the name. They cannot drift silently in a way any
+// test would catch today — if the value ever moves, it moves in both places.
+inline constexpr std::uint8_t adc_channel_none = 0xFFu;
+
 // ── Layer 2: the per-IP knob bag ────────────────────────────────────────
 //
 // Primary template: EMPTY, and always usable. An ADC driver with no vendor

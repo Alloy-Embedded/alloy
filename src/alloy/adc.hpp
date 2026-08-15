@@ -94,12 +94,28 @@ using watchdog_config = hal::adc_watchdog_config;
 template <class Inst>
 using opts = hal::adc_opts<Inst>;
 
+// The channel number a board emits for an internal source its chip data does
+// not map — see hal/adc/adc_impl.hpp for why the symbol has to exist at all
+// and why it carries an impossible value instead of being absent.
+using hal::adc_channel_none;
+inline constexpr std::uint8_t channel_none = hal::adc_channel_none;
+
 namespace detail {
 // Same two mechanisms as alloy/core/admit.hpp's other four: the named trap is
 // the guarantee, and the compile error is a bonus that fires only when the
 // optimizer propagates the constant (measured matrix in admit.hpp — a debug
 // build does not get it). Spelled out here rather than behind a helper for
 // the reason admit.hpp gives — a wrapper folds on GCC and not on clang.
+inline void admit_channel(std::uint8_t channel) {
+    const bool ok = channel != channel_none;
+    if (__builtin_constant_p(ok) && !ok) {
+        alloy::core::admit::adc_channel();
+    }
+    if (!ok) {
+        alloy::trap<alloy::trap_code::impossible_config>();
+    }
+}
+
 inline void admit_window(std::uint16_t low, std::uint16_t high) {
     const bool ok = low <= high;
     if (__builtin_constant_p(ok) && !ok) {
@@ -137,6 +153,7 @@ public:
     // whose write conditions are the strictest of the two, so splitting them
     // would offer a cheap call that is not cheap.
     void rearm(watchdog_config cfg) const {
+        detail::admit_channel(cfg.channel);
         detail::admit_window(cfg.low, cfg.high);
         hal::adc_impl<Inst>::template awd_arm<N>(cfg);
     }
@@ -288,6 +305,7 @@ public:
 
     // Blocking single conversion of the given channel (raw counts).
     [[nodiscard]] std::uint16_t read(std::uint8_t channel) const {
+        detail::admit_channel(channel);
         return hal::adc_impl<Inst>::read(channel);
     }
 
@@ -302,6 +320,7 @@ public:
             Inst::dmareq_conv;
         }
     {
+        detail::admit_channel(channel);
         hal::adc_impl<Inst>::dma_burst_begin(channel);
         dma.start_p2m_u16(hal::adc_impl<Inst>::dr_addr(), out, Inst::dmareq_conv);
         hal::adc_impl<Inst>::dma_burst_kick();
@@ -329,6 +348,7 @@ public:
         dma::ring_storage<std::uint16_t, N>& storage, std::uint8_t channel = 0u) const
         requires(!std::is_void_v<ConvRoute>) && stream_capable<Inst, ConvRoute>
     {
+        detail::admit_channel(channel);
         return adc::stream<Inst, ConvRoute>(channel, storage);
     }
 
@@ -341,6 +361,7 @@ public:
         std::uint8_t channel = 0u) const
         requires stream_capable<Inst, Route>
     {
+        detail::admit_channel(channel);
         return adc::stream<Inst, Route>(channel, storage);
     }
 
@@ -378,6 +399,7 @@ public:
         // Per INSTANCE and ORDINAL: two claimants of ONE watchdog would fight
         // over one window, and the second would win silently.
         alloy::claim::sub_exclusive<Inst, N, alloy::claim::personality::adc>();
+        detail::admit_channel(cfg.channel);
         detail::admit_window(cfg.low, cfg.high);
         hal::adc_impl<Inst>::template awd_arm<N>(cfg);
         return adc::watchdog<Inst, N>{};
