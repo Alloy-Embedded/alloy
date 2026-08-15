@@ -46,7 +46,7 @@ Measured on this tree, not recalled:
 
 | | |
 | --- | --- |
-| Host assertions | **640 of 640 passing**, across 49 test files in `tests/` plus 22 more in `libs/*/tests/`. `alloy test --framework`, 0.45 s. |
+| Host assertions | **640 of 640 passing**, across 47 `tests/test_*.cpp` files plus 22 more in `libs/*/tests/`. `alloy test --framework`, 0.45 s. |
 | Emulation robots | **17 distinct robots**, run as **32 board+robot pairs** — **24 blocking**, 8 experimental. |
 | Plus, outside that matrix | 5 more oracle legs: the bootloader end to end on `nucleo_g071rb`, `nucleo_f722ze` and `same70_xplained`; the provisioning oracle; the signed-image + key-rotation oracle. And two product legs (`product_demo`, one per product of a family). |
 | Compile breadth | Every example built for **8 boards** on every push, plus the network examples on the two boards with a MAC. |
