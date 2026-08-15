@@ -37,6 +37,7 @@ struct dma_impl<fake_ctrl<Tag>> {
     enum class dir : std::uint8_t { periph_to_mem, mem_to_periph };
     enum class width : std::uint8_t { b8 = 0, b16 = 1, b32 = 2 };
     static constexpr bool supports_circular = true;
+    static constexpr bool supports_ring = true;
 
     // recorded setup
     static inline bool controller_enabled = false;
@@ -433,24 +434,48 @@ ALLOY_TEST(dma_ring_odd_or_empty_buffer_traps) {
 // ── the capability gate ───────────────────────────────────────────────────
 
 namespace {
-// A backend WITHOUT a circular mode (the SAME70 XDMAC shape): the full event
-// API exists, the capability bit says no.
+// A backend that cannot ring at all: the full event API exists, the capability
+// bit says no.
 struct no_circ_tag {};
 struct no_circ_ctrl {};
-// And one with circular but NO half events (a hypothetical poll-only engine).
+// And one that claims the ring capability but has NO half events (a
+// hypothetical poll-only engine).
 struct no_half_ctrl {};
+// THE TWO SHAPES THAT PIN WHICH FLAG THE CONCEPT READS, and they are not
+// hypothetical: `ring_no_circ_ctrl` is the SAM E70 XDMAC in miniature — no
+// circular bit in the silicon, a ring built from linked descriptors by the
+// engine — and `circ_no_ring_ctrl` is its mirror, an engine whose hardware
+// wraps but whose driver has not implemented the ring contract. Before the
+// capabilities were split these two were inexpressible: one flag answered both
+// questions, so an XDMAC ring could only be had by claiming a circular mode
+// that does not exist, which would have made start_m2p_circular_u16 visible
+// and trapping on a controller with a single transfer width.
+struct ring_no_circ_ctrl {};
+struct circ_no_ring_ctrl {};
 }  // namespace
 
 namespace alloy::hal {
 template <>
 struct dma_impl<no_circ_ctrl> : dma_impl<fake_ctrl<no_circ_tag>> {
     static constexpr bool supports_circular = false;
+    static constexpr bool supports_ring = false;
+};
+template <>
+struct dma_impl<ring_no_circ_ctrl> : dma_impl<fake_ctrl<no_circ_tag>> {
+    static constexpr bool supports_circular = false;
+    static constexpr bool supports_ring = true;
+};
+template <>
+struct dma_impl<circ_no_ring_ctrl> : dma_impl<fake_ctrl<no_circ_tag>> {
+    static constexpr bool supports_circular = true;
+    static constexpr bool supports_ring = false;
 };
 template <>
 struct dma_impl<no_half_ctrl> {
     enum class dir : std::uint8_t { periph_to_mem, mem_to_periph };
     enum class width : std::uint8_t { b8 = 0, b16 = 1, b32 = 2 };
     static constexpr bool supports_circular = true;
+    static constexpr bool supports_ring = true;
     // deliberately: no enable_half_irq / remaining
 };
 }  // namespace alloy::hal
@@ -554,3 +579,21 @@ ALLOY_TEST(dma_ring_waiter_ready_fast_path_and_slow_consumer_resync) {
 static_assert(!alloy::dma::ring_capable<no_circ_ctrl, 1>);
 static_assert(!alloy::dma::ring_capable<no_half_ctrl, 1>);
 static_assert(alloy::dma::ring_capable<fake_ctrl<no_circ_tag>, 1>);
+// ...and WHICH capability it reads, stated as a pair so neither direction can
+// drift back into the other. An engine that rings without a circular bit is
+// ring_capable (the XDMAC shape); an engine with a circular bit whose driver
+// has not implemented the ring contract is not. Revert ring_capable's
+// `supports_ring` to `supports_circular` and both of these fail.
+static_assert(alloy::dma::ring_capable<ring_no_circ_ctrl, 1>);
+static_assert(!alloy::dma::ring_capable<circ_no_ring_ctrl, 1>);
+// The other half of the same statement, and the compiler insisted on it: with
+// ring_capable reading supports_ring, NOTHING in this file reads
+// supports_circular any more and -Wunused-const-variable said so on all four
+// doubles. That diagnostic is itself the cleanest possible witness that the
+// two capabilities are now separate, so it is answered by asserting the fact
+// rather than by deleting the members — each double states both answers, and
+// the asserts below pin that the two are genuinely independent.
+static_assert(!alloy::hal::dma_impl<no_circ_ctrl>::supports_circular);
+static_assert(!alloy::hal::dma_impl<ring_no_circ_ctrl>::supports_circular);
+static_assert(alloy::hal::dma_impl<circ_no_ring_ctrl>::supports_circular);
+static_assert(alloy::hal::dma_impl<no_half_ctrl>::supports_circular);

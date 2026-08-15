@@ -58,6 +58,11 @@ struct st_dma_v1_engine {
     // Capability: this IP has a CIRC bit, so circular streams are supported.
     // dma::channel gates start_m2p_circular_u16 on this at compile time.
     static constexpr bool supports_circular = true;
+    // ...and here that same bit is also how a ring gets built, so the second
+    // capability is the first one spelled twice. They are separate questions
+    // (see alloy::dma::ring_capable) because on the SAM E70 XDMAC they have
+    // different answers: no circular bit, but a ring via linked descriptors.
+    static constexpr bool supports_ring = true;
 
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);

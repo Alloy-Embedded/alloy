@@ -405,15 +405,40 @@ struct alignas(32) ring_storage {
     T data[N];
 };
 
-// What a controller must offer before rings exist on it: a circular mode plus
-// half-transfer event delivery and a live remaining-count read. On a backend
-// without these (today: SAME70 XDMAC, supports_circular = false) the ring type
-// is CONSTRAINED AWAY, so a facade's `ring()` method — gated on THIS concept,
-// which is public for exactly that reason — is a compile error naming the
-// missing capability, never a link error or a runtime surprise.
+// What a controller must offer before rings exist on it: a continuously
+// refilling stream over the caller's buffer, half-buffer event delivery, and a
+// live remaining-count read spanning the WHOLE buffer. On a backend without
+// these the ring type is CONSTRAINED AWAY, so a facade's `ring()` method —
+// gated on THIS concept, which is public for exactly that reason — is a
+// compile error naming the missing capability, never a link error or a runtime
+// surprise.
+//
+// THE CAPABILITY IS `supports_ring`, AND IT IS NOT `supports_circular`. The
+// two look like the same fact and are not, which is why the second one exists
+// rather than the first being quietly widened:
+//
+//   supports_circular  a statement about HARDWARE: this engine has a circular
+//                      MODE — a bit in the channel's config register that makes
+//                      it reload the count and wrap by itself. It gates
+//                      start_m2p_circular_u16 above, whose whole point is
+//                      feeding 16-bit memory items into 32-bit register writes
+//                      (msize != psize).
+//   supports_ring      a statement about THIS ENGINE'S CODE: it can present
+//                      alloy::dma::ring's contract, by whatever means.
+//
+// On both ST engines they are the same fact spelled twice, so both are true and
+// nothing changes. On the SAM E70 XDMAC they diverge in BOTH directions and the
+// divergence is the reason for the split: there is no circular bit anywhere in
+// that IP (its register curation says so exhaustively), a ring is instead two
+// linked view-0 descriptors ping-ponging the halves — and the engine has ONE
+// transfer width for both sides, so start_m2p_circular_u16 must stay ABSENT
+// there even while ring<T> exists. Folding both onto one flag would either hide
+// the ring (leave the flag false) or make that method visible and trapping
+// (set it true) — and the second is the exact inversion of the compile-error
+// promise 200 lines up. One user-facing vocabulary, two capability questions.
 template <class Inst, unsigned Ch>
 concept ring_capable = requires {
-    requires hal::dma_impl<Inst>::supports_circular;
+    requires hal::dma_impl<Inst>::supports_ring;
     hal::dma_impl<Inst>::template enable_half_irq<Ch>(nullptr, nullptr);
     hal::dma_impl<Inst>::template enable_complete_irq<Ch>(nullptr, nullptr);
     hal::dma_impl<Inst>::template remaining<Ch>();

@@ -91,6 +91,9 @@ struct st_dma_v2_engine {
     // Capability: SxCR has a CIRC bit — circular streams (and therefore
     // alloy::dma::ring) exist on this engine.
     static constexpr bool supports_circular = true;
+    // The ring capability is a separate question from the circular bit (see
+    // alloy::dma::ring_capable); on this engine the bit IS the answer to both.
+    static constexpr bool supports_ring = true;
 
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);

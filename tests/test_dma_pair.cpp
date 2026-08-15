@@ -48,6 +48,9 @@ struct dma_impl<fake_ctrl<Tag>> {
     enum class dir : std::uint8_t { periph_to_mem, mem_to_periph };
     enum class width : std::uint8_t { b8 = 0, b16 = 1, b32 = 2 };
     static constexpr bool supports_circular = true;
+    // Rings are gated on supports_ring, not on the circular bit
+    // (alloy::dma::ring_capable); on an ST-shaped double they agree.
+    static constexpr bool supports_ring = true;
 
     static constexpr unsigned kChannels = 8;
 
