@@ -123,6 +123,11 @@ nav:
       - guide/escape-hatch.md
   - Ship it:
       - guide/emulation.md
+      # Beside the emulation guide on purpose: it is the sheet you fall back to
+      # when there IS no emulation. RP2040 DMA has no Renode model of any kind,
+      # so this is the whole behavioural evidence base for that engine — and it
+      # has not been executed yet, which the page says in its first line.
+      - guide/rp2040-dma-hardware-checklist.md
       - guide/firmware-update.md
       - guide/security.md
       - guide/crash-reports.md

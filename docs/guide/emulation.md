@@ -141,6 +141,16 @@ Known gaps, so you do not go looking:
 
 - **RP2040** — this Renode ships no RP2040 peripheral models at all, so those boards are not
   emulated. Not an alloy gap; it needs a newer Renode.
+  **And do not repair it half way.** alloy *can* already emit an rp2040 platform — `cortex-m0`
+  and `UART.PL011` are generic types Renode has — and Renode reads 0 from unmapped addresses.
+  A DMA leg on such a platform would read the RP2040 DMA controller's `CTRL` as 0 (`BUSY` low,
+  no error bits) and its `TRANS_COUNT` as 0, and report a **completed transfer over a
+  fully-written buffer**, having moved nothing. That is a false green, not weak evidence.
+  What stands in for the missing model there is a host double
+  (`tests/test_rp_dma_v1_latch.cpp`, which proves register-sequence *intent* and nothing about
+  behaviour) plus an on-hardware sheet:
+  [RP2040 DMA — the on-hardware checklist](rp2040-dma-hardware-checklist.md), **written and not
+  yet executed**.
 - **STM32G0 flash** — there is no G0 flash-controller model, and the emitter deliberately does not
   invent one. The G0 bootloader legs therefore exercise everything *above* the flash driver while
   its own register sequences go unchecked. (The F7 legs use Renode's controller; the SAME70 legs

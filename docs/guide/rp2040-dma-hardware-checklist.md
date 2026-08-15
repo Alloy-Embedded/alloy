@@ -64,63 +64,49 @@ the board, and they are the reason this sheet exists:
 State on the sheet, when you run it, **what you observed with**. A row that says
 "OK" without naming its instrument is not a measurement.
 
-## The firmware — WHICH DOES NOT EXIST YET, AND THAT IS A FINDING
+## The firmware — `examples/dma_uart`, SHIPPED AND IN THE CI MATRIX
 
-**No shipped example reaches this driver.** `dma_uart` and `dma_probe` both
-guard their DMA paths on `uart.write_dma(...)` / `adc.read_burst(...)`, and the
-RP2040 PL011 UART driver has **no DMA hooks at all** (`dma_rx_begin`,
-`dma_rx_end`, `rdr_addr`, `tdr_addr` — none present, though `UARTDMACR` and
-`RTIM` are already curated) and the RP2040 ADC driver has no burst hooks. So on
-a Pico today both examples take their honest fallback branch and print
-"driver has no DMA hooks" — which is *correct*, and which also means flashing
-them proves nothing about this engine.
+An earlier revision of this sheet said no shipped example reached this driver
+and carried its firmware inline. **That is fixed.** The gap was on the UART side,
+not the DMA side: `alloy::uart`'s `write_dma()` is constrained on the driver
+having `dma_tx_begin()` / `dma_tx_end()` / `tdr_addr()`, and the RP2040 PL011
+driver had none of them, so both DMA examples took their honest fallback branch.
+`src/alloy/hal/uart/raspberrypi_uart_pl011.hpp` now has all three (they set and
+clear `UARTDMACR.TXDMAE`, curated from the pinned SVD, and hand back `&UARTDR`),
+and the TX request id was already chip data (`uart0.dma_requests.tx` = 20).
 
-Everything below therefore needs a purpose-built firmware. This one has been
-**cross-compiled for both boards** with `arm-none-eabi-gcc 14.2.1` (3132 bytes
-of text on the Pico, 3052 on the Zero) and forces a real instantiation of every
-member of the engine; it has never been run.
+So the path folds open **from `board.json` alone, with no preprocessor**:
 
-```cpp
-// alloy new rpdma --board raspberry_pi_pico ; then src/main.cpp:
-#include <alloy/board.hpp>
-#include <alloy/dma.hpp>
-#include <cstdint>
-#include <span>
+| board | before | after |
+|---|---|---|
+| `raspberry_pi_pico` | `dma: not available on this board` | `dma via DMA` |
+| `rp2040_zero` | `dma: not available on this board` | `dma via DMA` |
 
-namespace {
-volatile bool g_fired = false;
-alignas(4) std::uint8_t g_msg[] = "dma via DMA\r\n";
-}  // namespace
+Both measured by building `examples/dma_uart` at the parent commit and at HEAD
+and reading the strings out of the two ELFs.
 
-int main() {
-    board::init();
-    auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
-    uart.write("rp2040 dma checklist\r\n");
+**Two shipped examples now reach the engine on this family**, and both are
+already in the `build` matrix in `.github/workflows/ci.yml` for both RP2040
+boards — no CI change was needed and none was made:
 
-    // The board's own spelling: route -> claim -> engine. On the Pico
-    // board::dma::debug_uart_tx is channel 2, request 20 (UART0_TX).
-    auto tx = alloy::dma::claim(board::dma::debug_uart_tx);
-    tx.on_complete(+[](void* f) { *static_cast<volatile bool*>(f) = true; },
-                   const_cast<bool*>(&g_fired));
-    // The UART's transmit data register, and its DMA request must be enabled on
-    // the PERIPHERAL side too (UARTDMACR.TXDMAE) — the driver has no hook for
-    // that yet, so set it by hand here, from the generated field accessors.
-    tx.start_m2p_u8(std::span<const std::uint8_t>{g_msg, sizeof(g_msg) - 1},
-                    /* uart0 base + UARTDR */ 0u,
-                    alloy::dev::uart0_t::dmareq_tx);
-    uart.write(tx.wait() ? "dma: OK\r\n" : "dma: FAIL\r\n");
-    uart.write(g_fired ? "dma irq: fired\r\n" : "dma irq: NOT fired\r\n");
-    tx.stop();
-    for (;;) {
-    }
-}
-```
+- **`examples/dma_uart`** — the sheet's main instrument. Claims
+  `alloy::dma::channel<board::dma_t, 1>`, arms a completion callback, sends
+  `dma via DMA\r\n` from RAM to `UARTDR` by DMA, then prints whether the
+  interrupt fired. Three of the rows below are just "flash this and read the
+  console".
+- **`examples/dma_probe`** — its third branch does the same on channel 3 with a
+  longer payload; its ADC-burst and PWM-waveform branches still print their
+  fallback lines on this family, correctly, because neither of those drivers has
+  DMA hooks here.
 
-Two blanks are deliberately left for whoever runs this, because filling them
-from memory is exactly the mistake the curation discipline exists to prevent:
-the `UARTDR` address must come from the generated `alloy::dev::uart0_t::base`
-plus the IP header's offset, and `UARTDMACR.TXDMAE` must be set through the
-generated field accessor. Neither is a driver feature yet.
+`dma_uart` claims channel 1 by hand, which on the Pico is the channel
+`board.json` assigns to `debug_uart.rx`. Nothing else claims it in that firmware
+so there is no conflict — but if you extend the firmware, claim through
+`alloy::dma::claim(board::dma::debug_uart_tx)` (channel 2, request 20) instead
+of hand-spelling an index.
+
+Rows 5–8 still need small edits to that example; each says exactly what to
+change. **None of it has ever been run.**
 
 ## The rows
 
@@ -138,16 +124,22 @@ not a test.
 
 ### 2. One-shot memory→peripheral actually moves bytes
 
-- **RUN**: the firmware above.
-- **LOOK FOR**: the line `dma via DMA` on the console, followed by `dma: OK`.
-- **FALSIFIED BY**: `dma: FAIL` (`wait()` returned false, i.e. an error bit rose
-  — the address or the width is wrong), **or** nothing after the banner (the
-  channel never advanced: `TREQ_SEL` wrong, `UARTDMACR.TXDMAE` never set, or —
-  the interesting one — `MULTI_CHAN_TRIGGER` is not in fact a start).
+- **RUN**: `cd examples/dma_uart && alloy build --board raspberry_pi_pico &&
+  alloy flash`, then `alloy monitor`.
+- **LOOK FOR**: the banner `alloy dma_uart`, then the line `dma via DMA` — that
+  second line is the one the DMA wrote; the banner came out of the CPU's own
+  `write()`. Seeing the banner and not the second line is the interesting
+  failure, and it is why the example prints both.
+- **FALSIFIED BY**: `dma: FAIL` (`write_dma()` returned false — `wait()` saw an
+  error bit, so the address or the width is wrong), **or** the banner followed
+  by nothing (the channel never advanced: `TREQ_SEL` wrong, `UARTDMACR.TXDMAE`
+  never set, or — the interesting one — `MULTI_CHAN_TRIGGER` is not in fact a
+  start).
 
 ### 3. The completion interrupt reaches the NVIC
 
-- **RUN**: same run as row 2.
+- **RUN**: same run as row 2 — the example arms the callback before the transfer
+  and prints the result after it.
 - **LOOK FOR**: `dma irq: fired`.
 - **FALSIFIED BY**: `dma irq: NOT fired` while row 2 still passed. That isolates
   three things the host double can only check against itself: the `INTE0` bit,
@@ -157,10 +149,13 @@ not a test.
 
 ### 4. THE DREQ NEGATIVE CONTROL — the highest-value row on this sheet
 
-- **RUN**: rebuild row 2 with `TREQ_SEL` deliberately off by one — pass
-  `alloy::dev::uart0_t::dmareq_tx + 1` (21, `UART0_RX`) instead of 20 — and
-  re-run.
-- **LOOK FOR**: `dma: FAIL`, or no line at all.
+- **RUN**: rebuild row 2 with `TREQ_SEL` deliberately off by one. The request id
+  is chip data, so change it in ONE place and let the generator carry it: in
+  `chips/raspberrypi/rp2040.yaml`, `uart0.dma_requests.tx: 20` → `21`
+  (`UART0_RX`), rebuild, re-flash. Changing it there rather than in the firmware
+  is the point — it proves the id that the board actually emits is the id the
+  transfer obeys.
+- **LOOK FOR**: `dma: FAIL`, or the banner with no second line.
 - **FALSIFIED BY**: it still prints `dma via DMA`. That would mean the transfer
   is not request-paced at all, and row 2 proved nothing about the request — it
   would have proved only that a channel can copy bytes as fast as the bus
@@ -170,9 +165,9 @@ not a test.
 
 ### 5. Configuration does not start the channel — the INFERRED claim
 
-- **RUN**: a variant that calls `setup()` (via `start_m2p_u8`'s first half) and
-  then **waits a visible interval before `start()`** — e.g. blink the LED ten
-  times between them, with the payload a recognisable pattern.
+- **RUN**: a variant of `dma_uart` that calls the engine's two halves apart:
+  `alloy::hal::dma_impl<board::dma_t>::setup<1>(...)`, then **a visible interval**
+  (blink the LED ten times), then `::start<1>()`, with a recognisable payload.
 - **LOOK FOR**: nothing on the wire until after the delay, then the whole
   payload at once.
 - **FALSIFIED BY**: bytes appearing during the delay. That means writing
@@ -182,9 +177,10 @@ not a test.
 
 ### 6. `stop()` really terminates, and the buffer is safe afterwards
 
-- **RUN**: start a long transfer (a payload of a few kB at 115200 baud, so it
-  takes visible seconds), then call `stop()` mid-flight, then **overwrite the
-  source buffer with a different pattern** and print what arrives.
+- **RUN**: a variant of `dma_uart` using `write_dma_begin()` instead of
+  `write_dma()` so the wait is yours: a payload of a few kB in RAM (visible
+  seconds at 115200 baud), then `chan.stop()` mid-flight, then **overwrite the
+  source buffer with a different pattern** and print what still arrives.
 - **LOOK FOR**: output stopping promptly, and **none of the second pattern** on
   the wire.
 - **FALSIFIED BY**: bytes from the second pattern appearing. That is the
@@ -203,8 +199,10 @@ not a test.
 
 ### 8. A second channel, and the shared line
 
-- **RUN**: claim two channels, arm completion callbacks on both, run one
-  transfer on each.
+- **RUN**: `examples/dma_probe` (channel 3) and `examples/dma_uart` (channel 1)
+  are already two different channels through the same engine, but they are two
+  separate flashings. For the real test, extend `dma_uart` to claim a second
+  channel, arm completion callbacks on both, and run one transfer on each.
 - **LOOK FOR**: both callbacks firing, each exactly once.
 - **FALSIFIED BY**: one callback firing twice, or one never firing — the
   shared-line guard (`INTS0` bit test) or the per-channel `INTR` clear is wrong,
@@ -216,9 +214,20 @@ not a test.
 - **Nothing about rings.** `alloy::dma::ring` does not exist on this family and
   this sheet does not test it. Both capability flags are false, for independent
   reasons: there is no half-transfer event anywhere in this IP, and a single
-  channel halts at the end of its count with nothing to re-arm it. See
+  channel halts at the end of its count with nothing to re-arm it. That refusal
+  is a *compile* fact, measured rather than asserted — a project that calls
+  `uart.rx_ring(buf)` or `adc.ring(samples, 4)` on a Pico fails to build with
+  *`nested requirement 'ring_capable<…>' is not satisfied`*. See
   `docs/design/dma-streams.md` §3.4 for the named successor (a one-channel
   software ping-pong through `CH_AL2_WRITE_ADDR_TRIG`) and why it was deferred.
+- **Nothing about peripheral→memory in either direction.** Every row above is
+  memory→peripheral, because that is the only direction any shipped firmware
+  reaches on this family: the PL011 driver has TX DMA hooks and deliberately no
+  RX ones (that header says why — the ring is missing, and the frame-gap event
+  the RX stream needs stands on a request flavour the pinned SVD does not name),
+  and the RP2040 ADC driver has no burst hooks at all. `setup()`'s
+  `periph_to_mem` branch — the read/write address swap and `INCR_WRITE` instead
+  of `INCR_READ` — is witnessed only by the host double.
 - **Nothing about the second interrupt line.** `DMA_IRQ_1` is curated and
   deliberately unbound; the driver puts every channel on line 0. Rows 3 and 8
   test line 0 only.
