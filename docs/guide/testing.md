@@ -162,6 +162,38 @@ The framework is resolved from your `alloy.toml` (`[alloy] root`, and the `[devi
 have one), not from whatever checkout happens to sit above your working directory — so a project's
 tests compile against the framework the project *declares*.
 
+## Say which tree you measured
+
+A build result is a fact about a working tree at an instant, not about a
+commit — and it is easy to forget that, because the two usually agree.
+
+They stop agreeing whenever something edits the tree while you build:
+another person, another session, a script mid-rebase. The CLI makes this
+sharper than it looks. `uv run --project <tree>/tools/alloy` and an editable
+install both resolve to the *live* tree, so codegen runs with whatever is on
+disk at that moment — including changes nobody has committed. Building an
+old commit in a worktree does not escape it either; the CLI still emits from
+the tree the install points at.
+
+So when a result is going to be quoted, stamp it:
+
+```bash
+git status --porcelain | wc -l   # 0, or the number is part of your claim
+git rev-parse --short HEAD
+```
+
+This matters most for **red** results, which is the counter-intuitive half.
+A false green wastes a review; a false red triggers a fix — for a defect
+that may live in somebody's uncommitted edits and vanish on its own. Two
+sessions in this project once reported, independently and in good faith,
+that every example failed to build on three boards at a given commit. The
+commit was fine. The emitter change they had both compiled against existed
+only in a working tree, transiently, and one of them nearly landed a
+"hotfix" for a repository that was never broken.
+
+If a result is worth acting on, regenerate from scratch (`rm -rf .alloy`)
+on a tree you have just confirmed clean, and quote the commit beside it.
+
 ## What this does not give you
 
 Being direct, because it is easy to oversell:
