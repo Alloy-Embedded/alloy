@@ -307,6 +307,40 @@ void probe() {
 """
 
 
+# A CAPABILITY THAT A WHOLE FAMILY DOES NOT HAVE. The RP2040's DMA has no
+# half-transfer event anywhere in the block and a single channel HALTS at the
+# end of its count, so `raspberrypi_dma_v1` sets `supports_ring = false` and
+# omits enable_half_irq/half() rather than stubbing them. The promise that buys
+# is a COMPILE ERROR naming the capability — and until this case existed,
+# nothing in the tree checked it: the refusal was witnessed once in a scratch
+# project and then rested on reading the requires-clause.
+#
+# THE SAME SOURCE IS BOTH CASES. `ring_capable` is asked of a controller/channel
+# pair reached through the BINDER ALIAS spelling, so the identical translation
+# unit compiles on a G0 (dma_v1 rings) and is refused on a Pico. That pairing is
+# the point: a check that rejects every board looks exactly like a check that
+# works, and this family is the one where nothing else can tell the difference —
+# there is no Renode model for any RP2040 peripheral, so a compile is the whole
+# of the evidence.
+#
+# Both locks are asserted, because the flag ALONE does not close the gate:
+# `ring_capable` also requires enable_half_irq to EXIST, so flipping
+# supports_ring true without stubs still refuses. A future engine that stubs the
+# events to "support" a poll-only ring would satisfy the concept, link, and then
+# spin forever in ring::take() — the needles below name both requirements so
+# that regression cannot pass this gate quietly.
+DMA_RING_ON_A_FAMILY_WITHOUT_ONE = """
+#include <alloy/board.hpp>
+#include <alloy/dma.hpp>
+static alloy::dma::ring_storage<std::uint16_t, 64> storage;
+void probe() {
+    alloy::dma::ring<std::uint16_t, decltype(board::dma::adc_conv)> r(
+        board::dma::adc_conv, 0x40012440u, storage);
+    (void)r.readable();
+}
+"""
+
+
 def _compile_flags(cc_entry: dict) -> list[str]:
     """The example's own compile command, minus the source/output/dep flags."""
     toks = shlex.split(cc_entry["command"])
@@ -619,6 +653,28 @@ def check_bridge_admitted() -> int:
                           BRIDGE_ADMITTED, [], board=board))
 
 
+def check_dma_ring_refused_on_rp2040() -> int:
+    board = "raspberry_pi_pico"
+    return _expect_failure(
+        "alloy::dma::ring on an RP2040, whose DMA has no half-transfer event",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          DMA_RING_ON_A_FAMILY_WITHOUT_ONE, ["--board", board],
+                          board=board),
+        ["supports_ring", "enable_half_irq"])
+
+
+def check_dma_ring_admitted_on_a_family_with_one() -> int:
+    """The positive control for the case above, and the reason it means
+    anything: the SAME translation unit, on a board whose engine does present
+    the ring contract."""
+    board = "nucleo_g071rb"
+    return _expect_success(
+        "the identical ring, on a G0 whose dma_v1 does have a half event",
+        _compile_wrong_tu(ALLOY / "examples" / "blink", board,
+                          DMA_RING_ON_A_FAMILY_WITHOUT_ONE, ["--board", board],
+                          board=board))
+
+
 def main() -> int:
     return (check_wrong_pin_route() | check_strategy_lacking_concept() |
             check_opts_absent_field() | check_opts_over_ask() |
@@ -629,7 +685,9 @@ def main() -> int:
             check_bridge_dead_time_unstated() | check_bridge_dead_time_zero() |
             check_bridge_dead_time_too_long() |
             check_bridge_dead_time_vs_period() |
-            check_bridge_freq_impossible() | check_bridge_admitted())
+            check_bridge_freq_impossible() | check_bridge_admitted() |
+            check_dma_ring_refused_on_rp2040() |
+            check_dma_ring_admitted_on_a_family_with_one())
 
 
 if __name__ == "__main__":
