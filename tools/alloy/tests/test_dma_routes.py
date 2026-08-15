@@ -951,3 +951,119 @@ def test_the_spi_and_i2c_signals_are_offered_as_candidates() -> None:
     candidates = dma_signal_candidates(board, load_chip(DEVICES_ROOT,
                                                         board["chip"]))
     assert {"spi.rx", "spi.tx", "i2c.rx", "i2c.tx"} <= set(candidates)
+
+
+# ------------------------------------------- the pair rides the binder too
+
+def _binder(out: str, role: str) -> str:
+    return out.split(f"using {role} = ")[1].split(";")[0]
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS + ["nucleo_f722ze"])
+def test_the_spi_pair_rides_the_binder(board_id: str) -> None:
+    """Design §1 for anchor 2.4: BOTH halves attach to the ONE spi binder, as
+    alloy::spi::rx_dma<>/tx_dma<> tags after clock_profile. That is what makes
+    `spi.transfer_dma(tx, rx)` real without the user naming a channel, and
+    what a portable program probes — through the binder's dependent alias,
+    never `board::dma::spi_rx` (a namespace-scope constant does not fold in a
+    requires-clause; the phase-2 lesson)."""
+    out = _emit_shipped(board_id)
+    bind = _binder(out, "spi")
+    assert "alloy::spi::rx_dma<" in bind and "alloy::spi::tx_dma<" in bind
+    # RX first, TX second — the order §1 fixes for the claim, kept in the
+    # emitted text so the two never read in a surprising order.
+    assert bind.index("rx_dma") < bind.index("tx_dma")
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS + ["nucleo_f722ze"])
+def test_the_spi_binder_tags_are_the_board_dma_constants(board_id: str) -> None:
+    """No drift: the route inside each tag is character-for-character the type
+    of the matching board::dma constant, because _dma_route_type spells both.
+    A test that compares the two TEXTS is the only thing that keeps a future
+    edit from giving the binder one channel and the constant another."""
+    out = _emit_shipped(board_id)
+    bind = _binder(out, "spi")
+    for signal in ("rx", "tx"):
+        constant = next(line for line in out.splitlines()
+                        if line.strip().startswith("inline constexpr")
+                        and f"> spi_{signal}{{}}" in line)
+        route = constant.split("inline constexpr ")[1].split(f"> spi_{signal}")[0] + ">"
+        assert f"alloy::spi::{signal}_dma<{route}>" in bind
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _G0_BOARDS)
+def test_the_i2c_directions_ride_the_binder_independently(board_id: str) -> None:
+    """I2C is half duplex, so its two tags are independent: every G0 board
+    carries the rx one, and only the board with a spare controller carries tx.
+    The board that carries one must not silently grow the other."""
+    out = _emit_shipped(board_id)
+    bind = _binder(out, "i2c")
+    assert ("alloy::i2c::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 6, "
+            "/*request=*/10>>") in bind
+    has_tx = ("alloy::i2c::tx_dma<alloy::dma::route<alloy::dev::dma1_t, 7, "
+              "/*request=*/11>>") in bind
+    assert has_tx == (board_id == "nucleo_g0b1re")
+
+
+@skip_no_devices
+def test_a_board_without_the_assignments_keeps_the_untagged_binders() -> None:
+    """No assignment -> no tag -> the facade's route parameters default to
+    void and transfer_dma/read_dma are constrained away with a named error.
+    The binder must stay the exact untagged spelling for that default to
+    apply — the same guarantee the uart and adc binders already carry."""
+    def strip(board): board.pop("dma")
+    out = _emit_shipped("nucleo_g071rb", strip)
+    for role in ("spi", "i2c"):
+        bind = _binder(out, role)
+        assert "rx_dma" not in bind and "tx_dma" not in bind
+        assert bind.rstrip().endswith("clock_profile>")
+
+
+@skip_no_devices
+def test_half_a_pair_emits_half_the_tags() -> None:
+    """A board that states only `spi.rx` is refused by nothing here — the
+    generator will not invent the missing channel, because picking one is
+    exactly what §1 says a generator must never do. It emits one tag, and the
+    facade's requires-gate is what tells the user transfer_dma needs two."""
+    def half(board): board["dma"].pop("spi.tx")
+    bind = _binder(_emit_shipped("nucleo_g071rb", half), "spi")
+    assert "alloy::spi::rx_dma<" in bind
+    assert "tx_dma" not in bind
+
+
+@skip_no_devices
+def test_the_spi_tags_move_with_the_board_statement() -> None:
+    """The anti-drift mutation on the new role: perturb one half of the pair
+    and only that half's tag moves. Channel 7 is nucleo_g071rb's reserve, so
+    the perturbation is legal (see test_g071rb_keeps_a_channel_in_reserve)."""
+    def move(board): board["dma"]["spi.tx"] = {"controller": "dma1",
+                                               "channel": 7}
+    bind = _binder(_emit_shipped("nucleo_g071rb", move), "spi")
+    assert ("alloy::spi::rx_dma<alloy::dma::route<alloy::dev::dma1_t, 4, "
+            "/*request=*/16>>") in bind
+    assert ("alloy::spi::tx_dma<alloy::dma::route<alloy::dev::dma1_t, 7, "
+            "/*request=*/17>>") in bind
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", ["nucleo_g0b1re", "nucleo_g071rb",
+                                      "nucleo_f722ze", "nucleo_f767zi"])
+def test_one_helper_spells_every_roles_tags(board_id: str) -> None:
+    """Phase 4 made this the third and fourth facade to attach routes, so the
+    attachment moved into one helper. The property that helper exists for:
+    EVERY emitted tag is `alloy::<facade>::<signal>_dma<...>` where <facade>
+    is the namespace of the binder it sits in — a per-role copy that drifted
+    would show up here as a tag in the wrong namespace."""
+    out = _emit_shipped(board_id)
+    for role, facade in (("debug_uart", "uart"), ("low_power_uart", "uart"),
+                         ("spi", "spi"), ("i2c", "i2c")):
+        if f"using {role} = " not in out:
+            continue
+        bind = _binder(out, role)
+        for signal in ("rx", "tx"):
+            for tag in (f"{signal}_dma<",):
+                if tag in bind:
+                    assert f"alloy::{facade}::{tag}" in bind

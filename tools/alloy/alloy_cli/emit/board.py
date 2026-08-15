@@ -379,8 +379,8 @@ def _dma_binder_tags(board: dict[str, Any], chip: dict[str, Any], role: str,
     (`Role::rx_route`) and cannot fold on the namespace-scope `board::dma`
     constant (the phase-2 lesson, paid for once).
 
-    ONE helper for every role that carries routes, because phase 4 adds a
-    third and fourth facade that does this and a per-role copy is how the
+    ONE helper for every role that carries routes, because phase 4 made this
+    the third and fourth facade to do it and a per-role copy is how the
     spellings drift. Route types still come from `_dma_route_type`, so a
     binder tag and its `board::dma` twin are the same text by construction.
     No assignment -> no tag -> the facade's route parameter defaults to void
@@ -1139,11 +1139,16 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(i2c_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: i2c peripheral '{i2c_role['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, i2c_role["peripheral"], "i2c")
+        # `i2c.rx` / `i2c.tx` ride the binder like every other role's routes.
+        # I2C is HALF duplex, so these are two independent one-shots, not a
+        # pair: a board may state either alone and the other direction's
+        # method is simply constrained away.
+        i2c_tags = _dma_binder_tags(board, chip, "i2c", "i2c", 29)
         decls.append(
             f"using i2c = alloy::i2c::bind<alloy::dev::{i2c_role['peripheral']}_t,\n"
             f"                             alloy::i2c::scl<alloy::dev::{i2c_role['scl']}_t>,\n"
             f"                             alloy::i2c::sda<alloy::dev::{i2c_role['sda']}_t>,\n"
-            f"                             clock_profile>;"
+            f"                             clock_profile{i2c_tags}>;"
         )
     else:
         decls.append(
@@ -1167,12 +1172,20 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         _require(spi_role["peripheral"] in chip["peripherals"],
                  f"board {board['id']}: spi peripheral '{spi_role['peripheral']}' not in chip data")
         _require_curated(board["id"], chip, spi_role["peripheral"], "spi")
+        # The anchor-2.4 PAIR: `spi.rx` and `spi.tx` both ride this one
+        # binder, so `spi.transfer_dma(tx, rx)` can claim both channels
+        # without the user naming either. A board that states one half emits
+        # one tag and the facade's requires-gate refuses the call — the
+        # both-or-neither rule lives in the board files (and a test), not
+        # here, because a generator that invented the missing half would be
+        # picking a channel, which §1 rejects.
+        spi_tags = _dma_binder_tags(board, chip, "spi", "spi", 29)
         decls.append(
             f"using spi = alloy::spi::bind<alloy::dev::{spi_role['peripheral']}_t,\n"
             f"                             alloy::spi::sck<alloy::dev::{spi_role['sck']}_t>,\n"
             f"                             alloy::spi::miso<alloy::dev::{spi_role['miso']}_t>,\n"
             f"                             alloy::spi::mosi<alloy::dev::{spi_role['mosi']}_t>,\n"
-            f"                             clock_profile>;"
+            f"                             clock_profile{spi_tags}>;"
         )
         if "cs" in spi_role:
             _require(spi_role["cs"] in chip.get("pins", {}),
