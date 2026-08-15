@@ -170,18 +170,29 @@ chan.on_complete(+[](void* flag) {
 }, const_cast<bool*>(&g_dma_irq_fired));
 
 std::uint8_t msg[] = "dma via DMA\r\n";      // in RAM for the memory-side read
-uart.write_dma(chan, {msg, sizeof(msg) - 1});
+if (!uart.write_dma(chan, {msg, sizeof(msg) - 1})) {
+    // bounded refusal, not a hang
+}
 ```
+
+`write_dma` is `[[nodiscard]]` on purpose: the `false` case is a real
+outcome — an engine whose completion never arrives is bounded and reported,
+never a spin.
 
 Or awaited from a coroutine, from `examples/async_io/src/main.cpp` — the route
 spelling, with the channel number nowhere in the file:
 
 ```cpp
 auto chan = alloy::dma::claim(board::dma::debug_uart_tx);
-dma_waiter<decltype(chan)> w{chan};          // constructed BEFORE the transfer
+alloy::async::dma_waiter<decltype(chan)> w{chan};   // constructed BEFORE the transfer
 co_await w.run([&] { uart.write_dma_begin(chan, line); });
 uart.write_dma_end(chan);
 ```
+
+The waiter is constructed before the transfer for the same reason
+`on_complete` is registered before it: the driver folds the interrupt enable
+in at setup based on whether a completion callback exists, so a waiter that
+registered itself inside the `co_await` would arm nothing and park forever.
 
 ### 4. SPI full duplex — the pair
 
