@@ -10,12 +10,26 @@ peripherals:
 
 | Role | What it is |
 | --- | --- |
-| `board::led` | the status LED |
-| `board::button` | the user button |
+| `board::led`, `board::button` | the status LED and the user button |
+| `board::gpio_bus` | a named group of plain pins, read and written as one word |
 | `board::debug_uart` | the console UART |
-| `board::i2c`, `board::spi` | the wired bus |
-| `board::adc`, `board::led_pwm` | analog in / PWM out |
-| `board::watchdog`, `board::rtc`, `board::nvm` | system services |
+| `board::low_power_uart` | an LPUART that can receive with the main clock stopped |
+| `board::i2c`, `board::spi` | the wired buses |
+| `board::can` | a CAN / CAN-FD controller |
+| `board::ethernet` | a MAC, for the [network stack](../reference/architecture.md) |
+| `board::adc`, `board::dac` | analog in and out |
+| `board::led_pwm` | one PWM channel — the "make an LED breathe" role |
+| `board::bridge` | a three-phase inverter bridge with dead time ([PWM](pwm.md)) |
+| `board::encoder` | a quadrature encoder input |
+| `board::tick` | a spare timer you drive yourself |
+| `board::rtc` | a calendar that survives reset |
+| `board::watchdog`, `board::window_watchdog` | the independent and windowed watchdogs |
+| `board::nvm`, `board::fs` | on-chip flash as a key/value store, or as a filesystem |
+| `board::eeprom` | an external EEPROM sitting on one of the buses |
+
+That is the whole catalogue — 21 roles, defined once in `tools/alloy/alloy_cli/roles.py` and
+consumed by the board validator, the code generator and `alloy board-info` alike, so the three
+cannot disagree about what a board needs to declare.
 
 Because every app names roles, not chip-specific peripherals, the source never mentions a pin,
 an address, or a vendor. The board data binds each role to the right pins with **compile-time
@@ -27,6 +41,29 @@ board::led.toggle();
 auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
 uart.write("up\r\n");
 ```
+
+## Where the roles come from
+
+Roles are not magic and they are not hand-written per board. They come out of one JSON file:
+
+```json title="boards/nucleo_g071rb/board.json (excerpt)"
+"roles": {
+  "led":        { "pin": "pa5", "active": "high", "label": "LD4 (green, D13)" },
+  "button":     { "pin": "pc13", "active": "low", "label": "B1 USER" },
+  "debug_uart": { "peripheral": "usart2", "tx": "pa2", "rx": "pa3", "baud": 115200 }
+}
+```
+
+At build time alloy reads that alongside the chip's data — pin routes, clock tree, register
+map — and generates `board.hpp` for you. `"active": "low"` on the button is why
+`board::button.is_active()` returns `true` when it is *pressed*: the polarity is a fact about
+the PCB, so your application never carries it. `"tx": "pa2"` is checked against the chip's route
+table, so a typo is a compile error and not a dead board.
+
+This is the whole reason the source is portable. **Every difference between two
+microcontrollers lives in data, not in your `src/`** — which is why changing one line of
+`alloy.toml` retargets the program. See [Boards](boards.md) for the full file and
+[Adding a board](adding-a-board.md) for writing your own.
 
 ## Capabilities and `if constexpr`
 
@@ -46,13 +83,76 @@ if constexpr (board::caps::button) {
     *pressed*, whichever way the PCB wired it. `is_high()` is the raw pin level, for when you
     want the electrical truth and not the logical one.
 
-The discarded branch is **removed at compile time**, so code guarded this way costs nothing on
-boards that lack the role — and the file compiles identically everywhere.
+The discarded branch is **not emitted**, so code guarded this way costs nothing on boards that
+lack the role — no flash, no RAM, no runtime check. `board::caps::*` is generated for every role
+whether the board declares it or not, so the name always exists and the answer is always a
+`constexpr bool`. `alloy board-info <id>` prints the list for any board.
 
-!!! info "Roles that are absent"
-    A small role you don't use degrades to a **no-op stub** (so `board::watchdog.feed()` always
-    compiles). Using a role a board *truly* lacks — say `board::led` on a headless board —
-    fails at **compile time** with a `static_assert` message, never at runtime.
+!!! info "Roles that are absent still have a name"
+    A role a board does not declare is generated as a **no-op stub with every entry point the
+    real one has**: `board::rtc` becomes `alloy::rtc::null_rtc`, `board::adc::open()` returns a
+    handle whose `read()` answers `0`. That is what lets a guarded call sit in your source on a
+    board that cannot perform it. What you *cannot* do is bind a role to hardware that cannot
+    carry it — that is a `static_assert` at compile time, never a surprise at runtime.
+
+### The one sharp edge: `if constexpr` still type-checks the branch it drops
+
+This trips everyone once, so it is worth 30 seconds now. `if constexpr` in a **non-template**
+function — and `main()` is a non-template function — discards the untaken branch from the
+generated code but *still parses and name-looks-up* everything in it. The stubs above exist
+mostly to absorb that. When you call something the stub does not have, you get a compile error
+on a board the code was never going to run that branch on:
+
+```
+src/main.cpp:8:27: error: 'struct board::adc::null_handle' has no member named 'ring'
+```
+
+That is `alloy build --board rp2040_zero` on a program whose ADC branch is already guarded by
+`if constexpr (board::caps::adc)`. The guard is correct and the error is still real.
+
+The fix is to make the branch **dependent**, by putting it in a template and asking for the
+member rather than for the role:
+
+```cpp title="Portable across boards that stream and boards that poll"
+#include <alloy/board.hpp>
+#include <alloy/dma.hpp>
+
+namespace {
+using storage_t = alloy::dma::ring_storage<std::uint16_t, 64>;
+
+// A TEMPLATE, so the branch you did not take is never instantiated.
+template <class Uart, class Adc>
+void sample(const Uart& uart, Adc& adc) {
+    if constexpr (requires(storage_t& s) { adc.ring(s); }) {
+        static storage_t storage{};
+        auto stream = adc.ring(storage);
+        while (!stream.pending()) {}
+        uart.write(stream.take().empty() ? "empty\r\n" : "streamed\r\n");
+    } else {
+        uart.write(adc.read(3) != 0u ? "polled\r\n" : "polled zero\r\n");
+    }
+}
+}  // namespace
+
+int main() {
+    board::init();
+    auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
+    if constexpr (board::caps::adc) {
+        auto adc = board::adc::open();
+        sample(uart, adc);
+    }
+    for (;;) {}
+}
+```
+
+That builds for all nine shipped boards. Two `if constexpr`s, doing different jobs: the outer
+one asks *does this board have the role*, the inner one asks *can this board's engine do it*.
+The second question is the interesting one — DMA-fed sampling exists on the STM32G0 boards and
+not on the RP2040, and `requires` is how you find out without naming a chip.
+
+Use `board::caps::*` for "does this board have the role". Use
+`if constexpr (requires { … })` inside a template for "can this handle do the thing". The
+in-repo examples under `examples/` use exactly this pair.
 
 ## Errors you can read
 
