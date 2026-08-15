@@ -1,8 +1,15 @@
 // PWM driver for ST 16-bit general-purpose timers (tim_gp16: TIM2/TIM3
-// class). Edge-aligned PWM mode 1, 1 MHz timebase tick, channels 1-4.
+// class). PWM mode 1 on channels 1-4, edge- or centre-aligned, with a
+// prescaler DERIVED from the requested carrier rather than a fixed tick —
+// see st_tim_timebase.hpp for why that is not a detail.
+//
+// Optionally drives the timer's trigger output (CR2.MMS), so a converter can
+// be started by the counter instead of by the CPU. The facade refuses that
+// request on a block whose curated data reports no trigger output.
 //
 // BEHAVIOR only: bases/gates/fields from generated headers. Advanced
-// timers (TIM1) need BDTR.MOE and are not served by this driver.
+// timers (TIM1) need BDTR.MOE and are not served by this driver — a
+// complementary bridge is alloy::bridge, a different personality.
 
 #pragma once
 
@@ -31,18 +38,47 @@ struct pwm_impl<Inst> {
     //: constant 65536 — a narrower ARR needs no edit here.
     static constexpr std::uint32_t max_period_ticks = IP::arr.wide_raw_mask + 1u;
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t freq_hz, unsigned channel) {
+    //: Layer 1's alignment/trigger in this silicon's vocabulary.
+    static constexpr std::uint32_t mms_bits(alloy::hal::pwm_trigger t) {
+        switch (t) {
+            case alloy::hal::pwm_trigger::on_update:
+                return static_cast<std::uint32_t>(IP::cr2::mms_update);
+            case alloy::hal::pwm_trigger::on_compare:
+                // OCxREF of THIS channel would need the channel ordinal; the
+                // block-scoped answer that works for any of them is OC1REF,
+                // and callers who want another channel's compare should say
+                // so through a channel-scoped API that does not exist yet.
+                return static_cast<std::uint32_t>(IP::cr2::mms_oc1ref);
+            case alloy::hal::pwm_trigger::none:
+                break;
+        }
+        return 0u;
+    }
+
+    static void enable(std::uint32_t kernel_hz, alloy::hal::pwm_config c, unsigned channel) {
+        const std::uint32_t freq_hz = c.freq_hz;
         alloy::gate_on(Inst::gate);
+        // CR2 on a general-purpose timer carries no output-idle state — that
+        // is an advanced-timer register — so this is an ordinary write with
+        // no safety argument attached, unlike the bridge's.
+        r().CR2 = mms_bits(c.trigger);
         // The prescaler is DERIVED, not fixed. This used to pin a 1 MHz tick,
         // which at 20 kHz leaves fifty counts of duty — under six bits, and
         // invisible from an API that still takes a 16-bit number. Now PSC is
         // the smallest that makes the period fit, so the caller gets every
         // count the silicon has (3200 at 64 MHz / 20 kHz).
-        const detail::tim_timebase tb =
-            detail::tim_timebase_for(kernel_hz, freq_hz, max_period_ticks);
+        //: Centre-aligned counts BOTH WAYS, so one period is 2*ARR ticks and
+        //: the reload is half the edge-aligned one for the same carrier —
+        //: which also halves the duty steps, the trade the caller made.
+        const bool center = c.align == alloy::hal::pwm_alignment::center;
+        const detail::tim_timebase tb = detail::tim_timebase_for(
+            kernel_hz, center ? freq_hz * 2u : freq_hz, max_period_ticks);
         r().PSC = tb.psc;
         period_ticks = tb.arr + 1u;
         r().ARR = tb.arr;
+        if (center) {
+            IP::cms.write(r(), 1u);  // centre-aligned mode 1
+        }
 
         constexpr std::uint32_t kPwmMode1 = 6u;
         switch (channel) {

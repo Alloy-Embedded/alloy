@@ -90,6 +90,14 @@ void spi_clock();
 void pwm_freq();
 
 [[gnu::error(
+    "alloy::pwm::open: a trigger output was asked for on a timer that has "
+    "none. `feat::trgo` for this instance is 0 in the curated chip data — the "
+    "block either has no CR2 or its bits 6:4 are the output-idle state, so "
+    "there is nothing to program and nothing would ever fire. Use a timer "
+    "whose data says it has a trigger output, or drop `.trigger`")]]
+void pwm_no_trigger();
+
+[[gnu::error(
     "alloy::tick::open: this rate is impossible on this timer. Both ends of the "
     "window are real: the rate is zero or above the timer's own kernel clock, or "
     "it is so slow that dividing down to it needs more than the 2^32 that a "

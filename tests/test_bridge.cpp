@@ -385,7 +385,7 @@ struct pin_impl<fake_pin<P>> {
 // rather than a mock of it.
 template <int T>
 struct pwm_impl<fake_timer<T>> {
-    static void enable(std::uint32_t, std::uint32_t, unsigned) {}
+    static void enable(std::uint32_t, alloy::hal::pwm_config, unsigned) {}
     static void set_duty(unsigned, std::uint16_t) {}
 };
 

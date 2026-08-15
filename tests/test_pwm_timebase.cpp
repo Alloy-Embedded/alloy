@@ -112,3 +112,29 @@ ALLOY_TEST(pwm_timebase_does_not_divide_by_zero) {
     // A frequency above the kernel cannot make a period at all.
     ALLOY_CHECK_EQ(dt::tim_timebase_for(k64MHz, k64MHz * 2u, kSpan).arr, 0u);
 }
+
+// ── Centre-aligned, and the trigger gate ─────────────────────────────────
+
+ALLOY_TEST(pwm_centre_aligned_halves_the_steps_it_gets) {
+    // A centre-aligned counter walks up and back down inside one period, so
+    // its reload is half the edge-aligned one for the same carrier — and so
+    // is the duty resolution. That is the trade the caller makes by asking
+    // for it, and it must be visible rather than surprising.
+    const std::uint32_t edge = dt::tim_duty_steps(k64MHz, 20'000u, kSpan);
+    const std::uint32_t centre = dt::tim_duty_steps(k64MHz, 40'000u, kSpan);
+    ALLOY_CHECK_EQ(edge, 3200u);
+    ALLOY_CHECK_EQ(centre, 1600u);  // the driver asks for 2x the carrier
+    ALLOY_CHECK_EQ(edge, centre * 2u);
+}
+
+ALLOY_TEST(pwm_centre_aligned_still_never_overflows_the_counter) {
+    // The doubling happens BEFORE the prescaler search, so a carrier that
+    // barely fits edge-aligned must not overflow when centred — it must reach
+    // for the prescaler instead.
+    bool fits = true;
+    for (std::uint32_t f = 1u; f <= 200'000u; f = f * 3u + 7u) {
+        const dt::tim_timebase tb = dt::tim_timebase_for(k64MHz, f * 2u, kSpan);
+        if (tb.arr + 1u > kSpan) { fits = false; }
+    }
+    ALLOY_CHECK(fits);
+}

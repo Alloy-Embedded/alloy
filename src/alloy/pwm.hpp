@@ -27,9 +27,12 @@ namespace alloy::pwm {
 // is. Two channels of one timer asking for different frequencies is a
 // contradiction the block cannot honour; the claim below refuses it instead of
 // letting the second open() silently win.
-struct config {
-    std::uint32_t freq_hz = 1'000;
-};
+//: Layer-1 vocabulary, declared in hal/pwm/pwm_impl.hpp so a driver can take
+//: it, aliased here so a caller never spells `hal`. Same arrangement as
+//: alloy::bridge::config.
+using alignment = hal::pwm_alignment;
+using trigger = hal::pwm_trigger;
+using config = hal::pwm_config;
 
 namespace detail {
 // Layer 1's VALUE admission — see alloy/core/admit.hpp. The driver computes
@@ -56,6 +59,39 @@ inline void admit_freq(std::uint32_t freq_hz, std::uint32_t kernel) {
 // A signal that is NOT a numbered channel is left alone on purpose:
 // funcsel-style backends name the slice through the instance and the pin
 // rather than the signal, so there is no ordinal in it to disagree with.
+//: Does this instance's curated data say it has a trigger output? Absent
+//: `feat` reads as "no" rather than as a substitution failure, so a timer IP
+//: nobody has given a feat block yet refuses the request with a message
+//: instead of a compiler error about a missing member.
+template <class Inst>
+inline constexpr bool has_trigger_output = [] {
+    if constexpr (requires { Inst::feat::trgo; }) {
+        return Inst::feat::trgo != 0u;
+    } else {
+        return false;
+    }
+}();
+
+//: A trigger asked of a block that has none would be accepted and then never
+//: fire — the silent failure this refuses. Same shape as admit_freq: an
+//: [[gnu::error]] where the optimiser can prove it, and an unconditional trap
+//: where it cannot (measured, that is most of -O0/-Og — see the note in
+//: alloy/bridge.hpp about when the attribute actually fires).
+template <class Inst>
+inline void admit_trigger(pwm::trigger t) {
+    if constexpr (!has_trigger_output<Inst>) {
+        const bool asked = t != pwm::trigger::none;
+        if (__builtin_constant_p(asked) && asked) {
+            alloy::core::admit::pwm_no_trigger();
+        }
+        if (asked) {
+            alloy::trap<alloy::trap_code::impossible_config>();
+        }
+    } else {
+        (void)t;
+    }
+}
+
 constexpr bool channel_matches_signal(unsigned channel, alloy::signal sig) {
     switch (sig) {
         case alloy::signal::ch1: return channel == 1u;
@@ -160,7 +196,8 @@ struct bind {
         alloy::claim::shared<Inst, alloy::claim::personality::pwm>(c.freq_hz);
         using pin_route = routes::route<Pin, Inst, Sig>;
         hal::pin_impl<Pin>::make_af(routes::mux_value<pin_route>());
-        hal::pwm_impl<Inst>::enable(kernel_hz(), c.freq_hz, Channel);
+        detail::admit_trigger<Inst>(c.trigger);
+        hal::pwm_impl<Inst>::enable(kernel_hz(), c, Channel);
         return handle<Inst, Channel>{};
     }
 };

@@ -46,7 +46,13 @@ struct pwm_impl<Inst> {
         return alloy::reg_at(Inst::base, IP::HSTIMER_CONF_offset, IP::HSTIMER_CONF_stride, t);
     }
 
-    static void enable(std::uint32_t kernel_hz, std::uint32_t freq_hz, unsigned channel) {
+    //: Takes the whole config, like every pwm driver, and uses freq_hz only.
+    //: LEDC has no centre-aligned mode and no trigger output; `feat::trgo` is
+    //: absent for it, so alloy::pwm's admission refuses a trigger before this
+    //: is reached. Alignment is silently edge because that is what the block
+    //: does — stated here so the silence is a decision and not an oversight.
+    static void enable(std::uint32_t kernel_hz, alloy::hal::pwm_config c, unsigned channel) {
+        const std::uint32_t freq_hz = c.freq_hz;
         alloy::gate_on(Inst::gate);
         auto& rst = *reinterpret_cast<rw32*>(Inst::reset_clear.reg);
         rst = rst & ~Inst::reset_clear.mask;  // release from DPORT reset

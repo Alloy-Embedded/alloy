@@ -83,7 +83,8 @@ inline std::uint32_t fake_count = 0;
 
 template <int T>
 struct pwm_impl<fake_timer<T>> {
-    static void enable(std::uint32_t, std::uint32_t freq_hz, unsigned) {
+    static void enable(std::uint32_t, alloy::hal::pwm_config c, unsigned) {
+        const std::uint32_t freq_hz = c.freq_hz;
         last_pwm_freq = freq_hz;
     }
     static void set_duty(unsigned, std::uint16_t) {}

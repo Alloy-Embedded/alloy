@@ -112,7 +112,7 @@ struct tick_impl<fake_timer<N>> {
 
 template <int N>
 struct pwm_impl<fake_timer<N>> {
-    static void enable(std::uint32_t, std::uint32_t, unsigned) {}
+    static void enable(std::uint32_t, alloy::hal::pwm_config, unsigned) {}
     static void set_duty(unsigned, std::uint16_t) {}
 };
 
