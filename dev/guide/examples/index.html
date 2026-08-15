@@ -723,6 +723,8 @@
       
         
       
+        
+      
     
     
     
@@ -867,6 +869,34 @@
     
   
     Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
   
 
     
@@ -1324,6 +1354,8 @@
       
         
       
+        
+      
     
     
     
@@ -1537,6 +1569,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1710,6 +1770,10 @@ compiles each one for every board. Copy any of them into a project's <code>src/<
 <td>the independent watchdog</td>
 </tr>
 <tr>
+<td><code>window_watchdog</code></td>
+<td>the <em>other</em> watchdog — it also resets on a feed that arrives too <strong>early</strong>, so it catches a loop that has lost its timebase. A second <a href="../peripherals/">role</a>, not a mode of <code>watchdog</code>; the two run together</td>
+</tr>
+<tr>
 <td><code>nvm</code>, <code>rtc</code>, <code>dac</code>, <code>can</code></td>
 <td>on-chip flash key/value, RTC, DAC, CAN</td>
 </tr>
@@ -1732,6 +1796,13 @@ lines that contradict each other unless the window comparator is real.</p>
 refuses both register writes the encoder personality is made of, and it maps the G0's <code>fdcan1</code>
 to a bxCAN model that does not answer M_CAN's registers at all. Both build for every board;
 neither is executed anywhere but hardware, which has not run them.</p>
+<p><code>window_watchdog</code> has none either, for a blunter reason: Renode 1.16.1 has <strong>no WWDG model at
+all</strong>. <code>platforms/cpus/stm32g0.repl</code> covers the block with <code>Tag &lt;0x40002C00, 0x40002FFF&gt;
+"WWDG"</code> — an address range with no device behind it — and asking the monitor for the class
+directly answers <code>Error E04: Could not resolve type: 'Timers.STM32_WindowWatchdog'</code>. Under
+emulation the peripheral would swallow every write and never bite, so a green leg would prove
+the opposite of what it claimed to. The arithmetic and the register sequence are checked on the
+host instead (<code>tests/test_wwdt.cpp</code>); that the silicon resets is unwitnessed.</p>
 <h2 id="running-an-example">Running an example<a class="headerlink" href="#running-an-example" title="Permanent link">&para;</a></h2>
 <p>The examples live in the framework tree under <code>examples/</code>. Build one for any board:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/dma_probe

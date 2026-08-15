@@ -647,6 +647,8 @@
       
         
       
+        
+      
     
     
     
@@ -791,6 +793,34 @@
     
   
     Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
   
 
     
@@ -1237,6 +1267,8 @@
   
     
     
+      
+        
       
         
       
@@ -1698,6 +1730,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1995,10 +2055,14 @@ the ones the in-repo examples use, which is also how the list was built:</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>alloy/drivers/…     alloy/dsp/…         alloy/util/…
 </span></code></pre></div>
 <p><code>alloy/board.hpp</code>, <code>alloy/device.hpp</code>, <code>alloy/product.hpp</code>,
-<code>alloy/product_nvm.hpp</code>, <code>alloy/slots.hpp</code> and <code>alloy/ota_key.hpp</code> have no file
-in <code>src/alloy</code> at all — codegen writes them per board into <code>.alloy/generated/</code>.
-Their <strong>names</strong> are public; their <strong>contents</strong> are the chip database's promise,
-which is what <code>[devices]</code> below pins.</p>
+<code>alloy/product_nvm.hpp</code>, <code>alloy/slots.hpp</code>, <code>alloy/ota_key.hpp</code> and
+<code>alloy/bus_messages.hpp</code> have no file in <code>src/alloy</code> at all — codegen writes
+them per board into <code>.alloy/generated/</code>. Their <strong>names</strong> are public; the
+contents of the first six are the chip database's promise, which is what
+<code>[devices]</code> below pins. <code>bus_messages.hpp</code> is different: its contents are the
+<strong>project's own</strong> promise — the <code>bus.toml</code> wire contract — and the emitted
+binding shape (the <code>WireBinding</code> form <code>libs/bus</code> consumes) is Tier 1, because
+two boards compiled from one <code>bus.toml</code> must stay byte-compatible on the wire.</p>
 <p>Two more names are public with <strong>IP-shaped contents</strong>, on the same footing:</p>
 <ul>
 <li><code>alloy::&lt;periph&gt;::opts&lt;Inst&gt;</code> (surfaced as <code>Role::opts</code>) — Layer 2 of the
@@ -2036,6 +2100,11 @@ a different shape.</p>
 <code>[devices]</code>, <code>[product]</code>, <code>[libs]</code>, <code>[ota]</code>, <code>[roles.*]</code>, <code>[clock]</code>. Unknown
 keys inside <code>[devices]</code> are refused rather than ignored — a typo in a pin is
 the last thing that should fail open.</p>
+<p><code>bus.toml</code> (beside <code>alloy.toml</code>, when a project has wire messages) is on the
+same footing: <code>schema = "alloy.bus.v1"</code>, unknown keys refused everywhere — a
+typo in a wire id is the last thing that should fail open — and the id rules
+(explicit, never auto-assigned, retired not deleted) are enforced by
+<code>alloy bus validate</code> and by generation.</p>
 <h3 id="not-public">Not public<a class="headerlink" href="#not-public" title="Permanent link">&para;</a></h3>
 <table>
 <thead>

@@ -647,6 +647,8 @@
       
         
       
+        
+      
     
     
     
@@ -791,6 +793,34 @@
     
   
     Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
   
 
     
@@ -1237,6 +1267,8 @@
   
     
     
+      
+        
       
         
       
@@ -1717,6 +1749,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Questions 1–5: what kind of thing is it?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-kind-the-five-questions-have-no-row-for-a-second-block-that-would-fill-a-role-alloy-already-has" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The kind the five questions have no row for: a second BLOCK that would fill a role alloy already has
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -2194,6 +2243,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2523,6 +2600,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Questions 1–5: what kind of thing is it?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-kind-the-five-questions-have-no-row-for-a-second-block-that-would-fill-a-role-alloy-already-has" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The kind the five questions have no row for: a second BLOCK that would fill a role alloy already has
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3667,6 +3761,13 @@ is exactly a row this page asserted and the code did not have, twice.</p>
 <td><strong>two deadlines on one watchdog</strong></td>
 </tr>
 <tr>
+<td><code>wwdt</code></td>
+<td><code>start</code></td>
+<td><code>shared(window)</code></td>
+<td>—</td>
+<td><strong>two windows on one WINDOW watchdog</strong>, and it is a SEPARATE row from <code>wdt</code> on purpose: the IWDG and the WWDG are two blocks with two contracts, so one enumerator for both would make them agree and neither trap</td>
+</tr>
+<tr>
 <td><code>dac</code></td>
 <td><code>enable</code></td>
 <td><code>shared(0)</code></td>
@@ -3695,11 +3796,32 @@ is exactly a row this page asserted and the code did not have, twice.</p>
 <td>a timer already generating PWM</td>
 </tr>
 <tr>
+<td><code>tick</code></td>
+<td><code>open</code></td>
+<td><code>exclusive</code></td>
+<td>—</td>
+<td><strong>a timer already generating PWM, and a second time base on one block.</strong> <code>exclusive</code> and not <code>shared(hz)</code> like <code>pwm</code>: PWM shares a timer because four channels are four legitimate owners of one personality, while a time base has no channels to share — a second opener is not a co-owner asking for the same rate, it is a second program overwriting PSC and ARR</td>
+</tr>
+<tr>
+<td><code>bridge</code></td>
+<td><code>open</code></td>
+<td><code>exclusive</code></td>
+<td>—</td>
+<td><strong>a timer already generating PWM, or a PWM channel stolen out of a dead-time pair</strong></td>
+</tr>
+<tr>
 <td><code>exti</code> (a line)</td>
 <td>driver <code>arm</code> / <code>disarm</code></td>
 <td>—</td>
 <td><code>sub_shared(port)</code></td>
 <td><strong>two pins on one interrupt line</strong></td>
+</tr>
+<tr>
+<td><code>crc</code></td>
+<td><code>open</code></td>
+<td><code>exclusive</code></td>
+<td>—</td>
+<td><strong>two owners of one shift register.</strong> Not "last writer wins" — interleaved <code>update()</code>s arithmetically corrupt each other and both callers read back a plausible 32-bit number that nothing downstream can question</td>
 </tr>
 <tr>
 <td><code>flash</code></td>
@@ -3714,6 +3836,13 @@ is exactly a row this page asserted and the code did not have, twice.</p>
 <td>—</td>
 <td>—</td>
 <td>the pin, nothing; its EXTI <em>line</em>, the row above</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td><code>read</code></td>
+<td>—</td>
+<td>—</td>
+<td>nothing, and this is the ONLY row where "nothing" is a property of the SILICON rather than a decision: every register is read-only, there is no gate to enable and no mode to select, so a second reader cannot disturb a first. <code>flash</code> and <code>gpio</code> claim nothing by choice; this one has nothing to claim</td>
 </tr>
 <tr>
 <td>ethernet</td>
@@ -4234,6 +4363,66 @@ driver is:</p>
    call would be another window and another moment off the bus, and
    <code>sizeof...(F)</code> is also the compile-time count the capacity check needs.</li>
 </ol>
+<p><a id="the-sixth-kind"></a></p>
+<h5 id="the-kind-the-five-questions-have-no-row-for-a-second-block-that-would-fill-a-role-alloy-already-has">The kind the five questions have no row for: a second BLOCK that would fill a role alloy already has<a class="headerlink" href="#the-kind-the-five-questions-have-no-row-for-a-second-block-that-would-fill-a-role-alloy-already-has" title="Permanent link">&para;</a></h5>
+<p>Found by the <strong>WWDG</strong> build, and reported here because it is the fourth
+consecutive time the kind question was the one that mattered and the checklist
+was the wrong instrument for it.</p>
+<p>The feature: the STM32's <em>window</em> watchdog, on a chip whose <em>independent</em>
+watchdog alloy has driven since the OTA rollback work. Both are watchdogs, both
+are fed, both reset the part. The question the build had to answer first was not
+which layer anything lives in — it was <strong>is this a second role, a personality of
+the first, or an option on it?</strong></p>
+<p>Questions 1–5 answer it <strong>wrongly, and confidently, in two different
+directions</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>What it says for this feature</th>
+<th>Why that is wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 — personality?</strong> <em>"changes which operations the peripheral offers, and excludes the other modes while it is on"</em></td>
+<td>the strongest match in the table. Two watchdogs, one abstraction, and each one's contract excludes the other's — that reads as textbook mutual exclusion</td>
+<td>a personality is <strong>one block in one of several modes</strong>. These are <strong>two blocks, at two addresses, on two different clocks</strong>, and they run <strong>at the same time</strong> — which is the configuration a safety product actually wants: the IWDG as the coarse <em>the core is alive</em> backstop, the WWDG as the tight <em>the loop runs at its rate</em> monitor. Modelling them as one block's two modes makes the useful case <strong>unrepresentable</strong></td>
+</tr>
+<tr>
+<td><strong>5 — cross-peripheral?</strong> <em>"does honouring it require programming a SECOND BLOCK?"</em></td>
+<td>yes, literally: the feature lives at an address <code>iwdg_t::base</code> does not cover</td>
+<td>question 5's answer is for a block the feature <strong>needs</strong> (a companion). This is a block that is an <strong>alternative</strong>. Its prescription — keep the feature on the facade of the block the user names, reach the other through <code>Inst::ram_t</code> — would produce <code>board::watchdog.feed_within_window()</code>, which is exactly the lie the split exists to prevent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What actually decided it was not on the checklist at all.</strong> It was the <code>class:</code>
+key in the register file — the substitutability gate, which is Question 0's own
+artefact. <code>st/wwdg_v2</code> is <code>class: window_watchdog</code>, not <code>class: watchdog</code>, and
+once the data says that, the role table, the codegen and the personality
+enumerator all follow without anybody making a taxonomy judgement. So this is
+one more data point for the conclusion this page already reached: <strong>Question 0
+plus the manual decides, and the kinds are a checklist.</strong> The novelty is only
+that the trap was in the <em>kind</em> column rather than the <em>layer</em> column, and that
+the correct answer was reachable by reading two <code>class:</code> lines.</p>
+<div class="admonition danger">
+<p class="admonition-title">And the gate is softer than three separate places said it was</p>
+<p>roles.py, <code>st/wwdg_v2</code>'s commit body and the first draft of the guide all
+said the same sentence: naming the wrong watchdog for the role is <em>"a
+validation error that says which class it found."</em> Tried, on a real board
+file, and it is <strong>not</strong>: <code>board_validate._check_peripheral</code> grades an
+<code>ip_class</code> mismatch as a <strong>warning</strong> — <em>"the driver may not match"</em> — for
+every role in the table, so <code>alloy build</code> proceeds and the failure lands as
+an incomplete-type cascade in C++.</p>
+<p>Two consequences, and the second is the general one. Locally, <code>alloy/wwdt.hpp</code>
+now carries a <code>static_assert</code> on the absent <code>wwdt_impl&lt;&gt;</code> specialization that
+names the confusion, and <code>scripts/check_compile_errors.py</code> compiles it.
+Generally: <strong>this page's <code>ip_class</code> column describes an advisory check.</strong>
+Every argument on this page that leans on a role refusing a peripheral of the
+wrong class is leaning on a warning plus whatever the driver's own C++
+happens to say. Promoting it is one branch shared by every role and was not
+changed here.</p>
+</div>
 <h4 id="questions-610-which-layer-does-the-knob-live-in">Questions 6–10: which layer does the knob live in?<a class="headerlink" href="#questions-610-which-layer-does-the-knob-live-in" title="Permanent link">&para;</a></h4>
 <p>Only reached by things that really are knobs, on a peripheral question 0 cleared.</p>
 <p><strong>6. Is the answer a count, a limit, a width, or a rate the die fixes?</strong>
@@ -5354,6 +5543,11 @@ empty road:</p>
 <td>8 — <code>"no encoder role on this board"</code></td>
 </tr>
 <tr>
+<td><code>tick</code></td>
+<td><code>nucleo_g0b1re</code> (<code>caps::tick</code>, TIM6)</td>
+<td>8 — <code>"no tick role on this board"</code>. The example ALSO branches on <code>feat::trgo</code>, which is 1 on TIM6 and 0 on TIM14/16/17, so a board that binds the role to a small timer takes a third road that no board here exercises yet</td>
+</tr>
+<tr>
 <td><code>adc_watchdog</code></td>
 <td><code>nucleo_g0b1re</code> <strong>and</strong> <code>nucleo_g071rb</code> (<code>feat::analog_watchdogs == 3</code>)</td>
 <td>7 — of which <code>same70_xplained</code> is the informative one: it HAS an ADC (<code>afec0_t</code>) and no reachable watchdog, so <code>Adc::watchdogs</code> is 0 and the same <code>if constexpr</code> that serves a board with no ADC at all serves it</td>
@@ -5587,6 +5781,12 @@ predictions came to be scored rather than argued.</p>
 <td>"it needs a pin mux → a binder tag"</td>
 <td>the pins <em>are</em> binder tags; what v1 missed is that encoder mode <strong>excludes PWM on the same block</strong>, and v1 had no category for a mutually exclusive whole-block mode. "A different IP tag, therefore a different driver" cannot express it either: <code>tim3</code> has one IP tag and two personalities</td>
 <td>curated (question 0, row 3 — <code>SMCR</code> was a register with zero fields), then <strong>BUILT</strong> (<code>f1f6833</code>)</td>
+</tr>
+<tr>
+<td>the basic and small timers (TIM6/7/14/15/16/17)</td>
+<td>the checklist was never asked — question 0 answered first and answered everything: all six were <code>uncurated</code>, which is row 1, so the only available move was data</td>
+<td><strong>the interesting judgement was not a LAYER, it was how many IPs.</strong> "A timer is a timer" says reuse <code>st/tim_gp16</code>; the register data says four separate blocks, and the load-bearing difference is <code>BDTR.MOE</code> — TIM15/16/17 leave the pin inactive with every other register correct, so reuse would have produced silence rather than an error. Nothing on this page has a question for "is this the same IP"; the answer came from diffing upstream's block hierarchy</td>
+<td>curated (question 0, row 1) in <code>83bcbc2</code>, then <strong>BUILT</strong> (<code>e8d433d</code>)</td>
 </tr>
 </tbody>
 </table>

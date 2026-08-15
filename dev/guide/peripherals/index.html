@@ -649,6 +649,8 @@
       
         
       
+        
+      
     
     
     
@@ -879,6 +881,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Watchdog, RTC, NVM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-watchdogs-and-they-are-not-interchangeable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two watchdogs, and they are not interchangeable
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -961,6 +980,34 @@
     
   
     Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
   
 
     
@@ -1418,6 +1465,8 @@
       
         
       
+        
+      
     
     
     
@@ -1631,6 +1680,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1779,6 +1856,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Watchdog, RTC, NVM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-watchdogs-and-they-are-not-interchangeable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two watchdogs, and they are not interchangeable
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1972,6 +2066,37 @@ safely degrades to a full mask:</p>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">rtc</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::rtc  */</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">nvm</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::nvm — key/value over a flash page */</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
+<h3 id="two-watchdogs-and-they-are-not-interchangeable">Two watchdogs, and they are not interchangeable<a class="headerlink" href="#two-watchdogs-and-they-are-not-interchangeable" title="Permanent link">&para;</a></h3>
+<p><code>board::watchdog</code> (an IWDG) asks <em>is anybody still running?</em> A loop that has lost its timebase
+and spins ten times too fast answers yes, and is never reset. <code>board::window_watchdog</code> (a WWDG)
+asks the harder question — <em>is anybody running at the right rate?</em> — by resetting the part on a
+feed that arrives <strong>before</strong> the window opens as readily as on one that never arrives.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w">  </span><span class="c1">// the window the board file declares</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">// w.earliest .. w.deadline — what the counter could actually land on</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">control_step</span><span class="p">();</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>They are <strong>two roles</strong>, not two modes of one, and a board may declare both — that is the normal
+safety shape, an IWDG as the long backstop and a WWDG as the loop-rate monitor. The chip
+database records the split at its own gate — <code>st/wwdg_v2</code>'s IP class is <code>window_watchdog</code>, not
+<code>watchdog</code> — so getting the two the wrong way round fails rather than quietly changing what
+<code>feed()</code> means. It fails in two different places, and only one of them is a validator error:
+naming a <code>wwdg</code> for the <code>watchdog</code> role while <code>window_watchdog</code> also claims it is rejected by
+the personality guard (<em>"a block runs in one personality at a time"</em>); naming an <code>iwdg</code> for
+<code>window_watchdog</code> only <em>warns</em> at validation — an <code>ip_class</code> mismatch is a warning for every
+role — and is stopped by a <code>static_assert</code> in <code>alloy/wwdt.hpp</code> that names the confusion.
+Three more consequences worth knowing before you reach for it:</p>
+<ul>
+<li><strong>it is short.</strong> A WWDG counts its own bus clock through a fixed /4096 and a seven-bit
+  counter, so on a 64 MHz APB it tops out near half a <em>second</em> — three orders of magnitude
+  under the IWDG's ~32 s. Ask for more and you get a compile error that names
+  <code>board::window_watchdog.longest</code>, not a silent clamp.</li>
+<li><strong>there is no <code>stop()</code>.</strong> The activation bit is cleared only by a reset, so the facade offers
+  no method that would have to lie about switching it off.</li>
+<li><code>on_early_wakeup(fn)</code> installs the last-gasp hook — an interrupt one counter tick <em>before</em> the
+  reset, on a machine that is still running. It pairs with the
+  <a href="../crash-reports/">crash report</a>: same rule for the handler (touch nothing that could itself
+  fail), same reader (the next boot). Install it before <code>start()</code>.</li>
+</ul>
 <hr />
 <p>Need something the HAL doesn't expose yet? The generated register overlays are typed and
 available, so you can drop to registers for one peripheral without leaving the framework — see
