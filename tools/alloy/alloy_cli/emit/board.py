@@ -184,8 +184,9 @@ def _dma_class_controllers(chip: dict[str, Any],
 
 def dma_signal_candidates(board: dict[str, Any], chip: dict[str, Any]) -> list[str]:
     """Every 'role.signal' this board could legally assign: a declared role whose
-    bound peripheral advertises the signal under `dma_requests` (G0-shape) or
-    `dma_routes` (stream-engine shape, F4/F7)."""
+    bound peripheral advertises the signal under `dma_requests` (free-router
+    shape — G0/G4 DMAMUX, SAME70 XDMAC) or `dma_routes` (stream-engine shape,
+    F4/F7)."""
     out: list[str] = []
     for role, cfg in (board.get("roles") or {}).items():
         if not isinstance(cfg, dict) or not isinstance(cfg.get("peripheral"), str):
@@ -223,17 +224,36 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
     """Every problem in the board's `dma:` map, as
     {key, message, suggestions} — deterministic order, all found in one pass.
 
-    TWO silicon shapes, decided per signal at the resolution step below:
+    TWO CONSTRAINT shapes, decided per signal at the resolution step below.
+    Note "constraint", not "silicon": THREE silicons ride these two branches,
+    because what decides the branch is whether the chip's routing data pins a
+    signal to particular channels, not who made the die.
 
-    - DMAMUX/free-router (G0/G4, `dma_requests`): the request id is chip-wide
-      so ANY channel of ANY dma-class controller may serve it, and the only
+    - Free router (`dma_requests`): the request id is a per-peripheral fact and
+      ANY channel of ANY dma-class controller may carry it, so the only
       inter-assignment rule is collision. Channels are 1-BASED (dma_v1).
+      Silicon here: STM32 G0/G4 (dma_v1 + DMAMUX) and SAME70 (XDMAC).
     - Stream engine (F4/F7, `dma_routes` — the phase-3 extension this point
       was marked for): one signal reaches ONLY its triples, so the stated
       (controller, stream) must match one, the matched triple supplies the
       request (CHSEL), and a non-match is refused listing every legal
       "{controller, stream}" (design §1). Streams are 0-BASED per ST stream
       numbering; the errors say which base they mean, both ways.
+
+    WHY SAME70's XDMAC NEEDED NO THIRD BRANCH (phase 5, and worth stating
+    because a reviewer will reasonably expect a third silicon to cost code).
+    XDMAC selects its peripheral with PERID, a field of the channel's own CC
+    register, and its 24 channels are interchangeable — so the legality
+    question it poses is, word for word, the one this branch already answers:
+    "is that channel index in range, and is it free?". The request id is
+    keyed per peripheral in `dma_requests` on BOTH silicons; that G0 reaches
+    its id through a DMAMUX line and XDMAC through a CC field is a driver
+    fact, and the driver is where it stays. XDMAC is even 1-based like dma_v1
+    (`microchip_xdmac_v1.hpp` indexes `Ch - 1`), so the shared numbering
+    errors below are literally true for it. The two things that DO differ —
+    an XDMAC channel serves one signal at a time, and the chip states its
+    geometry as `channels: {count: 24}` — are the two things this branch
+    already reads from data rather than hardcoding.
     """
     problems: list[dict[str, Any]] = []
     assignments = board.get("dma") or {}
@@ -308,12 +328,16 @@ def dma_assignment_problems(board: dict[str, Any], chip: dict[str, Any],
                          f"'{prev}' — one stream moves one signal", free)
             continue
 
-        # G0 shape (dma_requests): any channel of any dma-class controller.
+        # Free-router shape (dma_requests): any channel of any dma-class
+        # controller. The parenthetical names both routers on purpose — this
+        # message is reached on SAME70, which has no DMAMUX, and a refusal
+        # that names hardware the board does not have sends the reader to the
+        # wrong chapter of the wrong manual.
         if "stream" in assign and "channel" not in assign:
             bad(key, f"{periph} '{signal}' routes through a free router "
-                     f"(DMAMUX): the key is 'channel' (1-based, dma_v1 "
-                     f"numbering), not 'stream' (the stream engines' 0-based "
-                     f"key)", [])
+                     f"(DMAMUX on ST; PERID on XDMAC): the key is 'channel' "
+                     f"(1-based, dma_v1 numbering), not 'stream' (the stream "
+                     f"engines' 0-based key)", [])
             continue
         channel = assign.get("channel")
         if isinstance(channel, bool) or not isinstance(channel, int):
