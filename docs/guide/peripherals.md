@@ -15,9 +15,14 @@ board::led.off();
 board::led.toggle();
 
 if constexpr (board::caps::button) {
-    bool down = board::button.pressed();
+    bool down = board::button.is_active();     // "pressed", in the board's polarity
 }
 ```
+
+`is_active()` answers in the **board's** terms: the board file says the button is active-low, so
+a grounded pin reads `true` and the app never learns which way round the hardware is.
+`is_high()` is the raw-level twin, for a signal whose polarity belongs to the part rather than
+to the board.
 
 ### Pin interrupts
 
@@ -69,8 +74,16 @@ if (uart.read(byte)) {          // non-blocking; false when no byte is ready
 Interrupt-driven RX (where the driver supports it) attaches a callback:
 
 ```cpp
-uart.on_rx([](void*, std::uint8_t b) { /* runs in ISR context */ }, nullptr);
+uart.on_receive(+[](void* ctx, std::uint8_t b) { /* runs in ISR context */ }, nullptr);
 ```
+
+Like the pin-interrupt hooks, `on_receive` is `requires`-gated on the driver having an interrupt
+path, so portable code probes for it rather than assuming — see `examples/irq_echo/src/main.cpp`
+for the `if constexpr (requires { u.on_receive(nullptr, nullptr); })` wrapper. `detach_receive()`
+stops reporting.
+
+Taking the CPU out of the byte loop entirely — a DMA ring behind the UART, with no per-byte
+interrupt at all — is **[Streaming with DMA](dma.md)**.
 
 ## I²C
 
@@ -201,10 +214,17 @@ share one vector each attach their own handler and all fire — the portable cod
 `#ifdef` or a vector table:
 
 ```cpp
-alloy::irq::attach(board::uart2_irq, &on_rx, &ctx);
-alloy::irq::enable(board::uart2_irq);
-alloy::irq::set_priority(board::uart2_irq, 1);   // 0 = most urgent; higher = less
+// The line number is a generated fact: device.hpp emits one per instance.
+constexpr auto line = alloy::dev::usart2_t::irq;   // alloy::irq_line{28} on an STM32G0
+
+alloy::irq::attach(line, &on_rx, &ctx);
+alloy::irq::enable(line);
+alloy::irq::set_priority(line, 1);   // 0 = most urgent; higher = less
 ```
+
+There is no `board::…_irq` name. Lines come from the **device** descriptor
+(`alloy::dev::<instance>_t::irq`), or as a literal `alloy::irq_line{N}` when you are reaching for
+a vector no instance owns — `examples/concurrency_probe/src/main.cpp` uses both spellings.
 
 For data shared between an ISR and the main loop, `critical_section` masks only interrupts at a
 given level **or less urgent** (level 0 is the most urgent) — a high-priority control loop keeps

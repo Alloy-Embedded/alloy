@@ -68,8 +68,15 @@ else in the framework:
 ```cpp
 #include <alloy/device.hpp>            // generated typed overlays
 
-auto& tim = *reinterpret_cast<alloy::ip::st::tim_gp16::regs*>(alloy::dev::tim3_t::base);
-tim.ARR = 999;                          // typed field, checked at compile time
+using gpio  = alloy::dev::gpioa_t::ip;                        // alloy::ip::st::gpio_v2
+auto& regs = *reinterpret_cast<gpio::regs*>(alloy::dev::gpioa_t::base);
+regs.BSRR  = std::uint32_t{1} << 5;                           // set PA5
 ```
+
+The names are your chip's, not the framework's: `alloy::dev::` carries exactly the instances
+your part has, so this sample is an STM32 sample and a die without a `gpioa` will not compile it.
+That is the intended failure — the escape hatch is typed all the way down. The full treatment,
+including the two other routes and what each one costs you, is in
+**[Escaping the HAL](../guide/escape-hatch.md)**.
 
 Facts stay generated; you only add the behavior you need.
