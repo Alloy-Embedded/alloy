@@ -1160,15 +1160,28 @@ jobs:
           fast = next((s for s in d["sections"] if s["name"] == ".fastcode"), None)
           if fast is None or not fast["size"]:
               sys.exit("FAIL: .fastcode is absent or empty — nothing was placed there")
-          if not fast["needs_copy"]:
-              sys.exit(f"FAIL: .fastcode runs at {fast['vma']:#x} and is stored at "
-                       f"{fast['lma']:#x} — same address, so it is NOT in fast RAM")
+          # Ask the INTENT — "does it run from fast RAM?" — not the mechanism.
+          # `needs_copy` (vma != lma) is how a Cortex-M gets there: stored in
+          # flash, copied by startup. Xtensa gets there differently — the ESP32
+          # ROM loader places IRAM straight from the flashed image, so vma == lma
+          # and the code is in RAM anyway. Asserting needs_copy failed both ESP32
+          # boards for having the right answer by another route.
+          if fast["in_ram"] is None:
+              sys.exit(f"FAIL: .fastcode runs at {fast['vma']:#x}, which is in NO "
+                       "declared memory region — the chip's map cannot answer "
+                       "whether this is RAM, so this gate is not defending "
+                       "anything. Fix the chip data, do not relax the check.")
+          if not fast["in_ram"]:
+              sys.exit(f"FAIL: .fastcode runs at {fast['vma']:#x}, in region "
+                       f"{fast['region']} — not RAM")
           placed = [s for s in d["symbols"] if s.get("section") == ".fastcode" and s["size"]]
           if not placed:
               sys.exit("FAIL: .fastcode has size but holds no sized symbol")
+          how = ("copied from %#x at startup" % fast["lma"] if fast["needs_copy"]
+                 else "placed directly by the platform loader")
           for s in placed:
               print(f"ok: {s['name']} at {s['addr']:#x} in .fastcode "
-                    f"(loaded from {fast['lma']:#x})")
+                    f"(region {fast['region']}, {how})")
           # And the budget in the example's alloy.toml was evaluated, not skipped.
           if not d["budget"]:
               sys.exit("FAIL: examples/fastcode declares [budget] but none was checked")

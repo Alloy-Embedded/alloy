@@ -148,6 +148,45 @@ def parse_sections(output: str) -> list[dict[str, Any]]:
     return sections
 
 
+def locate(sections: list[dict[str, Any]], chip: dict[str, Any]) -> None:
+    """Tag each section with the chip region its VMA falls in, and whether that
+    region is RAM. In place.
+
+    `needs_copy` answers "must startup copy this?", which is a MECHANISM and is
+    not the same question as "does this run from RAM?". On a Cortex-M the two
+    coincide: fast code is stored in flash and copied up, so vma != lma. On
+    Xtensa they do not — the ESP32's ROM loader places IRAM directly from the
+    flashed image, so `.fastcode` lands at the base of the chip's `iram` region
+    (kind `ram`, per the device data) with vma == lma, and is in fast RAM
+    regardless. A check written against needs_copy calls that a failure: it is
+    wrong about the architecture rather than about the firmware, which is
+    exactly what it did the first time CI built the ESP32 boards.
+
+    Regions come from the chip database, so this stays true for a part whose map
+    nobody here has seen.
+
+    `in_ram` is THREE-VALUED on purpose: True, False, or None for "no declared
+    region contains this address". Collapsing the third case into False would
+    make a gate silently stop defending anything on a chip whose memory map is
+    incompletely curated — passing or failing for a reason that has nothing to
+    do with the firmware. A caller must decide what "cannot tell" means to it,
+    and say so out loud.
+    """
+    regions = []
+    for r in chip.get("memories") or []:
+        base, size = r.get("base"), r.get("size")
+        if base is None or size is None:
+            continue
+        start = int(base, 16) if isinstance(base, str) else int(base)
+        regions.append((start, start + int(size), r.get("name"), r.get("kind")))
+    regions.sort()
+    for sec in sections:
+        name, kind = next(((n, k) for start, end, n, k in regions
+                           if start <= sec["vma"] < end), (None, None))
+        sec["region"] = name
+        sec["in_ram"] = None if name is None else (kind == "ram")
+
+
 def attribute(symbols: list[dict[str, Any]],
               sections: list[dict[str, Any]]) -> None:
     """Tag each symbol with the section whose VMA range contains it.
@@ -248,6 +287,7 @@ def symbol_report(project: Project, chip: dict[str, Any],
                                     capture_output=True, text=True, check=False)
             symbols = parse_nm(nm_out.stdout)
             sections = parse_sections(od_out.stdout)
+            locate(sections, chip)
             attribute(symbols, sections)
             if not symbols:
                 reason = f"`{Path(nm).name}` reported no symbols for {elf.name}"

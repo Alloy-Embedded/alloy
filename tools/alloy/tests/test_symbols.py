@@ -171,3 +171,63 @@ def test_budget_is_measured_against_the_section_not_the_symbol_total() -> None:
     sections = symbols.parse_sections(_OBJDUMP)
     assert symbols.check_budget(sections, {".fastcode": 0x13})[0]["ok"] is False
     assert symbols.check_budget(sections, {".fastcode": 0x14})[0]["ok"] is True
+
+
+# --- locate(): which region a section runs in -------------------------------
+# `needs_copy` answers "must startup copy this?" — a MECHANISM. A gate that
+# wants "does the hot path run from RAM?" has to ask the map instead, or it
+# fails an architecture for reaching the right answer by another route (the
+# ESP32 ROM loader places IRAM directly, so vma == lma there and .fastcode is
+# in RAM anyway — that failed both ESP32 boards in CI).
+
+_CHIP = {"memories": [
+    {"name": "flash", "kind": "flash", "base": "0x08000000", "size": 131072},
+    {"name": "sram", "kind": "ram", "base": "0x20000000", "size": 36864},
+    {"name": "iram", "kind": "ram", "base": "0x40080800", "size": 128000},
+]}
+
+
+def _sec(name: str, vma: int) -> dict:
+    return {"name": name, "vma": vma, "lma": vma, "size": 16}
+
+
+def test_locate_names_the_region_and_answers_ram() -> None:
+    from alloy_cli.symbols import locate
+
+    secs = [_sec(".text", 0x0800_00C0), _sec(".fastcode", 0x2000_0000),
+            _sec(".fastcode_xtensa", 0x4008_0800)]
+    locate(secs, _CHIP)
+    assert [s["region"] for s in secs] == ["flash", "sram", "iram"]
+    assert [s["in_ram"] for s in secs] == [False, True, True]
+
+
+def test_locate_says_it_CANNOT_TELL_rather_than_false() -> None:
+    """The third value is the point. Collapsing "no declared region" into
+    False would make the gate stop defending anything on a chip whose map is
+    incompletely curated — and do it silently, which is worse than no gate."""
+    from alloy_cli.symbols import locate
+
+    secs = [_sec(".mystery", 0xDEAD_0000)]
+    locate(secs, _CHIP)
+    assert secs[0]["region"] is None
+    assert secs[0]["in_ram"] is None, "unknown must not read as 'not RAM'"
+
+    # A chip with no curated map at all: every section is unknown, not "flash".
+    secs = [_sec(".text", 0x0800_00C0)]
+    locate(secs, {})
+    assert secs[0]["in_ram"] is None
+
+
+def test_locate_is_exclusive_at_region_boundaries() -> None:
+    """The ESP32's vectors region ends exactly where iram begins, and
+    .fastcode sits on that boundary — an off-by-one here would name the
+    wrong region on the very board this was written for."""
+    from alloy_cli.symbols import locate
+
+    chip = {"memories": [
+        {"name": "vectors", "kind": "ram", "base": "0x40080000", "size": 2048},
+        {"name": "iram", "kind": "ram", "base": "0x40080800", "size": 128000},
+    ]}
+    secs = [_sec("last_vector", 0x4008_07FF), _sec("first_iram", 0x4008_0800)]
+    locate(secs, chip)
+    assert [s["region"] for s in secs] == ["vectors", "iram"]
