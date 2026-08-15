@@ -1,8 +1,9 @@
 // User-facing DMA: a compile-time channel claim returning a move-aware
 // token, plus typed 16-bit transfer starters (ADC samples and timer compare
 // values are 16-bit — wider helpers arrive with a use case). Below the
-// channel: `route` (the generated board fact) and `ring` (the circular
-// stream), per docs/design/dma-streams.md.
+// channel: `route` (the generated board fact), `ring` (the circular stream)
+// and `pair` (two channels claimed and run as one unit — the full-duplex
+// shape), per docs/design/dma-streams.md.
 //
 // Honest v1 doctrine (same as irq attach / double-open): claiming an
 // already-claimed (controller, channel) TRAPS at runtime — C++ cannot make
@@ -97,6 +98,24 @@ public:
         impl::template start<Ch>();
     }
 
+    // One-shot peripheral -> memory, byte items (SPI/I2C receive and
+    // friends). The 16-bit twin above serves the ADC; this one exists because
+    // a byte-wide peripheral data register must be moved a BYTE at a time —
+    // on ST's FIFO SPI a 16-bit access data-packs two frames into one
+    // transfer (st_spi_v2.hpp's dr8() quirk), so psize is b8 and not an
+    // engine-chosen default.
+    void start_p2m_u8(std::uintptr_t periph_reg, std::span<std::uint8_t> dst,
+                      std::uint8_t request) const {
+        if (dst.empty() || dst.size() > 0xFFFF) {
+            __builtin_trap();  // the count register is 16-bit
+        }
+        impl::template setup<Ch>(impl::dir::periph_to_mem, false, impl::width::b8,
+                                 impl::width::b8, periph_reg,
+                                 reinterpret_cast<std::uintptr_t>(dst.data()),
+                                 static_cast<std::uint16_t>(dst.size()), request);
+        impl::template start<Ch>();
+    }
+
     // Circular memory -> peripheral, 16-bit items; runs until stop().
     // The source span must OUTLIVE the stream (static/global buffer).
     // Gated on the controller's supports_circular capability: on a backend
@@ -188,6 +207,180 @@ template <class Controller, unsigned Ch, std::uint8_t Request>
 [[nodiscard]] inline channel<Controller, Ch> claim(route<Controller, Ch, Request>) {
     return channel<Controller, Ch>::claim();
 }
+
+// ── The pair: two channels claimed and run as one unit ────────────────────
+//
+// The SPI full-duplex shape (design §1's `pair` row, anchor 2.4). A duplex
+// exchange is ONE operation with TWO channels, and every interesting property
+// of it is a property of the pair rather than of either channel:
+//
+//   CLAIM ORDER IS FIXED — RX first, TX second, in ONE interrupts-masked
+//   section. Two claimants of an OVERLAPPING pair (A wants rx=4/tx=5, B wants
+//   rx=5/tx=4) must produce a deterministic trap, not an order-dependent one.
+//   Building this from two `channel::claim()` calls would give two masked
+//   sections with a window between them, so an interrupt-context claimant
+//   could take the second channel after we took the first: both claimants
+//   then trap, each holding half a pair, and WHICH one traps depends on
+//   timing. One section makes the loser always the one that ran second, and
+//   it holds nothing.
+//
+//   ARM ORDER IS FIXED TOO, and for a different reason — RX must be armed and
+//   the peripheral's receive request raised BEFORE the transmit side starts,
+//   because on a duplex bus the first byte comes back while the first byte is
+//   still going out. `start_tx_m2p_u8` refuses to run before
+//   `start_rx_p2m_u8` has, so the rule is a mechanism and not a comment. It
+//   is also the one part of a route that emulation can witness: with TX armed
+//   first the whole memory-to-peripheral block runs at the enable write and
+//   every receive request lands on a channel that is not yet listening.
+//
+//   DESTRUCTION stops both and releases both (the ring's stops-then-releases
+//   precedent, §4), so a pair is scoped to the transfer that needs it and the
+//   channels are available again afterwards. Same ordinal space and same trap
+//   code as `channel::claim()` and `ring`: a pair, a ring and a token on one
+//   channel are one resource, and the second claimant traps.
+//
+// The REQUEST ids are parameters here, not read off the routes, because which
+// fact is the honest source is the FACADE's question: a chip-wide
+// `Inst::dmareq_rx` on a free-router family, the matched route's request on a
+// stream engine that has no chip-wide id (design §1). The pair carries the
+// ownership and the ordering; the facade carries the endpoint.
+template <class RxRoute, class TxRoute>
+class pair {
+    using rx_controller = typename RxRoute::controller;
+    using tx_controller = typename TxRoute::controller;
+    static constexpr unsigned rx_channel = RxRoute::channel;
+    static constexpr unsigned tx_channel = TxRoute::channel;
+    using rx_impl = hal::dma_impl<rx_controller>;
+    using tx_impl = hal::dma_impl<tx_controller>;
+
+public:
+    pair() {
+        {
+            const arch::irq_state saved = arch::irq_save();
+            // RX FIRST, TX SECOND — see the header note. Bare sub_exclusive,
+            // not channel::claim(), precisely so there is ONE masked section.
+            alloy::claim::sub_exclusive<rx_controller, rx_channel,
+                                        alloy::claim::personality::dma>();
+            alloy::claim::sub_exclusive<tx_controller, tx_channel,
+                                        alloy::claim::personality::dma>();
+            arch::irq_restore(saved);
+        }
+        rx_impl::enable_controller();
+        tx_impl::enable_controller();
+    }
+
+    // The route-typed spelling, so a call site reads as the two board facts it
+    // is: `dma::pair p{Role::rx_route{}, Role::tx_route{}}`.
+    pair(RxRoute, TxRoute) : pair() {}
+
+    // Not movable, for the reason `ring` is not: this object owns two claims
+    // and its destructor gives them back. A moved-from copy would release
+    // channels that are still running.
+    pair(const pair&) = delete;
+    pair& operator=(const pair&) = delete;
+    pair(pair&&) = delete;
+    pair& operator=(pair&&) = delete;
+
+    ~pair() {
+        stop();
+        const arch::irq_state saved = arch::irq_save();
+        // Reverse of the claim order, in one section: nothing may observe a
+        // half-released pair.
+        alloy::claim::sub_release<tx_controller, tx_channel,
+                                  alloy::claim::personality::dma>(0u);
+        alloy::claim::sub_release<rx_controller, rx_channel,
+                                  alloy::claim::personality::dma>(0u);
+        arch::irq_restore(saved);
+    }
+
+    // Arm the receive half: peripheral -> memory, byte items. Must be called
+    // before the transmit half (the arm-order rule above).
+    void start_rx_p2m_u8(std::uintptr_t periph_reg, std::span<std::uint8_t> dst,
+                         std::uint8_t request) {
+        if (dst.empty() || dst.size() > 0xFFFF) {
+            __builtin_trap();  // the count register is 16-bit
+        }
+        rx_impl::template setup<rx_channel>(
+            rx_impl::dir::periph_to_mem, false, rx_impl::width::b8,
+            rx_impl::width::b8, periph_reg,
+            reinterpret_cast<std::uintptr_t>(dst.data()),
+            static_cast<std::uint16_t>(dst.size()), request);
+        rx_impl::template start<rx_channel>();
+        rx_armed_ = true;
+    }
+
+    // Arm the transmit half: memory -> peripheral, byte items. The source must
+    // be DMA-visible RAM — on SAME70 the XDMAC cannot read embedded flash
+    // (design §4), which is why the anchor's `tx[]` is a local and not a
+    // string literal.
+    void start_tx_m2p_u8(std::span<const std::uint8_t> src,
+                         std::uintptr_t periph_reg, std::uint8_t request) {
+        if (!rx_armed_) {
+            __builtin_trap();  // TX before RX loses the first byte back
+        }
+        if (src.empty() || src.size() > 0xFFFF) {
+            __builtin_trap();
+        }
+        tx_impl::template setup<tx_channel>(
+            tx_impl::dir::mem_to_periph, false, tx_impl::width::b8,
+            tx_impl::width::b8, periph_reg,
+            reinterpret_cast<std::uintptr_t>(src.data()),
+            static_cast<std::uint16_t>(src.size()), request);
+        tx_impl::template start<tx_channel>();
+    }
+
+    [[nodiscard]] bool done() const {
+        return rx_impl::template complete<rx_channel>() &&
+               tx_impl::template complete<tx_channel>();
+    }
+    [[nodiscard]] bool error() const {
+        return rx_impl::template error<rx_channel>() ||
+               tx_impl::template error<tx_channel>();
+    }
+
+    // Wait for BOTH halves, and answer for both: a duplex that half-failed did
+    // not succeed. The loop checks the error side first so a failure on either
+    // channel returns immediately instead of waiting for a completion the
+    // failed channel will never produce.
+    //
+    // BOUNDED, and this is a deliberate departure from `channel::wait()`. A
+    // single channel that never completes is broken silicon; a PAIR has a
+    // second way to stall that is not silicon at all — a board whose two
+    // assignments are not the two halves of one endpoint leaves one side
+    // waiting for traffic the other will never generate. The facade above this
+    // returns a bool, and a bool whose false case can only be reached by
+    // hanging is not a bool. The budget is the same idiom and the same
+    // reasoning as `spi::handle::wait_transfer`'s: far above any legal
+    // transfer's latency, so it only ever fires on a genuine fault.
+    [[nodiscard]] bool wait() const {
+        for (std::uint32_t spin = 0; spin < kWaitBudget; ++spin) {
+            if (error()) {
+                return false;
+            }
+            if (done()) {
+                return !error();
+            }
+        }
+        return false;
+    }
+
+    // Stop both, TRANSMIT FIRST: the reverse of the arm order. Stopping the
+    // receive half of a still-transmitting duplex is how bytes arrive with
+    // nowhere to go and the peripheral's overrun flag gets stuck.
+    void stop() const {
+        tx_impl::template stop<tx_channel>();
+        tx_impl::template clear_flags<tx_channel>();
+        rx_impl::template stop<rx_channel>();
+        rx_impl::template clear_flags<rx_channel>();
+    }
+
+private:
+    static constexpr std::uint32_t kWaitBudget = 4'000'000u;
+    bool rx_armed_ = false;
+};
+
+template <class RxRoute, class TxRoute>
+pair(RxRoute, TxRoute) -> pair<RxRoute, TxRoute>;
 
 // ── Rings: circular streams over a caller-owned buffer ────────────────────
 //
