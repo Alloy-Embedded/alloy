@@ -100,6 +100,29 @@ co_await dma.run([&] { uart.write_dma_begin(chan, msg); });
 uart.write_dma_end(chan);
 ```
 
+### Awaiting a DMA ring boundary
+
+`dma_waiter` parks a task on one transfer finishing. `ring_waiter` parks it on the *next
+hardware-stable half* of a continuously refilling [ring](dma.md) — which is what a control loop
+wants, since the transfer never finishes:
+
+```cpp
+#include <alloy/async/dma.hpp>
+
+alloy::dma::ring_storage<std::uint16_t, 256> storage;
+auto stream = adc.ring(storage);           // outlives the task
+alloy::async::ring_waiter waiter{stream};  // constructed after the ring, same lifetime
+
+for (;;) {
+    std::span<const std::uint16_t> half = co_await waiter.take();
+    process(half);
+}
+```
+
+A consumer that awaits more slowly than halves go stable does **not** deadlock: it wakes on the
+next boundary, `take()` resynchronizes to the most recent half, and the skipped ones show up in
+`stream.missed()`. One waiter per ring, like every other waiter here.
+
 Three things are worth knowing before you use them:
 
 - **The transfer starts inside the `co_await`**, after the task is parked. That closes the
@@ -124,8 +147,10 @@ The honest split, because "it compiles" and "it ran" are different claims:
 |---|---|
 | `spi_master`, `i2c_master`, `dma_waiter` | **Ran on the ISA.** The `async_io` example + `async_io.robot` assert, on an emulated STM32G071RB, that each task *suspended and was resumed by the peripheral interrupt* — the leg prints how many times the executor resumed it, and the same I/O done without suspending prints a different number and fails the test. |
 | `uart_reader` | **Host unit tests only**, against a `mock_uart` double. No example uses it and no emulation leg exercises it; it has never been observed running on a real ISA. |
+| `ring_waiter` | **Host unit tests only** — two cases in `tests/test_dma_ring.cpp`, covering that a parked task wakes once per boundary and that a slow consumer resynchronizes. No example uses it and no emulation leg exercises it. |
 
-None of it has run on physical silicon — see the README's list of what is not done.
+None of it has run on physical silicon — see the README's list of what is not done, and
+[What is proven, and how](../reference/proof.md) for the same split across the whole framework.
 
 ## Concurrency doctrine — priorities, preemption, and what it costs
 

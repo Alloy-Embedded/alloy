@@ -193,19 +193,36 @@ complementary bridge are all in **[PWM and motor control](pwm.md)**.
 
 ## DMA
 
-DMA channels are claimed once, then drive a peripheral operation with zero CPU. Capability is
-checked at compile time — a controller without circular mode simply doesn't offer the circular
-call:
+DMA takes the CPU out of the data path entirely. It has **its own page** —
+**[Streaming data without the CPU](dma.md)** — because the answer differs on every board and
+every engine, and because how far each path has been proven differs too.
+
+The short version: your board file hands out the channels, the generator turns each assignment
+into a route constant, and the facade methods that need one simply **exist** on boards that
+declared it. You never type a channel number:
+
+```cpp
+alloy::dma::ring_storage<std::uint16_t, 256> storage;
+auto stream = adc.ring(storage);          // uses the board's `adc.conv` route
+auto half   = stream.take();              // one hardware-stable half at a time
+```
+
+The same shape gives you `uart.rx_ring()` for a byte stream with no per-byte ISR,
+`uart.write_dma()` for a one-shot transmit, and `spi.transfer_dma(tx, rx)` for full duplex
+through a claimed channel pair.
+
+You can still claim a channel by index — that is the escape hatch, for a route the board did not
+declare or a controller signal the facade does not model:
 
 ```cpp
 auto chan = alloy::dma::channel<board::dma_t, 1>::claim();
-
-// One-shot ADC burst into RAM:
 adc.read_burst(chan, board::adc_vref_channel, std::span<std::uint16_t>{samples});
-
-// Circular PWM waveform (only on controllers that support it):
 pwm.stream_duty(chan, std::span<const std::uint16_t>{wave});
 ```
+
+Both forms are capability-checked at compile time: ask for something the board or the silicon
+cannot do and the method is **not declared**, so you get an error naming what is missing rather
+than a link error or a runtime surprise.
 
 ## Interrupts
 

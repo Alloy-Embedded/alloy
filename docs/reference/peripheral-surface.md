@@ -1,5 +1,16 @@
 # The peripheral surface
 
+!!! note "A design record, not a guide"
+    This page decided the shape of alloy's peripheral API and then kept the
+    argument, including the parts that were wrong — you will find a section
+    titled *how this rule was refuted twice* and another naming the three
+    counterexamples that killed the first version. That is deliberate and it is
+    what makes it useful to an implementer; it is not what you want if you are
+    trying to *use* a peripheral. For that, start at
+    **[Peripherals](../guide/peripherals.md)**. Its numbers are also a snapshot
+    of the day it was written — the live ones are in
+    [Chip coverage](chip-coverage.md).
+
 Alloy's lead chip just went from 23 to 65 peripherals, 28 of them uncurated, and
 the drivers and config surface for the rest are about to be written. This page
 decides the *shape* of that surface first, because deciding it after 28 drivers
