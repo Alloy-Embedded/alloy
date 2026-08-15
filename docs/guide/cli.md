@@ -62,6 +62,7 @@ $ alloy build --board esp32_devkit
 | --- | --- |
 | `alloy size` — **JSON** | flash/RAM of the last build against the chip's real memories, and whether the image fits its update slot |
 | `alloy matrix [--boards a,b]` — **JSON** | build this project for **every** board and table the result |
+| `alloy symbols [--board <id>]` | what is in the last build and **where** — sections with their load vs run addresses, the largest symbols, and any `[budget]` in `alloy.toml` |
 | `alloy frame-audit` | coroutine frame sizes vs the `task_storage<N>` you declared |
 | `alloy crash [--line "…"] [--pc 0x…] [--elf app.elf]` — **JSON** | decode a device's crash report: pc/lr to file:line via addr2line, CFSR bits into words — see [Crash reports](crash-reports.md) |
 | `alloy svd [--chip <id>] [-o out]` | write a CMSIS-SVD file so a debugger can show peripheral registers |
@@ -91,12 +92,33 @@ same70_xplained     2.5K / 2048.0K     2.3K / 384.0K  1.3s
 A board that fails to build does not end the sweep — it gets a row with the reason, so one table
 tells you what fits where.
 
+`alloy symbols` answers the two questions `size` cannot: *where* does a section live, and *what*
+is filling it. The load address (`lma`) and the run address (`vma`) differ for anything copied at
+startup, which is how you see that a section is not loaded at all:
+
+```console
+$ alloy symbols
+section          size      vma        lma
+.isr_vector         192  0x08000000 0x08000000
+.text              2016  0x080000c0 0x080000c0
+.bss                340  0x20000000 0x080008a0  zeroed/reserved, not loaded
+.noinit              36  0x20000154 0x080008a0  zeroed/reserved, not loaded
+._heap_stack       2048  0x20000178 0x080008a0  zeroed/reserved, not loaded
+
+largest symbols:
+   312  0x08000164  .text        main
+   266  0x080006e4  .text        __udivsi3
+   196  0x080005c4  .text        Reset_Handler
+   192  0x08000000  .isr_vector  g_vector_table
+```
+
 ## Configure a board
 
 | Command | What it does |
 | --- | --- |
 | `alloy board-info [<id>]` — **JSON** | roles, capabilities, used pins and problems of any board |
 | `alloy board-validate [<id>] [--file f\|-]` — **JSON** | every problem located, with the pins that *would* work |
+| `alloy product-validate [<name>]` — **JSON** | the same, for a product TOML: every problem located, with a way out — see [Products](products.md) |
 | `alloy board-clone <src> <new>` | copy a curated board into your project as an editable one |
 | `alloy chip-info <chip>` — JSON | clock profiles, pin map with alternate functions, peripherals, role catalogue |
 | `alloy chip-status <chip> [--json]` | per peripheral: curated register data? HAL driver? Renode model? reachable from a board role? — see [Chip coverage](../reference/chip-coverage.md) |
@@ -112,16 +134,37 @@ checks a configuration *before* writing it. These verbs are what the
 `--graph` answers the question that comes after "what frequency": where the clock goes. Bus
 prescalers, and the kernel clock each peripheral is actually fed — with what that implies.
 
+The verb emits **JSON only** — there is no human-readable renderer and no `--text` flag. It is
+built for the [VS Code clock view](vscode.md) and for scripts; read it with `jq` or pipe it
+through a few lines of Python.
+
 ```console
 $ alloy clock --chip st/stm32f767 --graph --profile pll_180mhz
-SYSCLK 180 MHz → AHB ÷1 180 MHz → eth
-                 APB ÷4  45 MHz → usart3   115200 baud → 115089 (0.10% error)
-                 APB2 ÷2 90 MHz
+{
+  "schema": "alloy.clock_graph.v1",
+  "chip": "st/stm32f767",
+  "profile": "pll_180mhz",
+  "nodes": [
+    { "name": "sysclk", "label": "SYSCLK",        "hz": 180000000, "parent": null,     "divider": null },
+    { "name": "ahb",    "label": "AHB · HCLK",    "hz": 180000000, "parent": "sysclk", "divider": 1 },
+    { "name": "apb",    "label": "APB · PCLK",    "hz":  45000000, "parent": "ahb",    "divider": 4 },
+    { "name": "apb2",   "label": "APB2 · PCLK2",  "hz":  90000000, "parent": "ahb",    "divider": 2 }
+  ],
+  "consumers": [
+    { "peripheral": "eth",    "class": "eth",  "node": "ahb",  "hz": 180000000, "notes": [] },
+    { "peripheral": "usart3", "class": "uart", "node": "apb",  "hz":  45000000,
+      "notes": [ { "level": "info", "text": "115200 baud → 115089 (0.10% error)" } ] }
+  ],
+  "unstated": ["adc123_common", "dma1", "dma2", "flash", "gpioa", "…", "iwdg", "rcc"]
+}
 ```
 
-The baud error is computed with the driver's own rounding, so it is the error you will measure, not
-a different one. Peripherals whose feed the chip data does not state (an independent watchdog on its
-own oscillator) are listed as unplaceable rather than left out.
+Two fields carry the value. The `notes` on a consumer are computed with **the driver's own
+rounding**, so a baud error there is the error you will measure, not a different one. And
+`unstated` is the honest half: peripherals whose feed the chip data does not state (an
+independent watchdog on its own oscillator, a block whose kernel-clock node was never curated)
+are **listed as unplaceable rather than left out**, so a consumer missing from the graph is
+always visible as a gap in the data rather than as silence.
 
 ## Emulate
 
@@ -131,11 +174,22 @@ own oscillator) are listed as unplaceable rather than left out.
 
 ```console
 $ alloy emulate --board nucleo_f722ze
-alloy uart_echo ready
+platform: /…/.alloy/build-tree/nucleo_f722ze/out/nucleo_f722ze.repl
+script:   /…/.alloy/build-tree/nucleo_f722ze/out/nucleo_f722ze.resc
+uart:     sysbus.usart3
+…Renode's own INFO/WARNING lines…
+<your firmware's banner, then whatever it prints>
 ```
 
+Those three header lines are the whole contract with Renode: they are also exactly what a
+`renode-test` invocation needs, which is why `--emit-only` prints them and stops. What follows
+them is your program's own output — the banner in the block above is whichever example you built,
+not something the CLI prints.
+
 The platform is generated from the same chip data the firmware compiles against, so the emulated
-memory map and UART cannot drift from the real target. See [Emulation](emulation.md).
+memory map and UART cannot drift from the real target. **It works for seven of the nine shipped
+boards**; the two ESP32 boards have no Renode model and `alloy emulate` refuses them by name
+rather than booting a machine it cannot map. See [Emulation](emulation.md).
 
 ## Update a device in the field
 
@@ -210,6 +264,7 @@ itself is tested against.
 | `alloy lib search <text>` | filter by name, summary or category |
 | `alloy lib info <name>` | manifest + required concepts |
 | `alloy lib add <name>` | vendor into `./libs` and wire the build |
+| `alloy bus {validate,list,manifest}` | the wire contract for `libs/bus` datagrams, from `bus.toml` — see [The message bus](bus.md) |
 
 See [Driver libraries](libraries.md).
 
