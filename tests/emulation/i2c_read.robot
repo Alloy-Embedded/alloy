@@ -12,6 +12,32 @@ Documentation     I2C driver conformance in emulation: proves the driver actuall
 ...               silicon that Renode's STM32 I2C model does not implement. A real
 ...               >=1-byte transfer (this test) is what the model supports. RESC and
 ...               UART come from `alloy emulate` via --variable.
+...
+...               A THIRD leg is the phase-4 DMA variant (docs/design/dma-streams.md
+...               §6), and it is asserted for what it actually is. THE MODEL CANNOT
+...               WITNESS AN I2C DMA TRANSFER ON THE PINNED RENODE: 1.16.1's
+...               I2C.STM32F7_I2C exposes NO DMA request output at all (read out of the
+...               shipped assembly — its only GPIOs are EventInterrupt and
+...               ErrorInterrupt), and the upstream commit that adds one is dated
+...               2026-07-10, after the 2026-02-16 release and still unreleased. The
+...               class is sealed, so it cannot be subclassed either. So the engine is
+...               never asked to move a byte here, and the firmware says so.
+...
+...               What the assertion below therefore pins is BOUNDEDNESS, which is a
+...               real property and the one most worth defending: a facade whose false
+...               case is only reachable by hanging is not returning a bool. The leg
+...               arms the channel, raises CR1.RXDMAEN, writes the CPU-driven address
+...               phase, waits a budget, tears the request enable down again and
+...               reports false — in ~8 s of emulated time, deterministically. Make
+...               that wait unbounded and this leg stops being a 10 s pass and becomes
+...               a 30 s timeout; that is the regression it catches.
+...
+...               It does NOT witness a byte moved by DMA, a channel index, or a
+...               request id. The register sequence behind it has host witnesses
+...               (tests/test_i2c_dma.cpp, over a memory-backed i2c_v2 double) and
+...               nothing else; silicon owns the rest. The day this platform gains a
+...               request line, the expected line becomes "i2c dma: 0xdeadbe" and this
+...               paragraph is the one to rewrite.
 Suite Setup       Setup
 Suite Teardown    Teardown
 Resource          ${RENODEKEYWORDS}
@@ -60,3 +86,12 @@ I2C Driver Talks To A Device
     # the same firmware prints "i2c async: timeout" and "i2c irq: NOT fired", and
     # this assertion fails. Verified by running it that way.
     Wait For Line On Uart     i2c irq: fired    timeout=30
+    # The DMA variant, asserted as the BOUNDED REFUSAL it honestly is on this
+    # model (see the Documentation above for why no byte can move here). The
+    # timeout is 30 s against a wait that costs ~8 s of emulated time: an
+    # unbounded spin, or a leg that folded shut and printed nothing, both fail
+    # here. Three other lines this leg can print — "not available on this
+    # board", "not assigned", "driver has no hooks" — are the compile-time
+    # facts, and none of them match either, so a board that quietly stopped
+    # carrying its i2c.rx assignment is caught too.
+    Wait For Line On Uart     i2c dma: no transfer    timeout=30
