@@ -542,3 +542,32 @@ static_assert(std::is_void_v<typename pins<probe_port>::tx_route>);
 // every board without an assignment is unaffected.
 static_assert(std::is_same_v<decltype(pins<probe_port>::open()),
                              alloy::spi::handle<probe_port, void, void>>);
+
+// THE HANDLE CARRIES THE SAME TWO NAMES, and that is the spelling portable
+// code can actually reach: `board::spi::open(...)` hands back a HANDLE, so a
+// program that probes `typename S::rx_route` on what it is holding needs them
+// here, not only on the binder. i2c::handle has had them since its DMA
+// landed; without them examples/spi_read's anchor-2.4 leg folded shut on
+// every board and printed "not available" (measured, on a board that states
+// the pair). Void on an unassigned handle, so the same probe distinguishes
+// "this board stated no pair" from "this port has no route names at all".
+static_assert(std::is_same_v<
+              typename alloy::spi::handle<probe_port, probe_rx,
+                                          probe_tx>::rx_route, probe_rx>);
+static_assert(std::is_same_v<
+              typename alloy::spi::handle<probe_port, probe_rx,
+                                          probe_tx>::tx_route, probe_tx>);
+static_assert(std::is_void_v<
+              typename alloy::spi::handle<probe_port>::rx_route>);
+static_assert(std::is_void_v<
+              typename alloy::spi::handle<probe_port>::tx_route>);
+// The binder and the handle it opens agree — one fact, two spellings, and a
+// binder that grew a tag its handle did not carry would trip here.
+static_assert(std::is_same_v<
+              typename assigned<probe_port, probe_rx, probe_tx>::rx_route,
+              typename decltype(assigned<probe_port, probe_rx,
+                                         probe_tx>::open())::rx_route>);
+static_assert(std::is_same_v<
+              typename assigned<probe_port, probe_rx, probe_tx>::tx_route,
+              typename decltype(assigned<probe_port, probe_rx,
+                                         probe_tx>::open())::tx_route>);

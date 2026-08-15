@@ -133,6 +133,15 @@ concept pair_capable =
 template <class Inst, class RxRoute = void, class TxRoute = void>
 class handle {
 public:
+    //: The board's `spi.rx` / `spi.tx` assignments, or void when the board
+    //: assigns none — the dependent names portable code probes, mirroring
+    //: i2c::handle. The binder carries the same two aliases; the HANDLE is
+    //: what a portable program has in hand (`board::spi::open(...)` returns
+    //: it), and a namespace-scope `board::dma::spi_rx` does not SFINAE-fold
+    //: in a requires-clause, so this is the only spelling that folds.
+    using rx_route = RxRoute;
+    using tx_route = TxRoute;
+
     handle(const handle&) = delete;
     handle& operator=(const handle&) = delete;
     handle(handle&&) noexcept = default;
