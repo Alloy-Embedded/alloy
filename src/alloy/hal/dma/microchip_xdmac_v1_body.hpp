@@ -43,6 +43,19 @@
 //    descriptor-structure content. So a Renode model, if one were written,
 //    would encode the SAME unverified reading this file does, and a green leg
 //    would prove only that the model and the firmware agree with each other.
+//    CORROBORATED SINCE, BY A SECOND IMPLEMENTATION RATHER THAN BY THE
+//    DATASHEET — which lowers the risk without closing the citation. Zephyr's
+//    Atmel SAM XDMAC driver header (drivers/dma/dma_sam_xdmac.h, Apache-2.0,
+//    (c) 2017 comsuisse AG) declares its view-0 linked-list descriptor as the
+//    same THREE words in the same order (next-descriptor address, microblock
+//    control, transfer address) and puts the control word's fetch-enable at
+//    bit 24, its source-update at bit 25, its destination-update at bit 26 and
+//    the two-bit view selector at bit 27 — position for position what the five
+//    declarations below say, with the descriptor's update bits spelled NSEN /
+//    NDEN there and NDSUP / NDDUP here (the CNDC register's names for the same
+//    two decisions). Two independent readings agreeing is evidence, not a
+//    citation: they can share a misreading of one figure. The instruction
+//    below is unchanged.
 //  * NO SILICON. Nobody has run this.
 //
 // WHAT THE HOST TEST DOES AND DOES NOT PROVE, so the next reader does not
