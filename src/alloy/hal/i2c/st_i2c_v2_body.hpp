@@ -328,6 +328,90 @@ struct st_i2c_v2_engine {
         done_fn_ = nullptr;
         done_ctx_ = nullptr;
     }
+
+    // --- One-shot DMA payload transfer ------------------------------------
+    //
+    // WHERE THE LINE IS, and it is the whole reason this path is small: DMA
+    // moves the PAYLOAD and nothing else. The address phase — SADD, RD_WRN,
+    // NBYTES, AUTOEND and START — stays exactly the CPU-written CR2 word that
+    // read()/write()/start_transfer_irq() already write, through the same
+    // cr2_base() helper. The engine never sees an address, never counts bytes
+    // on the bus's behalf, and cannot end a transaction.
+    //
+    // That line is load-bearing, not tidy:
+    //   * NBYTES is an 8-bit CR2 field and kMaxNbytes (255) is this driver's
+    //     honest refusal rather than a silent truncation. Because CR2 is still
+    //     CPU-written, the DMA path inherits that refusal unchanged instead of
+    //     needing its own — dma_start_transfer() rejects the same lengths
+    //     read()/write() reject, from the same constant.
+    //   * AUTOEND still generates the STOP, so completion is still STOPF and
+    //     NACK detection is still NACKF, read by the same wait_flag() the
+    //     polled path uses. A DMA transfer that NACKs its address moves zero
+    //     bytes and reports false through exactly the shipped route.
+    //   * The RELOAD/TCR chunking a >255-byte transfer would need is NOT
+    //     implemented here and is not implemented in the polled path either
+    //     (CR1.TCIE is deliberately uncurated in alloy-devices' i2c_v2
+    //     register file). Keeping NBYTES CPU-side means the day it IS
+    //     implemented, it is implemented once, in cr2_base()'s neighbourhood,
+    //     and the DMA path follows for free.
+    //
+    // ARMING ORDER, which the facade encodes and a host test asserts: the
+    // CHANNEL is armed first, then the direction's request enable here, and
+    // only then the address phase that starts traffic on the wire. A request
+    // raised at a channel that is not yet listening is a lost byte on RX and a
+    // stalled transfer on TX; there is no ordering of these three that is
+    // merely a matter of taste. Teardown is the exact reverse: the request
+    // enable goes off BEFORE the channel stops, so a late request cannot reach
+    // a channel that is still armed.
+    //
+    // The two enables are SEPARATE bits on this IP (CR1.TXDMAEN 14 /
+    // CR1.RXDMAEN 15), unlike i2c_v1's single CR2.DMAEN — which is why the
+    // register file curates both together and why there are four hooks below
+    // and not two.
+    static void dma_rx_begin() { IP::rxdmaen.set(r()); }
+    static void dma_rx_end() { IP::rxdmaen.clear(r()); }
+    static void dma_tx_begin() { IP::txdmaen.set(r()); }
+    static void dma_tx_end() { IP::txdmaen.clear(r()); }
+
+    // Two registers, unlike SPI's single bidirectional DR: RXDR at 0x24 is
+    // read-only and TXDR at 0x28 write-only, so each direction names its own.
+    [[nodiscard]] static std::uintptr_t rxdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().RXDR);
+    }
+    [[nodiscard]] static std::uintptr_t txdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().TXDR);
+    }
+
+    // The address phase, CPU-driven. Called AFTER the channel is armed and
+    // after the direction's request enable is set. Returns false without
+    // touching CR2 when the length is one this driver refuses (the same
+    // NBYTES boundary as read()/write()) or when the interrupt-driven path
+    // owns the bus — those two APIs consume the very flags this one waits for.
+    [[nodiscard]] static bool dma_start_transfer(std::uint8_t addr, std::size_t n,
+                                                 bool is_read) {
+        using icr = typename IP::icr;
+        if (n == 0u || n > kMaxNbytes || busy_) {
+            return false;
+        }
+        r().ICR = icr::stopcf | icr::nackcf | icr::berrcf | icr::arlocf;  // stale
+        r().CR2 = cr2_base(addr, n) | (is_read ? IP::rd_wrn.mask : 0u) |
+                  IP::autoend.mask | IP::start.mask;
+        return true;
+    }
+
+    // Completion. The DMA finishing means the last byte crossed the data
+    // register, NOT that the transaction ended — AUTOEND's STOP is still on
+    // its way, and a NACK is only visible here. Bounded by the same
+    // kPollBudget as every other wait in this driver, and false on NACK,
+    // BERR/ARLO or a wedged bus, so a DMA transfer reports through exactly
+    // the contract read()/write() report through.
+    [[nodiscard]] static bool dma_wait_stop() {
+        if (!wait_flag(IP::stopf)) {
+            return false;
+        }
+        r().ICR = IP::stopcf.mask;
+        return true;
+    }
 };
 
 }  // namespace alloy::hal::detail
