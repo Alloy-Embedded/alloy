@@ -190,6 +190,104 @@ struct adc_impl<Inst> {
         return static_cast<std::uint16_t>(r().DR);
     }
 
+    // ── MULTI-CHANNEL SCAN ──────────────────────────────────────────────
+    //
+    // The feature this IP has and the G0 does not. A scan is what the SQR
+    // registers were always for: SQR1.L says how many conversions, and the
+    // slots name the channels IN ORDER — repeats allowed, which a channel
+    // BITMAP cannot express at all. That is why this hook lives here and not
+    // on adc_v2: the G0's ordered-sequence view sits at the same address as
+    // its bitmap and cannot be curated (see alloy-devices adc_v2.yaml), so a
+    // scan there would silently become "every selected channel once, in
+    // hardware order" — a different operation wearing the same name.
+    //
+    // Blocking, one conversion at a time. EOCS was set to EACH_CONVERSION at
+    // enable(), so EOC rises per slot rather than once per sequence, and DR
+    // is read between slots — which is what makes this work without DMA. A
+    // caller that wants the sequence moved for it wants ring(), which this IP
+    // does not offer yet.
+    //
+    // The sequence is programmed and then TORN DOWN: SCAN and L go back to
+    // the single-conversion state on the way out, so an interleaved read()
+    // cannot inherit a sequence it never asked for. Costlier than leaving it
+    // armed, and the alternative is a read() whose meaning depends on what
+    // ran before it.
+    static constexpr std::uint8_t max_scan_slots = 16u;
+
+    [[nodiscard]] static bool scan(const std::uint8_t* channels, std::uint16_t* out,
+                                   std::uint8_t count) {
+        using sr = typename IP::sr;
+        if (count == 0u || count > max_scan_slots) {
+            return false;
+        }
+
+        // Slot n of the sequence, across three registers whose order is not
+        // the obvious one: SQR3 carries slots 1..6, SQR2 carries 7..12 and
+        // SQR1 carries 13..16 alongside the length. Indexed accessors, so the
+        // generated stride does the arithmetic rather than a literal here.
+        for (std::uint8_t i = 0; i < count; ++i) {
+            const std::uint8_t ch = channels[i];
+            if (i < 6u) {
+                write_slot<0>(i, ch);
+            } else if (i < 12u) {
+                write_slot<1>(static_cast<std::uint8_t>(i - 6u), ch);
+            } else {
+                write_slot<2>(static_cast<std::uint8_t>(i - 12u), ch);
+            }
+        }
+        IP::l.write(r(), static_cast<std::uint32_t>(count - 1u));
+        IP::scan.set(r());
+
+        r().SR = 0u;  // clears by writing zero on this IP, not w1c
+        IP::swstart.set(r());
+        for (std::uint8_t i = 0; i < count; ++i) {
+            while ((r().SR & sr::eoc) == 0u) {
+            }
+            out[i] = static_cast<std::uint16_t>(r().DR);  // reading DR clears EOC
+        }
+
+        IP::scan.clear(r());
+        IP::l.write(r(), 0u);
+        return true;
+    }
+
+  private:
+    // One slot write, with the register chosen at COMPILE time and the slot
+    // index at run time — the generated accessors are indexed templates, so
+    // the index has to be constant; this unrolls the six (or four) cases of
+    // one register rather than the sixteen of all three.
+    template <unsigned Reg>
+    static void write_slot(std::uint8_t idx, std::uint8_t ch) {
+        const auto v = static_cast<std::uint32_t>(ch);
+        if constexpr (Reg == 0u) {
+            switch (idx) {
+                case 0: IP::template sq1_6<0>.write(r(), v); break;
+                case 1: IP::template sq1_6<1>.write(r(), v); break;
+                case 2: IP::template sq1_6<2>.write(r(), v); break;
+                case 3: IP::template sq1_6<3>.write(r(), v); break;
+                case 4: IP::template sq1_6<4>.write(r(), v); break;
+                default: IP::template sq1_6<5>.write(r(), v); break;
+            }
+        } else if constexpr (Reg == 1u) {
+            switch (idx) {
+                case 0: IP::template sq7_12<0>.write(r(), v); break;
+                case 1: IP::template sq7_12<1>.write(r(), v); break;
+                case 2: IP::template sq7_12<2>.write(r(), v); break;
+                case 3: IP::template sq7_12<3>.write(r(), v); break;
+                case 4: IP::template sq7_12<4>.write(r(), v); break;
+                default: IP::template sq7_12<5>.write(r(), v); break;
+            }
+        } else {
+            switch (idx) {
+                case 0: IP::template sq13_16<0>.write(r(), v); break;
+                case 1: IP::template sq13_16<1>.write(r(), v); break;
+                case 2: IP::template sq13_16<2>.write(r(), v); break;
+                default: IP::template sq13_16<3>.write(r(), v); break;
+            }
+        }
+    }
+
+  public:
     // What a result is worth: this IP has no oversampler, so it is exactly
     // the configured resolution.
     template <adc_opts<Inst> Opts>

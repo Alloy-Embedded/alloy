@@ -269,6 +269,41 @@ consteval unsigned watchdog_count() {
 template <class Inst>
 inline constexpr unsigned watchdog_count = detail::watchdog_count<Inst>();
 
+// Does this converter have a SEQUENCER, and therefore handle::scan()?
+//
+// A variable template rather than a bare requires-expression at the call site,
+// and that is not style — it is the only spelling that works. A
+// requires-expression over a CONCRETE type is checked eagerly, so
+// `if constexpr (requires { adc.scan(c, v); })` on a converter without the
+// member is a hard compile error instead of `false`. Measured on the very pair
+// this constant exists to tell apart: the naive form compiles on an F7 and
+// fails on a G0 with "no matching function for call to ... scan". Routing the
+// probe through a template parameter makes the check per-instantiation, which
+// is what portable code needs:
+//
+//   [&]<class Bind>(Bind*) {
+//       auto adc = Bind::open();
+//       if constexpr (alloy::adc::can_scan<typename Bind::instance>) {
+//           adc.scan(channels, out);
+//       } else {
+//           for (…) out[i] = adc.read(channels[i]);   // one at a time
+//       }
+//   }(static_cast<board::adc*>(nullptr));
+//
+// AND THE LAMBDA IS NOT CEREMONY EITHER — this was measured too. Outside a
+// template, a DISCARDED if-constexpr branch is still name-looked-up and
+// type-checked, so writing the branch straight into main() fails on the very
+// board that lacks the member, `can_scan` or not. The generic lambda is what
+// makes the branch dependent; examples/analog_probe uses the same shape for
+// the same reason. This is the identical trap that forces a board with no
+// internal-channel map to emit `adc_vref_channel` rather than omit it.
+//
+// `watchdog_count<Inst>` above is the same shape for the same reason.
+template <class Inst>
+inline constexpr bool can_scan = requires(const std::uint8_t* c, std::uint16_t* o) {
+    hal::adc_impl<Inst>::scan(c, o, std::uint8_t{});
+};
+
 // What a converter's results are worth, in significant bits, after Layer 2 has
 // been applied. 12 for a driver that curates no knobs — every ADC alloy ships
 // converts at 12 bits by default, and a driver that can change it says so by
@@ -307,6 +342,45 @@ public:
     [[nodiscard]] std::uint16_t read(std::uint8_t channel) const {
         detail::admit_channel(channel);
         return hal::adc_impl<Inst>::read(channel);
+    }
+
+    // MULTI-CHANNEL SCAN: convert a list of channels, in the order given,
+    // into the caller's buffer. Blocking, one conversion per element.
+    //
+    //   const std::uint8_t chans[] = {3, 4, 3};
+    //   std::uint16_t v[3];
+    //   if (adc.scan(chans, v)) { … }
+    //
+    // ONLY EXISTS WHERE THE SILICON HAS A SEQUENCER, and that is the point of
+    // the requires-clause rather than a runtime "unsupported" return. A
+    // converter driven by a channel BITMAP cannot honour this signature: a
+    // bitmap has no order and no repeats, so `{3, 4, 3}` is not a thing it can
+    // be asked for. Offering the method everywhere and failing at run time on
+    // half the fleet would be exactly the lie this surface removes — on those
+    // parts `adc.scan(...)` is a compile error naming the member, and portable
+    // code probes for it:
+    //
+    //   if constexpr (alloy::adc::can_scan<Inst>) { … } else { … }
+    //
+    // Returns false if the request cannot be programmed — an empty list, or
+    // more channels than the sequencer has slots. That IS a runtime answer
+    // because the length is a runtime value; a caller with a constant-sized
+    // array gets the bound checked by the span conversion instead.
+    [[nodiscard]] bool scan(std::span<const std::uint8_t> channels,
+                            std::span<std::uint16_t> out) const
+        requires requires(const std::uint8_t* c, std::uint16_t* o) {
+            hal::adc_impl<Inst>::scan(c, o, std::uint8_t{});
+        }
+    {
+        if (channels.empty() || out.size() < channels.size() ||
+            channels.size() > 0xFFu) {
+            return false;
+        }
+        for (const std::uint8_t ch : channels) {
+            detail::admit_channel(ch);
+        }
+        return hal::adc_impl<Inst>::scan(channels.data(), out.data(),
+                                         static_cast<std::uint8_t>(channels.size()));
     }
 
     // DMA burst: N continuous conversions of one channel straight to RAM.
