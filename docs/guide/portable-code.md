@@ -25,6 +25,7 @@ route checking**.
 board::init();
 board::led.toggle();
 auto uart = board::debug_uart::open({.baud = board::debug_uart_baud});
+uart.write("up\r\n");
 ```
 
 ## Capabilities and `if constexpr`
@@ -102,5 +103,8 @@ source, no edits. The ADC block simply vanishes on a board without that role.
 
 !!! warning "Open peripherals once, not once per loop"
     The snippet above opens the ADC inside the loop to keep the `if constexpr` short. Real code
-    should open it *before* the loop, and [ADC](adc.md) shows the streaming version that takes
-    the CPU out of the sampling path entirely.
+    should open it *before* the loop —
+    [the getting-started walkthrough](../getting-started.md#make-it-do-something) shows the shape
+    that does that without duplicating the loop body, and measures what the lazy version costs.
+    [ADC](adc.md) has the streaming version, which takes the CPU out of the sampling path
+    entirely.
