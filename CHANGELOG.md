@@ -14,6 +14,55 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams phase 6 — the RP2040 has a DMA driver, `dma_uart` and
+  `dma_probe` move bytes with it on both Pico boards, and there is deliberately
+  no ring.** Curation from zero (`registers/raspberrypi/dma_v1.yaml` + the chip's
+  `dma` instance and three `dma_requests`, all transcribed from the vendor SVD
+  pinned at `pico-sdk@98a542c1`), the fourth engine
+  (`src/alloy/hal/dma/raspberrypi_dma_v1.hpp` — **not** the design doc's
+  `rp_dma_v1.hpp`, because codegen resolves
+  `alloy/hal/<class>/<vendor>_<ip>.hpp` and the include is `.exists()`-guarded,
+  so the doc's name would have failed *silently* by never being included), the
+  two boards' `dma:` assignments, a data-driven channel BASE in
+  `emit/board.py` (this part numbers channels from 0 and the shared legality
+  expression hardcoded 1 — it refused `channel: 0` and *accepted* a
+  `channel: 12` that does not exist), and the PL011's TX-DMA hooks. Three things
+  this silicon does that no other engine here does: the register at each
+  channel-view offset `0xC` is a **trigger**, so `setup()` configures through
+  `CH_AL1_CTRL` and `start()` is a separate store to `MULTI_CHAN_TRIGGER`;
+  `CHAIN_TO`'s reset value 0 means "trigger channel 0", so every control write
+  names the channel's own number to disable chaining; and stopping is
+  abort-and-poll (`CHAN_ABORT` to all-zero), a fourth stop shape.
+  **NO RING, AND THAT IS THE DESIGNED OUTCOME, NOT AN OMISSION.** There is no
+  half-transfer event anywhere in this IP and a single channel HALTS when
+  `TRANS_COUNT` reaches zero with nothing to re-arm it, so a one-channel
+  poll-only ring would not degrade — it would stop and go permanently empty.
+  Both capability flags are false for independent reasons and
+  `alloy::dma::ring` is **constrained away** here: a facade's `ring()` /
+  `rx_ring()` is a compile error naming the capability, never a silent hang in
+  `take()`, which spins by contract. Re-examined from the other end and
+  confirmed: both ring facades are unreachable on this family regardless —
+  `adc::stream` exposes only half-event members and the RP2040 ADC driver has no
+  burst hooks, and `uart::rx_stream` needs a frame-gap wake the PL011 cannot
+  honestly give (its `RTIM` analogue depends on which request flavour the part
+  wires to `TREQ_SEL` 21, and the pinned SVD names both and picks neither). So
+  the RX side of the PL011 is a **named absence** in that header rather than a
+  hook that would arm and never fire.
+  **WHAT THE WITNESS IS, said plainly.** Renode 1.16.1 ships no RP2040
+  peripheral of any kind, so there is no emulation leg and **none was faked** —
+  and a DMA leg here would be a *false green*, because alloy can already emit an
+  rp2040 platform and Renode reads 0 from unmapped addresses, which this engine
+  would read as a finished transfer over a fully-written buffer. The executable
+  witness is `tests/test_rp_dma_v1_latch.cpp` (14 cases over a hand-written
+  register double; 23 mutations applied, 20 red, 3 green and named), plus
+  compilation of all 44 examples on both boards. Behaviour is owed to
+  `docs/guide/rp2040-dma-hardware-checklist.md`, which is **written and not
+  executed**; its row 4 — perturb `uart0.dma_requests.tx` in chip data and expect
+  the transfer to STOP working — is the first and only place in this design
+  where a DMA request id is ever tested.
+  Requires **alloy-devices ≥ the commit carrying `registers/raspberrypi/dma_v1.yaml`
+  and `UARTDMACR`'s field set**.
+
 - **DMA streams phase 5a, the witness half — `dma_uart` now asserts the
   COMPLETION IRQ on `same70_xplained`, against a Renode model alloy had to
   write.** The design's phase-5 demonstrable, verbatim: the board printed
