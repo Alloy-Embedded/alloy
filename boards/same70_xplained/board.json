@@ -67,6 +67,15 @@
       "reset_pin": "pc10"
     }
   },
+  "dma": {
+    "adc.conv": {"controller": "xdmac", "channel": 1},
+    "debug_uart.rx": {"controller": "xdmac", "channel": 2},
+    "debug_uart.tx": {"controller": "xdmac", "channel": 3},
+    "spi.rx": {"controller": "xdmac", "channel": 4},
+    "spi.tx": {"controller": "xdmac", "channel": 5},
+    "i2c.rx": {"controller": "xdmac", "channel": 6},
+    "i2c.tx": {"controller": "xdmac", "channel": 7}
+  },
   "probe": {
     "kind": "cmsis-dap",
     "runner": "openocd",

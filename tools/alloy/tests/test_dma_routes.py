@@ -437,15 +437,21 @@ def test_the_shipped_g0_boards_route_the_debug_uart(board_id: str) -> None:
 def test_a_board_that_assigns_nothing_still_gets_the_namespace() -> None:
     """`namespace board::dma` must exist on EVERY board so a requires-probe
     for a route is well-formed everywhere; only the constants are conditional
-    (and so is the alloy/dma.hpp include). Fixture moved off f767zi when
-    phase 3 gave the F7 boards their assignments; same70 still assigns none
-    (its XDMAC backend has no circular mode, doc §3.4)."""
+    (and so is the alloy/dma.hpp include).
+
+    The fixture is a REAL board with its `dma` key REMOVED, not a real board
+    that happens to assign nothing. Twice now the latter has gone stale — the
+    original fixture was f767zi until phase 3 gave the F7 boards their
+    assignments, then same70 until phase 5 gave it XDMAC routes — and each
+    time the test failed for a reason that had nothing to do with the property
+    it guards. Stripping the key states that property directly and cannot be
+    invalidated by a board.json ever again."""
     from alloy_cli.devices import load_chip, load_registers
     from alloy_cli.emit.board import emit_board_header
 
     board = json.loads(
         (ALLOY_ROOT / "boards" / "same70_xplained" / "board.json").read_text())
-    assert "dma" not in board, "fixture assumption: same70 assigns no routes"
+    board.pop("dma", None)
     out = emit_board_header(board, load_chip(DEVICES_ROOT, board["chip"]),
                             load_registers(DEVICES_ROOT))
     assert "namespace dma {\n}  // namespace dma" in out
