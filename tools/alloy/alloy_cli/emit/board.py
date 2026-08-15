@@ -1325,11 +1325,16 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
             # data — the driver's channel admission is what turns it into a
             # named trap, and the optimizer turns a literal call site into a
             # compile error as a bonus.
-            channel = channels.get(chname, 0xFF)
+            # The absent case emits the NAME, not the number. `channel_none` is
+            # the facade's own constant and the same one its channel admission
+            # compares against, so the sentinel is ONE fact with ONE spelling —
+            # a literal 255u here would be a second copy that nothing checks
+            # agrees with the first.
+            channel = f"{channels[chname]}u" if present else "alloy::adc::channel_none"
             decls.append(
                 f"inline constexpr bool adc_has_{chname} = {'true' if present else 'false'};\n"
-                f"// {'chip data' if present else 'ABSENT in chip data — impossible channel, see emit/board.py'}\n"
-                f"inline constexpr std::uint8_t adc_{chname}_channel = {channel}u;"
+                f"// {'chip data' if present else 'ABSENT in chip data — the facade traps on this'}\n"
+                f"inline constexpr std::uint8_t adc_{chname}_channel = {channel};"
             )
     else:
         decls.append(
