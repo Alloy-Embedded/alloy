@@ -290,24 +290,59 @@ item. Anchors 2.2/2.3 (UART) and 2.4 (SPI) have curated peripherals waiting.
   folding them would make `start_m2p_circular_u16` — which needs two different
   transfer widths XDMAC does not have — visible and trapping.
 
-### 3.4 RP2040 — curation from zero
+### 3.4 RP2040 — curation from zero **[DONE, minus the ring — see below]**
 
-Everything is missing: no `dma` peripheral entry in `rp2040.yaml` (measured —
-only the two IRQ names exist), no register file, no driver.
+Everything was missing: no `dma` peripheral entry in `rp2040.yaml` (measured —
+only the two IRQ names existed), no register file, no driver. All three landed.
 
-- Data: 12 channels × (`READ_ADDR/WRITE_ADDR/TRANS_COUNT/CTRL_TRIG` + alias
-  sets), `TREQ_SEL` (the DREQ table is per-peripheral, from RP2040 datasheet
-  §2.5.3 — it lands as `dma_requests` on each peripheral, same key as G0
-  because the meaning matches: chip-wide id, any channel). **Estimate: 1–2
-  days curation.**
-- Driver `rp_dma_v1.hpp`: one-shot is simple; rings use the address-wrap
-  `RING_SIZE/RING_SEL` bits (power-of-two buffers only — `ring_storage` on
-  this family `static_assert`s the size) or two chained channels. Half events
-  come from `IRQ0` per-channel with the wrap giving full-buffer granularity —
-  honest limitation: **half events on RP2040 v1 come from chaining two
-  channels, or do not exist; the design admits `ring` shipping poll-only
-  (`cursor()`/`readable()` work fine off `TRANS_COUNT`) with events deferred.**
-  **Estimate: 200–300 lines.**
+- Data: `registers/raspberrypi/dma_v1.yaml` + the chip's `dma` instance and its
+  three `dma_requests`. §3.4's key prediction held — the DREQ lands as
+  `dma_requests` on each peripheral, **same key as G0**, and the free-router
+  branch of `dma_assignment_problems()` needed no third shape. One correction:
+  the estimate said the DREQ table comes "from RP2040 datasheet §2.5.3", and it
+  does not have to — all 45 ids are `enumeratedValues` on `CH0_CTRL_TRIG/
+  TREQ_SEL` in the pinned vendor SVD, so nothing in the curation is
+  datasheet-derived or hand-entered. The one thing the SVD does NOT state is
+  that `CH_CTRL_TRIG` itself triggers; that is marked INFERRED in the data and
+  is the driver's most consequential unverified claim.
+- Driver **`raspberrypi_dma_v1.hpp` + `_body.hpp`**, not `rp_dma_v1.hpp`:
+  codegen resolves `alloy/hal/<class>/<vendor>_<ip>.hpp` and the include is
+  `.exists()`-guarded, so a driver at this section's original name would compile
+  and simply never be included. Three things this silicon does that no other
+  engine in the tree does: the register at each channel-view offset `0xC` is a
+  **trigger**, so `setup()` configures through `CH_AL1_CTRL` and `start()` is a
+  separate store to `MULTI_CHAN_TRIGGER`; `CHAIN_TO`'s reset value 0 means
+  "trigger channel 0", so every control write names the channel's OWN number to
+  disable chaining; and stopping is abort-and-poll (§4, fourth shape).
+- **NO RING SHIPPED, AND THE PRE-AUTHORISATION IT WOULD HAVE USED IS HALF
+  WRONG.** This section admitted `ring` shipping poll-only on the grounds that
+  "`cursor()`/`readable()` work fine off `TRANS_COUNT`". Measured against the
+  shipped `src/alloy/dma.hpp`: `readable()`/`consume()` do (they are pure
+  `remaining()`), **`cursor()` does not** — it is `wraps_ * items_ + …` and
+  `wraps_` is incremented only by the completion ISR, so with no events it
+  silently under-reports one buffer per lap. And the deeper problem is not the
+  events: a single RP2040 channel **HALTS** when `TRANS_COUNT` reaches zero,
+  nothing re-arms it (`CHAIN_TO` naming its own channel is how chaining is
+  DISABLED), so a one-channel poll-only ring does not degrade — it stops, and
+  goes permanently empty. So the engine sets **`supports_ring = false`**
+  alongside `supports_circular = false`, for INDEPENDENT reasons, and has no
+  `enable_half_irq` at all (absent, not a no-op stub — a stub satisfies
+  `ring_capable`, compiles, links, and hangs in `take()`). `alloy::dma::ring`
+  is therefore **constrained away on this family**: a facade's `ring()` is a
+  compile error naming the capability.
+- **The named successor**: a full ring is reachable on ONE channel with a
+  software ping-pong — the completion ISR re-points the write address at the
+  other half through `CH_AL2_WRITE_ADDR_TRIG`, which is at view offset `0xC`, so
+  that single store sets the address, reloads the count from the reload value
+  `TRANS_COUNT` already holds (this part DOES have a reload; the scouts said it
+  did not), and re-triggers. Deferred for a WITNESS reason, not a scope one:
+  its failure modes — the DREQ stall window while the channel is halted, and the
+  ISR re-arm deadline — are invisible to a host double, on the one family with
+  no emulation at all. Shipping it here would put all of the risk exactly where
+  nothing in this project can see it.
+- Also unresolved and NOT this phase's to fix: `ring_storage<T, N>` is a fixed
+  `alignas(32)`, while `RING_SIZE` needs a power-of-two-BYTES buffer aligned to
+  its own size — a cross-family decision, and moot while no ring exists here.
 - No Renode model (§5): the witness is host-double tests plus hardware.
 
 ## 4. Safety mechanisms
@@ -327,7 +362,14 @@ guarantee, and the doc says so.
 (immediate). dma_v2: clear EN, then **poll EN until 0** — the FIFO drains
 asynchronously and freeing the buffer before that poll completes is a
 use-after-free with hardware as the reader. XDMAC: `GD`, then poll `GS`
-(shipped). Facade teardown order for rings: peripheral request off first
+(shipped). **RP2040 is a fourth shape**: clearing `EN` here only PAUSES — the
+SVD says `BUSY` stays high if it was high — so terminating means writing the
+channel's bit to `CHAN_ABORT` and then **polling `CHAN_ABORT` to all-zero**,
+because until it reads zero the in-flight transfers are still draining through
+the address and data FIFOs and "it is unsafe to restart the channel" (the SVD's
+own words). Same use-after-free class as dma_v2's poll, and it lives inside the
+engine's `stop()` because `ring`/`channel` teardown calls that and returns.
+Facade teardown order for rings: peripheral request off first
 (e.g. ADC `DMAEN`), then channel stop — a request that lands mid-teardown on
 a disabled channel is how overrun flags get stuck.
 
@@ -369,7 +411,7 @@ Honest per-leg statements of what a green run actually proves:
 | G0 | native `DMA.STM32G0DMA` | one-shot m2p bytes on the UART, completion IRQ fired (proven leg, in CI); phase 1 adds: half-IRQ then full-IRQ ordering, ring wrap (pattern written twice), ADC ring data | one-shot **proven**; ring events **expected but unverified** until the phase-1 leg runs — the model's HTIF behavior has not been exercised by us |
 | F4/F7 | stock `DMA.STM32DMA` **measured, then replaced** by a generated model (phase 3) | probe day found: per-request P2M through a `ReceiveDmaRequest` wire, immediate M2P, TCIF + per-stream NVIC all work on stock; **CIRC and HTIF are tagged no-ops** (circular p2m stalls after one buffer) and the class is sealed — so the platform emits `DMA_V2_CS` (emit/renode.py): stock behaviours + CIRC reload + HTIF, CHSEL routing by-construction unwitnessable (the G0 DMAMUX caveat) | anchors 2.2/2.3 **proven in emulation** on both F7 Nucleos (modbus ring + route-claimed TX, every G0 assertion unchanged), DMAR negative control red-not-hung. **A route is witnessed by halves**, measured by adversarial control: the STREAM index is load-bearing end-to-end (move the model's request wire by one stream and modbus fails red), the REQUEST id is NOT (delete the CHSEL write from the driver and the leg stays green) — so on F7 emulation proves the stream, and only silicon can prove the request |
 | SAME70 | **a GENERATED model, because there is none at all** (phase 5a). Renode 1.16.1 ships no XDMAC and no Microchip DMA controller of any kind — measured three ways: every plausible type name fails to resolve, the complete `SAM*` type set in its Infrastructure assembly is 19 peripherals and none is a DMA engine, and Renode's own `sam_e70.repl` instantiates no DMA. This row used to say "XDMAC modelled" and that was never true. Neither cheaper tier can serve: an unmapped region is not a stub (Renode reads 0 from nothing, so `complete()` sees GS as "already finished" and the firmware reports success having moved no bytes), and `Python.PythonPeripheral` — the tier this platform's own flash controller uses — has no IRQ property, while the NVIC line is the whole assertion. So the platform emits `XDMAC_CS` (emit/renode.py) | **5a (completion IRQ): PROVEN IN EMULATION.** `dma_uart` on same70_xplained is green in 4.0–5.1 s — banner, `dma via DMA` (bytes crossed from RAM to the USART by the programmed channel), `dma irq: fired` (the XDMAC NVIC line fired and that channel's handler ran) — with the same robot and the same three assertions the G0 leg uses, plus the host witness (`test_xdmac_v1_latch.cpp`, every latch line proven by revert). Two negative controls isolate the interrupt from the transfer: delete the driver's single GIE arm, or the model's single `IRQ.Set`, and the bytes still cross while the leg fails at `dma irq: fired` in ~31 s — fail, not hang. **5b (rings): NO LEG, and it cannot honestly be given one.** The view-0 descriptor layout is curated in neither repo, so a model would encode the same unverified reading as the firmware and a green run would prove only that the two agree with each other; the generated model therefore REFUSES linked-list mode out loud (a warning, nothing transferred) rather than self-confirm. Its witness is `test_xdmac_v1_ring.cpp` (bookkeeping, ping-pong, cursor, teardown — each line proven by revert) plus a datasheet confirmation nobody has done | 5a **proven**; 5b an honest, host-only gap — and PERID is worse here than the G0/F7 "witnessed by halves" boundary: `UART.SAM_USART` exposes no DMA-request output, so there is no wire for any model to consume, the model triggers on the GE write and never consults PERID. The request half is unwitnessable **by construction**, not by coincidence |
-| RP2040 | **no model** | nothing under Renode. Witness = host unit tests against register doubles (the `tests/doubles.hpp` pattern) + an on-hardware checklist in the PR | honest gap — a green CI on RP2040 DMA proves compilation and register-sequence intent, **not** behavior |
+| RP2040 | **no model, and no RP2040 peripheral of ANY kind** — re-measured for phase 6 via Renode's own type resolver: every plausible DMA/UART/ADC/GPIO/timer type name for this part fails to resolve, and there is no rp2040 board or CPU platform either. **A DMA leg here would be worse than absent.** alloy CAN already emit an rp2040 platform (`cortex-m0` and `UART.PL011` are generic types Renode has), and Renode reads 0 from unmapped addresses — so on that platform the engine would read `CTRL` as 0 (`BUSY` low, no error bits), read `TRANS_COUNT` as 0, and report a **finished transfer over a fully-written buffer**, having moved nothing. That is a false green, not weak evidence. The refusal is written into `raspberrypi_dma_v1_body.hpp` and `test_rp_dma_v1_latch.cpp` so nobody adds the leg as an obvious improvement | nothing under Renode. Witness = `tests/test_rp_dma_v1_latch.cpp` — 14 cases running the REAL engine over a hand-written double whose `INTR` is genuinely write-1-to-clear, whose `INTS0/INTS1` are DERIVED from `INTR & INTEn` (which is what makes the two-line dispatch checkable), and whose `CHAN_ABORT` actually drains with the poll count as a knob. **23 mutations, 20 red** — including two that fail as a HANG rather than an assertion (revert either completion-latch line and `channel::wait()` spins forever, which is the bug class the latch closes). **3 stayed green and are named** in both files: the error latch's two lines (defensive here, because the failure lives in `CTRL.AHB_ERROR`, which no read destroys and the ISR does not clear — mandatory on XDMAC, load-bearing on both ST engines) and setup's latch-reset ordering (this `clear_flags()` only writes, so unlike XDMAC's harvesting purge it cannot re-latch anything). Plus an on-hardware checklist, **still owed** | honest gap — a green CI on RP2040 DMA proves compilation and register-sequence intent, **not** behavior. Three specific claims are owed to the board and cannot be reached off it: that `CH_CTRL_TRIG` triggers (marked INFERRED in the curation — the SVD annotates the other three view-`0xC` registers and not this one, so the whole configure-through-`AL1` discipline rests on it), the three DREQ ids (unwitnessed here as on every other family), and that `CHAN_ABORT` flushes anything |
 
 Rule inherited from the fault-report work: a leg asserts what it measures and
 the robot file says what that is; no leg claims "DMA works" — it claims "these
@@ -384,7 +426,7 @@ bytes crossed, this IRQ fired, in this order".
 | **3** | alloy-devices: `dma_routes` rename [DONE phase 1] + shipped-chip regen; `st/dma_v2` curation; `st_dma_v2.hpp`; F7 board assignments | **[DONE]** anchors 2.2/2.3 on `nucleo_f767zi` (and f722ze) under Renode; same portable main.cpp, one config line changed — with two driver-side findings the promise turned out to need: `st_usart_v3` had no RX-DMA/IDLE hooks (now inherits the witnessed shared body) and `write_dma` sourced its request only from chip-wide `Inst::dmareq_tx`, which cannot exist on a stream engine (now falls back to the binder's matched-route request) |
 | **4** | pair claim + `spi.transfer_dma()`; `i2c` one-shot DMA read/write | **[DONE]** anchor 2.4 green on `nucleo_g071rb`, `nucleo_g0b1re` (dma1 channel 4/5, free router) and `nucleo_f722ze` (dma2 streams 0/3, stream engine) — one portable `spi_read` and one robot across both engines, differing by nothing but `board.json` `dma:` lines. Stronger than phase 3 could claim: besides the channel/stream INDEX, the leg witnesses the **RX-before-TX arming order** of the pair above (arm TX first and every request edge lands on a channel that is not enabled yet — red) and `CR2.RXDMAEN` (red without it). Still unwitnessed, unchanged: the REQUEST id, on either engine. The **i2c one-shot** landed with host witnesses only, and its leg asserts a bounded refusal rather than a transfer: Renode 1.16.1's model of that IP exposes no DMA request output at all, so nothing can ask the engine to move a byte — see the two options recorded in `tests/emulation/i2c_read.robot`. `write_read_dma` (repeated start) is a **named absence**: a deleted member, because the polled path hands off on TC and `CR1.TCIE` is deliberately uncurated |
 | **5** | SAME70: completion IRQ (5a), then linked-list rings (5b) | **FIRST HALF REACHED, SECOND HALF NOT — and the two failed differently, which is the useful part.** The end-state as drafted read "dma_uart leg on same70_xplained asserts the IRQ instead of printing 'not available'; then anchor 2.1 on SAME70", and it was drafted against a §5 row that wrongly said "XDMAC modelled". **5a IS DONE, leg and all**: the driver landed (612c4f4), the requires-gate flipped, and the leg is green in CI-shape — but only after a cost nobody had counted, a GENERATED Renode C# model, because Renode ships no XDMAC and no Microchip DMA model at all. A reader sizing 5a from the old table under-sized it by exactly that. **5b's ring landed with a host witness and can never honestly have a leg** (see §5: the descriptor layout is uncurated, so a model and the firmware would agree by construction; the generated model refuses linked-list mode rather than self-confirm). **And "then anchor 2.1 on SAME70" is NOT REACHED and is blocked twice over, independently**: it needs the ring leg that cannot exist, AND it needs an AFEC model — `RENODE_ADC` is ST-only, and re-measured for this phase, Renode 1.16.1 contains no AFEC type of any kind (the only `AFEC` substrings across every shipped assembly are hex-string false positives; `Analog.SAM4S_ADC` exists but is a different block and would need a compatibility probe first). **Anchor 2.1 on SAME70 is HOST-WITNESSED ONLY** — `tests/test_xdmac_v1_ring.cpp` drives the shipped `alloy::dma::ring` over a double that really fetches and executes the descriptors — and should be re-opened as its own scoped decision once the AFEC question is answered, not carried as a phase-5 leftover. |
-| **6** | RP2040: curation from zero + `rp_dma_v1` + poll-mode ring | host-double tests green; hardware checklist executed on the owned Pico |
+| **6** | RP2040: curation from zero + `rp_dma_v1` + poll-mode ring | **CURATION AND DRIVER DONE; THE POLL-MODE RING IS NOT, ON PURPOSE; THE CHECKLIST IS OWED.** The data landed from the pinned vendor SVD (and the DREQ table turned out to be IN that SVD, so nothing is datasheet-derived); the free-router legality expression needed no third branch, only a data-driven channel BASE (`channels: {first: 0}`) because this part numbers from 0 and the expression hardcoded 1 — it refused `channel: 0` and accepted a `channel: 12` that does not exist; the engine landed as `raspberrypi_dma_v1*.hpp` (NOT §3.4's `rp_dma_v1.hpp` — codegen would silently never include that) with 14 host cases and a 23-mutation ledger. **The ring did not land and should not have**: §3.4's pre-authorisation rested on "`cursor()`/`readable()` work fine off `TRANS_COUNT`", and `cursor()` does not (it needs `wraps_`, maintained only by the completion ISR) — and worse, a one-channel RP2040 ring HALTS at the end of its count and goes permanently empty rather than degrading. So both capability flags are false for independent reasons and `alloy::dma::ring` is constrained away here, which is a compile error naming the capability rather than a silent hang in `take()`. Shipping it would have needed a THIRD capability plus splitting `ring_capable` in shipped, adversarially-reviewed cross-family code — a maintainer decision, not a phase side effect. The named successor (one-channel software ping-pong through `CH_AL2_WRITE_ADDR_TRIG`) is sized in §3.4 with the reason it is deferred: its failure modes are the ones a host double cannot see, on the one family with no emulation. **The hardware checklist has NOT been executed** — the board is not reachable from here, and both RP2040 boards observe only through an LED and a `debug_uart` that needs an external USB-serial adapter |
 
 Ordering rationale: phases 1–2 land the maintainer's two product cases on the
 G0/G4-class boards they own, on the one family with proven DMA-IRQ machinery —
