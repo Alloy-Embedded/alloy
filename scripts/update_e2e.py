@@ -169,8 +169,19 @@ def main() -> None:
     assert info["target_slot"] == 1, f"expected target B on a blank board, got {info}"
     print(f"  ok: good image accepted -> slot B {info}", flush=True)
 
-    # 2. reboot -> trial boot -> the app confirms itself
-    wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
+    # 2. reboot -> trial boot -> the app confirms itself.
+    #
+    # NOT ASSERTED: `update ok, rebooting`. The device prints it — every green CI
+    # run has seen it — and then executes SYSRESETREQ on the very next line
+    # (examples/bootloader_uart/src/main.cpp). On a fast host those 22 bytes
+    # never arrive: measured lost on every run of this script on a dev machine,
+    # at every commit tried, and adding `uart.flush()` (a TC wait) before the
+    # reset does not recover them — so what drops them is the emulated terminal
+    # across the reset, not the firmware. Requiring it made this script CI-ONLY,
+    # which is precisely how a mis-assigned budget in it survived five red runs.
+    # `trial boot slot B` is the strictly stronger claim: nothing prints it
+    # unless the image installed AND the device rebooted into it on trial.
+    wait_for(link, [b"alloy bootloader",
                     b"trial boot slot B", b"alloy ota_app ready",
                     b"ota_app confirmed"], PHASE_TIMEOUT_S, "trial boot + confirm")
 
@@ -228,7 +239,9 @@ def main() -> None:
     # never confirms and never feeds, so the WATCHDOG the bootloader armed before
     # each trial jump resets the device by itself — the "hung trial" answer.
     # Only trial 1's reboot comes from the update's own reset.
-    wait_for(link, [b"update ok, rebooting", b"alloy bootloader",
+    # (`update ok, rebooting` omitted for the reason given at step 2; `trial boot
+    # slot A` is what proves this reboot happened and which slot it chose.)
+    wait_for(link, [b"alloy bootloader",
                     b"trial boot slot A", b"alloy uart_echo ready"], PHASE_TIMEOUT_S, "trial 1/3")
     for n in (2, 3):
         wait_for(link, [b"alloy bootloader", b"trial boot slot A",
