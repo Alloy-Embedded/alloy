@@ -1304,9 +1304,32 @@ def emit_board_header(board: dict[str, Any], chip: dict[str, Any],
         channels = chip["peripherals"][periph_name].get("channels", {})
         for chname in ("vref", "temp"):
             present = chname in channels
+            # THE ABSENT CASE IS A SENTINEL, NOT ZERO. A chip whose data states
+            # no internal-channel map (the 238 ST F4/F7 parts, whose upstream
+            # gives no VREFINT/temperature channel NUMBER) used to emit 0 here
+            # beside `adc_has_… = false`. Zero is a REAL channel on those parts,
+            # so code that reached for the channel without reading the flag
+            # converted the wrong pin and returned a plausible number — the
+            # worst failure this surface can have.
+            #
+            # It cannot be fixed by omitting the constant: the portable idiom is
+            # `if constexpr (board::adc_has_vref) { … }` in main(), NOT in a
+            # template, and a discarded if-constexpr branch outside a template
+            # is still name-looked-up and type-checked. Omitting the symbol, or
+            # giving it a type that will not convert, breaks exactly the guarded
+            # code that is doing the right thing.
+            #
+            # So it stays a well-typed constant and becomes an IMPOSSIBLE VALUE:
+            # 0xFF is outside every ADC channel range alloy curates. That is the
+            # value-admission doctrine (core/admit.hpp) applied to generated
+            # data — the driver's channel admission is what turns it into a
+            # named trap, and the optimizer turns a literal call site into a
+            # compile error as a bonus.
+            channel = channels.get(chname, 0xFF)
             decls.append(
                 f"inline constexpr bool adc_has_{chname} = {'true' if present else 'false'};\n"
-                f"inline constexpr std::uint8_t adc_{chname}_channel = {channels.get(chname, 0)}u;"
+                f"// {'chip data' if present else 'ABSENT in chip data — impossible channel, see emit/board.py'}\n"
+                f"inline constexpr std::uint8_t adc_{chname}_channel = {channel}u;"
             )
     else:
         decls.append(
