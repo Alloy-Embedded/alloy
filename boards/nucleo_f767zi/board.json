@@ -44,6 +44,20 @@
     "adc": {
       "peripheral": "adc1",
       "label": "ADC1 \u2014 external channels only; this part's chip data carries no internal-channel map"
+    },
+    "bridge": {
+      "peripheral": "tim1",
+      "ah": "pa8",
+      "al": "pb13",
+      "bh": "pa9",
+      "bl": "pb14",
+      "ch": "pa10",
+      "cl": "pb15",
+      "brk": "pb12",
+      "break_active": "low",
+      "freq_hz": 20000,
+      "dead_time_ns": 500,
+      "label": "TIM1 complementary bridge on the ZIO header \u2014 HEADER EXPECTATION, NOT A FITTED POWER STAGE. No inverter is on a Nucleo; these six pins and the break input are free on this board and routable to TIM1, which is all this claims. The dead time is what an IR2110-class gate driver wants and is a PLACEHOLDER until a real board states its own. Nothing here has driven a transistor."
     }
   },
   "dma": {

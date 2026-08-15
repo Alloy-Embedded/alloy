@@ -1,4 +1,4 @@
-// The G0-era timer:v3 TIM_ADV block — SELECTION only.
+// The timer:v1 TIM_ADV block (F4/F7 TIM1/TIM8) — SELECTION only.
 //
 // Codegen includes this file because the IP's curated `class` is `bridge`
 // (alloy/hal/<class>/<vendor>_<ip>.hpp). The driver itself — every register
@@ -11,11 +11,11 @@
 #include <type_traits>
 
 #include "alloy/hal/bridge/st_tim_adv_body.hpp"
-#include "alloy/ip/st/tim_adv.hpp"
+#include "alloy/ip/st/tim_adv_v1.hpp"
 
 namespace alloy::hal::detail {
 
 template <>
-struct is_adv_bridge_tag<alloy::ip::st::tim_adv> : std::true_type {};
+struct is_adv_bridge_tag<alloy::ip::st::tim_adv_v1> : std::true_type {};
 
 }  // namespace alloy::hal::detail
