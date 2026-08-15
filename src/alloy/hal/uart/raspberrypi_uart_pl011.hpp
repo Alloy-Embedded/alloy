@@ -119,6 +119,69 @@ struct uart_impl<Inst> {
         }
     }
 
+    // --- TX via DMA. These three members are the whole gate: alloy::uart's
+    // write_dma()/write_dma_begin()/write_dma_end() are constrained on them
+    // existing plus a TX request id, and the id is the chip-wide
+    // `Inst::dmareq_tx` (TREQ_SEL 20 for uart0), so a board with an RP2040 DMA
+    // controller folds the DMA path open from board.json alone — no
+    // preprocessor, and nothing here names a channel.
+    //
+    // WHY THE PL011 NEEDS NO PRE-CLEAR THE WAY THE ST USARTs DO. st_usart_v4's
+    // dma_tx_begin() clears TC before raising DMAT, because on that IP TC is
+    // sticky and dma_tx_end() waits on it. There is no TC here: completion is
+    // read from UARTFR.BUSY, which is a LIVE level (transmitter or FIFO
+    // non-empty), not a latched flag, so there is nothing stale to clear and a
+    // clear would be a write invented to match another family's shape.
+    static void dma_tx_begin() { IP::txdmae.set(r()); }
+
+    // The §4 teardown order's UART half, and the honest completion the facade
+    // documents: the channel finishing means the last byte reached UARTDR, not
+    // that it left the pin. BUSY covers both the shift register and the TX
+    // FIFO, so this spin is the "transmitter actually drained" wait, and it is
+    // the same one flush() does — spelled again rather than shared, because
+    // these are two different contracts that happen to agree today.
+    static void dma_tx_end() {
+        using uartfr = typename IP::uartfr;
+        while ((r().UARTFR & uartfr::busy) != 0u) {
+        }
+        IP::txdmae.clear(r());
+    }
+
+    [[nodiscard]] static std::uintptr_t tdr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&r().UARTDR);
+    }
+
+    // --- RX via DMA: A NAMED ABSENCE, not an oversight. ---
+    //
+    // There is deliberately no dma_rx_begin()/dma_rx_end()/rdr_addr() and no
+    // enable_idle_irq() here, so alloy::uart::rx_stream_capable is FALSE for
+    // this IP and `uart.rx_ring()` is constrained away with a message naming
+    // the missing hooks. Two independent reasons, either sufficient, and both
+    // of them are about this family rather than about effort:
+    //
+    //  1. THERE IS NO RING BEHIND THE ROUTE. rx_stream_capable also demands
+    //     dma::ring_capable, and raspberrypi_dma_v1_body.hpp sets
+    //     supports_ring = false — this silicon has no half-transfer event
+    //     anywhere and a single channel HALTS at the end of its count. Adding
+    //     UART hooks would not make rx_ring() appear; it would only move the
+    //     compile error to the other half of the same concept.
+    //  2. THE FRAME-GAP EVENT IS UNSOURCED HERE. anchor 2.2's wake is the IDLE
+    //     event, and the PL011's nearest analogue is RTIM, which asserts when
+    //     the RX FIFO is NOT empty and the line then stays quiet. Whether that
+    //     can fire at all while a DMA channel is draining the FIFO depends on
+    //     which request flavour the RP2040 wires to TREQ_SEL 21 —
+    //     UARTRXDMASREQ (any non-empty FIFO, which would keep it empty and RTIM
+    //     silent) or UARTRXDMABREQ (a burst at the UARTIFLS level, which would
+    //     leave residue for RTIM to see). The pinned SVD names both flavours in
+    //     UARTDMACR/DMAONERR's own text and picks NEITHER, and this project does
+    //     not curate silicon behaviour it cannot source. An enable_idle_irq()
+    //     built on the guess would be a hook that compiles, arms, and may never
+    //     fire — a sleeper that never wakes, which is worse than a compile
+    //     error naming what is missing.
+    //
+    // RXDMAE and DMAONERR are curated (registers/raspberrypi/uart_pl011.yaml)
+    // and unused, which is what a future RX path would be built from.
+
     // --- RX interrupt callback. RTIM covers FIFO residue below the RX
     // trigger level; UARTICR shares the IMSC bit layout (PL011 TRM). ---
     inline static void (*rx_fn)(void*, std::uint8_t) = nullptr;
