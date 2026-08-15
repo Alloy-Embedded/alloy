@@ -33,6 +33,49 @@ _ACCESS_TYPE = {
 }
 
 
+#: A field name becomes a C++ identifier verbatim (lowercased), so the data can
+#: emit a header that will not parse. Measured twice this week, both on real
+#: vendor data: the RP2040 SVD spells a DIV field `INT`, which lands as an
+#: accessor named `int`; and a manual's own register names collide with each
+#: other often enough that the collision check below already exists. The keyword
+#: case is the nastier of the two because the compiler points at the GENERATED
+#: header — a file nobody wrote — while the fault is one line of yaml.
+#: Keywords likely to appear in silicon documentation. Not the full C++ list:
+#: a curated name is SHOUTED in the data (`INT`, `NEW`), so the realistic
+#: collisions are short common words. Add on contact rather than pre-emptively.
+_CXX_KEYWORDS = frozenset({
+    "alignas", "alignof", "and", "asm", "auto", "bool", "break", "case", "catch",
+    "char", "class", "const", "continue", "default", "delete", "do", "double",
+    "else", "enum", "explicit", "export", "extern", "false", "float", "for",
+    "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace",
+    "new", "not", "operator", "or", "private", "protected", "public", "register",
+    "return", "short", "signed", "sizeof", "static", "struct", "switch",
+    "template", "this", "throw", "true", "try", "typedef", "typename", "union",
+    "unsigned", "using", "virtual", "void", "volatile", "while", "xor",
+})
+
+_IDENTIFIER = re.compile(r"^[a-z_][a-z0-9_]*$")
+
+
+def _admit_accessor(vendor: str, ip: str, reg: str, raw: str, name: str) -> None:
+    """Refuse a field name that cannot be a C++ identifier, naming the FIELD.
+
+    The alternative is emitting it and letting the compiler complain about the
+    generated header, which points a reader at machinery instead of at the one
+    line of data they have to change.
+    """
+    if not _IDENTIFIER.match(name):
+        raise EmitError(
+            f"{vendor}/{ip}: field '{raw}' in {reg} becomes the accessor '{name}', "
+            f"which is not a valid identifier — rename it in the data")
+    if name in _CXX_KEYWORDS:
+        raise EmitError(
+            f"{vendor}/{ip}: field '{raw}' in {reg} becomes the accessor '{name}', "
+            f"which is a C++ keyword — the generated header would not parse. "
+            f"Rename it in the data for what it means "
+            f"(e.g. INT -> INT_PART for an integer part)")
+
+
 def _layout(vendor: str, ip: str, regs: list[dict[str, Any]],
             sname: str) -> tuple[list[str], list[str]]:
     """The member list and offsetof asserts for one address window."""
@@ -122,6 +165,7 @@ def emit_ip_header(doc: dict[str, Any]) -> str:
     for reg in regs:
         for f in reg.get("fields", []):
             name = f["name"].lower()
+            _admit_accessor(vendor, ip, reg["name"], f["name"], name)
             if name in seen:
                 raise EmitError(
                     f"{vendor}/{ip}: field accessor '{name}' from {reg['name']} collides with "
