@@ -135,6 +135,7 @@ add_executable(alloy_unit_tests
     test_st_dma_v1_latch.cpp
     test_st_dma_v2_latch.cpp
     test_xdmac_v1_latch.cpp
+    test_xdmac_v1_ring.cpp
     test_st_usart_v4_idle.cpp
     test_i2c_dma.cpp
     test_adc_stream.cpp

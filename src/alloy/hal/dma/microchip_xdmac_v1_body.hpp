@@ -14,8 +14,58 @@
 // CLEARED BY READING, so the double must destroy the value on read to
 // reproduce the hazard at all (tests/test_xdmac_v1_latch.cpp does).
 //
-// v1 one-shot single-microblock transfers (XDMAC has NO circular bit; rings
-// need linked-list descriptors via CNDA/CNDC — a future phase).
+// One-shot single-microblock transfers, plus the linked-list RING: XDMAC has
+// no circular bit, so alloy::dma::ring is built here from two view-0
+// descriptors that point at each other, each covering one half of the caller's
+// buffer, with the END-OF-BLOCK interrupt as the half event.
+//
+// ═══ READ THIS BEFORE TRUSTING A RING FROM THIS ENGINE ON SILICON ═══
+//
+// THE RING PATH HAS NO WITNESS. Not a weak one — none. Stating it here, at the
+// top, because every other honesty note in this file sits on top of a
+// measurement and this one does not:
+//
+//  * NO EMULATION. Renode 1.16.1 ships no XDMAC model and no Microchip DMA
+//    model of any kind (measured two independent ways: every plausible type
+//    name fails to resolve, and the complete SAM* type set in its
+//    Infrastructure assembly is 19 peripherals, none of them a DMA
+//    controller). alloy's own emitter generates none either. So there is no
+//    leg, and inventing one would prove nothing anyway — see the next point.
+//  * NO CURATED DESCRIPTOR LAYOUT. What a view-0 descriptor CONTAINS in
+//    memory — the word order, and the bit packing of its own control word —
+//    is stated in NO file in either repo. The register curation covers the
+//    registers that POINT at descriptors (CNDA's NDA/NDAIF, CNDC's
+//    NDE/NDSUP/NDDUP/NDVIEW, CUBC's UBLEN) exhaustively and with datasheet
+//    provenance; the descriptor STRUCTURE is not a register and is not there.
+//    The pinned upstream does not carry it either: the SVD-derived device file
+//    in same70-dfp-4.9.129.atpack (sha-locked in the builder's sources.lock)
+//    has the CNDC NDVIEW value group and every register bit, and ZERO
+//    descriptor-structure content. So a Renode model, if one were written,
+//    would encode the SAME unverified reading this file does, and a green leg
+//    would prove only that the model and the firmware agree with each other.
+//  * NO SILICON. Nobody has run this.
+//
+// WHAT THE HOST TEST DOES AND DOES NOT PROVE, so the next reader does not
+// over-read it: tests/test_xdmac_v1_ring.cpp runs the real engine over a
+// register double that FETCHES the descriptors out of host memory and executes
+// them. It proves the bookkeeping — linkage, ping-pong parity, cursor
+// arithmetic across the half boundary, teardown — against THIS FILE'S reading
+// of the layout. It cannot prove the reading. If the layout below is wrong,
+// every test in that file still passes and the first silicon run takes a bus
+// error or writes to a wild address.
+//
+// THE ONE DISCREPANCY ALREADY KNOWN, and it is in the design doc rather than
+// in the silicon: docs/design/dma-streams.md §3.3 says "16 bytes of RAM per
+// descriptor" for view 0. This file says 12 — three words, MBR_NDA / MBR_UBC /
+// MBR_TA — because view 0 carries ONE transfer address (which is exactly why
+// it is the right view for a ring, where only the memory side moves) and 16
+// bytes is the four-word view 1 (NDA, UBC, SA, DA). That correction is stated
+// in the changelog and in the design's own status table. It is a reading, not
+// a citation: CONFIRM THE STRUCTURE AND THE UBC BIT POSITIONS AGAINST
+// DS60001527 (the XDMAC chapter, "Linked List Descriptor View 0") BEFORE
+// CURATING THEM OR SHIPPING A RING TO HARDWARE. Everything the confirmation
+// touches is in one struct and four named constants, immediately below
+// `supports_ring`.
 //
 // Model honored (DS60001527): program CSA/CDA/CUBC/CC with the channel
 // disabled (GS bit 0), read CIS once to clear stale flags (CIS is
@@ -56,9 +106,56 @@ struct microchip_xdmac_v1_engine {
     static constexpr bool supports_circular = false;
     // The ring capability is the SEPARATE question (alloy::dma::ring_capable):
     // can this engine present alloy::dma::ring's contract by any means. It can
-    // — two linked view-0 descriptors ping-ponging the halves — but that is the
-    // next commit; this one only splits the question in two.
-    static constexpr bool supports_ring = false;
+    // — two linked view-0 descriptors ping-ponging the halves — so the SAME
+    // alloy::dma::ring<T, Route> a G0 or an F7 project writes compiles here,
+    // with the same take()/missed() and cursor()/readable()/consume()
+    // disciplines. Read the witness warning in the file header first.
+    static constexpr bool supports_ring = true;
+
+    // ── THE VIEW-0 LINKED-LIST DESCRIPTOR ────────────────────────────────
+    //
+    // THIS IS THE UNVERIFIED PART. Everything a datasheet confirmation would
+    // touch is these five declarations; nothing else in the file depends on the
+    // memory layout. See the file header for what is and is not known.
+    //
+    // A view-0 descriptor is three 32-bit words:
+    //   MBR_NDA  address of the next descriptor (word-aligned; CNDA's NDA field
+    //            is bits 31:2, which is what pins the alignment)
+    //   MBR_UBC  microblock length in DATA UNITS of CC.DWIDTH, plus the control
+    //            bits that say what the NEXT fetch does
+    //   MBR_TA   the transfer address this descriptor supplies — SOURCE or
+    //            DESTINATION, whichever of NDSUP/NDDUP is set. Exactly one is,
+    //            here: the peripheral side of a ring never moves, so the ring
+    //            updates the memory side and leaves the other to the CC/CSA/CDA
+    //            programming that setup() already did.
+    //
+    // THE TRAP THAT MAKES THIS A STRUCT AND NOT A REUSE OF THE GENERATED
+    // FIELDS: the descriptor's UBC word carries NDE / NDSUP / NDDUP / NVIEW at
+    // DIFFERENT BIT POSITIONS from the CNDC register's identically-named bits.
+    // CNDC has them low (IP::nde / ndsup / nddup / ndview, generated from the
+    // curation); the UBC word has them above the 24-bit length. Reaching for
+    // IP::nde when writing a descriptor is a silent wrong-bits bug, so the two
+    // sets are deliberately spelled differently — `ubc_*` below is memory,
+    // `IP::*` is the register, and no line mixes them.
+    static constexpr std::uint32_t ubc_ublen_mask = 0xFFFFFFu;  // 24-bit length
+    static constexpr unsigned ubc_nde_pos = 24u;    // fetch a next descriptor
+    static constexpr unsigned ubc_ndsup_pos = 25u;  // ...updating the source
+    static constexpr unsigned ubc_nddup_pos = 26u;  // ...updating the dest
+    static constexpr unsigned ubc_nview_pos = 27u;  // NVIEW; 0 = view 0
+
+    struct view0_descriptor {
+        std::uint32_t nda;
+        std::uint32_t ubc;
+        std::uint32_t ta;
+    };
+    static_assert(sizeof(view0_descriptor) == 12u,
+                  "a view-0 descriptor is THREE words (NDA, UBC, TA) — the "
+                  "four-word 16-byte shape is view 1, which carries SA and DA "
+                  "separately; docs/design/dma-streams.md §3.3 says 16 and is "
+                  "corrected here");
+    static_assert(alignof(view0_descriptor) == 4u,
+                  "CNDA's NDA field is bits 31:2, so a descriptor address must "
+                  "be word-aligned and the low two bits are not ours to use");
 
     static typename IP::regs& r() {
         return *reinterpret_cast<typename IP::regs*>(Inst::base);
@@ -105,6 +202,73 @@ struct microchip_xdmac_v1_engine {
         // rather than on a case GS would carry anyway.
         static inline volatile bool latched = false;
         static inline volatile bool err_latched = false;
+
+        // The half event, which on THIS IP is the same hardware event as the
+        // full one. Both ST engines have two distinct status flags with two
+        // independently attachable handlers; XDMAC has ONE — end of block —
+        // and the two halves are told apart by WHICH DESCRIPTOR just finished
+        // (ring_state<Ch>::live). So `half_fn` and `fn` are two callbacks fed
+        // by one interrupt, fanned out by parity in complete_isr, and the
+        // handler chain carries ONE entry for this channel rather than two.
+        // Do not add a `half_isr<Ch>` to attach beside it: alloy::irq runs
+        // every handler on the line, the first one to reach CIS empties it,
+        // and the second would see zero.
+        static inline void (*half_fn)(void*) = nullptr;
+        static inline void* half_ctx = nullptr;
+        static inline volatile bool half_latched = false;
+        // Whether this channel's one handler is on the chain. alloy::irq::attach
+        // TRAPS on a duplicate, and both enable_*_irq() want the same handler
+        // there, so the attach is idempotent through this flag and the detach
+        // waits until neither callback is armed.
+        static inline bool attached = false;
+    };
+
+    // Ring bookkeeping, per (controller, channel) like the callbacks and for
+    // the same reason: a template's statics cost nothing for channels that
+    // never ring, so 24 channels do not pay for the two that do.
+    template <unsigned Ch>
+    struct ring_state {
+        // DMA-VISIBLE RAM BY CONSTRUCTION, which is the §4 safety rule this IP
+        // enforces the hard way. These are mutable statics, so they land in
+        // .bss — SRAM — and the XDMAC's memory master can read them. A
+        // `constexpr`/`const` descriptor pair would land in flash, which this
+        // engine's master CANNOT read (SILICON-FOUND; see the file header), and
+        // the very first descriptor fetch would be a read bus error.
+        //
+        // ENGINE-OWNED, NOT CALLER-OWNED, and that is a deliberate divergence
+        // from the ring_storage precedent that the data buffer follows. The
+        // descriptors are not the caller's data — they are this engine's
+        // private encoding of "ring", they do not exist on either ST engine,
+        // and threading them through alloy::dma::ring's constructor would put
+        // an XDMAC-shaped parameter into the one portable type the whole design
+        // exists to keep portable. Static storage also outlives every ring by
+        // construction, which is strictly safer than a caller-provided object
+        // for something an interrupt may still be pointing at. The lifetime
+        // rule the caller does own is unchanged: the DATA buffer is still
+        // theirs.
+        //
+        // WHAT IT COSTS A FIRMWARE THAT NEVER RINGS, measured rather than
+        // assumed — the first draft of this comment said "a channel that never
+        // rings pays nothing, because the statics are a template's", and that
+        // is FALSE. `circular` is a RUNTIME parameter of setup() (it is in the
+        // engine contract that way, so alloy::dma::channel and alloy::dma::ring
+        // can share one entry point), so link_ring() is emitted and these
+        // statics are allocated for every channel whose setup() is
+        // instantiated, ring or not. Measured on examples/dma_uart for
+        // same70_xplained — one channel, one-shot only, no ring anywhere in the
+        // program: text 3656 -> 3768, bss 2592 -> 2608. Twenty-four bytes of
+        // descriptors and about a hundred of code, per one-shot channel, for a
+        // feature it does not use. Small, real, and the honest number to quote.
+        static inline view0_descriptor desc[2]{};
+        // Items per half, and the flag that says a ring is running at all:
+        // ZERO means no ring, which is what makes remaining() fall back to a
+        // plain CUBC read for one-shot transfers.
+        static inline volatile std::uint16_t half_items = 0u;
+        // Which descriptor is EXECUTING. Toggled by the ISR at each block end,
+        // and read by remaining() to know whether CUBC is counting down through
+        // the first half or the second — the design's "cursor() degrades"
+        // sentence, made concrete.
+        static inline volatile std::uint8_t live = 0u;
     };
 
     // THE ONE CIS READER. Reads CIS exactly once — which CLEARS it — and
@@ -138,11 +302,11 @@ struct microchip_xdmac_v1_engine {
                       std::uint16_t items, std::uint8_t request) {
         static_assert(Ch >= 1 && Ch <= Inst::ch_count,
                       "channel outside this XDMAC instance (chip data ch_count)");
-        if (circular) {
-            __builtin_trap();  // XDMAC circular = linked-list descriptors, not in v1
-        }
         if (msize != psize) {
             __builtin_trap();  // XDMAC has ONE DWIDTH for both sides
+        }
+        if (circular && (items < 2u || (items % 2u) != 0u)) {
+            __builtin_trap();  // a ring is two descriptors over two equal halves
         }
         stop<Ch>();
         clear_flags<Ch>();
@@ -156,15 +320,24 @@ struct microchip_xdmac_v1_engine {
         callback<Ch>::latched = false;      // a new transfer is not already complete
         callback<Ch>::err_latched = false;  // ...and does not inherit the last
                                             // transfer's failure
+        callback<Ch>::half_latched = false;  // ...nor is it already half-done
         const bool to_periph = d == dir::mem_to_periph;
         chreg<Ch>(IP::CSA_offset, IP::CSA_stride) =
             static_cast<std::uint32_t>(to_periph ? mem_addr : periph_addr);
         chreg<Ch>(IP::CDA_offset, IP::CDA_stride) =
             static_cast<std::uint32_t>(to_periph ? periph_addr : mem_addr);
-        chreg<Ch>(IP::CUBC_offset, IP::CUBC_stride) = items;  // units of DWIDTH
-        chreg<Ch>(IP::CBC_offset, IP::CBC_stride) = 0;        // single microblock
-        chreg<Ch>(IP::CNDA_offset, IP::CNDA_stride) = 0;      // no descriptors
-        chreg<Ch>(IP::CNDC_offset, IP::CNDC_stride) = 0;
+        chreg<Ch>(IP::CBC_offset, IP::CBC_stride) = 0;  // one microblock per block
+        if (circular) {
+            // The moving side's address comes from the descriptors from here
+            // on; CUBC is loaded by the fetch, so the value written above would
+            // be overwritten anyway. Zero says so out loud.
+            chreg<Ch>(IP::CUBC_offset, IP::CUBC_stride) = 0;
+            link_ring<Ch>(to_periph, mem_addr, items, msize);
+        } else {
+            chreg<Ch>(IP::CUBC_offset, IP::CUBC_stride) = items;  // units of DWIDTH
+            chreg<Ch>(IP::CNDA_offset, IP::CNDA_stride) = 0;      // no descriptors
+            chreg<Ch>(IP::CNDC_offset, IP::CNDC_stride) = 0;
+        }
         // Peripheral-synchronized, hw request, chunk 1, single-beat bursts.
         // Memory side increments on IF0; peripheral side fixed on IF1.
         chreg<Ch>(IP::CC_offset, IP::CC_stride) =
@@ -192,12 +365,76 @@ struct microchip_xdmac_v1_engine {
         // events propagate, GIE lets that channel reach the NVIC line at all.
         // The error events ride with the completion event, like ST's TEIE
         // rides with TCIE, so a failure is delivered rather than waited out.
-        if (callback<Ch>::fn != nullptr) {
+        //
+        // BIE serves BOTH callbacks — it is end of block, which is the whole
+        // transfer for a one-shot and one half for a ring — so the condition
+        // asks whether ANYONE wants to hear about it.
+        if (callback<Ch>::fn != nullptr || callback<Ch>::half_fn != nullptr) {
             chreg<Ch>(IP::CIE_offset, IP::CIE_stride) =
                 IP::bie.mask() | IP::rbie.mask() | IP::wbie.mask() |
                 IP::roie.mask();
             r().GIE = IP::template ie<Ch - 1>.mask;
         }
+    }
+
+    // Build the two-descriptor loop and point the channel at it. Called only
+    // from setup(circular=true), with the channel already stopped and its flags
+    // already purged.
+    //
+    // THE SHAPE, which is the whole of "a ring on an IP with no circular bit":
+    //
+    //     desc[0]: TA = &buf[0]          NDA -> desc[1]   UBLEN = N/2
+    //     desc[1]: TA = &buf[N/2]        NDA -> desc[0]   UBLEN = N/2
+    //
+    // Each descriptor's UBC sets NDE (there IS a next one) and exactly one of
+    // NDSUP/NDDUP (the next fetch updates the MEMORY side and leaves the
+    // peripheral side alone — a ring's peripheral register never moves). The
+    // list has no end: desc[1] points back at desc[0], so the engine runs until
+    // stop(). That is the circular bit, spelled in RAM.
+    //
+    // CNDA gets desc[0]'s address with NDAIF = 0 — the descriptor fetch goes
+    // through the same AHB interface as memory, which is where .bss is. The
+    // address is word-aligned (static_assert above) so writing it whole leaves
+    // NDAIF clear without masking.
+    template <unsigned Ch>
+    static void link_ring(bool to_periph, std::uintptr_t mem_addr,
+                          std::uint16_t items, width w) {
+        const std::uint32_t half = static_cast<std::uint32_t>(items) / 2u;
+        // Bytes per half = items per half scaled by the transfer width, and the
+        // width enum IS the shift (b8=0, b16=1, b32=2) rather than a table.
+        const std::uint32_t half_bytes = half << static_cast<unsigned>(w);
+        // The UBC control word. NVIEW = 0 contributes nothing, and is left
+        // unwritten rather than OR-ed with a zero so that a future view change
+        // has to touch this line on purpose.
+        const std::uint32_t ctl =
+            (half & ubc_ublen_mask) | (std::uint32_t{1} << ubc_nde_pos) |
+            (std::uint32_t{1} << (to_periph ? ubc_ndsup_pos : ubc_nddup_pos));
+        static_assert(ubc_nview_pos > ubc_nddup_pos,
+                      "NVIEW sits above the update bits in the UBC word");
+        view0_descriptor* const d = ring_state<Ch>::desc;
+        d[0].nda = addr32(&d[1]);
+        d[0].ubc = ctl;
+        d[0].ta = static_cast<std::uint32_t>(mem_addr);
+        d[1].nda = addr32(&d[0]);
+        d[1].ubc = ctl;
+        d[1].ta = static_cast<std::uint32_t>(mem_addr + half_bytes);
+        // Only now does the bookkeeping go live: desc[0] runs first, so the
+        // first block end is the FIRST half going stable.
+        ring_state<Ch>::live = 0u;
+        ring_state<Ch>::half_items = static_cast<std::uint16_t>(half);
+        chreg<Ch>(IP::CNDA_offset, IP::CNDA_stride) = addr32(&d[0]);
+        // CNDC's OWN bits, which are NOT the UBC word's bits — see the trap
+        // note at the descriptor struct. NDVIEW = 0 (view 0) is the reset
+        // value and is left alone for the same reason as above.
+        chreg<Ch>(IP::CNDC_offset, IP::CNDC_stride) =
+            IP::nde.mask() | (to_periph ? IP::ndsup.mask() : IP::nddup.mask());
+    }
+
+    // The descriptor pointer as the 32-bit register sees it. On the target this
+    // is exact; on a host double the descriptors live wherever the loader put
+    // them and only the low half round-trips, which is what the test compares.
+    static std::uint32_t addr32(const void* p) {
+        return static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(p));
     }
 
     template <unsigned Ch>
@@ -209,6 +446,20 @@ struct microchip_xdmac_v1_engine {
     static void stop() {
         r().GD = IP::template di<Ch - 1>.mask;
         while ((r().GS & IP::template st<Ch - 1>.mask) != 0u) {
+        }
+        // BREAKING THE LOOP IS PART OF STOPPING, on this engine only. A ring's
+        // descriptors point at each other forever, so a disabled channel whose
+        // CNDC still has NDE set is one stray GE write away from chasing them
+        // into a buffer whose owner has been destroyed — and alloy::dma::ring's
+        // destructor releases the channel claim immediately afterwards, so the
+        // next claimant could be the one to write that GE. Clearing NDE here
+        // makes "the destructor stops the hardware" (§4) true of the descriptor
+        // list too, not just of the channel enable. Guarded so a one-shot's
+        // setup(), which calls stop() first and writes CNDC = 0 anyway, is not
+        // given an extra register write it does not need.
+        if (ring_state<Ch>::half_items != 0u) {
+            chreg<Ch>(IP::CNDC_offset, IP::CNDC_stride) = 0u;
+            ring_state<Ch>::half_items = 0u;
         }
     }
 
@@ -266,6 +517,75 @@ struct microchip_xdmac_v1_engine {
         return callback<Ch>::err_latched;
     }
 
+    // Items left to write, over the WHOLE buffer — which on this engine is a
+    // SYNTHESIS, not a register read, and that is the design's "cursor()
+    // degrades" sentence cashed out.
+    //
+    // Both ST engines have one countdown register spanning the whole circular
+    // buffer, so their remaining() is a load. XDMAC's CUBC counts down through
+    // the CURRENT MICROBLOCK, which here is ONE HALF: it runs N/2 -> 0, reloads
+    // from the next descriptor, and runs N/2 -> 0 again. Read raw it would make
+    // alloy::dma::ring's cursor arithmetic wrong by half a buffer for half of
+    // every lap — silently, and in the direction that says the writer is behind
+    // where it actually is. The missing bit is WHICH HALF, and the only source
+    // for it is the descriptor parity the ISR maintains:
+    //
+    //     filling half 0:  N/2 - CUBC  items written  ->  remaining = CUBC + N/2
+    //     filling half 1:  N/2 + (N/2 - CUBC) written ->  remaining = CUBC
+    //
+    // THE RETRY LOOP IS NOT DECORATION. Two independent reads — a software
+    // variable and a hardware register — that a block-end interrupt can land
+    // between: sample `live`, then CUBC, then `live` again, and start over if
+    // it moved. Without it the interleaving `live == 0` / boundary / small CUBC
+    // reports a position most of a buffer ahead of the truth, which is the one
+    // direction a cursor must never be wrong in (readable() would hand out
+    // items the DMA has not written). alloy::dma::ring's own cursor() pins the
+    // wrap count across this call for the same reason one level up.
+    template <unsigned Ch>
+    [[nodiscard]] static std::uint16_t remaining() {
+        static_assert(Ch >= 1 && Ch <= Inst::ch_count);
+        const std::uint32_t half = ring_state<Ch>::half_items;
+        if (half == 0u) {
+            // No ring: CUBC is the whole transfer, exactly like the ST engines.
+            //
+            // THIS BRANCH IS CLARITY, NOT CORRECTNESS, and saying so is the
+            // honest version — the revert bar caught it. With half_items zero
+            // the synthesis below degenerates to `cubc + 0` or `cubc`, which is
+            // the same answer either way, so deleting this branch changes no
+            // result and no test goes red. It stays because a one-shot transfer
+            // should not read a parity flag it does not have, and because the
+            // reader who asks "what does remaining() mean when there is no
+            // ring" deserves the answer in one line rather than in the
+            // arithmetic.
+            return static_cast<std::uint16_t>(
+                chreg<Ch>(IP::CUBC_offset, IP::CUBC_stride) & ubc_ublen_mask);
+        }
+        for (;;) {
+            const std::uint8_t live = ring_state<Ch>::live;
+            const std::uint32_t cubc =
+                chreg<Ch>(IP::CUBC_offset, IP::CUBC_stride) & ubc_ublen_mask;
+            if (ring_state<Ch>::live == live) {
+                return static_cast<std::uint16_t>(live == 0u ? cubc + half
+                                                             : cubc);
+            }
+        }
+    }
+
+    // The half-transfer twin of complete<Ch>(). ON THIS ENGINE IT IS THE ISR'S
+    // LATCH AND NOTHING ELSE, which is a real divergence from ST and is stated
+    // rather than smoothed over: both ST engines can answer half() by polling a
+    // live HTIF that survives being read, so their rings work (badly, but
+    // correctly) with interrupts off. XDMAC signals both halves with the SAME
+    // end-of-block event, so the parity — which half just went stable — exists
+    // only in the ISR's toggle. A polled ring cannot tell the halves apart
+    // here, which is exactly why alloy::dma::ring_capable demands
+    // enable_half_irq and why alloy::dma::ring arms it before setup().
+    template <unsigned Ch>
+    [[nodiscard]] static bool half() {
+        static_assert(Ch >= 1 && Ch <= Inst::ch_count);
+        return callback<Ch>::half_latched;
+    }
+
     template <unsigned Ch>
     static void clear_flags() {
         static_assert(Ch >= 1 && Ch <= Inst::ch_count);
@@ -321,11 +641,80 @@ struct microchip_xdmac_v1_engine {
         if (!done && !failed) {
             return;  // an event we never enabled (end-of-flush, end-of-disable)
         }
+        // ── ONE HARDWARE EVENT, TWO CALLBACKS: the ring fan-out ──────────
+        //
+        // On both ST engines a half-buffer boundary and a wrap are two distinct
+        // status flags with two independently attached handlers. XDMAC has ONE:
+        // end of block, raised once per descriptor. Which BOUNDARY it is comes
+        // from which DESCRIPTOR just finished — desc[0] covers the first half,
+        // desc[1] the second — so the toggle below IS the half/full
+        // distinction, and it is the same variable remaining() reads to place
+        // the cursor. Advance it BEFORE calling out: a callback may look at the
+        // cursor, and by the time it runs the engine is already filling the
+        // other half.
+        //
+        // AN ERROR-ONLY EVENT DISPATCHES NOTHING WHILE RINGING, deliberately.
+        // It is already in err_latched — the only record there will ever be —
+        // but neither callback may run for it: alloy::dma::ring's full handler
+        // increments the wrap count, so calling it for a bus error would move
+        // the cursor a whole buffer forward on the strength of an event that
+        // moved no data. (The one-shot path below does call fn on an error, and
+        // should: there the callback means "the transfer is over", which is
+        // true either way.)
+        if (ring_state<Ch>::half_items != 0u) {
+            if (!done) {
+                return;
+            }
+            const std::uint8_t just = ring_state<Ch>::live;
+            ring_state<Ch>::live = static_cast<std::uint8_t>(just ^ 1u);
+            if (just == 0u) {
+                callback<Ch>::half_latched = true;
+                if (callback<Ch>::half_fn != nullptr) {
+                    callback<Ch>::half_fn(callback<Ch>::half_ctx);
+                }
+                return;
+            }
+        }
         if (callback<Ch>::fn != nullptr) {
             // The callback sees a channel whose flags are already consumed and
             // whose latches already answer done()/error(), so it may start the
             // next transfer without racing its own completion.
             callback<Ch>::fn(callback<Ch>::ctx);
+        }
+    }
+
+    // ONE handler per channel on the shared line, attached at most once. Both
+    // enable_complete_irq and enable_half_irq want complete_isr<Ch> on the
+    // chain and alloy::irq::attach TRAPS on a duplicate, so the attach is
+    // idempotent here rather than at either call site.
+    template <unsigned Ch>
+    static void arm_line() {
+        if (!callback<Ch>::attached) {
+            alloy::irq::attach(irq_line_of<Ch>(), &complete_isr<Ch>);
+            callback<Ch>::attached = true;
+        }
+        alloy::irq::enable(irq_line_of<Ch>());
+    }
+
+    // ...and the mirror: the channel stops being an interrupt source only when
+    // NEITHER callback is armed. Disarming the ring's half event while its full
+    // event is still registered must not take BIE away — they are the same bit.
+    template <unsigned Ch>
+    static void disarm_line_if_idle() {
+        if (callback<Ch>::fn != nullptr || callback<Ch>::half_fn != nullptr) {
+            return;
+        }
+        // CID and GID are the write-only CLEAR twins of CIE and GIE (writing a
+        // 1 disables that bit; there is no read-modify-write to get wrong).
+        chreg<Ch>(IP::CID_offset, IP::CID_stride) =
+            IP::bid.mask() | IP::rbeid.mask() | IP::wbeid.mask() | IP::roid.mask();
+        r().GID = IP::template id<Ch - 1>.mask;
+        if (callback<Ch>::attached) {
+            // The shared NVIC line stays enabled: 23 other channels may be
+            // using it, and every handler is a no-op for interrupts that are
+            // not its own.
+            alloy::irq::detach(irq_line_of<Ch>(), &complete_isr<Ch>);
+            callback<Ch>::attached = false;
         }
     }
 
@@ -336,23 +725,35 @@ struct microchip_xdmac_v1_engine {
         // CIE/GIE are NOT written here — setup() folds them in, see the note
         // there. Registering after a transfer has started therefore reports
         // from the NEXT setup(), exactly as on the ST engines.
-        alloy::irq::attach(irq_line_of<Ch>(), &complete_isr<Ch>);
-        alloy::irq::enable(irq_line_of<Ch>());
+        arm_line<Ch>();
     }
 
     template <unsigned Ch>
     static void disable_complete_irq() {
-        // CID and GID are the write-only CLEAR twins of CIE and GIE (writing a
-        // 1 disables that bit; there is no read-modify-write to get wrong).
-        // The shared NVIC line stays enabled: 23 other channels may be using
-        // it, and every handler is a no-op for interrupts that are not its own.
-        chreg<Ch>(IP::CID_offset, IP::CID_stride) =
-            IP::bid.mask() | IP::rbeid.mask() | IP::wbeid.mask() |
-            IP::roid.mask();
-        r().GID = IP::template id<Ch - 1>.mask;
-        alloy::irq::detach(irq_line_of<Ch>(), &complete_isr<Ch>);
         callback<Ch>::fn = nullptr;
         callback<Ch>::ctx = nullptr;
+        disarm_line_if_idle<Ch>();
+    }
+
+    // The ring's half-buffer callback. Register BEFORE setup(), like the
+    // completion one and for the same reason — setup() decides then whether to
+    // arm BIE at all. alloy::dma::ring calls this first, then
+    // enable_complete_irq, then setup: on ST that order is load-bearing because
+    // the two handlers land on one chain and dispatch runs them newest-first;
+    // here the order is irrelevant because there is only ever ONE handler, and
+    // saying so is worth a line so nobody "fixes" the caller.
+    template <unsigned Ch>
+    static void enable_half_irq(void (*fn)(void*), void* ctx) {
+        callback<Ch>::half_fn = fn;
+        callback<Ch>::half_ctx = ctx;
+        arm_line<Ch>();
+    }
+
+    template <unsigned Ch>
+    static void disable_half_irq() {
+        callback<Ch>::half_fn = nullptr;
+        callback<Ch>::half_ctx = nullptr;
+        disarm_line_if_idle<Ch>();
     }
 
     // One NVIC line for the whole block (chip data irq).

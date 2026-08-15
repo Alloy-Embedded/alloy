@@ -144,6 +144,20 @@ struct fake_xdmac_ip {
     static constexpr alloy::raw_field wbeis{5u, 1u};  // write bus error
     static constexpr alloy::raw_field rois{6u, 1u};   // request overflow
 
+    // CNDA / CNDC / CUBC fields — the descriptor-list registers. This file
+    // never builds a ring; they are here because the engine's ring path names
+    // them and a member has to exist for the class to instantiate at all.
+    // NOTE the bit positions: these are the REGISTERS' bits, and the view-0
+    // descriptor's UBC word carries the same four names at DIFFERENT positions
+    // (the engine spells those `ubc_*` and never mixes the two).
+    static constexpr alloy::raw_field ndaif{0u, 1u};
+    static constexpr alloy::raw_field nda{2u, 30u};
+    static constexpr alloy::raw_field nde{0u, 1u};
+    static constexpr alloy::raw_field ndsup{1u, 1u};
+    static constexpr alloy::raw_field nddup{2u, 1u};
+    static constexpr alloy::raw_field ndview{3u, 2u};
+    static constexpr alloy::raw_field ublen{0u, 24u};
+
     // CC fields the engine folds into its one whole-register write.
     static constexpr alloy::raw_field type{0u, 1u};
     static constexpr alloy::raw_field dsync{4u, 1u};
