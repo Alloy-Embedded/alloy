@@ -35,14 +35,19 @@
 // SINGLE WAITER: at most one task may await one dma_waiter; a second traps in
 // waiter_slot. One channel, one owning task.
 //
-// WHAT await_resume DOES NOT TELL YOU: nothing. It is `void`, and that is not
-// an oversight — the ST DMA ISR clears the channel's flags (it must, or the
-// level-triggered line re-fires forever) BEFORE it invokes the callback, so by
-// the time the task resumes, error() reads false whether or not the transfer
-// failed. The existing on_complete() callback API has the same gap. Reporting a
-// DMA error through the async path needs an error latch in the driver
-// alongside the completion latch; this header does not add one, and returning a
-// bool that is always true would be a lie rather than an API.
+// WHAT await_resume DOES NOT TELL YOU: nothing. It is `void` — but the reason
+// has changed, and the gap it used to paper over is closed. This note used to
+// say that a resumed task could not learn whether the transfer failed, because
+// the ST DMA ISR clears the channel's flags (it must, or the level-triggered
+// line re-fires forever) BEFORE invoking the callback, leaving error() reading
+// false either way. Both ST engines now LATCH the error they consumed, exactly
+// as they latch completion (st_dma_v{1,2}_body.hpp; witnessed by
+// test_st_dma_v{1,2}_latch.cpp), so after the task resumes `ch.error()` is
+// truthful and so is `ch.wait()`. Ask the channel.
+//
+// await_resume stays void because widening it is an API decision for the
+// awaiter, not a consequence of the driver fix: the failure is now
+// OBSERVABLE, which is what was missing.
 
 #pragma once
 
