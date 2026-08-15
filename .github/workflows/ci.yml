@@ -382,6 +382,45 @@ jobs:
             example: dma_uart
             robot: dma_uart.robot
             banner: alloy dma_uart
+          # THE SAME LEG ON A THIRD ENGINE AND A SECOND VENDOR — dma-streams
+          # phase 5a (design §6 row 5), and the §6 demonstrable verbatim: this
+          # board printed "dma: not available on this board" until the XDMAC
+          # grew enable_complete_irq (612c4f4), and it now asserts the
+          # COMPLETION IRQ like the G0 does. Same robot, same three lines, no
+          # board conditionals.
+          #
+          # It needs a GENERATED Renode model, and that is the phase's real
+          # cost rather than the driver: Renode 1.16.1 ships NO XDMAC and no
+          # Microchip DMA model at all (measured three ways — see
+          # emit/renode.py RENODE_XDMAC), and the two cheaper tiers both fail
+          # on the one thing this leg asserts. An unmapped region is not a
+          # stub: Renode reads 0 from nothing, so complete() sees GS as
+          # "already finished" and write_dma returns true having moved no
+          # bytes. And Python.PythonPeripheral — the tier this platform's own
+          # flash controller uses — has no IRQ property at all.
+          #
+          # `experimental` per the convention: new board+robot pair. Green
+          # locally (4.0–5.1 s, pinned Renode 1.16.1, arm64) with TWO negative
+          # controls, each isolating the interrupt from the transfer: delete
+          # the driver's single GIE arm -> the bytes still cross and the leg
+          # fails at "dma irq: fired" in 31.6 s; delete the model's single
+          # IRQ.Set -> same shape, 31.8 s. Neither hangs. Baseline before the
+          # model: fails at "dma via DMA" in 31.1 s. PROMOTE after a few green
+          # CI runs.
+          #
+          # VACUOUS SPOT, stated in dma_uart.robot and worse here than on the
+          # ST engines: PERID request routing is unwitnessable BY CONSTRUCTION.
+          # UART.SAM_USART exposes no DMA-request output, so nothing paces the
+          # transfer, the model triggers the whole microblock on the GE write
+          # and never consults PERID. Only silicon witnesses that half. The
+          # RING path is not exercised at all — the model refuses linked-list
+          # mode out loud rather than confirm the driver against a descriptor
+          # layout reading it would share with it.
+          - board: same70_xplained
+            example: dma_uart
+            robot: dma_uart.robot
+            banner: alloy dma_uart
+            experimental: true
           # DRIVER AWAITABLES — BLOCKING. async_runs.robot proves the executor and
           # the timer wheel run on the ISA; this proves a coroutine parked on a
           # PERIPHERAL is resumed by its interrupt. async_io runs one leg per
@@ -838,8 +877,13 @@ jobs:
           out="$PWD/.alloy/build-tree/same70_xplained/out"
           echo "s70_repl=$out/same70_xplained.repl" >> "$GITHUB_ENV"
           echo "s70_bl_elf=$out/bootloader_uart.elf" >> "$GITHUB_ENV"
-          # Empty on this board today; present for the same reason as the G0 leg
-          # above — the point is that a future shim needs no edit here.
+          # NO LONGER EMPTY, and that is the point of writing it as a loop: since
+          # dma-streams phase 5a the SAME70 platform carries the generated XDMAC
+          # model, so this glob now picks up same70_xdmac_model.cs and this step
+          # needed no edit. The bootloader does not use DMA — the model is simply
+          # instantiated and idle — but the .repl names its type, so the include
+          # must be here and must precede LoadPlatformDescription. Verified
+          # locally after the model landed: both SAME70 bootloader legs green.
           {
             echo "s70_cs_includes<<CSEOF"
             for cs in "$out"/*.cs; do [ -e "$cs" ] && echo "include @$cs"; done
