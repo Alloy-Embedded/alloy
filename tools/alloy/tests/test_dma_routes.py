@@ -1073,3 +1073,285 @@ def test_one_helper_spells_every_roles_tags(board_id: str) -> None:
             for tag in (f"{signal}_dma<",):
                 if tag in bind:
                     assert f"alloy::{facade}::{tag}" in bind
+
+
+# ------------------ the free-router shape's THIRD silicon (SAME70 / XDMAC)
+#
+# Phase 5 (doc §3.3). XDMAC is a third silicon and the SECOND family on the
+# free-router branch, which is the claim this section exists to hold down: it
+# needed no new branch in dma_assignment_problems, because the constraint it
+# poses really is the one that branch already answers. A third silicon that
+# costs a board file and nothing else is a strong claim, and a strong claim
+# earns tests that would notice if someone quietly special-cased it back.
+#
+# What makes XDMAC fit: PERID is a field of the channel's own CC register, so
+# any of the 24 channels can carry any peripheral's request, and the request
+# is a per-peripheral fact under `dma_requests` exactly as on G0. It is
+# 1-based like dma_v1 too.
+#
+# THE HONESTY NOTE THAT DECIDES HOW MUCH THESE TESTS MATTER (doc §5, and the
+# phase-3/4 measurements behind it): under emulation a route is witnessed by
+# HALVES — the channel index is load-bearing, the REQUEST id is not, because
+# the platform wire and the firmware route descend from the same board.json
+# statement. On XDMAC it is worse than on G0/F7 rather than equal: Renode
+# 1.16.1 ships no XDMAC model at all, so any model is one alloy would write,
+# and it would trigger on the GE write without ever consulting PERID. The
+# PERID half of a SAME70 route is therefore unwitnessable by construction in
+# emulation, and only silicon can prove it. That makes these host tests the
+# ONLY guard on the PERID half — which is why the ones below assert the
+# request ids by value, and why one of them perturbs the chip file to prove
+# the value is read rather than remembered.
+
+_SAME70 = "same70_xplained"
+
+# The seven shipped assignments, and the PERID each one must pick up from the
+# chip. Values are the XDMAC_CC__PERID value-group of ATSAME70Q21B.atdf in the
+# pinned pack same70-dfp-4.9.129.atpack; they live in alloy-devices and must
+# never appear in board.json.
+_SAME70_ROUTES = {
+    "adc.conv":      ("afec0",  "adc_conv",       1, 35),
+    "debug_uart.rx": ("usart1", "debug_uart_rx",  2, 10),
+    "debug_uart.tx": ("usart1", "debug_uart_tx",  3, 9),
+    "spi.rx":        ("spi0",   "spi_rx",         4, 2),
+    "spi.tx":        ("spi0",   "spi_tx",         5, 1),
+    "i2c.rx":        ("twihs0", "i2c_rx",         6, 15),
+    "i2c.tx":        ("twihs0", "i2c_tx",         7, 14),
+}
+
+
+@skip_no_devices
+def test_same70_takes_the_free_router_branch_not_a_third_one() -> None:
+    """The structural claim, pinned where a refactor would trip on it: every
+    SAME70 signal resolves through `_stream_triples() is None`, i.e. the
+    free-router path, because the chip states `dma_requests` and no
+    `dma_routes`. If someone ever gives XDMAC its own branch, this is the test
+    that asks them to justify it."""
+    from alloy_cli.devices import load_chip
+    from alloy_cli.emit.board import _stream_triples
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    assert board["chip"] == "microchip/atsame70q21"
+    for key, (periph, _, _, _) in _SAME70_ROUTES.items():
+        signal = key.partition(".")[2]
+        assert _stream_triples(chip, periph, signal) is None, key
+        assert signal in chip["peripherals"][periph]["dma_requests"]
+    # And the controller is found by the same class rule, not by name.
+    assert chip["peripherals"]["xdmac"]["ip"] == "microchip/xdmac_v1"
+    assert chip["peripherals"]["xdmac"]["channels"]["count"] == 24
+
+
+@skip_no_devices
+def test_the_shipped_same70_board_is_legal_and_complete() -> None:
+    """The board's seven assignments generate clean, and they are the seven
+    this die can serve — one channel each, no collisions, all within 1..24."""
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    assert dma_assignment_problems(board, chip, load_registers(DEVICES_ROOT)) == []
+    assert set(board["dma"]) == set(_SAME70_ROUTES)
+    for key, (periph, _, channel, _) in _SAME70_ROUTES.items():
+        assert board["dma"][key] == {"controller": "xdmac", "channel": channel}
+        assert board["roles"][key.partition(".")[0]]["peripheral"] == periph
+    # Unlike the G0s, this die is NOT scarce: 24 channels against 7 signals,
+    # so the phase-4 reserve worry does not apply here and a refusal can
+    # always offer somewhere to go.
+    assert len(set(board["dma"])) < chip["peripherals"]["xdmac"]["channels"]["count"]
+
+
+@skip_no_devices
+def test_the_same70_routes_emit_with_the_perids_from_the_chip() -> None:
+    """The golden emission. Each constant carries the board's channel and the
+    CHIP's PERID — and since emulation can never witness the PERID half on
+    this family, these seven values are asserted here or nowhere."""
+    out = _emit_shipped(_SAME70)
+    for key, (periph, const, channel, request) in _SAME70_ROUTES.items():
+        signal = key.partition(".")[2]
+        assert (f"inline constexpr alloy::dma::route<alloy::dev::xdmac_t, "
+                f"{channel}, /*request=*/{request}> {const}{{}};"
+                f"  // serves {periph} {signal}") in out
+    # The free-router shape emits no stream annotation (that suffix belongs to
+    # the F4/F7 branch, and its presence here would mean the wrong branch ran).
+    assert "0-based stream" not in out.split("namespace dma {")[1]
+
+
+@skip_no_devices
+def test_no_perid_ever_appears_in_the_same70_board_file() -> None:
+    """Design §1: the board names a controller and a channel; the request id
+    stays the chip's fact. Pinned by value because a well-meaning editor who
+    "documents" the PERIDs in board.json would create a second source of truth
+    that nothing validates against the first."""
+    text = (ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text()
+    board = json.loads(text)
+    for assign in board["dma"].values():
+        assert set(assign) == {"controller", "channel"}
+    assert "request" not in text and "perid" not in text.lower()
+
+
+@skip_no_devices
+def test_the_same70_request_is_read_from_the_chip_not_remembered() -> None:
+    """The anti-drift mutation that matters most on this family: perturb the
+    CHIP's PERID and the emitted route must follow. This is the test that
+    would go red if anyone hardcoded a SAME70 request table in the emitter —
+    and, because no emulation leg can witness PERID here, it is the only place
+    that failure would ever show up."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+    import copy
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    chip = copy.deepcopy(load_chip(DEVICES_ROOT, board["chip"]))
+    assert chip["peripherals"]["usart1"]["dma_requests"]["tx"] == 9
+    chip["peripherals"]["usart1"]["dma_requests"]["tx"] = 41
+    out = emit_board_header(board, chip, load_registers(DEVICES_ROOT))
+    assert ("inline constexpr alloy::dma::route<alloy::dev::xdmac_t, 3, "
+            "/*request=*/41> debug_uart_tx{};") in out
+    assert "/*request=*/9>" not in out
+
+
+@skip_no_devices
+def test_the_same70_channel_is_read_from_the_board_not_remembered() -> None:
+    """The other half of the same anti-drift pair: perturb the BOARD's channel
+    and the tag moves with it. Channel 20 is free on this die — the roomy
+    geometry means the perturbation needs no reserve arrangement, unlike
+    nucleo_g071rb's channel 7."""
+    def move(board: dict[str, Any]) -> None:
+        board["dma"]["debug_uart.tx"] = {"controller": "xdmac", "channel": 20}
+
+    bind = _binder(_emit_shipped(_SAME70, move), "debug_uart")
+    assert ("alloy::uart::tx_dma<alloy::dma::route<alloy::dev::xdmac_t, 20, "
+            "/*request=*/9>>") in bind
+    # rx is untouched, and still on the board's own channel.
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::xdmac_t, 2, "
+            "/*request=*/10>>") in bind
+
+
+@skip_no_devices
+def test_the_same70_routes_ride_every_binder() -> None:
+    """Design §1's attachment half, on all four facades at once: the routes a
+    portable program probes through `Handle::rx_route` — never the
+    namespace-scope constant, which does not fold in a requires-clause."""
+    out = _emit_shipped(_SAME70)
+    for role, facade, signals in (("debug_uart", "uart", ("rx", "tx")),
+                                  ("spi", "spi", ("rx", "tx")),
+                                  ("i2c", "i2c", ("rx", "tx"))):
+        bind = _binder(out, role)
+        for signal in signals:
+            _, const, channel, request = _SAME70_ROUTES[f"{role}.{signal}"]
+            assert (f"alloy::{facade}::{signal}_dma<alloy::dma::route<"
+                    f"alloy::dev::xdmac_t, {channel}, "
+                    f"/*request=*/{request}>>") in bind
+            # Character-for-character the board::dma constant's own type.
+            assert (f"alloy::dma::route<alloy::dev::xdmac_t, {channel}, "
+                    f"/*request=*/{request}> {const}{{}}") in out
+        assert bind.index("rx_dma") < bind.index("tx_dma")
+    # The ADC's conv route rides the bind's third parameter, not a tag —
+    # anchor 2.1's spelling `adc.ring(samples)` depends on it.
+    assert ("using adc = alloy::adc::bind<alloy::dev::afec0_t, clock_profile, "
+            "alloy::dma::route<alloy::dev::xdmac_t, 1, /*request=*/35>>;") in out
+
+
+# ------------------------------------- the SAME70 refusals (free-router text)
+
+
+def _same70_problems(dma: dict[str, Any]) -> list[dict[str, Any]]:
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    board["dma"] = dma
+    return dma_assignment_problems(board, load_chip(DEVICES_ROOT, board["chip"]),
+                                   load_registers(DEVICES_ROOT))
+
+
+@skip_no_devices
+@pytest.mark.parametrize("channel", [0, 25, -1, 100])
+def test_a_same70_channel_outside_the_geometry_is_refused(channel: int) -> None:
+    """1-based like dma_v1, and the bound comes from the chip's
+    `channels: {count: 24}` — not from a number written in the emitter. 0 is
+    as illegal as 25."""
+    problems = _same70_problems({"debug_uart.tx": {"controller": "xdmac",
+                                                   "channel": channel}})
+    assert len(problems) == 1
+    assert problems[0]["message"] == (f"xdmac has channels 1..24, not {channel}")
+    # The suggestions are real channels, and there are 24 of them free.
+    assert problems[0]["suggestions"] == [str(c) for c in range(1, 25)]
+
+
+@skip_no_devices
+def test_a_stream_key_on_same70_names_both_bases_and_both_routers() -> None:
+    """The reverse-confusion refusal, reached on a board that has NO DMAMUX.
+    It must name both numbering bases (the off-by-one that would misroute
+    every transfer) and must not send a SAME70 reader looking for a DMAMUX
+    chapter that does not exist in their datasheet."""
+    problems = _same70_problems({"debug_uart.tx": {"controller": "xdmac",
+                                                   "stream": 0}})
+    assert len(problems) == 1
+    message = problems[0]["message"]
+    assert "'channel' (1-based" in message and "0-based" in message
+    assert "PERID on XDMAC" in message
+    assert "free router" in message
+
+
+@skip_no_devices
+def test_two_same70_signals_on_one_channel_collide() -> None:
+    """One channel moves one signal here as everywhere — XDMAC's channels are
+    interchangeable, not shareable."""
+    problems = _same70_problems({"debug_uart.tx": {"controller": "xdmac", "channel": 4},
+                                 "spi.rx": {"controller": "xdmac", "channel": 4}})
+    assert [p["key"] for p in problems] == ["spi.rx"]
+    assert problems[0]["message"] == ("xdmac channel 4 already serves "
+                                      "'debug_uart.tx' — one channel moves one "
+                                      "stream")
+    assert "4" not in problems[0]["suggestions"]
+
+
+@skip_no_devices
+def test_a_controller_that_is_not_the_same70_dma_is_refused() -> None:
+    """`gmac` moves bytes and has descriptors, and is still not a DMA
+    controller: the class comes from the register file, never from a name that
+    sounds plausible."""
+    for controller in ("gmac", "afec0", "pmc", "dma1", None):
+        problems = _same70_problems({"debug_uart.tx": {"controller": controller,
+                                                       "channel": 1}})
+        assert len(problems) == 1
+        assert problems[0]["message"] == (f"'{controller}' is not a DMA "
+                                          f"controller on this chip")
+        assert problems[0]["suggestions"] == ["xdmac"]
+
+
+@skip_no_devices
+def test_the_same70_candidates_are_the_seven_curated_signals() -> None:
+    """Suggestion machinery needed no new knowledge for a third silicon: the
+    candidates fall out of the roles' `dma_requests`. `ethernet` and
+    `watchdog` are declared roles whose peripherals state none, so they are
+    absent — which is the honest answer, not an oversight."""
+    from alloy_cli.devices import load_chip
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    candidates = dma_signal_candidates(board, load_chip(DEVICES_ROOT,
+                                                        board["chip"]))
+    assert candidates == sorted(_SAME70_ROUTES)
+    assert not any(c.startswith(("ethernet.", "watchdog.")) for c in candidates)
+
+
+@skip_no_devices
+def test_the_same70_emitter_and_validator_agree_on_a_bad_channel() -> None:
+    """ONE expression, two consumers — pinned on the new family too: the
+    emitter refuses to generate and `board-validate` reports the same message
+    with a field location."""
+    import pytest as _pytest
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+    from alloy_cli.emit.common import EmitError
+
+    board = json.loads((ALLOY_ROOT / "boards" / _SAME70 / "board.json").read_text())
+    board["dma"]["debug_uart.tx"] = {"controller": "xdmac", "channel": 25}
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    registers = load_registers(DEVICES_ROOT)
+    with _pytest.raises(EmitError) as caught:
+        emit_board_header(board, chip, registers)
+    assert "channels 1..24" in str(caught.value)
+    problems = dma_assignment_problems(board, chip, registers)
+    assert [p["key"] for p in problems] == ["debug_uart.tx"]
+    assert "channels 1..24" in problems[0]["message"]

@@ -37,13 +37,29 @@
       "miso": "pa6",
       "mosi": "pa7",
       "label": "SPI1 on Arduino D13/D12/D11 = PA5/PA6/PA7 (CN7, per UM1974 Nucleo-144 pinout \u2014 old repo had no SPI map for this board); no LED conflict"
+    },
+    "adc": {
+      "peripheral": "adc1",
+      "label": "ADC1 \u2014 external channels only; this part's chip data carries no internal-channel map"
     }
   },
   "dma": {
-    "debug_uart.rx": {"controller": "dma1", "stream": 1},
-    "debug_uart.tx": {"controller": "dma1", "stream": 3},
-    "spi.rx": {"controller": "dma2", "stream": 0},
-    "spi.tx": {"controller": "dma2", "stream": 3}
+    "debug_uart.rx": {
+      "controller": "dma1",
+      "stream": 1
+    },
+    "debug_uart.tx": {
+      "controller": "dma1",
+      "stream": 3
+    },
+    "spi.rx": {
+      "controller": "dma2",
+      "stream": 0
+    },
+    "spi.tx": {
+      "controller": "dma2",
+      "stream": 3
+    }
   },
   "probe": {
     "kind": "stlink",

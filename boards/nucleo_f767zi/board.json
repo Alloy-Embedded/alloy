@@ -40,11 +40,21 @@
       },
       "label": "onboard 10/100 Ethernet: ETH MAC + LAN8742A PHY (RMII, addr 0, RJ45 CN14). PHY nRST is tied to the board NRST net on MB1137 \u2014 there is NO dedicated GPIO PHY reset; reset_pin=PG2 is an unused placeholder to satisfy the driver's reset-pin requirement (the driver also soft-resets the PHY via BMCR.RESET over MDIO, which is the reset that actually matters here).",
       "reset_pin": "pg2"
+    },
+    "adc": {
+      "peripheral": "adc1",
+      "label": "ADC1 \u2014 external channels only; this part's chip data carries no internal-channel map"
     }
   },
   "dma": {
-    "debug_uart.rx": {"controller": "dma1", "stream": 1},
-    "debug_uart.tx": {"controller": "dma1", "stream": 3}
+    "debug_uart.rx": {
+      "controller": "dma1",
+      "stream": 1
+    },
+    "debug_uart.tx": {
+      "controller": "dma1",
+      "stream": 3
+    }
   },
   "probe": {
     "kind": "stlink",
