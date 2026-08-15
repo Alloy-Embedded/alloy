@@ -330,6 +330,21 @@ struct microchip_xdmac_v1_engine {
         // completion, and the fresh transfer reports done() before it has
         // moved a byte. (st_dma_v1_body.hpp orders its resets the same way,
         // for the milder reason that its purge is a write.)
+        //
+        // WITNESSED: the ORDERING. Move these three resets above the purge and
+        // a host test goes red.
+        // NOT WITNESSED: the purge ITSELF. Delete the clear_flags() line alone
+        // and the whole suite stays green — measured, 1 of 40 mutations, and
+        // the one gap in this driver's contract. It is a limit of the
+        // instrument rather than an oversight: the double models CIS as an
+        // ordinary register whose clear-on-read the TEST commits by hand
+        // (test_xdmac_v1_latch.cpp's hw_read_clears), so nothing can observe
+        // that a read happened. Closing it means giving the double a genuinely
+        // clear-on-read CIS — more faithful to the silicon than today's manual
+        // commit, and a change every test in that file would have to survive.
+        // What the missing line would cost on hardware: a stale BIS from the
+        // previous transfer still standing when the CIE|GIE arm below lets it
+        // through, firing the caller's on_complete before a byte moves.
         callback<Ch>::latched = false;      // a new transfer is not already complete
         callback<Ch>::err_latched = false;  // ...and does not inherit the last
                                             // transfer's failure
