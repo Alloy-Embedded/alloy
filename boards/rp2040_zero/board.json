@@ -14,6 +14,10 @@
       "label": "UART0 on GP0/GP1 (castellated pads — needs external USB-serial adapter)"
     }
   },
+  "dma": {
+    "debug_uart.rx": {"controller": "dma", "channel": 0},
+    "debug_uart.tx": {"controller": "dma", "channel": 1}
+  },
   "probe": {
     "kind": "bootsel",
     "runner": "uf2",

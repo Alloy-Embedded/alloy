@@ -22,6 +22,11 @@
       "label": "on-die temperature sensor (input 4); GPIO26..29 need their pads disabled first"
     }
   },
+  "dma": {
+    "adc.conv": {"controller": "dma", "channel": 0},
+    "debug_uart.rx": {"controller": "dma", "channel": 1},
+    "debug_uart.tx": {"controller": "dma", "channel": 2}
+  },
   "probe": {
     "kind": "bootsel",
     "runner": "uf2",

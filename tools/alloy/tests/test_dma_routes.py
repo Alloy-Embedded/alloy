@@ -1602,3 +1602,233 @@ def test_the_rp2040_candidates_are_the_three_curated_signals() -> None:
     assert dma_signal_candidates(board, load_chip(DEVICES_ROOT,
                                                   board["chip"])) == [
         "debug_uart.rx", "debug_uart.tx"]
+
+
+# ---------------------------------- the shipped RP2040 boards and what they
+#                                     are and are not entitled to claim
+#
+# THE THREE TREQ IDS, and where they come from. They are enumeratedValues
+# ADC / UART0_TX / UART0_RX on CH0_CTRL_TRIG.TREQ_SEL in the vendor's own SVD,
+# raspberrypi/pico-sdk@98a542c1 src/rp2040/hardware_regs/RP2040.svd; they live
+# in alloy-devices and must never appear in board.json. They are asserted by
+# VALUE here for the same reason the SAME70 PERIDs are: emulation cannot
+# witness the request half of a route on any family, and on RP2040 emulation
+# cannot witness ANY half, because Renode 1.16.1 ships no model of this part's
+# DMA. These tests are the only automatic guard that exists, and what they
+# guard is that the numbers are read from the chip file rather than typed
+# twice -- NOT that a wrong number would be caught. Only silicon catches that,
+# which is why the hardware checklist leads with a TREQ_SEL negative control.
+#
+# (role.signal) -> (peripheral, constant name, channel, request)
+_RP2040_ROUTES = {
+    "raspberry_pi_pico": {
+        "adc.conv":      ("adc",   "adc_conv",      0, 36),
+        "debug_uart.rx": ("uart0", "debug_uart_rx", 1, 21),
+        "debug_uart.tx": ("uart0", "debug_uart_tx", 2, 20),
+    },
+    "rp2040_zero": {
+        "debug_uart.rx": ("uart0", "debug_uart_rx", 0, 21),
+        "debug_uart.tx": ("uart0", "debug_uart_tx", 1, 20),
+    },
+}
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _RP2040_BOARDS)
+def test_the_shipped_rp2040_boards_are_legal_and_complete(board_id: str) -> None:
+    """Both boards assign every signal their roles can carry, one channel
+    each, and generate clean. The Pico has the ADC role and the Zero does not,
+    so the Zero's map is two keys and not three — a board assigns what it
+    HAS, and a route for a role this board never declares would be a route
+    nothing could ever open."""
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = _rp_board(board_id)
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    want = _RP2040_ROUTES[board_id]
+    assert dma_assignment_problems(board, chip, load_registers(DEVICES_ROOT)) == []
+    assert set(board["dma"]) == set(want)
+    assert set(board["dma"]) == set(dma_signal_candidates(board, chip))
+    for key, (periph, _, channel, _) in want.items():
+        assert board["dma"][key] == {"controller": "dma", "channel": channel}
+        assert board["roles"][key.partition(".")[0]]["peripheral"] == periph
+    # 12 channels against at most 3 signals: this die is not scarce, so a
+    # refusal can always offer somewhere to go and the phase-4 reserve worry
+    # (nucleo_g071rb) does not apply.
+    assert len(board["dma"]) < chip["peripherals"]["dma"]["channels"]["count"]
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _RP2040_BOARDS)
+def test_the_rp2040_routes_emit_with_the_treqs_from_the_chip(board_id: str) -> None:
+    """The golden emission, both boards. Each constant carries the BOARD's
+    channel and the CHIP's TREQ_SEL id."""
+    out = _emit_shipped(board_id)
+    for key, (periph, const, channel, request) in _RP2040_ROUTES[board_id].items():
+        signal = key.partition(".")[2]
+        assert (f"inline constexpr alloy::dma::route<alloy::dev::dma_t, "
+                f"{channel}, /*request=*/{request}> {const}{{}};"
+                f"  // serves {periph} {signal}") in out
+    assert '#include "alloy/dma.hpp"' in out
+    # Free-router shape: no stream annotation. Its presence would mean the
+    # wrong branch ran for a family that has no stream engine.
+    assert "0-based stream" not in out.split("namespace dma {")[1]
+
+
+@skip_no_devices
+def test_channel_zero_survives_every_falsy_test_on_the_way_to_the_header() -> None:
+    """A hazard no previous family could raise: 0 is FALSY in Python, and the
+    emission path is full of `if not assign` / `if route` guards. A route on
+    channel 0 must reach the header as `, 0,` — dropped silently, it would
+    take a debug_uart's rx tag or the ADC's whole third bind parameter with
+    it, and the board would still generate and still build."""
+    pico = _emit_shipped("raspberry_pi_pico")
+    zero = _emit_shipped("rp2040_zero")
+    assert "alloy::dma::route<alloy::dev::dma_t, 0, /*request=*/36> adc_conv" in pico
+    assert ("using adc = alloy::adc::bind<alloy::dev::adc_t, clock_profile, "
+            "alloy::dma::route<alloy::dev::dma_t, 0, /*request=*/36>>;") in pico
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma_t, 0, "
+            "/*request=*/21>>") in _binder(zero, "debug_uart")
+    # And the constant did not vanish from the namespace either.
+    assert "0, /*request=*/21> debug_uart_rx{};" in zero
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _RP2040_BOARDS)
+def test_no_treq_ever_appears_in_the_rp2040_board_files(board_id: str) -> None:
+    """Design §1: the board names a controller and a channel; the request id
+    stays the chip's fact. Pinned by text because a well-meaning editor who
+    "documents" the DREQs in board.json creates a second source of truth that
+    nothing validates against the first."""
+    text = (ALLOY_ROOT / "boards" / board_id / "board.json").read_text()
+    for assign in json.loads(text)["dma"].values():
+        assert set(assign) == {"controller", "channel"}
+    assert "request" not in text and "treq" not in text.lower()
+    assert "36" not in text and "dreq" not in text.lower()
+
+
+@skip_no_devices
+def test_the_rp2040_request_is_read_from_the_chip_not_remembered() -> None:
+    """The P2 anti-drift mutation, chip half: perturb the chip's TREQ id and
+    the emitted route must move with it. If this passes unchanged, the value
+    is being remembered somewhere in the emitter and the chip file has stopped
+    being the source of truth."""
+    import copy
+
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+
+    board = _rp_board()
+    # DEEP COPY, not the loaded dict: load_chip is @lru_cache'd, so the dict it
+    # hands back is SHARED with every other test in the process. Perturbing it
+    # in place poisons the golden tests that run after this one — which is
+    # exactly what happened while writing this file, and why the SAME70
+    # mutation beside it copies too.
+    chip = copy.deepcopy(load_chip(DEVICES_ROOT, board["chip"]))
+    assert chip["peripherals"]["adc"]["dma_requests"]["conv"] == 36
+    chip["peripherals"]["adc"]["dma_requests"]["conv"] = 37
+    out = emit_board_header(board, chip, load_registers(DEVICES_ROOT))
+    assert "/*request=*/37> adc_conv{}" in out
+    assert "/*request=*/36" not in out
+    # The binder moved with it too, not just the constant.
+    assert ("alloy::dma::route<alloy::dev::dma_t, 0, /*request=*/37>>;"
+            in _binder(out, "adc") + ";")
+
+
+@skip_no_devices
+def test_the_rp2040_channel_is_read_from_the_board_not_remembered() -> None:
+    """The other half of the same pair, board side — and it moves the ADC OFF
+    channel 0 and the uart ONTO it, so a `channel or default` bug anywhere on
+    the path has two chances to show."""
+    def swap(board):
+        board["dma"]["adc.conv"] = {"controller": "dma", "channel": 11}
+        board["dma"]["debug_uart.rx"] = {"controller": "dma", "channel": 0}
+
+    out = _emit_shipped("raspberry_pi_pico", swap)
+    assert "route<alloy::dev::dma_t, 11, /*request=*/36> adc_conv{}" in out
+    assert "route<alloy::dev::dma_t, 0, /*request=*/21> debug_uart_rx{}" in out
+    assert "dma_t, 0, /*request=*/36>" not in out
+    assert ("alloy::uart::rx_dma<alloy::dma::route<alloy::dev::dma_t, 0, "
+            "/*request=*/21>>") in _binder(out, "debug_uart")
+
+
+@skip_no_devices
+@pytest.mark.parametrize("board_id", _RP2040_BOARDS)
+def test_the_rp2040_routes_ride_the_binder(board_id: str) -> None:
+    """Design §1's attachment half: the route a portable program probes
+    through `Handle::rx_route`, never the namespace-scope constant (which does
+    not fold in a requires-clause — the phase-2 lesson). Character-for-
+    character the same text as the board::dma constant, because
+    _dma_route_type spells both."""
+    out = _emit_shipped(board_id)
+    routes = _RP2040_ROUTES[board_id]
+    bind = _binder(out, "debug_uart")
+    for signal in ("rx", "tx"):
+        _, const, channel, request = routes[f"debug_uart.{signal}"]
+        route = (f"alloy::dma::route<alloy::dev::dma_t, {channel}, "
+                 f"/*request=*/{request}>")
+        assert f"alloy::uart::{signal}_dma<{route}>" in bind
+        assert f"{route} {const}{{}}" in out
+    assert bind.index("rx_dma") < bind.index("tx_dma")
+    if "adc.conv" in routes:
+        _, _, channel, request = routes["adc.conv"]
+        assert (f"using adc = alloy::adc::bind<alloy::dev::adc_t, "
+                f"clock_profile, alloy::dma::route<alloy::dev::dma_t, "
+                f"{channel}, /*request=*/{request}>>;") in out
+
+
+@skip_no_devices
+def test_the_rp2040_emitter_and_validator_agree_on_a_bad_channel() -> None:
+    """ONE expression, two consumers — pinned on the new family too, and on
+    the number that used to be accepted: the emitter refuses to generate and
+    `board-validate` reports the same message with a field location."""
+    from alloy_cli.devices import load_chip, load_registers
+    from alloy_cli.emit.board import emit_board_header
+    from alloy_cli.emit.common import EmitError
+
+    board = _rp_board()
+    board["dma"]["adc.conv"] = {"controller": "dma", "channel": 12}
+    chip = load_chip(DEVICES_ROOT, board["chip"])
+    registers = load_registers(DEVICES_ROOT)
+    with pytest.raises(EmitError) as caught:
+        emit_board_header(board, chip, registers)
+    assert "channels 0..11" in str(caught.value)
+    problems = dma_assignment_problems(board, chip, registers)
+    assert [p["key"] for p in problems] == ["adc.conv"]
+    assert "channels 0..11" in problems[0]["message"]
+
+
+@skip_no_devices
+def test_the_rp2040_validator_reports_the_free_router_problems_with_locations() -> None:
+    """board-validate's half of the shared expression, on this family: every
+    problem located at `dma.<key>`, with suggestions, and nothing invented."""
+    from alloy_cli.board_validate import validate_board
+    from alloy_cli.devices import load_chip, load_registers
+
+    board = _rp_board()
+    board["dma"] = {
+        "adc.conv": {"controller": "dma", "channel": 0},
+        "debug_uart.rx": {"controller": "dma", "channel": 0},   # collision
+        "debug_uart.tx": {"controller": "adc", "channel": 3},   # not a DMA
+        # `led` is a declared role with NO peripheral, so it can carry no
+        # signal at all — a different refusal from "this peripheral states no
+        # request", and the one an RP2040 board is most likely to reach,
+        # because two of its three roles are pin-only.
+        "led.conv": {"controller": "dma", "channel": 4},
+    }
+    issues = [i for i in validate_board(board, load_chip(DEVICES_ROOT,
+                                                        board["chip"]),
+                                        load_registers(DEVICES_ROOT))
+              if i["level"] == "error" and (i["field"] or "").startswith("dma.")]
+    by_field = {i["field"]: i for i in issues}
+    assert set(by_field) == {"dma.debug_uart.rx", "dma.debug_uart.tx",
+                             "dma.led.conv"}
+    assert "already serves 'adc.conv'" in by_field["dma.debug_uart.rx"]["message"]
+    # The collision's suggestions are 0-based here, through the validator too.
+    assert by_field["dma.debug_uart.rx"]["suggestions"][0] == "1"
+    assert "not a DMA controller" in by_field["dma.debug_uart.tx"]["message"]
+    assert by_field["dma.debug_uart.tx"]["suggestions"] == ["dma"]
+    assert ("not a peripheral-bearing role"
+            in by_field["dma.led.conv"]["message"])
+    assert by_field["dma.led.conv"]["suggestions"] == [
+        "adc.conv", "debug_uart.rx", "debug_uart.tx"]
