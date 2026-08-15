@@ -29,7 +29,11 @@ only write **one `board.json`**. Drop it in `boards/<your-board>/board.json`:
     "led":        { "pin": "pa5", "active": "high" },
     "debug_uart": { "peripheral": "usart2", "tx": "pa2", "rx": "pa3", "baud": 115200 }
   },
-  "probe": { "kind": "stlink", "runner": "openocd" }
+  "dma": {
+    "debug_uart.rx": { "controller": "dma1", "channel": 2 },
+    "debug_uart.tx": { "controller": "dma1", "channel": 3 }
+  },
+  "probe": { "kind": "stlink", "runner": "probe-rs", "chip_id": "STM32G071RBTx" }
 }
 ```
 
@@ -40,6 +44,51 @@ $ alloy build --board my_board
 ```
 
 That's it. No C++, no CMake.
+
+### Hand out the DMA channels, or lose the streaming API
+
+The `dma` block is easy to leave out and expensive to leave out. It is what makes
+`uart.rx_ring()`, `adc.ring()`, `spi.transfer_dma()` and `uart.write_dma()` **exist** on your
+board; omit it and every one of those methods is simply not declared, the folding examples print
+their fallback branch forever, and nothing tells you why.
+
+Each key is `<role>.<signal>`. Each value names a controller and a channel:
+
+| The engine your peripheral rides | The key | Numbering |
+| --- | --- | --- |
+| A free router — STM32 G0/G4 (DMAMUX), SAM E70 (XDMAC) | `channel` | from 1 |
+| A free router — RP2040 | `channel` | from 0 |
+| ST's F4/F7 stream engines | `stream` | from 0, and only the `{controller, stream}` pairs the chip's own route table allows |
+
+The base is not a rule to remember; it comes out of the chip data, and picking the wrong one is a
+validation error that says so and lists what would work.
+
+**What is deliberately *not* in the board file: the request id.** Which DMAMUX request, which
+channel-select value, which DREQ number pairs that channel with that peripheral is a *chip* fact,
+and it stays in the chip database. A board says "spi.rx gets channel 4"; it never says how the
+silicon wires channel 4 to SPI1's receive signal.
+
+`alloy board-validate` reports every problem at once, with the legal alternatives:
+
+```console
+$ alloy board-validate --file boards/my_board/board.json
+error: dma.spi.miso: dma 'spi.miso': the chip states no DMA request for spi1 'miso'  (try: spi.rx, spi.tx)
+error: dma.spi.tx: dma 'spi.tx': dma1 channel 3 already serves 'debug_uart.tx' — one channel moves one stream  (try: 5, 7)
+warning: board: pa5 is used by led and led_pwm — only one of them can drive it at a time
+```
+
+Every problem, located, with a way out — the route `static_assert` moved to config time. Warnings
+are for things that are legal but probably not what you meant.
+
+!!! warning "An assignment is a promise the driver may not be able to keep"
+    Validation checks your statement against the **chip's** routing data. It does not check that
+    the peripheral **driver** has DMA entry points, so a perfectly legal assignment can be inert
+    — three are, in the shipped boards. If you add a route and the method still does not appear,
+    that is the reason, and [the availability table](dma.md#what-each-board-gives-you) says which
+    of the four gates you hit.
+
+The full treatment — the four shapes, what each engine can do, and how far each path is proven —
+is **[Streaming data without the CPU](dma.md)**.
 
 ## Case 2 — a new chip in a known family
 

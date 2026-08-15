@@ -5,22 +5,29 @@ the board wires up (LED, button, debug UART, buses…). No hand-written C++ live
 
 ## Supported boards
 
-| Board id | Chip | Core | Roles wired | Notes |
-| --- | --- | --- | --- | --- |
-| `nucleo_g0b1re` | STM32G0B1RE | Cortex-M0+ | 14 | ST Nucleo-64 — the most complete board |
-| `nucleo_g071rb` | STM32G071RB | Cortex-M0+ | 8 | ST Nucleo-64 |
-| `same70_xplained` | ATSAME70Q21 | Cortex-M7 | 9 | Microchip, Ethernet + EEPROM |
-| `nucleo_f722ze` | STM32F722ZE | Cortex-M7 | 5 | ST Nucleo-144 |
-| `nucleo_f767zi` | STM32F767ZI | Cortex-M7 | 5 | ST Nucleo-144 — for the network examples |
-| `esp_wrover_kit` | ESP32 | Xtensa LX6 | 4 | Espressif |
-| `esp32_devkit` | ESP32 | Xtensa LX6 | 4 | Espressif DevKitC |
-| `rp2040_zero` | RP2040 | 2× Cortex-M0+ | 2 | Waveshare, WS2812 |
-| `raspberry_pi_pico` | RP2040 | 2× Cortex-M0+ | 2 | BOOTSEL flashing |
+| Board id | Chip | Core | Roles wired | DMA routes | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `nucleo_g0b1re` | STM32G0B1RE | Cortex-M0+ | 19 | 7 | ST Nucleo-64 — the most complete board |
+| `nucleo_g071rb` | STM32G071RB | Cortex-M0+ | 8 | 6 | ST Nucleo-64 |
+| `same70_xplained` | ATSAME70Q21 | Cortex-M7 | 9 | 7 | Microchip, Ethernet + EEPROM |
+| `nucleo_f722ze` | STM32F722ZE | Cortex-M7 | 6 | 4 | ST Nucleo-144 |
+| `nucleo_f767zi` | STM32F767ZI | Cortex-M7 | 7 | 2 | ST Nucleo-144 — for the network examples |
+| `esp_wrover_kit` | ESP32 | Xtensa LX6 | 4 | — | Espressif; no DMA in the chip data, and no Renode model |
+| `esp32_devkit` | ESP32 | Xtensa LX6 | 4 | — | Espressif DevKitC; likewise |
+| `rp2040_zero` | RP2040 | 2× Cortex-M0+ | 2 | 2 | Waveshare, WS2812 |
+| `raspberry_pi_pico` | RP2040 | 2× Cortex-M0+ | 3 | 3 | BOOTSEL flashing |
 
 **Roles wired** is what the board file actually connects. A driver existing for your chip family
-does not mean your board routes the pins for it — `alloy board-info` prints the exact list, and the
+does not mean your board routes the pins for it — `alloy board-info` prints the exact list.
+**DMA routes** is the `dma` block below: how many peripheral signals the board hands a channel,
+which is what decides whether `adc.ring()` and friends exist at all — and an assignment being
+present is not by itself proof the driver can use it. The per-call, per-board answer is in
+[Streaming data without the CPU](dma.md#what-each-board-gives-you).
+
+How far each board has been *proven* is a separate question with its own page:
+[What is proven, and how](../reference/proof.md). The
 [README](https://github.com/Alloy-Embedded/alloy#supported-silicon) carries the per-family driver
-matrix and how far each board has been proven.
+matrix.
 
 List them from the CLI at any time (with `--json` for tooling/IDEs):
 
@@ -75,12 +82,47 @@ IRQ numbers) live in the [device database](adding-a-board.md), never in the boar
     "button":     { "pin": "pc13", "active": "low" },
     "debug_uart": { "peripheral": "usart2", "tx": "pa2", "rx": "pa3", "baud": 115200 }
   },
-  "probe": { "kind": "stlink", "runner": "openocd" }
+  "dma": {
+    "adc.conv":      { "controller": "dma1", "channel": 1 },
+    "debug_uart.rx": { "controller": "dma1", "channel": 2 },
+    "debug_uart.tx": { "controller": "dma1", "channel": 3 }
+  },
+  "probe": { "kind": "stlink", "runner": "probe-rs", "chip_id": "STM32G071RBTx" }
 }
 ```
 
-That is the whole contract: pick a chip, pick a clock, wire the roles. See
-[Adding a board](adding-a-board.md) to bring up one that isn't listed.
+Four things, then: pick a chip, pick a clock, wire the roles — and **hand out the DMA channels**.
+
+### The `dma` block
+
+A DMA channel is a board-level resource: the die has a handful, and deciding which peripheral
+gets which is exactly the kind of choice a board makes once so applications never have to. Each
+key is `<role>.<signal>`, each value names a controller and a channel:
+
+```json
+"dma": { "spi.rx": { "controller": "dma1", "channel": 4 } }
+```
+
+That one line is what makes `spi.transfer_dma(...)` **exist** on this board. The generator turns
+it into a `board::dma::spi_rx` route constant and hands it to the role binder, so application
+code never names a DMAMUX id, a channel-select value or a DREQ number — those come from the chip
+data, not from you. A board that assigns nothing still builds; the DMA methods simply are not
+declared, and portable code detects that with a `requires` probe.
+
+Two details worth having before you write one:
+
+- **The key differs by engine.** Free routers (the STM32 G0/G4 DMAMUX, the SAM E70 XDMAC, the
+  RP2040) take `channel`; ST's F4/F7 stream engines take `stream`, and only the triples the
+  chip's own route table allows. Getting it wrong is a validation error that names the legal
+  alternatives.
+- **An assignment is a promise the driver may not be able to keep.** Validation checks your
+  statement against the *chip's* routing data, not against the peripheral driver's entry points.
+  Three assignments in the shipped boards are inert today for exactly that reason.
+
+The whole treatment — what each engine can do, what each board actually gives you, and how far
+each path is proven — is **[Streaming data without the CPU](dma.md)**.
+
+See [Adding a board](adding-a-board.md) to bring up one that isn't listed.
 
 ## What the board is, and what your project chooses
 
