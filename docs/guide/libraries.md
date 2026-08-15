@@ -1,7 +1,8 @@
 # Driver libraries
 
-Sensors, displays, clocks and other parts live **outside the framework core**, as small
-header-only libraries you vendor into your project:
+Sensors, displays and clocks — and protocol stacks, a message bus, and the control-plane
+machinery an inverter needs — live **outside the framework core**, as small header-only
+libraries you vendor into your project:
 
 ```console
 $ alloy lib search humidity
@@ -42,6 +43,11 @@ in its own git repository is identical in shape.
 
 ## What ships today
 
+Thirteen libraries, and they are not all the same kind of thing. Half are parts you can buy; the
+other half is application machinery that happens not to belong in the framework core.
+
+**Parts on a bus** — a driver per device, each templated on `I2cBus`/`SpiBus`:
+
 | Library | Category | Part |
 | --- | --- | --- |
 | `sht31` | sensor | Sensirion SHT3x temperature + humidity (I²C) |
@@ -49,13 +55,41 @@ in its own git repository is identical in shape.
 | `bh1750` | sensor | ROHM BH1750FVI ambient light (I²C) |
 | `mpu6050` | sensor | InvenSense MPU-6050 6-axis IMU (I²C) |
 | `ds3231` | rtc | Maxim DS3231 high-accuracy RTC (I²C) |
-| `ssd1306` | display | Solomon Systech SSD1306 128×64 OLED (I²C) |
+| `ssd1306` | display | Solomon Systech SSD1306 128×64 monochrome OLED (I²C) |
+
+**Talking to something else** — protocol stacks over any byte link:
+
+| Library | Category | Reach for it when |
+| --- | --- | --- |
+| `modbus` 0.5.0 | protocol | you need Modbus RTU. Sans-IO core, a blocking client (master) and a poll-driven server (slave) over any `ByteStream` — including a UART behind a [DMA ring](dma.md), which is what its emulation leg runs. |
+| `bus` 0.3.0 | service | you want the parts of your firmware to stop calling each other directly. Typed zero-heap pub/sub — per-type topics, private subscriber queues you poll or `co_await`, latest-value watch cells, and a bridge that extends a topic over a byte link to a second board. [Its own guide](bus.md). |
+
+**Application machinery** — no device, no wire, just the arithmetic and state that every
+control-loop product ends up rewriting badly:
+
+| Library | Category | Reach for it when |
+| --- | --- | --- |
+| `ntc` 0.1.0 | sensor | you have a thermistor on a divider. Divider → resistance → temperature (beta, fixed or ln-linear), with open- and short-circuit detection. |
+| `meter` 0.1.0 | control | you are measuring AC. RMS, real power as the mean of the instantaneous product, apparent power, power factor and `int64` energy — single pass, no buffers. |
+| `pll` 0.1.0 | control | you must lock to a grid. A SOGI-PLL giving phase, frequency and amplitude from one single-phase voltage sample, with a constant-rotation phase advance for computation delay. |
+| `protect` 0.1.0 | control | something must trip. Physical thresholds folded to raw ADC counts **at compile time**, per-limit debounce and hysteresis, and a latched fault word that records every simultaneous fault rather than only the first. |
+| `param` 0.1.0 | service | your product has settings. A descriptor table with O(1) reads in the tick, strict or clamped writes, and torn-write-safe ping-pong persistence with deferred commit. |
+
+Those last five are the toolkit a motor-drive or inverter application needs above
+[the PWM bridge](pwm.md), and they are the reason this page is worth reading even if you never
+attach a sensor.
 
 ```console
-$ alloy lib list                 # browse the registry
+$ alloy lib list                 # browse the registry — the table above, generated
 $ alloy lib info sht31           # manifest + the concepts it requires
 $ alloy lib add sht31            # vendor into ./libs and wire the build
 ```
+
+!!! note "What is proven about them"
+    All thirteen are **host-tested** against the scriptable doubles, and `modbus` and `bus`
+    additionally have emulation legs — `bus` is also the one library in this project with bench
+    numbers from a real board. Nothing else here has met a physical part. See
+    [What is proven, and how](../reference/proof.md#libraries).
 
 `add` copies the library into `./libs/<name>`, records it in your `alloy.toml` under `[libs]`,
 and the build picks up the include directory. It is *vendored*, not fetched at build time: your
@@ -78,7 +112,8 @@ mylib/
 name = "sht31"
 version = "0.1.0"
 description = "Sensirion SHT3x temperature + humidity sensor (I2C)"
-category = "sensor"          # sensor | display | actuator | storage | io | comms | rtc
+category = "sensor"          # sensor · display · rtc · actuator · storage · io · comms
+                             # · service · control · protocol
 license = "MIT"
 
 [requires]
