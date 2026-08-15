@@ -2479,7 +2479,7 @@ bytes crossed, this IRQ fired, in this order".</p>
 <tr>
 <td><strong>4</strong></td>
 <td>pair claim + <code>spi.transfer_dma()</code>; <code>i2c</code> one-shot DMA read/write</td>
-<td>anchor 2.4 on G0 + F7 legs; i2c_read leg gains a DMA variant</td>
+<td><strong>[DONE]</strong> anchor 2.4 green on <code>nucleo_g071rb</code>, <code>nucleo_g0b1re</code> (dma1 channel 4/5, free router) and <code>nucleo_f722ze</code> (dma2 streams 0/3, stream engine) — one portable <code>spi_read</code> and one robot across both engines, differing by nothing but <code>board.json</code> <code>dma:</code> lines. Stronger than phase 3 could claim: besides the channel/stream INDEX, the leg witnesses the <strong>RX-before-TX arming order</strong> of the pair above (arm TX first and every request edge lands on a channel that is not enabled yet — red) and <code>CR2.RXDMAEN</code> (red without it). Still unwitnessed, unchanged: the REQUEST id, on either engine. The <strong>i2c one-shot</strong> landed with host witnesses only, and its leg asserts a bounded refusal rather than a transfer: Renode 1.16.1's model of that IP exposes no DMA request output at all, so nothing can ask the engine to move a byte — see the two options recorded in <code>tests/emulation/i2c_read.robot</code>. <code>write_read_dma</code> (repeated start) is a <strong>named absence</strong>: a deleted member, because the polled path hands off on TC and <code>CR1.TCIE</code> is deliberately uncurated</td>
 </tr>
 <tr>
 <td><strong>5</strong></td>
