@@ -360,9 +360,9 @@ rotting.
 
 ## Where the board facts live
 
-Step 6 worked because none of the differences between those MCUs are in your source. They are in
-the board's `board.json`, and this is the file to read when you want to know what a role actually
-is:
+Retargeting worked because none of the differences between those MCUs are in your source. They
+are in the board's `board.json`, and this is the file to read when you want to know what a role
+actually is:
 
 ```json title="boards/nucleo_g071rb/board.json (excerpt)"
 {
@@ -440,10 +440,12 @@ $ cd thermo && alloy test
 100% tests passed, 0 tests failed out of 1
 ```
 
-The five tests it ships are exactly the cases that are miserable on a bench and trivial here:
-that the output does not chatter inside the hysteresis band, and that **a sensor which stops
-answering does not move the output**. Reproducing that second one on hardware means pulling a
-wire at the right moment; in the test it is one flag. See [Testing](guide/testing.md).
+Five tests ship with it, and two of them are the cases that are miserable on a bench and trivial
+here: that the output does not chatter inside the hysteresis band, and that **a sensor which
+stops answering does not move the output**. Reproducing that second one on hardware means
+pulling a wire at exactly the right moment; in the test it is one flag. See
+[Testing](guide/testing.md), which is also where alloy writes down its own rules about what
+counts as evidence.
 
 ## Before you trust it
 
