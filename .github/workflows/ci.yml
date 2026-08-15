@@ -1195,6 +1195,43 @@ jobs:
             exit 1
           fi
 
+      # RP2040 IS THE ONE FAMILY WHERE "IT BUILT" IS THE WHOLE OF CI. Renode
+      # 1.16.1 ships no RP2040 peripheral of any kind, so these boards have no
+      # emulation leg — and none may be added: alloy can already emit an rp2040
+      # platform (cortex-m0 + UART.PL011 are generic Renode types) and Renode
+      # reads 0 from unmapped addresses, so a DMA leg there would read BUSY low
+      # and TRANS_COUNT 0 and report a completed transfer over a fully-written
+      # buffer of zeros. A false green, not weak evidence. See
+      # docs/guide/rp2040-dma-hardware-checklist.md.
+      #
+      # Which leaves a specific way for this family to go quietly dark: every
+      # DMA example is written to FOLD, so if the PL011's TX-DMA hooks or the
+      # chip's dmareq_tx ever stop resolving, dma_uart still compiles, still
+      # links, still passes the loop above — and silently prints "not available
+      # on this board" forever after. The loop cannot see that. This can.
+      # It asserts the BRANCH, not the behaviour, and that distinction is the
+      # point: it proves the DMA path was compiled in, and nothing whatsoever
+      # about bytes crossing.
+      - name: dma_uart really took the DMA branch (${{ matrix.board }})
+        if: matrix.board == 'raspberry_pi_pico' || matrix.board == 'rp2040_zero'
+        run: |
+          set -eu
+          elf="alloy/examples/dma_uart/.alloy/build-tree/${{ matrix.board }}/out/dma_uart.elf"
+          test -f "$elf" || { echo "FAIL: $elf missing"; exit 1; }
+          if arm-none-eabi-strings "$elf" | grep -q "not available on this board"; then
+            echo "FAIL: dma_uart folded back to its no-DMA branch on ${{ matrix.board }}."
+            echo "      The uart facade's write_dma() is constrained on the driver's"
+            echo "      dma_tx_begin/dma_tx_end/tdr_addr AND on a TX request id"
+            echo "      (uart0.dma_requests.tx in chip data). One of them stopped resolving."
+            exit 1
+          fi
+          arm-none-eabi-strings "$elf" | grep -q "dma via DMA" \
+            || { echo "FAIL: the DMA payload string is not in the image"; exit 1; }
+          arm-none-eabi-nm -C "$elf" | grep -q "raspberrypi_dma_v1_engine" \
+            || { echo "FAIL: no RP2040 DMA engine symbol was linked in"; exit 1; }
+          echo "ok: dma_uart on ${{ matrix.board }} compiled the RP2040 DMA path"
+          echo "    (this proves the branch was selected — NOT that any byte moved)"
+
       # ALLOY_FASTCODE claims a hot function runs from RAM. `size` cannot
       # confirm that — the totals are identical whether the section was placed
       # and copied or merely declared. So look at the symbol.
