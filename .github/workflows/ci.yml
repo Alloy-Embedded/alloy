@@ -220,9 +220,14 @@ jobs:
           # has NO DMA request output (1.16.1's I2C.STM32F7_I2C exposes only
           # EventInterrupt/ErrorInterrupt; upstream added one after the
           # release), so no byte can move and the leg asserts that the facade
-          # says so in ~8 s of emulated time rather than hanging. The run cost
-          # 2.67 s -> 11.52 s locally; with the wait's budget removed the same
-          # leg FAILS at 283 s. That is what the line defends. See the robot's
+          # says so in ~8 s of emulated time rather than hanging. With the
+          # wait's budget removed the same leg FAILS instead of passing —
+          # that is what the line defends, and it is the ONLY property this leg
+          # defends: delete the driver's RXDMAEN raise and the leg stays green,
+          # because it asserts a refusal, not a transfer. One host case
+          # (i2c_dma_begin_raises_one_request_enable_per_direction) is the whole
+          # witness for the i2c DMA path. Wall-clock is not quoted here: two
+          # local runs of this leg differed by 40%. See the robot's
           # Documentation for the two ways to make it actually witnessable —
           # both are maintainer calls.
           - board: nucleo_g071rb
@@ -255,10 +260,23 @@ jobs:
           # CR2.RXDMAEN is clear, so the polled and interrupt paths cannot see
           # it. KEPT BLOCKING on this board rather than staged experimental:
           # same board, same pinned emulator, run locally end to end (2.54 s),
-          # and THREE negative controls each taking it red without hanging —
-          # the wire moved by one index (2.46 s), the pair armed TX before RX
-          # (32.8 s, the design's §1 order as a red/green fact rather than
-          # doctrine), CR2.RXDMAEN never raised (32.8 s). If you would rather
+          # and THREE negative controls each taking it red without hanging.
+          # Each is written out with the caveat a re-runner needs, because two
+          # of the three are not the one-line mutation they sound like:
+          #   * the platform's request wire moved to an UNOWNED channel
+          #     (dma1@4 -> dma1@7) — red, receive buffer all zeros. Do NOT use
+          #     @5 for this: that is spi.tx's own m2p channel, the request edge
+          #     re-enters the engine and RENODE ITSELF DIES, which is red for
+          #     the wrong reason and evaluates no assertion.
+          #   * the pair armed TX before RX — needs TWO edits, the swap AND the
+          #     removal of dma::pair's own rx_armed_ trap; the swap alone traps
+          #     instead of testing the order. Red with the peer still seeing
+          #     bytes: they clocked out onto a channel nobody enabled.
+          #   * CR2.RXDMAEN never raised — red, and the peer cursor stops after
+          #     exactly one byte, so this control and the one above fail
+          #     differently rather than both just going red.
+          # Seconds are deliberately not quoted: these legs are emulation-speed
+          # bound and two runs on one machine differed by ~40%. If you would rather
           # stage it, move the DMA assertions behind a --variable like
           # async_io's SPI_LEG and add an experimental twin.
           - board: nucleo_g071rb

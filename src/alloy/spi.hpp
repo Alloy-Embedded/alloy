@@ -266,8 +266,11 @@ public:
     /// THE BOOL MEANS SOMETHING. It is false when either channel reported a
     /// transfer error, when either never moved, or when the port failed to
     /// drain — a half-failed duplex did not succeed, even though half of it
-    /// did. (The driver's error latch is what keeps a failure readable after
-    /// the completion interrupt consumed its flag.)
+    /// did. On THIS path the error is read from the live flag: `setup()` folds
+    /// TEIE in only when a completion callback is registered, and this call
+    /// registers none, so no interrupt runs to consume it. The driver's error
+    /// latch covers the other shape — a channel that already carried an
+    /// `on_complete` when the transfer failed — and only there.
     ///
     /// `tx` must live in DMA-visible RAM: on SAME70 the XDMAC cannot read
     /// embedded flash and a string literal traps as a bus error (design §4).
