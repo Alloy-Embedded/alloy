@@ -71,17 +71,13 @@ Not every board has every role. Instead of `#ifdef`, alloy exposes compile-time 
 `board::caps::*` and you branch with `if constexpr`:
 
 ```cpp
-if constexpr (board::caps::button) {
-    if (board::button.is_active()) {   // polarity-aware: true when pressed
+if constexpr (board::caps::adc) {          // false on every RP2040 and ESP32 board
+    auto adc = board::adc::open();
+    if (adc.read(3) > 2048u) {
         board::led.on();
     }
 }
 ```
-
-!!! note "`is_active()` vs `is_high()`"
-    `is_active()` knows the board's `"active": "low"` fact and returns `true` when the button is
-    *pressed*, whichever way the PCB wired it. `is_high()` is the raw pin level, for when you
-    want the electrical truth and not the logical one.
 
 The discarded branch is **not emitted**, so code guarded this way costs nothing on boards that
 lack the role — no flash, no RAM, no runtime check. `board::caps::*` is generated for every role
@@ -91,9 +87,46 @@ whether the board declares it or not, so the name always exists and the answer i
 !!! info "Roles that are absent still have a name"
     A role a board does not declare is generated as a **no-op stub with every entry point the
     real one has**: `board::rtc` becomes `alloy::rtc::null_rtc`, `board::adc::open()` returns a
-    handle whose `read()` answers `0`. That is what lets a guarded call sit in your source on a
-    board that cannot perform it. What you *cannot* do is bind a role to hardware that cannot
-    carry it — that is a `static_assert` at compile time, never a surprise at runtime.
+    handle whose `read()` answers `0`, `board::watchdog.feed()` does nothing. That is what lets a
+    guarded call sit in your source on a board that cannot perform it. What you *cannot* do is
+    bind a role to hardware that cannot carry it — that is a `static_assert` at compile time,
+    never a surprise at runtime.
+
+### The LED and the button are the exception — use the accessors
+
+Every other role has a stub. The two **pin** roles do not: on a board that declares no button,
+`board::button` is not declared at all, and neither `if constexpr (board::caps::button)` nor a
+template wrapper saves you, because `board::button` is a non-dependent name and the compiler
+looks it up either way. Measured on `rp2040_zero`, which has an LED and no button:
+
+```
+error: 'button' is not a member of 'board'; did you mean 'board::caps::button'?
+```
+
+The portable spelling is the pair of accessor functions the generator emits for exactly this:
+
+```cpp title="Compiles on all nine shipped boards"
+#include <alloy/board.hpp>
+
+int main() {
+    board::init();
+    auto button = board::user_button();   // the real input, or a null stub
+    auto led = board::status_led();
+    for (;;) {
+        if (button.is_active()) { led.on(); } else { led.off(); }
+    }
+}
+```
+
+`board::user_button()` returns the board's real `gpio::input` where one exists and an
+`alloy::gpio::null_input` — whose `is_active()` answers `false` — where it does not.
+`board::status_led()` is its `null_output` twin. Five of the nine shipped boards declare a
+button; all nine build that program.
+
+!!! note "`is_active()` vs `is_high()`"
+    `is_active()` knows the board's `"active": "low"` fact and returns `true` when the button is
+    *pressed*, whichever way the PCB wired it. `is_high()` is the raw pin level, for when you
+    want the electrical truth and not the logical one.
 
 ### The one sharp edge: `if constexpr` still type-checks the branch it drops
 
