@@ -37,6 +37,28 @@
 
 namespace alloy::hal {
 
+// ── Layer 2 for st/adc_g4 ───────────────────────────────────────────────
+//
+// THE FIELD NAMES ARE THE G0'S ON PURPOSE. `resolution_bits`,
+// `oversample_ratio` and `oversample_shift` mean exactly what they mean in
+// st_adc_v2's opts, in the same units, so a `libs/` driver written against
+// them compiles on both without a preprocessor — that is the Layer-2 naming
+// rule's whole payoff, and this is the first place two DIFFERENT IPs from two
+// different families make it real.
+//
+// What this IP does NOT get is the G0's `sample_time` pair and its
+// `sample_time_alt_channels` mask: the G0 has two shared tracking times and a
+// per-channel selector, the G4 has a genuine time per channel. Same feature,
+// different arity, so the same name would be a lie — and enable() pins every
+// channel at the longest time for the reason the header gives.
+template <class Inst>
+    requires std::same_as<typename Inst::ip, alloy::ip::st::adc_g4>
+struct adc_opts<Inst> {
+    std::uint8_t resolution_bits = 12;
+    std::uint16_t oversample_ratio = 1;   // 1 = off; otherwise a power of two, 2..256
+    std::uint8_t oversample_shift = 0;    // right shift applied to the sum
+};
+
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::adc_g4>
 struct adc_impl<Inst> {
@@ -61,6 +83,14 @@ struct adc_impl<Inst> {
         return v;
     }
 
+    // consteval, so it is only ever a compile-time fact about a Layer-2 value.
+    [[nodiscard]] static consteval unsigned log2_of(std::uint32_t v) {
+        unsigned n = 0;
+        while (v > 1u) { v >>= 1u; ++n; }
+        return n;
+    }
+
+    template <adc_opts<Inst> Opts = {}>
     static void enable(std::uint32_t kernel_hz) {
         alloy::gate_on(Inst::gate);
         // Asynchronous kernel clock — the RCC's dedicated ADC mux
@@ -88,6 +118,29 @@ struct adc_impl<Inst> {
         r().SMPR1 = all_slow();
         r().SMPR2 = all_slow();
 
+        // --- Layer 2, programmed with the converter still disabled, which is
+        // the only state in which CFGR/CFGR2 are writable at all.
+        static_assert(Opts.resolution_bits == 12u || Opts.resolution_bits == 10u ||
+                          Opts.resolution_bits == 8u || Opts.resolution_bits == 6u,
+                      "st/adc_g4 converts at 12, 10, 8 or 6 bits");
+        constexpr std::uint32_t res_code = (12u - Opts.resolution_bits) / 2u;
+        static_assert(res_code <= IP::res.raw_mask, "resolution code exceeds CFGR.RES");
+        if constexpr (res_code != 0u) {
+            IP::res.write(r(), res_code);
+        }
+
+        static_assert(Opts.oversample_ratio >= 1u && Opts.oversample_ratio <= 256u,
+                      "st/adc_g4 oversamples 2 to 256 samples per result (1 = off)");
+        static_assert((Opts.oversample_ratio & (Opts.oversample_ratio - 1u)) == 0u,
+                      "st/adc_g4's oversampling ratio is a power of two");
+        static_assert(Opts.oversample_shift <= 8u,
+                      "st/adc_g4 shifts an oversampled sum right by at most 8 bits");
+        if constexpr (Opts.oversample_ratio > 1u) {
+            IP::ovsr.write(r(), log2_of(Opts.oversample_ratio) - 1u);
+            IP::ovss.write(r(), Opts.oversample_shift);
+            IP::rovse.set(r());
+        }
+
         r().ISR = IP::adrdy.mask;  // w1c any stale ready flag
         IP::aden.set(r());
         while (IP::adrdy.read(r()) == 0u) {
@@ -101,6 +154,21 @@ struct adc_impl<Inst> {
         while (IP::eoc.read(r()) == 0u) {
         }
         return static_cast<std::uint16_t>(r().DR);
+    }
+
+    // What a result is worth after Layer 2: the resolution, widened by the
+    // bits oversampling gains and narrowed by the shift, clamped at the data
+    // register's own width. Identical arithmetic to st_adc_v2's, because the
+    // oversampler works the same way — sum then shift.
+    template <adc_opts<Inst> Opts>
+    [[nodiscard]] static consteval unsigned result_bits() {
+        unsigned bits = Opts.resolution_bits;
+        if (Opts.oversample_ratio > 1u) {
+            const unsigned gained = log2_of(Opts.oversample_ratio);
+            bits = bits + gained -
+                   (Opts.oversample_shift < gained ? Opts.oversample_shift : gained);
+        }
+        return bits > 16u ? 16u : bits;
     }
 };
 
