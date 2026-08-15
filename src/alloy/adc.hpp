@@ -593,6 +593,12 @@ template <class Inst, class Clock, class ConvRoute = void>
 struct bind {
     using instance = Inst;
 
+    // Layer 2, surfaced on the ROLE so a call site spells `board::adc::opts{…}`
+    // rather than reaching into `alloy::adc::` with an instance name. The
+    // peripheral-surface page prescribes this spelling for every facade; it was
+    // missing here, which made the knobs unwritable from an example.
+    using opts = adc::opts<Inst>;
+
     // How many analog watchdogs portable code may ask this port for. 0 means
     // "not reachable here" and is what board-generic code branches on, so a
     // program that wants one does not have to name a chip to find out.
@@ -613,7 +619,7 @@ struct bind {
     // INSIDE enable(), between the regulator coming up and ADEN — the only
     // window in which this IP's configuration registers are writable — which
     // is why there is no reconfigure() here and no stop/re-enable cycle.
-    template <opts<Inst> Opts = {}>
+    template <opts Opts = {}>
     static handle<Inst, ConvRoute, Opts> open(config = {}) {
         // Per INSTANCE, cross-TU (alloy/core/claim.hpp), not per binder type.
         alloy::claim::exclusive<Inst, alloy::claim::personality::adc>();
@@ -628,7 +634,7 @@ struct bind {
     // What one conversion is worth on this port, in significant bits, given
     // the knobs. Portable code that scales a reading branches on this instead
     // of assuming 12 — and it is a constant, so the branch costs nothing.
-    template <opts<Inst> Opts = {}>
+    template <opts Opts = {}>
     static constexpr unsigned result_bits = adc::result_bits<Inst, Opts>();
 };
 
