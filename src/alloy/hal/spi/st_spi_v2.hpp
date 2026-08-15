@@ -164,6 +164,82 @@ struct spi_impl<Inst> {
 
     [[nodiscard]] static bool transfer_busy() { return busy_; }
 
+    // --- DMA hooks: the endpoint half of the full-duplex pair -------------
+    //
+    // What a DMA'd exchange needs from the driver, and nothing more: WHERE the
+    // data register is, HOW to raise each direction's request, and how to end
+    // a transfer without truncating its last frame. The channels, their claim
+    // and their ordering belong to alloy::dma::pair; the facade above stitches
+    // the two together (design §2.4).
+    //
+    // ONE ADDRESS FOR BOTH DIRECTIONS: this IP has a single DR, and it must be
+    // BYTE-accessed for 8-bit frames (the data-packing quirk this file opens
+    // with). Both channels therefore run psize=b8/msize=b8, which is what
+    // dma::pair's byte-wide starters give — a halfword access here would push
+    // two frames per transfer on TX and pull garbage on RX.
+    [[nodiscard]] static std::uintptr_t dr_addr() {
+        return reinterpret_cast<std::uintptr_t>(&dr8());
+    }
+
+    // Raise the RECEIVE request. Called AFTER the receive channel is armed and
+    // BEFORE the transmit side starts — the order the RM gives for full duplex
+    // and the order ST's own HAL follows (arm RX, RXDMAEN, arm TX, TXDMAEN;
+    // writing TXDMAEN is what starts the traffic).
+    //
+    // The FIFO is drained first, for the same reason start_transfer_irq drains
+    // it: a previous polled xfer() can leave a byte behind, and with RXDMAEN
+    // raised that stale byte would be the first thing the channel wrote into
+    // the caller's receive buffer, shifting every frame by one. Bound to a
+    // local — `(void)dr8()` is not a volatile access and would not clear RXNE.
+    static void dma_rx_begin() {
+        for (std::uint32_t spin = 0; spin < kDrainBudget; ++spin) {
+            if (IP::rxne.read(r()) == 0u) {
+                break;
+            }
+            const std::uint8_t stale = dr8();
+            (void)stale;
+        }
+        IP::rxdmaen.set(r());
+    }
+
+    // Raise the TRANSMIT request — the write that starts the exchange.
+    static void dma_tx_begin() { IP::txdmaen.set(r()); }
+
+    // End the exchange without truncating its last frame. THE CLASSIC TRAP:
+    // the DMA's completion says the last byte reached the FIFO, not that it
+    // reached the wire. The RM's shutdown sequence (ST's HAL spells it
+    // SPI_EndRxTxTransaction) is: wait for the transmit FIFO to empty, then
+    // for BSY to fall — only then is the last frame actually clocked out, and
+    // only then may a caller drop chip-select or reconfigure the port.
+    //
+    // BOUNDED, the same idiom and reasoning as the ST I2C driver's poll
+    // budget: far above any legal frame's latency, so it only ever fires on a
+    // genuine fault, and a fault reports false instead of hanging. The
+    // enables are cleared either way — leaving RXDMAEN raised on a channel
+    // that is about to be stopped is how a request lands on a disabled
+    // channel and an overrun flag gets stuck (design §4's teardown order).
+    //
+    // The receive FIFO is DRAINED rather than waited on: anything still in it
+    // is a frame the receive channel did not take, so there is no other reader
+    // coming and a wait for FRLVL==0 would be a wait for nobody.
+    [[nodiscard]] static bool dma_end() {
+        bool ok = true;
+        std::uint32_t spin = 0;
+        for (; spin < kPollBudget && IP::ftlvl.read(r()) != 0u; ++spin) {
+        }
+        ok = ok && spin < kPollBudget;
+        for (spin = 0; spin < kPollBudget && IP::bsy.read(r()) != 0u; ++spin) {
+        }
+        ok = ok && spin < kPollBudget;
+        IP::txdmaen.clear(r());
+        IP::rxdmaen.clear(r());
+        for (spin = 0; spin < kDrainBudget && IP::frlvl.read(r()) != 0u; ++spin) {
+            const std::uint8_t stale = dr8();
+            (void)stale;
+        }
+        return ok;
+    }
+
     // Disarm and forget any in-flight transfer. The escape hatch when a
     // transfer stalls (MODF drops SPE and RXNE never comes again), so a wedged
     // bus does not leave the driver permanently busy_.
@@ -177,6 +253,14 @@ struct spi_impl<Inst> {
         done_fn_ = nullptr;
         done_ctx_ = nullptr;
     }
+
+private:
+    // Iteration caps for the two DMA spins above. kPollBudget is the ST I2C
+    // driver's constant and its reasoning; kDrainBudget is small on purpose —
+    // the FIFO this IP has holds four frames, so a drain that has not finished
+    // in a few dozen reads is a port that is not answering, not a deep queue.
+    static constexpr std::uint32_t kPollBudget = 1'000'000u;
+    static constexpr std::uint32_t kDrainBudget = 64u;
 };
 
 }  // namespace alloy::hal
