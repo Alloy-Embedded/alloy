@@ -363,6 +363,17 @@ jobs:
           # model re-raises HTIF per second-half sample, so missed() is
           # diagnostic only), CONT (tagged no-op; EXTEN shim paces the
           # stream), and the CCRDY shim shared with every ADC leg.
+          #
+          # AND NO SAME70 ROW, which phase 5 asked for and which is blocked
+          # twice over, independently — stated here so nobody re-derives it:
+          # Renode 1.16.1 has no AFEC model of any kind (re-measured over every
+          # shipped assembly; RENODE_ADC is st-only, and Analog.SAM4S_ADC is a
+          # different block), and the XDMAC ring has no honest witness at all
+          # (the view-0 descriptor layout is curated nowhere, so a model would
+          # agree with the firmware by construction — the generated XDMAC model
+          # refuses linked-list mode out loud rather than self-confirm). Anchor
+          # 2.1 on SAME70 is HOST-WITNESSED ONLY, by tests/test_xdmac_v1_ring.cpp.
+          # See adc_stream.robot and design §5/§6 for the same statement.
           - board: nucleo_g071rb
             example: adc_stream
             robot: adc_stream.robot

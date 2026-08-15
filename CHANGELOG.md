@@ -14,6 +14,66 @@ are removed no earlier than the next MAJOR; each one names its replacement.
 
 ### New
 
+- **DMA streams phase 5a, the witness half — `dma_uart` now asserts the
+  COMPLETION IRQ on `same70_xplained`, against a Renode model alloy had to
+  write.** The design's phase-5 demonstrable, verbatim: the board printed
+  "dma: not available on this board" until the XDMAC grew `enable_complete_irq`,
+  and it now runs the same `dma_uart.robot` with the same three assertions the
+  G0 leg uses — banner, `dma via DMA` (bytes crossed from RAM to the USART by
+  the channel the firmware programmed), `dma irq: fired` (the XDMAC NVIC line
+  fired and that channel's handler ran). No board conditionals; no ST board's
+  assertions moved. Green in 4.0–5.1 s on the pinned Renode 1.16.1, in CI as
+  `experimental` per the promotion convention.
+  **THE COST NOBODY HAD COUNTED, and the reason phase 5a was under-sized: the
+  witness is not a wire, it is a GENERATED C# MODEL** — the third this project
+  writes, after the SAME70 EFC and the ST stream engine. The bar for writing
+  one is "the stock model measurably lacks X"; here there is no stock model,
+  measured three ways on the pinned release (every plausible type name fails to
+  resolve; the complete `SAM*` type set in the shipped Infrastructure assembly
+  is 19 peripherals and none is a DMA controller; Renode's own `sam_e70.repl`
+  instantiates no DMA). Neither cheaper tier can serve: an unmapped region is
+  not a stub — Renode reads 0 from nothing, so the driver's `complete()` sees
+  `GS` as "already finished" and `write_dma` returns true having moved no bytes
+  — and `Python.PythonPeripheral`, the tier this same platform uses for its
+  flash controller, has no `IRQ` property at all, while the NVIC line is the
+  entire assertion. The model implements the register semantics alloy-devices
+  curates with datasheet provenance, including the clear-on-read `CIS` that
+  makes the driver's latch mandatory, which is what keeps the witness from
+  being circular: model and firmware derive from a common independently
+  recorded fact rather than from each other.
+  **WHAT IT REFUSES, loudly rather than plausibly.** A `GE` on a channel with
+  `CNDC.NDE` set — the 5b ring — logs a warning and moves nothing, because the
+  view-0 descriptor layout is curated nowhere and a model that chased the list
+  would only agree with the driver's own unverified reading of it. And `PERID`
+  selects nothing: it is stored, logged and never acted on, because
+  `UART.SAM_USART` exposes no DMA-request output for anything to pace against.
+  On the G0 and the F7 the request half is unwitnessed because the platform
+  wire and the firmware route descend from the same `board.json` statement; on
+  this family it is unwitnessable **by construction**, and only silicon will
+  ever prove it. The leg's own documentation says so, in the sentence a green
+  SAME70 run is entitled to.
+  **NEGATIVE CONTROLS**, each run in a detached worktree so the shared tree was
+  never mutated, each isolating the interrupt from the transfer: delete the
+  driver's single `GIE` arm, or the model's single `IRQ.Set`, and the bytes
+  still cross while the leg fails at `dma irq: fired` in ~31 s. Fail, not hang.
+  Baseline before the model: fails at `dma via DMA` in 31.1 s.
+  `tools/alloy/tests/test_renode_xdmac.py` (8 cases) pins the emitted block —
+  every number perturbed at its source in the chip data and the wire must
+  follow, the thin-data and uncurated refusals, the ST boards untouched, the
+  `.cs` include ordered before `LoadPlatformDescription`, and the linked-list
+  refusal pinned by its guard expression.
+- **Anchor 2.1 on the SAM E70 is HOST-WITNESSED ONLY, and is blocked twice
+  over.** Phase 5's end-state asked for the ADC ring leg on that board after
+  the IRQ leg. It is not reachable, for two independent reasons, both now
+  stated in `adc_stream.robot`, the CI matrix comment and design §5/§6 rather
+  than left for the next person to rediscover: Renode 1.16.1 contains no AFEC
+  model of any kind (re-measured over every shipped assembly for this phase —
+  the only `AFEC` substrings are hex-string false positives; `RENODE_ADC` is
+  ST-only, and `Analog.SAM4S_ADC` is a different block that would need a
+  compatibility probe first), and the XDMAC ring can never have an honest leg
+  at all (previous entry). Its witness is `tests/test_xdmac_v1_ring.cpp`. The
+  anchor should be re-opened as its own scoped decision once the AFEC question
+  is answered, not carried as a phase-5 leftover.
 - **DMA streams phase 5b — `alloy::dma::ring` on the SAM E70, out of linked
   descriptors instead of a circular bit. READ THE WITNESS PARAGRAPH BELOW
   BEFORE USING IT.** The XDMAC has no circular mode, so a ring there is two

@@ -42,6 +42,33 @@ Documentation     ADC DMA ring in emulation — the phase-1 anchor (docs/design/
 ...               copies landing in the right halves, the 12-bit conversion math —
 ...               comes from Renode's models, which this project did not write.
 ...               RESC and UART come from `alloy emulate` via --variable.
+...
+...               WHY THERE IS NO SAME70 ROW HERE, and why adding one would be a
+...               lie rather than work — phase 5 asked for this anchor on that
+...               board and it is BLOCKED TWICE OVER, independently:
+...
+...               * NO AFEC MODEL. Renode 1.16.1 contains no AFEC type of any
+...                 kind — re-measured for phase 5 over every shipped assembly,
+...                 where the only "AFEC" substrings are hex-string false
+...                 positives — and RENODE_ADC is st-only. Analog.SAM4S_ADC does
+...                 exist but is a different block from the SAME70's AFEC and
+...                 would need a compatibility probe before anyone counts on it.
+...               * NO RING WITNESS, AND THERE CANNOT BE ONE. A ring on the
+...                 XDMAC is two linked view-0 descriptors, and a descriptor's
+...                 memory layout is curated in no file in either repo. A model
+...                 that fetched descriptors would encode the same unverified
+...                 reading the driver does, so a green leg would prove only that
+...                 the two agree with each other. The generated XDMAC model
+...                 therefore REFUSES linked-list mode out loud (a warning, and
+...                 nothing transferred) instead of self-confirming.
+...
+...               So anchor 2.1 on SAME70 is HOST-WITNESSED ONLY:
+...               tests/test_xdmac_v1_ring.cpp drives the shipped
+...               alloy::dma::ring over a double that really fetches and executes
+...               the descriptors, proving the bookkeeping — linkage, ping-pong
+...               parity, cursor arithmetic across the half boundary, teardown —
+...               against that same reading of the layout, which it cannot prove.
+...               Design §5 and §6 say the same in the same words.
 Suite Setup       Setup
 Suite Teardown    Teardown
 Resource          ${RENODEKEYWORDS}
