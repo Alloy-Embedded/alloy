@@ -288,6 +288,105 @@ struct adc_impl<Inst> {
     }
 
   public:
+    // ── INJECTED GROUP ──────────────────────────────────────────────────
+    //
+    // The ADC's second sequencer, and the reason a control loop wants one: it
+    // INTERRUPTS the regular sequence, converts up to four channels, and
+    // leaves the results in ITS OWN data registers (JDR1..4) instead of DR.
+    // A regular sequence streaming to DMA is undisturbed by an injected
+    // conversion landing in the middle of it, because the two never share a
+    // destination. That independence is the whole feature.
+    //
+    // SOFTWARE-STARTED ONLY. JEXTSEL picks the hardware event that triggers
+    // this group and its ENCODING is not curated for this IP, so alloy offers
+    // JSWSTART — which needs no encoding — and does not pretend to offer the
+    // trigger. An ISR that wants "sample at the PWM centre" calls start() from
+    // the timer's own handler today.
+    //
+    // ═══ ONE THING HERE IS NOT SOURCED, AND IT IS LOAD-BEARING ═══════════
+    //
+    // Which of the four JSQ slots run when JL says N is a reference-manual
+    // statement, and this driver has no served copy of one. Two readings are
+    // possible and they disagree about where a ONE-channel group goes:
+    //
+    //   FROM_END (what this driver does): the sequence runs JSQ[4-N]..JSQ[3],
+    //       so a single channel is programmed into slot 3 and appears in JDR1.
+    //   FROM_START: the sequence runs JSQ[0]..JSQ[N-1], so a single channel
+    //       goes into slot 0.
+    //
+    // The upstream register data does not settle it — it describes the field
+    // as "1st conversion in injected sequence", which names JSQ1 rather than
+    // stating an execution order. Picking wrong does not fail loudly: it
+    // converts a DIFFERENT CHANNEL and returns a plausible number.
+    //
+    // So the choice is ONE named constant, both readings are written above,
+    // and it is marked for silicon. `injected_slot_order` is the only line to
+    // change if the hardware says otherwise.
+    //
+    // HOW TO SETTLE IT ON A BOARD, because a guess with a test plan is very
+    // different from a guess: arm a TWO-channel group with two inputs held at
+    // clearly different voltages, start it, and read slots 0 and 1. If they
+    // come back in the caller's order, this constant is right. If they come
+    // back swapped, or if one reads the other's voltage, flip it. A
+    // single-channel group cannot tell the two apart — it is the two-channel
+    // case that discriminates, and that is what a silicon test must use.
+    enum class injected_slot_order : std::uint8_t { from_end, from_start };
+    static constexpr injected_slot_order slot_order = injected_slot_order::from_end;
+    static constexpr bool slot_order_witnessed_on_silicon = false;
+
+    static constexpr std::uint8_t max_injected_slots = 4u;
+
+    static void injected_arm(const std::uint8_t* channels, std::uint8_t count) {
+        const std::uint8_t base =
+            (slot_order == injected_slot_order::from_end)
+                ? static_cast<std::uint8_t>(max_injected_slots - count)
+                : 0u;
+        for (std::uint8_t i = 0; i < count; ++i) {
+            write_jslot(static_cast<std::uint8_t>(base + i), channels[i]);
+        }
+        IP::jl.write(r(), static_cast<std::uint32_t>(count - 1u));
+    }
+
+    static void injected_start() {
+        // SR clears by writing zero on this IP, and JEOC must be low before a
+        // start or ready() would report the PREVIOUS group's completion.
+        r().SR = 0u;
+        IP::jswstart.set(r());
+    }
+
+    [[nodiscard]] static bool injected_ready() {
+        using sr = typename IP::sr;
+        return (r().SR & sr::jeoc) != 0u;
+    }
+
+    // Slot n of the caller's list. JDR is an ARRAY register — the generated
+    // form is offset/stride/count constants rather than struct members — so
+    // the read is address arithmetic over GENERATED numbers, never a literal.
+    //
+    // NOTE the second half of the unsourced question: whether the caller's
+    // slot n lands in JDR[n] or in JDR[n + 4 - count] depends on the same
+    // ordering fact. This reads JDR[n], which is the FROM_END reading's
+    // answer (results are said to fill JDR1 upward regardless of which JSQ
+    // slots ran). The silicon test above checks the pair together.
+    [[nodiscard]] static std::uint16_t injected_read(std::uint8_t slot) {
+        const auto addr = Inst::base + IP::JDR_offset +
+                          static_cast<std::uintptr_t>(slot) * IP::JDR_stride;
+        return static_cast<std::uint16_t>(
+            *reinterpret_cast<volatile std::uint32_t*>(addr) & 0xFFFFu);
+    }
+
+  private:
+    static void write_jslot(std::uint8_t idx, std::uint8_t ch) {
+        const auto v = static_cast<std::uint32_t>(ch);
+        switch (idx) {
+            case 0: IP::template jsq<0>.write(r(), v); break;
+            case 1: IP::template jsq<1>.write(r(), v); break;
+            case 2: IP::template jsq<2>.write(r(), v); break;
+            default: IP::template jsq<3>.write(r(), v); break;
+        }
+    }
+
+  public:
     // What a result is worth: this IP has no oversampler, so it is exactly
     // the configured resolution.
     template <adc_opts<Inst> Opts>

@@ -320,6 +320,89 @@ consteval unsigned result_bits() {
     }
 }
 
+
+// THE INJECTED GROUP — the ADC's second sequencer, as a sub-resource.
+//
+// It answers the sub-resource test (its own enable, its own lifetime, armed
+// long after the port is open and re-armed later) and it is the example
+// docs/reference/peripheral-surface.md names alongside the analog watchdog.
+// Unlike the watchdog there is exactly ONE per converter, so it takes no
+// ordinal from the caller.
+//
+// WHY A SUB-RESOURCE RATHER THAN A read() FLAVOUR: an injected conversion
+// INTERRUPTS the regular sequence and leaves its results in separate data
+// registers, so a regular sequence streaming to DMA is undisturbed by one
+// landing in the middle of it. That independence is what "sub-resource" means
+// here, and it is the whole reason a control loop wants the feature.
+//
+// ⚠ SILICON-PENDING. The driver behind this carries one choice it could not
+// source: which of the four JSQ slots run for an N-channel group. Both
+// readings are written out at `st_adc_f4::slot_order`, the chosen one is a
+// single named constant, and `slot_order_witnessed_on_silicon` is false until
+// a board says otherwise. Picking wrong converts a DIFFERENT CHANNEL and
+// returns a plausible number — so a two-channel group on known, distinct
+// voltages is the test that settles it, and a one-channel group cannot.
+//
+// THE ORDINAL SPACE IS SHARED WITH THE WATCHDOGS, and that has to be said
+// because nothing enforces it: claim::sub_exclusive is keyed on the instance
+// and an ordinal, the watchdogs take 0..N-1, and this takes a number above any
+// watchdog count alloy supports. Two sub-resources of one peripheral silently
+// sharing an ordinal would be the second claimant winning without a word,
+// which is the exact bug that key exists to catch.
+inline constexpr unsigned injected_sub_ordinal = 16u;
+
+template <class Inst>
+class injected_group {
+public:
+    injected_group(const injected_group&) = delete;
+    injected_group& operator=(const injected_group&) = delete;
+    injected_group(injected_group&&) noexcept = default;
+    injected_group& operator=(injected_group&&) noexcept = default;
+
+    // Start the group. Software-started: the hardware-trigger path needs an
+    // encoding the chip database does not carry, so it is not offered rather
+    // than half-offered. Calling this from a timer's own ISR is the supported
+    // way to sample at a chosen instant.
+    void start() const { hal::adc_impl<Inst>::injected_start(); }
+
+    // Has the whole group finished? Sticky until the next start().
+    [[nodiscard]] bool ready() const { return hal::adc_impl<Inst>::injected_ready(); }
+
+    // Slot n of the list this group was armed with, in the caller's order.
+    [[nodiscard]] std::uint16_t read(std::uint8_t slot) const {
+        return hal::adc_impl<Inst>::injected_read(slot);
+    }
+
+    // Point the group at a different list. One operation, like the watchdog's
+    // rearm(): the sequence length and the slots are one register.
+    [[nodiscard]] bool rearm(std::span<const std::uint8_t> channels) const {
+        if (channels.empty() || channels.size() > hal::adc_impl<Inst>::max_injected_slots) {
+            return false;
+        }
+        for (const std::uint8_t ch : channels) {
+            detail::admit_channel(ch);
+        }
+        hal::adc_impl<Inst>::injected_arm(channels.data(),
+                                          static_cast<std::uint8_t>(channels.size()));
+        return true;
+    }
+
+private:
+    template <class I, class R, opts<I> O>
+    friend class handle;
+    injected_group() = default;
+};
+
+// Does this converter have an injected sequencer alloy can reach? A variable
+// template for the reason can_scan gives — an inline requires-expression over
+// a concrete type hard-errors instead of yielding false, and outside a
+// template a discarded if-constexpr branch is still type-checked.
+template <class Inst>
+inline constexpr bool can_inject = requires(const std::uint8_t* c) {
+    hal::adc_impl<Inst>::injected_arm(c, std::uint8_t{});
+    hal::adc_impl<Inst>::injected_start();
+};
+
 // ConvRoute is the board's `adc.conv` DMA assignment, attached to the binder
 // by the generator (docs/design/dma-streams.md §1) — `void` when the board
 // assigned none, which constrains ring() away so a portable program's
@@ -437,6 +520,25 @@ public:
     {
         detail::admit_channel(channel);
         return adc::stream<Inst, Route>(channel, storage);
+    }
+
+    // Arm this converter's injected group with a channel list. Only a member
+    // where the driver has the hooks — on a converter without an injected
+    // sequencer it is a compile error naming it, not a runtime refusal.
+    [[nodiscard]] adc::injected_group<Inst> injected(
+        std::span<const std::uint8_t> channels) const
+        requires(adc::can_inject<Inst>)
+    {
+        // One injected group per converter, claimed like any sub-resource so a
+        // second claimant traps instead of silently re-pointing the first
+        // one's channel list.
+        alloy::claim::sub_exclusive<Inst, adc::injected_sub_ordinal,
+                                    alloy::claim::personality::adc>();
+        adc::injected_group<Inst> g{};
+        if (!g.rearm(channels)) {
+            alloy::trap<alloy::trap_code::impossible_config>();
+        }
+        return g;
     }
 
     // Arm one of this converter's analog watchdogs. Only offered where the
