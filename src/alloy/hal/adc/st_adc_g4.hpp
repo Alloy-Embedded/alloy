@@ -30,6 +30,7 @@
 #include <concepts>
 #include <cstdint>
 
+#include "alloy/core/admit.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/hal/adc/adc_impl.hpp"
 #include "alloy/ip/st/adc_g4.hpp"
@@ -156,6 +157,110 @@ struct adc_impl<Inst> {
         return static_cast<std::uint16_t>(r().DR);
     }
 
+
+    // ── analog watchdogs ────────────────────────────────────────────────
+    //
+    // Three in silicon (`feat::analog_watchdogs`), and alloy reaches ONE. That
+    // is a deliberate refusal, not an unfinished loop, and the reason is a
+    // units divergence inside one peripheral:
+    //
+    //   watchdog 1  TR1, thresholds TWELVE bits — the data register's own
+    //               scale, so `watchdog_config`'s "raw counts as read()
+    //               returns them" is literally true;
+    //   watchdogs 2 and 3  TR2/TR3, thresholds EIGHT bits. They cannot express
+    //               a window at the converter's resolution at all.
+    //
+    // Turning a caller's 12-bit window into an 8-bit one needs to know WHICH
+    // bits of the result those eight are compared against — an RM statement
+    // nobody in this driver's history read. A shift picked by inference would
+    // put a plausible wrong number inside a guard whose entire job is to be
+    // right, which is the same call alloy::adc::handle::watchdog() already
+    // makes when oversampling widens the result past the threshold field.
+    //
+    // So ordinals 1 and 2 are a static_assert naming the reason. The chip data
+    // still says 3, because 3 is what the silicon has; what alloy implements is
+    // this driver's business to state, and it states it.
+
+    template <unsigned N>
+    static void awd_arm(const alloy::hal::adc_watchdog_config& cfg) {
+        static_assert(N == 0u,
+                      "st/adc_g4: alloy arms analog watchdog 1 only. Watchdogs 2 and 3 have "
+                      "EIGHT-bit thresholds (TR2/TR3) while the converter produces twelve, and "
+                      "which bits of a result they compare against is a reference-manual fact "
+                      "this driver has no source for — so it refuses rather than guessing at "
+                      "the shift");
+        const bool fits = cfg.low <= IP::lt1.raw_mask && cfg.high <= IP::ht1.raw_mask;
+        if (__builtin_constant_p(fits) && !fits) {
+            alloy::core::admit::adc_watchdog_threshold();
+        }
+        if (!fits) {
+            alloy::trap<alloy::trap_code::impossible_config>();
+        }
+        const bool was_enabled = enabled();
+        disable_for_reconfig();
+        IP::lt1.write(r(), cfg.low);
+        IP::ht1.write(r(), cfg.high);
+        IP::awd1ch.write(r(), cfg.channel);
+        IP::awd1sgl.set(r());  // this one channel, not every converted one
+        IP::awd1en.set(r());
+        if (was_enabled) {
+            re_enable();
+        }
+    }
+
+    template <unsigned N>
+    static void awd_disarm() {
+        static_assert(N == 0u, "st/adc_g4: alloy arms analog watchdog 1 only");
+        const bool was_enabled = enabled();
+        disable_for_reconfig();
+        IP::awd1en.clear(r());
+        if (was_enabled) {
+            re_enable();
+        }
+    }
+
+    template <unsigned N>
+    [[nodiscard]] static bool awd_tripped() {
+        static_assert(N == 0u, "st/adc_g4: alloy arms analog watchdog 1 only");
+        return IP::awd1.read(r()) != 0u;
+    }
+
+    template <unsigned N>
+    static void awd_clear() {
+        static_assert(N == 0u, "st/adc_g4: alloy arms analog watchdog 1 only");
+        r().ISR = IP::awd1.mask;  // w1c, and ONLY this bit
+    }
+
+  private:
+    [[nodiscard]] static bool enabled() { return IP::aden.read(r()) != 0u; }
+
+    // Arming CYCLES THE PORT, exactly as on the G0: AWD1CH and AWD1EN live in
+    // CFGR, which this IP will not accept writes to while a conversion is in
+    // flight. So a watchdog armed on a live port stops it, disables it,
+    // programs the window and brings it back — a sub-resource whose lifetime
+    // was supposed to be independent of the port's turns out to interrupt it.
+    static void disable_for_reconfig() {
+        if (!enabled()) {
+            return;
+        }
+        if (IP::adstart.read(r()) != 0u) {
+            IP::adstp.set(r());
+            while (IP::adstart.read(r()) != 0u) {
+            }
+        }
+        IP::addis.set(r());
+        while (IP::aden.read(r()) != 0u) {
+        }
+    }
+
+    static void re_enable() {
+        r().ISR = IP::adrdy.mask;
+        IP::aden.set(r());
+        while (IP::adrdy.read(r()) == 0u) {
+        }
+    }
+
+  public:
     // What a result is worth after Layer 2: the resolution, widened by the
     // bits oversampling gains and narrowed by the shift, clamped at the data
     // register's own width. Identical arithmetic to st_adc_v2's, because the
