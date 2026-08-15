@@ -101,7 +101,20 @@ PHASE_TIMEOUT_S = 150
 #: test can — that a hung trial recovers with nobody pressing anything, and that
 #: a refused downgrade is not a brick. A genuinely stuck device still fails; at
 #: 600 s against a measured 112 s it just fails later.
-EMULATION_BOUND_TIMEOUT_S = int(os.environ.get("ALLOY_E2E_WATCHDOG_TIMEOUT_S", "600"))
+#: The env var is read under BOTH names. `ALLOY_E2E_EMULATION_TIMEOUT_S` is the
+#: one that describes what it sets: this budget now governs three phases, of
+#: which only two are watchdogs — the third is the wait after a refused
+#: downgrade, and it was giving that phase a WATCHDOG-shaped name while it sat
+#: on a boot-shaped budget that took the job red for five days. A name that
+#: misdescribes a budget is precisely the species of error this file exists to
+#: fix, so it is not left standing.
+#: The old spelling keeps working: nothing in .github/workflows/ sets either
+#: (measured), but a maintainer's shell history is not something a rename gets
+#: to break silently.
+EMULATION_BOUND_TIMEOUT_S = int(
+    os.environ.get("ALLOY_E2E_EMULATION_TIMEOUT_S")
+    or os.environ.get("ALLOY_E2E_WATCHDOG_TIMEOUT_S")
+    or "600")
 
 
 def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
