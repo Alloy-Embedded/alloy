@@ -36,7 +36,7 @@ You write the route once, in `board.json`, as a role signal and a channel:
 }
 ```
 
-That is `boards/nucleo_g071rb/board.json` verbatim. The key is
+That block is `boards/nucleo_g071rb/board.json`'s, key for key. The key is
 `role.signal` — the role is one of the [role names](portable-code.md) your
 board already wires, the signal is what that peripheral moves. The value names
 a controller and a channel, and **the request id is not in there**: which
@@ -70,9 +70,13 @@ So the three spellings you will see are:
 
 ## Four working shapes
 
-Each recipe below is code from a shipped example under `examples/`, which CI
-builds for every board and (where noted) runs under emulation. Go run the
-example rather than retyping the snippet.
+Each recipe below is the shape of a shipped example under `examples/`, which CI
+builds for every board and (where noted) runs under emulation. The recipes are
+board-specific on purpose — they show the call, not the portability wrapper, so
+that the call is legible; the examples themselves carry the
+[capability probe](#when-your-board-assigns-nothing) and the bounded polling
+that a real superloop needs. Every recipe names its example. Go read that whole,
+and run it, rather than retyping the snippet.
 
 ### 1. An ADC ring under a control loop
 
@@ -86,7 +90,7 @@ Board line:
 "adc.conv": { "controller": "dma1", "channel": 1 }
 ```
 
-Code, from `examples/adc_stream/src/main.cpp`:
+Code, from `examples/adc_stream/src/main.cpp` (Renode-proven on both G0 Nucleos):
 
 ```cpp
 #include <alloy/board.hpp>
@@ -133,7 +137,7 @@ Board line:
 "debug_uart.rx": { "controller": "dma1", "channel": 2 }
 ```
 
-Code, from `examples/modbus_rtu_server/src/main.cpp`:
+Code, from `examples/modbus_rtu_server/src/main.cpp` (Renode-proven on `nucleo_g071rb`):
 
 ```cpp
 // 256 bytes = the RTU spec's largest ADU.
@@ -210,7 +214,7 @@ Board lines:
 "spi.tx": { "controller": "dma1", "channel": 5 }
 ```
 
-Code, from `examples/spi_read/src/main.cpp`:
+Code, from `examples/spi_read/src/main.cpp` (Renode-proven on `nucleo_g071rb`):
 
 ```cpp
 const std::uint8_t out[] = {0xC0, 0xFF, 0xEE, 0x77};
