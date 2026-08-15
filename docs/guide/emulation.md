@@ -7,8 +7,13 @@ $ alloy emulate --board nucleo_g071rb
 platform: /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.repl
 script:   /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.resc
 uart:     sysbus.usart2
+…Renode's own INFO/WARNING lines…
 alloy uart_echo ready
 ```
+
+Those three header lines are the whole contract: they are also exactly what a `renode-test`
+invocation needs, which is why `--emit-only` prints them and stops. Everything after them is your
+program's output — the banner above is `examples/uart_echo`'s, not something the CLI prints.
 
 This is not a simulator of alloy's own making — it is [Renode](https://renode.io) driving the
 real instruction set and real peripheral models. What alloy contributes is that **the emulated
@@ -41,20 +46,42 @@ $ alloy emulate --emit-only --board same70_xplained
 ## What emulation is used for here
 
 An emulator that only answers "did it boot" is a compile check with extra steps. alloy uses it as
-a **behaviour oracle**: every leg below asserts on real UART output produced by real driver code,
-and every one of them is a *blocking* CI gate.
+a **behaviour oracle**: every leg below asserts on real UART output produced by real driver code.
 
-| What is proven | Boards |
-| --- | --- |
-| Boot to a banner | `nucleo_g071rb`, `nucleo_g0b1re`, `nucleo_f722ze`, `same70_xplained` |
-| UART echo round-trip (RX path → loop → TX path) | `nucleo_g071rb` |
-| Two concurrent coroutines on the heap-less executor | `nucleo_g071rb`, `nucleo_f722ze`, `same70_xplained` |
-| I²C driver conformance against a slave on the bus | `nucleo_g071rb` |
-| SPI driver conformance | `nucleo_g071rb` |
-| ADC conversion of the *right* channel | `nucleo_g071rb` |
-| UART transmit driven by DMA | `nucleo_g071rb` |
-| Bootloader verify → jump → recover | `nucleo_g071rb`, `nucleo_f722ze`, `same70_xplained` |
-| The full [update lifecycle](firmware-update.md) + signed-image oracle | `nucleo_g071rb` (SAME70 runs the install/confirm half) |
+Today that is **17 robots run as 32 board+robot pairs** — 24 blocking, 8 experimental — plus five
+oracle legs outside that matrix. A **blocking** leg fails the build when it goes red. An
+**experimental** leg is `continue-on-error`, which is how a new board+robot pair earns its place;
+read one as "somebody watched this pass", not as "this cannot regress unnoticed".
+
+| What is proven | Blocking on | Also runs (experimental) |
+| --- | --- | --- |
+| Boot to a banner | `nucleo_g071rb`, `nucleo_g0b1re`, `nucleo_f722ze`, `same70_xplained` | |
+| UART echo round-trip (RX path → loop → TX path) | `nucleo_g071rb` | |
+| The three-layer peripheral surface — a portable `main.cpp` whose printed lines are chosen at *compile* time by generated facts | `nucleo_g071rb`, `nucleo_f722ze` | |
+| I²C driver conformance against a slave on the bus, run both polled **and** interrupt-driven | `nucleo_g071rb` | |
+| SPI driver conformance, polled and interrupt-driven | `nucleo_g071rb` | `nucleo_g0b1re`, `nucleo_f722ze` |
+| **SPI full duplex through the DMA pair** — the channel index, the RX-before-TX arm order and the receive-request enable, each with a negative control | `nucleo_g071rb` | `nucleo_g0b1re`, `nucleo_f722ze` |
+| ADC conversion of the *right* channel | `nucleo_g071rb` | |
+| ADC analog window comparator | `nucleo_g0b1re` | |
+| **ADC DMA ring** — half event before full event, full event delivered, ring wrapped, each half pinned to the fed millivolts | `nucleo_g071rb`, `nucleo_g0b1re` | |
+| UART transmit driven by DMA | `nucleo_g071rb` | `same70_xplained` (XDMAC completion IRQ, against a model this project generates) |
+| **Modbus RTU over `uart.rx_ring()`** — the robot plays a byte-level master with an independent CRC-16 | `nucleo_g071rb` | `nucleo_g0b1re`, `nucleo_f722ze`, `nucleo_f767zi` |
+| Two concurrent coroutines on the heap-less executor | `nucleo_g071rb`, `nucleo_f722ze`, `same70_xplained` | |
+| A coroutine parked on a **peripheral** is resumed by that peripheral's interrupt | `nucleo_g071rb` | `nucleo_f767zi` |
+| Microsecond timebase — a 100k-sample monotonicity sweep across tick boundaries, asserted in-band by the firmware itself | `nucleo_g071rb` | |
+| Concurrency-model conformance (the source of every number in [Async](async.md)) | `nucleo_g071rb` | |
+| Pin interrupts | `nucleo_g071rb` | |
+| The [crash-report](crash-reports.md) loop across **five real boots of one machine** | `nucleo_g071rb`, `nucleo_f722ze` | |
+| The [message bus](bus.md) against an independent peer implementation | | `nucleo_g071rb` |
+| Bootloader verify → jump → recover | `nucleo_g071rb`, `nucleo_f722ze`, `same70_xplained` | |
+| The full [update lifecycle](firmware-update.md) + signed-image oracle | `nucleo_g071rb` (SAME70 runs the install/confirm half) | |
+| Per-device [factory identity](firmware-update.md#per-device-identity), read by a real product firmware booted out of slot A | `nucleo_g071rb` | |
+| The [product](products.md) dimension — the firmware names its product *and* its strategy's own arithmetic ran | one leg per product of a family | |
+
+The rows in bold are the six phases of [DMA work](dma.md); how far each of them is *actually*
+witnessed differs by engine, and the DMA guide carries that table. The framework-wide version —
+every capability, not just the emulated ones — is
+[What is proven, and how](../reference/proof.md).
 
 Two of those deserve a note. The async legs cover **two vendors**, which is what turns "the
 coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
@@ -65,12 +92,17 @@ wrong channel prints the wrong counts (an unfed channel prints 0, verified), and
 conversion math.
 
 !!! warning "Not every leg is equally strong"
-    The I²C, SPI, ADC and DMA legs run against **Renode's own** models, so they can genuinely
-    contradict a misreading of the reference manual. (The ADC and DMA legs originally ran against
-    models this project wrote; both were replaced by Renode's native models.) The SAME70-flash leg
-    still runs against a model *this project wrote* — a self-authored model cannot falsify a
-    mistake it shares with the driver. Treat that one as a consistency check, not independent
-    proof.
+    The I²C, SPI, ADC and STM32 DMA legs run against **Renode's own** models, so they can
+    genuinely contradict a misreading of the reference manual. (The ADC and DMA legs originally
+    ran against models this project wrote; both were replaced by Renode's native models.) The
+    **SAME70 flash and SAME70 XDMAC** legs still run against models *this project wrote* — a
+    self-authored model cannot falsify a mistake it shares with the driver. Treat those two as
+    consistency checks, not independent proof.
+
+    And the I²C **DMA** leg asserts a *bounded refusal*, not a transfer: it waits for the literal
+    line `i2c dma: no transfer`, because Renode's model of that IP exposes no DMA request output
+    at all, so nothing can ask the engine to move a byte. That is an honest leg, and it is not
+    evidence that I²C DMA works.
 
     The ADC leg carries two vacuous spots, stated so nobody over-reads it: Renode's `STM32G0_ADC`
     does not implement `ISR.CCRDY` (the flag real silicon raises after a `CHSELR` update — in the
@@ -132,10 +164,12 @@ peripheral gets no mapping, never a guessed one.** `alloy emulate` refuses a boa
 rather than producing a platform that boots into fiction.
 
 Where a model is genuinely missing but the behaviour is worth proving, alloy ships its own —
-today only the SAME70 EEFC flash controller, an inline Python peripheral emitted into the
-platform file, written against the reference manual. (The STM32G0 ADC and DMA controllers used
-to be in that list; both now use Renode's native models, which is strictly better — a model this
-project wrote cannot falsify a mistake it shares with the driver.)
+today the SAME70 EEFC flash controller and the SAME70 XDMAC, both emitted into the platform file
+and written against the reference manual. (The STM32G0 ADC and DMA controllers used to be in that
+list; both now use Renode's native models, which is strictly better — a model this project wrote
+cannot falsify a mistake it shares with the driver.) The XDMAC model is deliberately narrow: it
+**refuses linked-list mode out loud** rather than pretending to implement it, which is why the
+SAM E70 DMA ring has no leg and cannot honestly have one.
 
 Known gaps, so you do not go looking:
 
@@ -155,18 +189,30 @@ Known gaps, so you do not go looking:
   invent one. The G0 bootloader legs therefore exercise everything *above* the flash driver while
   its own register sequences go unchecked. (The F7 legs use Renode's controller; the SAME70 legs
   use a model written here.)
-- **PWM** — nothing observable comes out over a UART, so there is no meaningful assertion to
-  make. Verified on silicon instead.
+- **PWM and the motor bridge** — the generated platform does not instantiate a timer at all, so
+  dead time, the break input and the main output enable are unmodelled: running the bridge
+  example under Renode logs the register writes and simulates none of their effects. There is no
+  meaningful assertion to make here, and **there is no silicon result standing in for it either**
+  — see [what has and has not been proven](pwm.md#what-has-actually-been-proven-and-what-has-not)
+  before you power a stage.
 - **I²C bus scan** — a zero-length write (a valid probe on real silicon) is not implemented by
   Renode's I²C model, so the conformance test does a one-byte write plus read instead.
 
 ## The limit of the claim
 
 Emulation proves that driver logic drives a *faithful model* of the peripheral. It does not prove
-timing against real silicon, analog behaviour, or anything a datasheet erratum covers. The
-framework's hardware-validated families are marked as such in [Boards](boards.md); everything
-proven only in emulation says so where it is documented — including the three flash drivers
-behind [firmware update](firmware-update.md).
+timing against real silicon, analog behaviour, or anything a datasheet erratum covers.
+
+It is also bounded by what Renode models at all, which is narrower than it looks. `alloy
+chip-status <chip>` reports it per part: on the STM32G0B1RE 23 of 49 curated peripherals have a
+model, on the SAM E70 **3 of 16**, on the RP2040 **1 of 10**, and on the ESP32 **none**. On the ST
+side the gap has a shape worth knowing — the entire timer family is unmodelled, along with CRC,
+DAC, RTC, LPUART, the device UID, FDCAN and the G0 flash controller.
+
+Which capability rests on which of those, and what a green leg does *not* say, is collected in
+one place: **[What is proven, and how](../reference/proof.md)**. Where a peripheral has been run
+on real hardware, the page that owns it says so in its own voice — those are maintainer
+self-reports, not automated results, and there is no hardware CI runner.
 
 That boundary is the point. Emulation makes the *logic* a gate that runs on every commit, so the
 scarce resource — time with real hardware — is spent on the things only real hardware can answer.
