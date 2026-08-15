@@ -1,8 +1,10 @@
 // DMA driver-conformance check for emulation (completes the bus/peripheral set
 // after i2c_read/spi_read/adc_read). The firmware sends a distinct line over the
 // debug UART *by DMA* (memory->TDR, the m2p path), so the terminal tester sees
-// "dma via DMA" only if the driver's channel config (CPAR/CMAR/CNDTR/CCR) and the
-// transfer + TCIF-complete handshake actually moved the bytes — no hardware.
+// "dma via DMA" only if the driver's channel programming and the transfer +
+// completion handshake actually moved the bytes — no hardware. It runs on all
+// three engines (G0 free router, F7 stream engine, SAME70 XDMAC); what each
+// platform's green run is and is not entitled to claim is in dma_uart.robot.
 #include <alloy/board.hpp>
 #include <alloy/dma.hpp>
 
@@ -33,7 +35,7 @@ int main() {
     [&uart]<class Dma>(Dma*) {
         if constexpr (HasDma<Dma> && requires(alloy::dma::channel<Dma, 1>& c) {
                           uart.write_dma(c, std::span<const std::uint8_t>{});
-                          c.on_complete(nullptr, nullptr);  // absent on the SAM E70 XDMAC
+                          c.on_complete(nullptr, nullptr);
                       }) {
             auto chan = alloy::dma::channel<Dma, 1>::claim();
             // Registered BEFORE the transfer on purpose: the channel config
