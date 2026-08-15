@@ -129,6 +129,7 @@ add_executable(alloy_unit_tests
     test_can.cpp
     test_dma_ring.cpp
     test_dma_pair.cpp
+    test_dma_pair_half_failure.cpp
     test_spi_dma.cpp
     test_st_spi_v2_dma.cpp
     test_st_dma_v1_latch.cpp
