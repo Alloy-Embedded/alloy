@@ -53,19 +53,55 @@ from alloy_cli.ota_host import UpdateError, update  # noqa: E402
 # perfectly. A genuinely stuck device still fails; it just fails later.
 PHASE_TIMEOUT_S = 150
 
-#: The watchdog legs get their own budget, and it is the largest in this file.
+#: The budget for the phases whose wall time is set by EMULATION SPEED rather
+#: than by the firmware, and it is the largest in this file.
 #:
-#: They are the only phases whose wall time is set by EMULATION SPEED rather
-#: than by the firmware. The bootloader arms the IWDG for 2 s and jumps into an
-#: app that hangs in a read poll; Renode's IWDG counts VIRTUAL time, so the
-#: reset costs ~2 s of emulated execution — on the order of 10^8 instructions of
-#: an idle loop — and a slow runner turns that into three or four minutes of
-#: real time. At 240 s a GitHub runner having a bad day landed the reset at
-#: t+235.5 s and the run went red with the firmware working perfectly.
+#: THREE PHASES QUALIFY, AND THIS COMMENT USED TO NAME TWO. What stood here said
+#: the watchdog legs were "the only phases whose wall time is set by EMULATION
+#: SPEED". They are not: step 3b's wait after a refused downgrade is a third,
+#: giving it PHASE_TIMEOUT_S instead took `bootloader-e2e` red for five days,
+#: and that is the whole bug.
 #:
-#: Raise it rather than shrink the test: the leg proves the one thing no unit
-#: test can — that a hung trial recovers with nobody pressing anything.
-WATCHDOG_TIMEOUT_S = int(os.environ.get("ALLOY_E2E_WATCHDOG_TIMEOUT_S", "600"))
+#:   watchdog legs   The bootloader arms the IWDG for 2 s and jumps into an app
+#:                   that hangs in a read poll; Renode's IWDG counts VIRTUAL
+#:                   time, so the reset costs ~2 s of emulated execution — on the
+#:                   order of 10^8 instructions of an idle loop — and a slow
+#:                   runner turns that into three or four minutes of real time.
+#:                   At 240 s a GitHub runner having a bad day landed the reset
+#:                   at t+235.5 s and the run went red with the firmware working
+#:                   perfectly.
+#:   after a refusal The device's update window is 500 ms of quiet, EXTENDED TO
+#:                   3000 ms by any traffic (examples/bootloader_uart/src/
+#:                   main.cpp). Step 3b is the ONLY phase in this script that
+#:                   pays the extended form: the downgrade is NAKed and then
+#:                   nobody speaks again, so the device sits in its poll loop
+#:                   emitting nothing for 3 s of virtual time before it prints
+#:                   `boot slot B`. Every other boot phase waits out the 500 ms
+#:                   quiet window — or none at all, because `update ok,
+#:                   rebooting` resets immediately — so step 3b costs 6x the
+#:                   virtual time of its neighbours and was handed their budget.
+#:
+#: MEASURED, on this job's last green run (2026-08-09, job 93191628703): the
+#: 500 ms phases cost 20-22 s of wall clock each and step 3b cost 112 s. It had
+#: 1.34x of headroom under PHASE_TIMEOUT_S where every other phase had 7x. The
+#: job then got ~1.5x heavier — the same 500 ms phases cost 30-34 s by
+#: 2026-08-15 — and step 3b, alone, went over. Four runs in a row died there at
+#: exactly 150 s reporting `last output: b''`.
+#:
+#: THAT b'' IS NOT A HANG, and reading it as one sends the next reader hunting a
+#: trap that is not there. b'' is exactly what a device quietly waiting out its
+#: update window looks like: the phase is DEFINED to produce no output until the
+#: window expires. Checked before this line was changed — the full lifecycle
+#: passes locally at both ends of the suspect commit window with identical
+#: timings, the emitted G0 platform is byte-identical across it, and the failing
+#: run's own Renode tail shows the CPU executing bootloader flash code at the
+#: instant of the refusal, not a `udf`.
+#:
+#: Raise these rather than shrink the tests: they prove the two things no unit
+#: test can — that a hung trial recovers with nobody pressing anything, and that
+#: a refused downgrade is not a brick. A genuinely stuck device still fails; at
+#: 600 s against a measured 112 s it just fails later.
+EMULATION_BOUND_TIMEOUT_S = int(os.environ.get("ALLOY_E2E_WATCHDOG_TIMEOUT_S", "600"))
 
 
 def wait_for(link, needles: list[bytes], deadline_s: float, stage: str) -> None:
@@ -166,8 +202,13 @@ def main() -> None:
             raise SystemExit(
                 "FAIL [anti-rollback]: the device ACCEPTED a replayed older image")
         # ...and the refusal is not a brick: the confirmed firmware is untouched
-        # and boots when the update window closes.
-        wait_for(link, [b"boot slot B", b"alloy ota_app ready"], PHASE_TIMEOUT_S,
+        # and boots when the update window closes. EMULATION_BOUND, not
+        # PHASE_TIMEOUT_S: the NAK is the last byte anybody sends, so what this
+        # waits out is the bootloader's 3000 ms TRAFFIC-EXTENDED window — 6x the
+        # virtual time of every other boot phase here, and silent for all of it.
+        # See the budget's own comment for the measurements.
+        wait_for(link, [b"boot slot B", b"alloy ota_app ready"],
+                 EMULATION_BOUND_TIMEOUT_S,
                  "still running its own firmware after refusing the downgrade")
 
     if "--good-only" in sys.argv:
@@ -191,12 +232,12 @@ def main() -> None:
                     b"trial boot slot A", b"alloy uart_echo ready"], PHASE_TIMEOUT_S, "trial 1/3")
     for n in (2, 3):
         wait_for(link, [b"alloy bootloader", b"trial boot slot A",
-                        b"alloy uart_echo ready"], WATCHDOG_TIMEOUT_S,
+                        b"alloy uart_echo ready"], EMULATION_BOUND_TIMEOUT_S,
                  f"trial {n}/3 (watchdog self-reset, no power button)")
 
     # 6. attempts exhausted -> automatic rollback, again via the watchdog alone
     wait_for(link, [b"alloy bootloader", b"reverted, boot slot B",
-                    b"alloy ota_app ready"], WATCHDOG_TIMEOUT_S,
+                    b"alloy ota_app ready"], EMULATION_BOUND_TIMEOUT_S,
              "AUTOMATIC ROLLBACK (autonomous)")
 
     print("PASS: install -> trial -> confirm"
