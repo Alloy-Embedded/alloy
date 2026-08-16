@@ -73,7 +73,7 @@ worse than no leg.
 | **ADC** streaming (`ring`, `read_burst`) | See [Streaming without the CPU](#streaming-without-the-cpu) | | |
 | **PWM** (`set_duty`, `stream_duty`) | **Compiles only** | Nothing. | Everything. The generated Renode platform does not instantiate a timer at all — *checked, not assumed*. The prescaler arithmetic, duty-step counts and centre-aligned halving are host-tested; nothing has observed a waveform. |
 | **Bridge** (three-phase complementary) | **Compiles only**, on two families | Nothing. Dead-time encoding, the CR2 allowlist, the trigger refusal and the torn-frame witness are host-tested with negative controls. | **No `alloy::bridge` driver has switched a transistor, on any board.** Dead time, break input and main-output-enable are unmodelled. On the F7 the carrier frequency is additionally unverified — see [PWM](../guide/pwm.md#what-has-actually-been-proven-and-what-has-not) before you power a stage. |
-| **Timers** — `tick`, `encoder` | **Host-tested** (`tests/test_tick.cpp`, `tests/test_encoder.cpp`) | Timebase arithmetic and count/delta bookkeeping. | Renode models **no ST timer of any kind** — not the general-purpose, advanced, basic or single-channel variants. There is no emulation witness for anything timer-shaped on any board. |
+| **Timers** — `tick`, `encoder` | **Host-tested** (`tests/test_tick.cpp`, `tests/test_encoder.cpp`) | Timebase arithmetic and count/delta bookkeeping. | **alloy's emitter maps no Renode model to any ST timer IP**, so no generated platform instantiates one and nothing timer-shaped has an emulation witness on any board. Renode itself is not the wall here: 1.16.1 ships `Timers.STM32_Timer` and its own stock `stm32g0.repl` wires ten of them. That model drives NVIC lines and never a pin, so it could witness an update interrupt and never a waveform — but the update interrupt is reachable work, not an impossibility. |
 | **CAN** | **Host-tested** (`tests/test_can.cpp`) | Filter/accept logic and frame packing. | No FDCAN model exists. Nothing has put a frame on a bus. |
 | **DAC** | **Compiles only** (`examples/dac` builds) | Nothing. | No model, no host test. |
 | **RTC** | **Compiles only** (`examples/rtc` builds) | Nothing. | No model, no host test. Calendar arithmetic across a real LSE is unwitnessed. |
@@ -81,7 +81,7 @@ worse than no leg.
 | **Window watchdog** (WWDG) | **Host-tested** (`tests/test_wwdt.cpp`) | The window arithmetic, against the manual's formula. | The driver header says it outright: *no board was on hand, Renode ships no WWDG model for any STM32, so nothing here has been observed to reset anything.* |
 | **CRC** unit | **Host-tested** (`tests/test_crc.cpp`) | That the block's output is bit-for-bit the CRC-32 every alloy on-flash format already uses — checked against the software implementation. | The header is explicit: *not silicon-witnessed*, and Renode's platform carries a bare address tag for the CRC region that reads back zero, so an emulated run would "verify" every image as having checksum `0xFFFFFFFF`. **Do not add an emulation leg here** — it would be a false green. |
 | **Device UID** | **Host-tested** (`tests/test_uid.cpp`) | Read shape and byte order. | No model. |
-| **Flash / NVM / FS** | Mixed — see [Firmware update](../guide/firmware-update.md#what-this-is-proven-against) | The bootloader legs exercise everything above the flash driver on three boards. | **None of the three flash drivers has run on silicon.** There is no STM32G0 flash model and the emitter deliberately does not invent one, so the G0 driver's own register sequences go unchecked; the F7 legs use Renode's controller; the SAME70 legs use a model **this project wrote**, which cannot falsify a mistake it shares with the driver. |
+| **Flash / NVM / FS** | Mixed — see [Firmware update](../guide/firmware-update.md#what-this-is-proven-against) | The bootloader legs exercise everything above the flash driver on three boards. | **None of the three flash drivers has run on silicon.** alloy emits no STM32G0 flash-controller model — the only thing available is Renode's **F4** controller, which its own stock G0 platform maps onto the G0 base address despite the different register layout, and alloy's emitter marks that entry "deliberately absent" rather than assert it — so the G0 driver's own register sequences go unchecked; the F7 legs use Renode's controller; the SAME70 legs use a model **this project wrote**, which cannot falsify a mistake it shares with the driver. |
 
 ---
 
@@ -240,10 +240,22 @@ SAM E70 only the flash controller, one USART and the DMA controller are modelled
 those three are models **this project generated**. On the ESP32 nothing is modelled, which is
 also why `alloy emulate` refuses those two boards rather than booting them into fiction.
 
-On the ST side the gap has a shape worth naming: **the entire timer family is unmodelled**, along
-with CRC, DAC, RTC, LPUART, the device UID, FDCAN and the G0 flash controller. That is precisely
-the set a motor-control application leans on hardest, and it is why the PWM, bridge, tick and
-encoder rows above say what they say.
+On the ST side the gap has a shape worth naming: **a generated platform instantiates no ST timer
+of any kind**, and none of CRC, DAC, RTC, LPUART, the device UID, FDCAN or the G0 flash
+controller either. That is precisely the set a motor-control application leans on hardest, and it
+is why the PWM, bridge, tick and encoder rows above say what they say.
+
+That column is `emit/renode.py`'s table, and the distinction matters if you are deciding where to
+spend effort. For CRC, DAC, LPUART and the UID there is genuinely nothing to instantiate —
+Renode's own `stm32g0.repl` carries CRC and DAC as bare address `Tag`s, which read back zero, and
+carries no LPUART or UID at all. For the **timers, the RTC and FDCAN** Renode does ship a model
+and its own stock platform wires each one up; alloy's emitter declines to emit them. Those three
+are a *decision*, re-openable by someone who wants a leg, rather than a limit of the emulator —
+though for the timers the available model drives interrupt lines and never a pin, so reopening it
+would buy an update-interrupt assertion and still no waveform. The G0 flash interface is a fourth
+case and the most instructive: Renode's stock `stm32g0.repl` points its **F4** flash-controller
+model at the G0's base address, a different register layout, and alloy's emitter marks that entry
+"deliberately absent" rather than emit a model it does not believe.
 
 ---
 

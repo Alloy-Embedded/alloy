@@ -206,8 +206,14 @@ timing against real silicon, analog behaviour, or anything a datasheet erratum c
 It is also bounded by what Renode models at all, which is narrower than it looks. `alloy
 chip-status <chip>` reports it per part: on the STM32G0B1RE 23 of 49 curated peripherals have a
 model, on the SAM E70 **3 of 16**, on the RP2040 **1 of 10**, and on the ESP32 **none**. On the ST
-side the gap has a shape worth knowing — the entire timer family is unmodelled, along with CRC,
-DAC, RTC, LPUART, the device UID, FDCAN and the G0 flash controller.
+side the gap has a shape worth knowing — a generated platform instantiates no ST timer of any
+kind, and none of CRC, DAC, RTC, LPUART, the device UID, FDCAN or the G0 flash controller either.
+
+That column is alloy's model table, not the outer limit of Renode: for the timers, the RTC and
+FDCAN, Renode 1.16.1 ships a model that its own stock `stm32g0.repl` wires up, and alloy declines
+to emit it. [What is proven, and how](../reference/proof.md#where-no-model-exists-at-all) splits
+the two cases, because "nothing to instantiate" and "we chose not to" are different answers to
+"could this ever get a leg?".
 
 Which capability rests on which of those, and what a green leg does *not* say, is collected in
 one place: **[What is proven, and how](../reference/proof.md)**. Where a peripheral has been run
