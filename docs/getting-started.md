@@ -57,8 +57,30 @@ cmake                ok (PATH)                /opt/homebrew/bin/cmake
 ninja                ok (PATH)                /opt/homebrew/bin/ninja
 ```
 
-**CMake** and **Ninja** are required for every build; **OpenOCD** only for the flash path on
-boards whose probe runner needs it. All three are one package away on every OS.
+**CMake** and **Ninja** are required for every build, and both are one package away on every OS.
+Nothing else on that list matters until you flash a real board.
+
+!!! warning "`setup --check` does not cover every flashing tool, and the default board needs one it misses"
+    Programming a board shells out to whatever **runner** that board's `board.json` declares, and
+    the nine shipped boards use four different ones:
+
+    | Runner | Boards | On `setup --check`? |
+    | --- | --- | --- |
+    | `openocd` | `nucleo_g0b1re`, `nucleo_f722ze`, `nucleo_f767zi`, `same70_xplained` | yes |
+    | `probe-rs` | **`nucleo_g071rb`** — the board this page scaffolds | **no** |
+    | `uf2` (drag-and-drop, no tool) | `raspberry_pi_pico`, `rp2040_zero` | n/a |
+    | `esptool` | `esp32_devkit`, `esp_wrover_kit` | no |
+
+    So a green `alloy setup --check` is not a promise that `alloy run` will reach your board. On
+    a Nucleo-G071RB without [probe-rs](https://probe.rs) installed, `alloy build` succeeds and
+    then the flash step stops with:
+
+    ```
+    error: probe-rs declared/needed but not on PATH
+    ```
+
+    Install the runner your board names, or use `alloy emulate`, which needs none of them.
+    `alloy board-clone` a board and you can point `probe.runner` at whichever you already have.
 
 !!! note "Integrity-checked downloads"
     `alloy setup` refuses to install a toolchain whose checksum is not pinned. If you are
