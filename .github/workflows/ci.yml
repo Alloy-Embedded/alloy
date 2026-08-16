@@ -116,6 +116,15 @@ jobs:
       - name: every cpp sample in docs/ compiles
         working-directory: alloy
         run: uv run --project tools/alloy python scripts/check_doc_snippets.py
+      # Same reason as the facts checker's self-test, and the same standard:
+      # four mutations (a wrong method in a sample, an opt-out with no reason,
+      # an ungated page with no reason, a setup block that floated away from
+      # its fence), each of which must go red. Last, because it edits the
+      # working tree and restores it — nothing after it should depend on the
+      # checkout being pristine.
+      - name: ... and the checker still fires when a sample is wrong
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_doc_snippets.py --self-test
 
   # NORTH_STAR guard #7 acceptance test: a wrong pin route must FAIL to compile
   # with a diagnostic that names the pin — the compile-time-error UX can't

@@ -87,6 +87,20 @@ Two deliberate limits, so a green run is not read as more than it is:
     do not. A reader pasting a sample must get a clean build of their own file,
     but a deprecation inside a driver is not this gate's business to police.
 
+`--self-test` mutates the working tree four ways and demands a red for each,
+restoring in a `finally`. Watched, on alloy 10a2f5a with a clean tree:
+
+    GREEN  unmutated docs/ (markers)
+    RED    a wrong method in a sample
+           (peripherals.md `board::led.toggle()` -> `blink()`; one compile)
+    RED    an opt-out with no reason
+    RED    an ungated page with no reason
+    RED    a setup block that floated away from its fence
+
+The first case is the one this script exists for and the only one that costs
+a cross-compile. The other three are marker defects, cost nothing, and are
+therefore also caught by `--audit`, which CI runs before every full pass.
+
 Needs a cross toolchain and the `alloy` CLI, like check_compile_errors.py.
 Without either it exits 0 with a message rather than pretending to have run.
 """

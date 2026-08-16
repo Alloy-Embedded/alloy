@@ -51,6 +51,22 @@ line is usually a defect.
 `--self-test` mutates a scratch copy of docs/ four ways — a dead board name, a
 dead verb, a dead sub-verb, a dangling anchor — and demands a red for each.
 A gate nobody has watched fail is a decoration.
+
+Watched, on alloy 10a2f5a with a clean tree and `alloy` on PATH:
+
+    GREEN  unmutated docs/ — 0 problem(s)
+    RED    a board that does not exist
+           getting-started.md:118: no such board 'nucleo_g0b1zz'
+    RED    a CLI verb that does not exist
+           getting-started.md:112: no such CLI verb 'alloy list-boards'
+    RED    a subcommand that does not exist
+           cli.md:264: `alloy lib` has no subcommand 'find'
+                       (has ['add', 'info', 'list', 'search'])
+    RED    an anchor that does not exist
+           index.md:15: 'getting-started.md' has no heading '#no-such-thing'
+
+Four for four. The mutations land on a scratch COPY of docs/, so a red here
+cannot leave a mutated page behind.
 """
 
 from __future__ import annotations
