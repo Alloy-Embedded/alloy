@@ -16,7 +16,7 @@
         <link rel="prev" href="../examples/">
       
       
-        <link rel="next" href="../async/">
+        <link rel="next" href="../pwm/">
       
       
         
@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -651,6 +651,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -916,6 +922,90 @@
   
   
     <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../async/" class="md-nav__link">
         
   
@@ -1131,6 +1221,8 @@
       
         
       
+        
+      
     
     
     
@@ -1191,6 +1283,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1467,6 +1587,8 @@
       
         
       
+        
+      
     
     
     
@@ -1511,6 +1633,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1686,6 +1836,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1703,6 +1939,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1908,12 +2152,19 @@ chip's IP version — no vtables, no heap.</p>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">board</span><span class="o">::</span><span class="n">led</span><span class="p">.</span><span class="n">toggle</span><span class="p">();</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">pressed</span><span class="p">();</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">button</span><span class="p">.</span><span class="n">is_active</span><span class="p">();</span><span class="w">     </span><span class="c1">// &quot;pressed&quot;, in the board&#39;s polarity</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
 </span></code></pre></div>
+<p><code>is_active()</code> answers in the <strong>board's</strong> terms: the board file says the button is active-low, so
+a grounded pin reads <code>true</code> and the app never learns which way round the hardware is.
+<code>is_high()</code> is the raw-level twin, for a signal whose polarity belongs to the part rather than
+to the board.</p>
 <h3 id="pin-interrupts">Pin interrupts<a class="headerlink" href="#pin-interrupts" title="Permanent link">&para;</a></h3>
 <p>An input can report its own edges instead of being polled — what a sensor's DRDY/INT line, a
 button that must not be sampled in a loop, and wake-on-pin all need:</p>
+<!-- docgate: setup
+inline volatile bool g_pressed = false;
+-->
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">board</span><span class="o">::</span><span class="n">user_button</span><span class="p">().</span><span class="n">on_active</span><span class="p">(</span><span class="o">+</span><span class="p">[](</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">g_pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// ISR context</span>
 </span></code></pre></div>
 <p><code>on_active()</code> is the portable form: the edge comes from the <strong>board's</strong> declared polarity, so an
@@ -1922,6 +2173,9 @@ knowing which. <code>on_edge(alloy::gpio::edge::rising, fn, ctx)</code> is the e
 whose polarity belongs to the part, not the board. <code>clear_on_edge()</code> stops reporting.</p>
 <p>Between edges, the handler keeps a <strong>software</strong> count — never the hardware pending bit, so
 reading it can never eat an interrupt:</p>
+<!-- docgate: setup-local
+auto btn = board::user_button();
+-->
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">btn</span><span class="p">.</span><span class="n">take_edge</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* once per edge that actually happened */</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">btn</span><span class="p">.</span><span class="n">edges</span><span class="p">();</span><span class="w">   </span><span class="c1">// monotonic: you can see that you missed some</span>
 </span></code></pre></div>
@@ -1944,8 +2198,14 @@ PA13 and PC13 cannot both have a pin interrupt at once. That is silicon, not a f
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Interrupt-driven RX (where the driver supports it) attaches a callback:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">uart</span><span class="p">.</span><span class="n">on_rx</span><span class="p">([](</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* runs in ISR context */</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">uart</span><span class="p">.</span><span class="n">on_receive</span><span class="p">(</span><span class="o">+</span><span class="p">[](</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* runs in ISR context */</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 </span></code></pre></div>
+<p>Like the pin-interrupt hooks, <code>on_receive</code> is <code>requires</code>-gated on the driver having an interrupt
+path, so portable code probes for it rather than assuming — see <code>examples/irq_echo/src/main.cpp</code>
+for the <code>if constexpr (requires { u.on_receive(nullptr, nullptr); })</code> wrapper. <code>detach_receive()</code>
+stops reporting.</p>
+<p>Taking the CPU out of the byte loop entirely — a DMA ring behind the UART, with no per-byte
+interrupt at all — is <strong><a href="../dma/">Streaming with DMA</a></strong>.</p>
 <h2 id="i2c">I²C<a class="headerlink" href="#i2c" title="Permanent link">&para;</a></h2>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">i2c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">i2c</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">speed_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400&#39;000</span><span class="p">});</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
@@ -2028,52 +2288,89 @@ generate), so calling it is a compile error rather than a silent fall back to bl
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">adc_vref_channel</span><span class="p">);</span>
 </span></code></pre></div>
 <h2 id="pwm">PWM<a class="headerlink" href="#pwm" title="Permanent link">&para;</a></h2>
+<p>Duty is <strong>normalized</strong>, not a percentage: <code>0</code> is off and <code>0xFFFF</code> is always on,
+whatever the timer's real resolution turns out to be.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">pwm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">led_pwm</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">freq_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1&#39;000</span><span class="p">});</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">pwm</span><span class="p">.</span><span class="n">set_duty</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span><span class="w">               </span><span class="c1">// 50% — LED at half brightness</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">pwm</span><span class="p">.</span><span class="n">set_duty</span><span class="p">(</span><span class="mh">0x8000</span><span class="p">);</span><span class="w">           </span><span class="c1">// half — LED at half brightness</span>
 </span></code></pre></div>
+<p>Centre-aligned counting, a trigger output for the ADC, and the three-phase
+complementary bridge are all in <strong><a href="../pwm/">PWM and motor control</a></strong>.</p>
 <h2 id="dma">DMA<a class="headerlink" href="#dma" title="Permanent link">&para;</a></h2>
-<p>DMA channels are claimed once, then drive a peripheral operation with zero CPU. Capability is
-checked at compile time — a controller without circular mode simply doesn't offer the circular
-call:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">channel</span><span class="o">&lt;</span><span class="n">board</span><span class="o">::</span><span class="n">dma_t</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;::</span><span class="n">claim</span><span class="p">();</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1">// One-shot ADC burst into RAM:</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">adc</span><span class="p">.</span><span class="n">read_burst</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc_vref_channel</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">samples</span><span class="p">});</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1">// Circular PWM waveform (only on controllers that support it):</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">pwm</span><span class="p">.</span><span class="n">stream_duty</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">wave</span><span class="p">});</span>
+<p>DMA takes the CPU out of the data path entirely. It has <strong>its own page</strong> —
+<strong><a href="../dma/">Streaming data without the CPU</a></strong> — because the answer differs on every board and
+every engine, and because how far each path has been proven differs too.</p>
+<p>The short version: your board file hands out the channels, the generator turns each assignment
+into a route constant, and the facade methods that need one simply <strong>exist</strong> on boards that
+declared it. You never type a channel number:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">ring_storage</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="o">&gt;</span><span class="w"> </span><span class="n">storage</span><span class="p">;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">ring</span><span class="p">(</span><span class="n">storage</span><span class="p">);</span><span class="w">          </span><span class="c1">// uses the board&#39;s `adc.conv` route</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">half</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">stream</span><span class="p">.</span><span class="n">take</span><span class="p">();</span><span class="w">              </span><span class="c1">// one hardware-stable half at a time</span>
 </span></code></pre></div>
+<p>The same shape gives you <code>uart.rx_ring()</code> for a byte stream with no per-byte ISR,
+<code>uart.write_dma()</code> for a one-shot transmit, and <code>spi.transfer_dma(tx, rx)</code> for full duplex
+through a claimed channel pair.</p>
+<p>You can still claim a channel by index — that is the escape hatch, for a route the board did not
+declare or a controller signal the facade does not model:</p>
+<!-- docgate: setup-local
+std::uint16_t samples[64]{};
+const std::uint16_t wave[64]{};
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">channel</span><span class="o">&lt;</span><span class="n">board</span><span class="o">::</span><span class="n">dma_t</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;::</span><span class="n">claim</span><span class="p">();</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1">// read_burst is [[nodiscard]]: `false` is a bounded refusal, never a hang.</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">adc</span><span class="p">.</span><span class="n">read_burst</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc_vref_channel</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">samples</span><span class="p">}))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">pwm</span><span class="p">.</span><span class="n">stream_duty</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">{</span><span class="n">wave</span><span class="p">});</span>
+</span></code></pre></div>
+<p>Both forms are capability-checked at compile time: ask for something the board or the silicon
+cannot do and the method is <strong>not declared</strong>, so you get an error naming what is missing rather
+than a link error or a runtime surprise.</p>
 <h2 id="interrupts">Interrupts<a class="headerlink" href="#interrupts" title="Permanent link">&para;</a></h2>
 <p>Attach a handler to an IRQ line, give it a priority, and dispatch runs it. Several peripherals that
 share one vector each attach their own handler and all fire — the portable code never touches an
 <code>#ifdef</code> or a vector table:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">attach</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">on_rx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">enable</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">);</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">set_priority</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">uart2_irq</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// 0 = most urgent; higher = less</span>
+<!-- docgate: setup
+inline void on_rx(void*) {}
+inline int ctx = 0;
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// The line number is a generated fact: device.hpp emits one per instance.</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">usart2_t</span><span class="o">::</span><span class="n">irq</span><span class="p">;</span><span class="w">   </span><span class="c1">// alloy::irq_line{28} on an STM32G0</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">attach</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">on_rx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">enable</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">set_priority</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// 0 = most urgent; higher = less</span>
 </span></code></pre></div>
+<p>There is no <code>board::…_irq</code> name. Lines come from the <strong>device</strong> descriptor
+(<code>alloy::dev::&lt;instance&gt;_t::irq</code>), or as a literal <code>alloy::irq_line{N}</code> when you are reaching for
+a vector no instance owns — <code>examples/concurrency_probe/src/main.cpp</code> uses both spellings.</p>
 <p>For data shared between an ISR and the main loop, <code>critical_section</code> masks only interrupts at a
 given level <strong>or less urgent</strong> (level 0 is the most urgent) — a high-priority control loop keeps
 running. On Cortex-M3/M4/M7 this uses <code>BASEPRI</code>; on Cortex-M0/M0+ and Xtensa (no priority mask) it
 safely degrades to a full mask:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">critical_section</span><span class="w"> </span><span class="n">cs</span><span class="p">{</span><span class="mi">4</span><span class="p">};</span><span class="w">   </span><span class="c1">// mask level 4 and any less-urgent line</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">update</span><span class="p">();</span><span class="w">                    </span><span class="c1">// a level-0 control ISR still fires here</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="p">}</span><span class="w">                                         </span><span class="c1">// mask lifted on scope exit (RAII)</span>
+<!-- docgate: setup
+inline int shared = 0;
+inline int update() { return 1; }
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">irq</span><span class="o">::</span><span class="n">critical_section</span><span class="w"> </span><span class="n">cs</span><span class="p">{</span><span class="mi">4</span><span class="p">};</span><span class="w">   </span><span class="c1">// mask level 4 and any less-urgent line</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">update</span><span class="p">();</span><span class="w">                    </span><span class="c1">// a level-0 control ISR still fires here</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="p">}</span><span class="w">                                         </span><span class="c1">// mask lifted on scope exit (RAII)</span>
 </span></code></pre></div>
 <h2 id="watchdog-rtc-nvm">Watchdog, RTC, NVM<a class="headerlink" href="#watchdog-rtc-nvm" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">board</span><span class="o">::</span><span class="n">watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w">                         </span><span class="c1">// no-op stub where absent</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">rtc</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::rtc  */</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">nvm</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::nvm — key/value over a flash page */</span><span class="w"> </span><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">board</span><span class="o">::</span><span class="n">watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w">                         </span><span class="c1">// no-op stub where absent</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">rtc</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::rtc  */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">caps</span><span class="o">::</span><span class="n">nvm</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="cm">/* board::nvm — key/value over a flash page */</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="two-watchdogs-and-they-are-not-interchangeable">Two watchdogs, and they are not interchangeable<a class="headerlink" href="#two-watchdogs-and-they-are-not-interchangeable" title="Permanent link">&para;</a></h3>
 <p><code>board::watchdog</code> (an IWDG) asks <em>is anybody still running?</em> A loop that has lost its timebase
 and spins ten times too fast answers yes, and is never reset. <code>board::window_watchdog</code> (a WWDG)
 asks the harder question — <em>is anybody running at the right rate?</em> — by resetting the part on a
 feed that arrives <strong>before</strong> the window opens as readily as on one that never arrives.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w">  </span><span class="c1">// the window the board file declares</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">// w.earliest .. w.deadline — what the counter could actually land on</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">control_step</span><span class="p">();</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+<!-- docgate: setup
+inline void control_step() {}
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w">  </span><span class="c1">// the window the board file declares</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c1">// w.earliest .. w.deadline — what the counter could actually land on</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">control_step</span><span class="p">();</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">window_watchdog</span><span class="p">.</span><span class="n">feed</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <p>They are <strong>two roles</strong>, not two modes of one, and a board may declare both — that is the normal
 safety shape, an IWDG as the long backstop and a WWDG as the loop-rate monitor. The chip
@@ -2155,13 +2452,13 @@ available, so you can drop to registers for one peripheral without leaving the f
         
         
           
-          <a href="../async/" class="md-footer__link md-footer__link--next" aria-label="Next: Async tasks (coroutines)">
+          <a href="../pwm/" class="md-footer__link md-footer__link--next" aria-label="Next: PWM and motor control">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Async tasks (coroutines)
+                PWM and motor control
               </div>
             </div>
             <div class="md-footer__button md-icon">

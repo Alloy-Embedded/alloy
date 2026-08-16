@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/testing/">
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/rp2040-dma-hardware-checklist/">
       
       
-        <link rel="prev" href="../adding-a-board/">
+        <link rel="prev" href="../emulation/">
       
       
-        <link rel="next" href="../escape-hatch/">
+        <link rel="next" href="../firmware-update/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Testing your firmware on a laptop - alloy</title>
+        <title>RP2040 DMA — the on-hardware checklist - alloy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#testing-your-firmware-on-a-laptop" class="md-skip">
+        <a href="#rp2040-dma-the-on-hardware-checklist" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Testing your firmware on a laptop
+              RP2040 DMA — the on-hardware checklist
             
           </span>
         </div>
@@ -285,12 +285,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../peripherals/" class="md-tabs__link">
           
   
@@ -309,10 +307,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../emulation/" class="md-tabs__link">
           
   
@@ -628,10 +628,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -661,22 +659,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -694,7 +689,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -961,37 +956,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Testing your firmware on a laptop
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -1007,166 +975,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#start-from-the-scaffold" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Start from the scaffold
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-the-scaffold-actually-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the scaffold actually does
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-fakes-you-get-for-free" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The fakes you get for free
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-harness" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The harness
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-your-own-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding your own tests
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#coverage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coverage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alloy-test-precisely" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        alloy test, precisely
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#say-which-tree-you-measured" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Say which tree you measured
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-this-does-not-give-you" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What this does not give you
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#in-ci" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        In CI
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#if-you-are-changing-alloy-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        If you are changing alloy itself
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="If you are changing alloy itself">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-docs-are-gated-too-and-how-to-opt-a-snippet-out" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The docs are gated too, and how to opt a snippet out
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1211,8 +1019,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1232,19 +1042,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1262,7 +1075,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1305,10 +1118,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1324,6 +1164,199 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-family-needs-a-sheet-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why this family needs a sheet at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-host-double-already-covers-so-you-do-not-re-test-it-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the host double already covers, so you do not re-test it here
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kit-and-the-instrument-this-sheet-is-read-through" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kit, and the instrument this sheet is read through
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-firmware-examplesdma_uart-shipped-and-in-the-ci-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The firmware — examples/dma_uart, SHIPPED AND IN THE CI MATRIX
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The rows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-regression-floor-run-this-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Regression floor — run this FIRST
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-one-shot-memoryperipheral-actually-moves-bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. One-shot memory→peripheral actually moves bytes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-completion-interrupt-reaches-the-nvic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The completion interrupt reaches the NVIC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-the-dreq-negative-control-the-highest-value-row-on-this-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. THE DREQ NEGATIVE CONTROL — the highest-value row on this sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configuration-does-not-start-the-channel-the-inferred-claim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Configuration does not start the channel — the INFERRED claim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-stop-really-terminates-and-the-buffer-is-safe-afterwards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. stop() really terminates, and the buffer is safe afterwards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-teardown-releases-the-channel-for-a-second-claimant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Teardown releases the channel for a second claimant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-a-second-channel-and-the-shared-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. A second channel, and the shared line
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-executing-this-sheet-does-not-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What executing this sheet does NOT license
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-you-have-run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When you have run it
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1993,10 +2026,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#start-from-the-scaffold" class="md-nav__link">
+  <a href="#why-this-family-needs-a-sheet-at-all" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start from the scaffold
+        Why this family needs a sheet at all
       
     </span>
   </a>
@@ -2004,10 +2037,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-the-scaffold-actually-does" class="md-nav__link">
+  <a href="#what-the-host-double-already-covers-so-you-do-not-re-test-it-here" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What the scaffold actually does
+        What the host double already covers, so you do not re-test it here
       
     </span>
   </a>
@@ -2015,10 +2048,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-fakes-you-get-for-free" class="md-nav__link">
+  <a href="#kit-and-the-instrument-this-sheet-is-read-through" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The fakes you get for free
+        Kit, and the instrument this sheet is read through
       
     </span>
   </a>
@@ -2026,10 +2059,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-harness" class="md-nav__link">
+  <a href="#the-firmware-examplesdma_uart-shipped-and-in-the-ci-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The harness
+        The firmware — examples/dma_uart, SHIPPED AND IN THE CI MATRIX
       
     </span>
   </a>
@@ -2037,88 +2070,99 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adding-your-own-tests" class="md-nav__link">
+  <a href="#the-rows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Adding your own tests
+        The rows
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#coverage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coverage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alloy-test-precisely" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        alloy test, precisely
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#say-which-tree-you-measured" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Say which tree you measured
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-this-does-not-give-you" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What this does not give you
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#in-ci" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        In CI
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#if-you-are-changing-alloy-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        If you are changing alloy itself
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="If you are changing alloy itself">
+    <nav class="md-nav" aria-label="The rows">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-docs-are-gated-too-and-how-to-opt-a-snippet-out" class="md-nav__link">
+  <a href="#1-regression-floor-run-this-first" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The docs are gated too, and how to opt a snippet out
+        1. Regression floor — run this FIRST
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-one-shot-memoryperipheral-actually-moves-bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. One-shot memory→peripheral actually moves bytes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-completion-interrupt-reaches-the-nvic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The completion interrupt reaches the NVIC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-the-dreq-negative-control-the-highest-value-row-on-this-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. THE DREQ NEGATIVE CONTROL — the highest-value row on this sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configuration-does-not-start-the-channel-the-inferred-claim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Configuration does not start the channel — the INFERRED claim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-stop-really-terminates-and-the-buffer-is-safe-afterwards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. stop() really terminates, and the buffer is safe afterwards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-teardown-releases-the-channel-for-a-second-claimant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Teardown releases the channel for a second claimant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-a-second-channel-and-the-shared-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. A second channel, and the shared line
       
     </span>
   </a>
@@ -2127,6 +2171,28 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-executing-this-sheet-does-not-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What executing this sheet does NOT license
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-you-have-run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When you have run it
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2150,343 +2216,270 @@
   
 
 
-<h1 id="testing-your-firmware-on-a-laptop">Testing your firmware on a laptop<a class="headerlink" href="#testing-your-firmware-on-a-laptop" title="Permanent link">&para;</a></h1>
-<p>Most firmware bugs are not electrical. They are an off-by-one in a state machine, a threshold that
-chatters, a retry that never retries, an error path nobody took. None of those need a board to find
-— but they usually get one anyway, because the logic is tangled up with the peripherals.</p>
-<p>alloy's answer is not a mocking framework. It is a shape:</p>
-<div class="admonition tip">
-<p class="admonition-title">The whole technique</p>
-<p>Put the decisions in a header <strong>templated on alloy's concepts</strong>. Keep <code>main.cpp</code> to board
-wiring. The same source then compiles against the generated silicon driver on the target and
-against a fake on your laptop, because both satisfy the same concept.</p>
-</div>
-<h2 id="start-from-the-scaffold">Start from the scaffold<a class="headerlink" href="#start-from-the-scaffold" title="Permanent link">&para;</a></h2>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>new<span class="w"> </span>thermo<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb<span class="w"> </span>--with-tests
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">created thermo/ (board: nucleo_g071rb, framework: /path/to/alloy)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">  + src/app.hpp</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">  + src/main.cpp</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">  + tests/test_app.cpp</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">  + tests/CMakeLists.txt</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">next:  cd thermo &amp;&amp; alloy test     # runs on your laptop, no board</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">       cd thermo &amp;&amp; alloy run      # and on the target</span>
-</span></code></pre></div>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>thermo<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span><span class="nb">test</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">...</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">1/1 Test #1: thermo_tests .....................   Passed    0.31 sec</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">100% tests passed, 0 tests failed out of 1</span>
-</span></code></pre></div>
-<p>The runner's own output, if you run the binary directly:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>./.alloy/host-tests/thermo_tests
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">[ PASS ] thermostat_heats_when_cold</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">[ PASS ] thermostat_idles_when_warm</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="go">[ PASS ] thermostat_does_not_chatter_in_the_band</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="go">[ PASS ] thermostat_holds_output_when_the_sensor_fails</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="go">[ PASS ] thermostat_addresses_the_sensor_correctly</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="go">PASSED 5/5</span>
-</span></code></pre></div>
-<p>Five tests, no hardware, a third of a second. Two of them — the hysteresis band and the sensor that
-NACKs mid-operation — are genuinely awkward to reproduce on a bench.</p>
-<h2 id="what-the-scaffold-actually-does">What the scaffold actually does<a class="headerlink" href="#what-the-scaffold-actually-does" title="Permanent link">&para;</a></h2>
-<p><code>src/app.hpp</code> holds the logic and names no chip:</p>
-<div class="language-cpp highlight"><span class="filename">illustrative: the scaffold&#x27;s app.hpp, elided — `alloy new --with-tests` writes the whole of it</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">Bus</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Pin</span><span class="o">&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="k">requires</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">I2cBus</span><span class="o">&lt;</span><span class="n">Bus</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">OutputPin</span><span class="o">&lt;</span><span class="n">Pin</span><span class="o">&gt;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">thermostat</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">poll</span><span class="p">();</span><span class="w">          </span><span class="c1">// read the sensor, decide, drive the output</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">...</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">};</span>
-</span></code></pre></div>
-<p><code>tests/test_app.cpp</code> instantiates it against fakes:</p>
-<div class="language-cpp highlight"><span class="filename">illustrative: a host test, built by `alloy test` and not by the firmware toolchain</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;alloy_test.hpp&quot;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;doubles.hpp&quot;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;testkit/mock_bus.hpp&quot;</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;app.hpp&quot;</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">ALLOY_TEST</span><span class="p">(</span><span class="n">thermostat_holds_output_when_the_sensor_fails</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">testkit</span><span class="o">::</span><span class="n">mock_i2c</span><span class="w"> </span><span class="n">bus</span><span class="p">;</span><span class="w">      </span><span class="c1">// scriptable I²C</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">test</span><span class="o">::</span><span class="n">fake_pin</span><span class="w"> </span><span class="n">heater</span><span class="p">;</span><span class="w">      </span><span class="c1">// recording output pin</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">app</span><span class="o">::</span><span class="n">thermostat</span><span class="w"> </span><span class="n">t</span><span class="p">{</span><span class="n">bus</span><span class="p">,</span><span class="w"> </span><span class="n">heater</span><span class="p">,</span><span class="w"> </span><span class="p">{}};</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">bus</span><span class="p">.</span><span class="n">queue_read</span><span class="p">(</span><span class="n">cold_reading</span><span class="p">);</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">poll</span><span class="p">());</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">heating</span><span class="p">());</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">bus</span><span class="p">.</span><span class="n">fail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">                   </span><span class="c1">// the sensor stops answering</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="o">!</span><span class="n">t</span><span class="p">.</span><span class="n">poll</span><span class="p">());</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">heating</span><span class="p">());</span><span class="w">          </span><span class="c1">// and the output must NOT move</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">}</span>
-</span></code></pre></div>
-<p><code>main.cpp</code> is the only file that mentions a board, and it stays short.</p>
-<h2 id="the-fakes-you-get-for-free">The fakes you get for free<a class="headerlink" href="#the-fakes-you-get-for-free" title="Permanent link">&para;</a></h2>
-<p>They are not test-framework mocks; they are ordinary structs that satisfy the same concepts the
-silicon drivers do, each with a <code>static_assert</code> against the real concept so a concept change breaks
-the double instead of silently diverging.</p>
+<h1 id="rp2040-dma-the-on-hardware-checklist">RP2040 DMA — the on-hardware checklist<a class="headerlink" href="#rp2040-dma-the-on-hardware-checklist" title="Permanent link">&para;</a></h1>
+<p><strong>Nothing below has been executed.</strong> This sheet is the entire behavioural
+evidence base for <code>alloy/hal/dma/raspberrypi_dma_v1.hpp</code>, and until somebody
+runs it on a board, every claim in that driver is a transcription plus a
+compile.</p>
+<p>It is a file rather than a PR comment (which is what
+<code>docs/design/dma-streams.md</code> §5 originally asked for) because a PR comment does
+not survive the merge, and because the driver header, the host witness and the
+design's §5 row all point here by name.</p>
+<blockquote>
+<p>The design's own sentence, verbatim and unsoftened: <em>a green CI on RP2040 DMA
+proves compilation and register-sequence intent, <strong>not</strong> behavior.</em></p>
+</blockquote>
+<h2 id="why-this-family-needs-a-sheet-at-all">Why this family needs a sheet at all<a class="headerlink" href="#why-this-family-needs-a-sheet-at-all" title="Permanent link">&para;</a></h2>
+<p>The other three DMA engines in this tree are watched by something. G0 and F7
+have Renode legs. SAM E70 has a generated model that proves its completion IRQ.
+RP2040 has <strong>nothing</strong>: Renode 1.16.1 ships no RP2040 peripheral of any kind, no
+board and no CPU platform for this part.</p>
+<p>And the obvious repair is a trap, so it is written down in three places
+including this one. alloy <em>can</em> already emit an rp2040 Renode platform —
+<code>cortex-m0</code> and <code>UART.PL011</code> are generic types Renode has — and Renode reads 0
+from unmapped addresses. A DMA leg on that platform would read <code>CTRL</code> as 0
+(<code>BUSY</code> low, no error bits) and <code>TRANS_COUNT</code> as 0, and report a <strong>completed
+transfer over a fully-written buffer</strong>, having moved nothing. That is a false
+green. <strong>Do not add the leg.</strong></p>
+<p>So: the host double (<code>tests/test_rp_dma_v1_latch.cpp</code>), or this sheet.</p>
+<h2 id="what-the-host-double-already-covers-so-you-do-not-re-test-it-here">What the host double already covers, so you do not re-test it here<a class="headerlink" href="#what-the-host-double-already-covers-so-you-do-not-re-test-it-here" title="Permanent link">&para;</a></h2>
+<p>Fourteen cases run the real engine over a register double, and 23 single-line
+mutations were applied to the driver to find out which of its claims are load
+bearing — 20 went red. Those cases pin <em>which register gets which value in which
+order</em>: that configuration never addresses a trigger register, that the start is
+one store to <code>MULTI_CHAN_TRIGGER</code>, that chaining is disabled by self-reference,
+that <code>stop()</code> aborts and polls, that the completion latch survives its own ISR,
+and that the handler guards the same interrupt line the arm routed to.</p>
+<p><strong>None of that is behaviour.</strong> Three claims in particular are unreachable off
+the board, and they are the reason this sheet exists:</p>
 <table>
 <thead>
 <tr>
-<th>Double</th>
-<th>Satisfies</th>
-<th>Header</th>
-<th>Gives you</th>
+<th>Unwitnessed claim</th>
+<th>Why nothing off-target can reach it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>alloy::test::fake_pin</code></td>
-<td><code>OutputPin</code></td>
-<td><code>doubles.hpp</code></td>
-<td>current <code>level</code>, <code>toggles</code> count</td>
+<td><strong><code>CH_CTRL_TRIG</code> triggers</strong></td>
+<td>Marked INFERRED in <code>registers/raspberrypi/dma_v1.yaml</code>: the vendor SVD annotates the <em>other three</em> view-<code>0xC</code> registers as trigger registers and does not annotate this one. The driver's whole configure-through-<code>CH_AL1_CTRL</code> discipline rests on it. A host double implements the trigger from the same reading the driver writes, so model and firmware agree by construction — this family's equivalent of XDMAC's uncited descriptor layout.</td>
 </tr>
 <tr>
-<td><code>alloy::test::fake_uart&lt;Cap&gt;</code></td>
-<td><code>ByteStream</code></td>
-<td><code>doubles.hpp</code></td>
-<td>captured TX, replayed RX, <code>tx_contains()</code></td>
+<td><strong>The three DREQ ids</strong> (<code>UART0_TX</code>=20, <code>UART0_RX</code>=21, <code>ADC</code>=36)</td>
+<td>A wrong <code>TREQ_SEL</code> is a transfer paced by the wrong peripheral. §5 records the request id as unwitnessed on G0, unwitnessed on F7 (delete the <code>CHSEL</code> write and the leg stays green) and unwitnessable <em>by construction</em> on SAME70. <strong>Row 4 below is the first and only place in this entire design where a DMA request id is ever tested.</strong></td>
 </tr>
 <tr>
-<td><code>alloy::test::fake_clock</code></td>
-<td>callable clock</td>
-<td><code>doubles.hpp</code></td>
-<td><code>advance(ms)</code> — drive timeouts without waiting</td>
-</tr>
-<tr>
-<td><code>alloy::testkit::mock_i2c</code></td>
-<td><code>I2cBus</code></td>
-<td><code>testkit/mock_bus.hpp</code></td>
-<td><code>queue_read()</code>, <code>last_addr</code>, full <code>writes[]</code> history, <code>fail</code></td>
-</tr>
-<tr>
-<td><code>alloy::testkit::mock_spi</code></td>
-<td><code>SpiBus</code></td>
-<td><code>testkit/mock_bus.hpp</code></td>
-<td>the same, for SPI</td>
-</tr>
-<tr>
-<td><code>alloy::testkit::mock_delay</code></td>
-<td><code>DelayNs</code></td>
-<td><code>testkit/mock_bus.hpp</code></td>
-<td>records requested delays instead of sleeping</td>
+<td><strong><code>CHAN_ABORT</code> flushes anything</strong></td>
+<td>The double models the poll-to-zero protocol, so the <em>loop</em> is real and countable — but whether in-flight transfers are actually drained by the time it reads zero is the SVD's claim, not the test's.</td>
 </tr>
 </tbody>
 </table>
-<p><code>fake_clock</code> and <code>mock_delay</code> matter more than they look: a timeout test that really waits is a
-test nobody runs twice.</p>
-<h2 id="the-harness">The harness<a class="headerlink" href="#the-harness" title="Permanent link">&para;</a></h2>
-<p><code>alloy_test.hpp</code> is deliberately not Catch2 or doctest. Those need exceptions, RTTI and a heap, so
-they could never cross-compile onto a <code>-fno-exceptions</code> target — and then "the tests pass" would be a
-statement about a <em>different</em> build of your code than the one you ship. alloy's harness is
-freestanding and heapless, and your project's tests are compiled with the firmware's own
-<code>-fno-exceptions -fno-rtti</code>, so passing here means the same source compiles for the target.</p>
-<p>Two macros:</p>
-<div class="language-cpp highlight"><span class="filename">illustrative: the two macros, not a program</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">ALLOY_TEST</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">        </span><span class="c1">// self-registering test</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">ALLOY_CHECK</span><span class="p">(</span><span class="n">expr</span><span class="p">);</span><span class="w">              </span><span class="c1">// record a condition</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">ALLOY_CHECK_EQ</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">           </span><span class="c1">// ... and report both sides on failure</span>
-</span></code></pre></div>
-<div class="admonition warning">
-<p class="admonition-title">Commas inside template arguments</p>
-<p><code>ALLOY_CHECK_EQ</code> is a macro, so <code>ALLOY_CHECK_EQ(x, foo&lt;A, B&gt;::k)</code> looks like three arguments to
-the preprocessor. Name the instantiation first: <code>using foo_t = foo&lt;A, B&gt;;</code>.</p>
-</div>
-<p>Sanitizers (ASan + UBSan) are on by default except on macOS, where ASan's at-exit pass hangs on
-arm64. <code>alloy test --no-sanitize</code> turns them off.</p>
-<h2 id="adding-your-own-tests">Adding your own tests<a class="headerlink" href="#adding-your-own-tests" title="Permanent link">&para;</a></h2>
-<p>Drop another <code>tests/test_*.cpp</code> in. The scaffold's CMake globs them, so there is nothing to edit.</p>
-<h2 id="coverage">Coverage<a class="headerlink" href="#coverage" title="Permanent link">&para;</a></h2>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>alloy<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--coverage
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">...</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="go">File                                       Lines     Exec  Cover   Missing</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">------------------------------------------------------------------------------</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">app.hpp                                       25       25   100%</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="go">------------------------------------------------------------------------------</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="go">lines: 100.0% (25 out of 25)</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="go">functions: 100.0% (5 out of 5)</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="go">branches: 100.0% (12 out of 12)</span>
-</span></code></pre></div>
-<p>The report is scoped to your project's <code>src/</code> — the framework's runner and host seams are not your
-coverage. It needs <strong>gcovr</strong> on <code>PATH</code> (<code>pip install gcovr</code>), and under Clang it also needs
-<code>llvm-cov</code>, because Clang's profile data is not plain gcov's and <code>alloy test</code> tells gcovr so. If
-either is missing you get a message naming what to install, and the profile is left in place rather
-than thrown away.</p>
-<h2 id="alloy-test-precisely"><code>alloy test</code>, precisely<a class="headerlink" href="#alloy-test-precisely" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Where you run it</th>
-<th>What runs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>in a project with <code>tests/CMakeLists.txt</code></td>
-<td>that project's suite</td>
-</tr>
-<tr>
-<td>in a project without one</td>
-<td>the framework's own suite</td>
-</tr>
-<tr>
-<td>in the alloy repo</td>
-<td>the framework's own suite</td>
-</tr>
-<tr>
-<td>anywhere, with <code>--framework</code></td>
-<td>the framework's own suite</td>
-</tr>
-</tbody>
-</table>
-<p>The framework is resolved from your <code>alloy.toml</code> (<code>[alloy] root</code>, and the <code>[devices]</code> pin if you
-have one), not from whatever checkout happens to sit above your working directory — so a project's
-tests compile against the framework the project <em>declares</em>.</p>
-<h2 id="say-which-tree-you-measured">Say which tree you measured<a class="headerlink" href="#say-which-tree-you-measured" title="Permanent link">&para;</a></h2>
-<p>A build result is a fact about a working tree at an instant, not about a
-commit — and it is easy to forget that, because the two usually agree.</p>
-<p>They stop agreeing whenever something edits the tree while you build:
-another person, another session, a script mid-rebase. The CLI makes this
-sharper than it looks. <code>uv run --project &lt;tree&gt;/tools/alloy</code> and an editable
-install both resolve to the <em>live</em> tree, so codegen runs with whatever is on
-disk at that moment — including changes nobody has committed. Building an
-old commit in a worktree does not escape it either; the CLI still emits from
-the tree the install points at.</p>
-<p>So when a result is going to be quoted, stamp it:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>status<span class="w"> </span>--porcelain<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w">   </span><span class="c1"># 0, or the number is part of your claim</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git<span class="w"> </span>rev-parse<span class="w"> </span>--short<span class="w"> </span>HEAD
-</span></code></pre></div>
-<p>This matters most for <strong>red</strong> results, which is the counter-intuitive half.
-A false green wastes a review; a false red triggers a fix — for a defect
-that may live in somebody's uncommitted edits and vanish on its own. Two
-sessions in this project once reported, independently and in good faith,
-that every example failed to build on three boards at a given commit. The
-commit was fine. The emitter change they had both compiled against existed
-only in a working tree, transiently, and one of them nearly landed a
-"hotfix" for a repository that was never broken.</p>
-<p>If a result is worth acting on, regenerate from scratch (<code>rm -rf .alloy</code>)
-on a tree you have just confirmed clean, and quote the commit beside it.</p>
-<h2 id="what-this-does-not-give-you">What this does not give you<a class="headerlink" href="#what-this-does-not-give-you" title="Permanent link">&para;</a></h2>
-<p>Being direct, because it is easy to oversell:</p>
+<h2 id="kit-and-the-instrument-this-sheet-is-read-through">Kit, and the instrument this sheet is read through<a class="headerlink" href="#kit-and-the-instrument-this-sheet-is-read-through" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>This is not hardware validation.</strong> It tests logic against fakes. A driver that writes the wrong
-  register still passes, because the fake accepts whatever it is given. Register-level behaviour is
-  what the <a href="../emulation/">emulation legs</a> are for, and neither substitutes for silicon.</li>
-<li><strong>It does not test your <code>main.cpp</code>.</strong> Board wiring is exactly the part with no double. Keep it
-  thin so there is little there to be wrong.</li>
-<li><strong>Concept satisfaction is not behavioural equivalence.</strong> <code>mock_i2c</code> satisfies <code>I2cBus</code>; it does not
-  reproduce clock stretching, arbitration loss, or a device that NACKs on the third byte.</li>
-<li><strong>There is no test for the scaffold's own sensor.</strong> The thermostat's device is invented for the
-  template. Replace it with your real part — or with a driver from <code>alloy lib</code>, which arrives with
-  its own testkit-based tests.</li>
-<li><strong>Coverage is line and branch coverage of host runs.</strong> It says nothing about the target build,
-  and 100% of a header is not 100% of a product.</li>
+<li>A Raspberry Pi Pico (<code>boards/raspberry_pi_pico</code>) or an RP2040-Zero
+  (<code>boards/rp2040_zero</code>).</li>
+<li><strong>A USB-serial adapter, and this is not optional.</strong> Both boards probe via
+  <code>bootsel</code>/<code>uf2</code> with <strong>no SWD</strong>, so the only observation channels are the LED
+  and <code>debug_uart</code> — and both board files say the UART needs an external
+  adapter (Pico: header pins 1/2, GP0/GP1; Zero: castellated pads). A DMA
+  checklist read through a blinking LED measures almost nothing. <strong>Wire the
+  adapter before starting.</strong></li>
+<li><code>alloy flash</code> (uf2 to <code>/Volumes/RPI-RP2</code>) and <code>alloy monitor</code>.</li>
 </ul>
-<h2 id="in-ci">In CI<a class="headerlink" href="#in-ci" title="Permanent link">&para;</a></h2>
-<p>The <code>scaffold</code> job does this end to end on every push: scaffolds <code>--with-tests</code> out-of-repo, builds
-the firmware, runs the suite, reports coverage, and then <strong>inverts one expectation and demands a red
-run</strong> — a test scaffold that cannot fail is a decoration.</p>
-<h2 id="if-you-are-changing-alloy-itself">If you are changing alloy itself<a class="headerlink" href="#if-you-are-changing-alloy-itself" title="Permanent link">&para;</a></h2>
-<p>Everything above is about testing <em>your</em> firmware. This last section is for contributors: the
-gates that guard the framework, all of them runnable on a laptop, in the order they get cheaper
-to be wrong about.</p>
+<p>State on the sheet, when you run it, <strong>what you observed with</strong>. A row that says
+"OK" without naming its instrument is not a measurement.</p>
+<h2 id="the-firmware-examplesdma_uart-shipped-and-in-the-ci-matrix">The firmware — <code>examples/dma_uart</code>, SHIPPED AND IN THE CI MATRIX<a class="headerlink" href="#the-firmware-examplesdma_uart-shipped-and-in-the-ci-matrix" title="Permanent link">&para;</a></h2>
+<p>An earlier revision of this sheet said no shipped example reached this driver
+and carried its firmware inline. <strong>That is fixed.</strong> The gap was on the UART side,
+not the DMA side: <code>alloy::uart</code>'s <code>write_dma()</code> is constrained on the driver
+having <code>dma_tx_begin()</code> / <code>dma_tx_end()</code> / <code>tdr_addr()</code>, and the RP2040 PL011
+driver had none of them, so both DMA examples took their honest fallback branch.
+<code>src/alloy/hal/uart/raspberrypi_uart_pl011.hpp</code> now has all three (they set and
+clear <code>UARTDMACR.TXDMAE</code>, curated from the pinned SVD, and hand back <code>&amp;UARTDR</code>),
+and the TX request id was already chip data (<code>uart0.dma_requests.tx</code> = 20).</p>
+<p>So the path folds open <strong>from <code>board.json</code> alone, with no preprocessor</strong>:</p>
 <table>
 <thead>
 <tr>
-<th>Run this</th>
-<th>Costs</th>
-<th>Fails when</th>
+<th>board</th>
+<th>before</th>
+<th>after</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>./scripts/check_contract.sh</code></td>
-<td>&lt; 1 s</td>
-<td>a silicon address is hand-written in <code>src/</code>, <code>libs/</code> or the generator; a 32-bit mask is built from <code>1u &lt;&lt;</code>; a <code>struct feat</code> is hand-written; an example uses a preprocessor conditional</td>
+<td><code>raspberry_pi_pico</code></td>
+<td><code>dma: not available on this board</code></td>
+<td><code>dma via DMA</code></td>
 </tr>
 <tr>
-<td><code>python3 scripts/check_doc_facts.py -v</code></td>
-<td>~1 s</td>
-<td>a page names a board that is not in <code>boards/</code>, an <code>alloy &lt;verb&gt;</code> the CLI does not define, or a link/anchor that resolves to nothing</td>
-</tr>
-<tr>
-<td><code>python3 scripts/check_doc_facts.py --self-test</code></td>
-<td>~5 s</td>
-<td>that checker has stopped catching a wrong board, a wrong verb, a wrong subcommand or a dangling anchor</td>
-</tr>
-<tr>
-<td><code>alloy test --framework</code></td>
-<td>~30 s</td>
-<td>a host unit test regresses (640 assertions today, ASan + UBSan, built <code>-fno-exceptions -fno-rtti</code> like the firmware)</td>
-</tr>
-<tr>
-<td><code>uv run --project tools/alloy python -m pytest tools/alloy/tests -q</code></td>
-<td>~10 s</td>
-<td>the CLI, the emitters or the board/product validators regress</td>
-</tr>
-<tr>
-<td><code>mkdocs build --strict</code></td>
-<td>~1 s</td>
-<td>a docs page has a broken reference mkdocs can see</td>
-</tr>
-<tr>
-<td><code>python3 scripts/check_doc_snippets.py --audit</code></td>
-<td>&lt; 1 s</td>
-<td>a fence opts out of the compile gate without saying why</td>
-</tr>
-<tr>
-<td><code>python3 scripts/check_doc_snippets.py</code></td>
-<td>~20 min</td>
-<td>a <code>cpp</code> sample in <code>docs/</code> does not compile</td>
-</tr>
-<tr>
-<td><code>uv run --project tools/alloy python scripts/check_compile_errors.py</code></td>
-<td>~2 min</td>
-<td>wrong code stops failing to compile, or stops saying <em>why</em></td>
-</tr>
-<tr>
-<td><code>bash scripts/check_static_limits.sh blink nucleo_g071rb</code></td>
-<td>~1 min</td>
-<td>an image grows a heap, an exception table, recursion, or an unbounded stack</td>
+<td><code>rp2040_zero</code></td>
+<td><code>dma: not available on this board</code></td>
+<td><code>dma via DMA</code></td>
 </tr>
 </tbody>
 </table>
-<p>The last four need a cross toolchain (<code>arm-none-eabi-g++</code> on <code>PATH</code>, <code>alloy setup</code>) and skip
-themselves with a message if there is none, rather than passing quietly.</p>
-<h3 id="the-docs-are-gated-too-and-how-to-opt-a-snippet-out">The docs are gated too, and how to opt a snippet out<a class="headerlink" href="#the-docs-are-gated-too-and-how-to-opt-a-snippet-out" title="Permanent link">&para;</a></h3>
-<p><code>check_doc_snippets.py</code> pulls every <code>```cpp</code> fence out of <strong>every page under <code>docs/</code></strong>, drops it
-into a throwaway project and builds it. The default is that a page is checked, so a new page
-arrives checked; pages that claim to build everywhere (<code>index.md</code>, <code>getting-started.md</code>,
-<code>portable-code.md</code>) are built for all nine boards.</p>
-<p>Not every fence is a program. When one genuinely is not, say so <strong>in the page</strong>:</p>
-<table>
-<thead>
-<tr>
-<th>Marker</th>
-<th>Means</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>```cpp title="illustrative: &lt;why&gt;"</code></td>
-<td>not built. The reason is required, and mkdocs renders it as a caption — so the reader is told this block is not a program, which is the point of putting it there rather than in a skip-list nobody reads</td>
-</tr>
-<tr>
-<td><code>&lt;!-- docgate: setup</code> … <code>--&gt;</code></td>
-<td>file-scope lines the gate injects before the next fence, for a name the page uses but never shows being created</td>
-</tr>
-<tr>
-<td><code>&lt;!-- docgate: setup-local</code> … <code>--&gt;</code></td>
-<td>the same, as statements inside <code>main()</code> — needed when a later fence captures the name in a lambda</td>
-</tr>
-<tr>
-<td><code>&lt;!-- docgate: boards &lt;id&gt; … --&gt;</code></td>
-<td>the next fence is a claim about other silicon; hold it to that silicon instead of the page's default board</td>
-</tr>
-<tr>
-<td><code>&lt;!-- docgate: ungated — &lt;why&gt; --&gt;</code></td>
-<td>the whole page is out. Two design records use it; every run prints the list with its reason</td>
-</tr>
-</tbody>
-</table>
-<p><code>--audit</code> prints, per page, how many fences are built, how many opted out and how many lean on
-hidden setup. That number is the honest measure of how checked the docs are, so it is worth
-watching rather than growing.</p>
+<p>Both measured by building <code>examples/dma_uart</code> at the parent commit and at HEAD
+and reading the strings out of the two ELFs.</p>
+<p><strong>Two shipped examples now reach the engine on this family</strong>, and both were
+already in the <code>build</code> matrix in <code>.github/workflows/ci.yml</code> for both RP2040
+boards — so <strong>no emulation leg was added and none may be</strong> (see above). One CI
+step <em>was</em> added, and it is a compile-branch assertion rather than a witness:
+because every DMA example folds by design, a broken hook would leave <code>dma_uart</code>
+compiling, linking and silently printing the fallback forever, and the build
+loop cannot see that. The step reads the linked ELF and fails if the fallback
+string is present. It proves the branch was selected; it proves nothing about
+bytes moving, which is what this sheet is for.</p>
+<ul>
+<li><strong><code>examples/dma_uart</code></strong> — the sheet's main instrument. Claims
+  <code>alloy::dma::channel&lt;board::dma_t, 1&gt;</code>, arms a completion callback, sends
+  <code>dma via DMA\r\n</code> from RAM to <code>UARTDR</code> by DMA, then prints whether the
+  interrupt fired. Three of the rows below are just "flash this and read the
+  console".</li>
+<li><strong><code>examples/dma_probe</code></strong> — its third branch does the same on channel 3 with a
+  longer payload; its ADC-burst and PWM-waveform branches still print their
+  fallback lines on this family, correctly, because neither of those drivers has
+  DMA hooks here.</li>
+</ul>
+<p><code>dma_uart</code> claims channel 1 by hand, which on the Pico is the channel
+<code>board.json</code> assigns to <code>debug_uart.rx</code>. Nothing else claims it in that firmware
+so there is no conflict — but if you extend the firmware, claim through
+<code>alloy::dma::claim(board::dma::debug_uart_tx)</code> (channel 2, request 20) instead
+of hand-spelling an index.</p>
+<p>Rows 5–8 still need small edits to that example; each says exactly what to
+change. <strong>None of it has ever been run.</strong></p>
+<h2 id="the-rows">The rows<a class="headerlink" href="#the-rows" title="Permanent link">&para;</a></h2>
+<p>Each row is <strong>RUN / LOOK FOR / FALSIFIED BY</strong>. A row that cannot be falsified is
+not a test.</p>
+<h3 id="1-regression-floor-run-this-first">1. Regression floor — run this FIRST<a class="headerlink" href="#1-regression-floor-run-this-first" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: <code>blink</code>, then <code>hello</code>, on the target board.</li>
+<li><strong>LOOK FOR</strong>: the LED blinking; the banner on the serial console.</li>
+<li><strong>FALSIFIED BY</strong>: silence. That means the new <code>dma</code> peripheral entry broke the
+  <code>RESETS</code> gate list or the clock bring-up — <em>not</em> the driver. This is the only
+  row that separates "the data change" from "the engine", which is why it goes
+  first.</li>
+</ul>
+<h3 id="2-one-shot-memoryperipheral-actually-moves-bytes">2. One-shot memory→peripheral actually moves bytes<a class="headerlink" href="#2-one-shot-memoryperipheral-actually-moves-bytes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: <code>cd examples/dma_uart &amp;&amp; alloy build --board raspberry_pi_pico &amp;&amp;
+  alloy flash</code>, then <code>alloy monitor</code>.</li>
+<li><strong>LOOK FOR</strong>: the banner <code>alloy dma_uart</code>, then the line <code>dma via DMA</code> — that
+  second line is the one the DMA wrote; the banner came out of the CPU's own
+  <code>write()</code>. Seeing the banner and not the second line is the interesting
+  failure, and it is why the example prints both.</li>
+<li><strong>FALSIFIED BY</strong>: <code>dma: FAIL</code> (<code>write_dma()</code> returned false — <code>wait()</code> saw an
+  error bit, so the address or the width is wrong), <strong>or</strong> the banner followed
+  by nothing (the channel never advanced: <code>TREQ_SEL</code> wrong, <code>UARTDMACR.TXDMAE</code>
+  never set, or — the interesting one — <code>MULTI_CHAN_TRIGGER</code> is not in fact a
+  start).</li>
+</ul>
+<h3 id="3-the-completion-interrupt-reaches-the-nvic">3. The completion interrupt reaches the NVIC<a class="headerlink" href="#3-the-completion-interrupt-reaches-the-nvic" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: same run as row 2 — the example arms the callback before the transfer
+  and prints the result after it.</li>
+<li><strong>LOOK FOR</strong>: <code>dma irq: fired</code>.</li>
+<li><strong>FALSIFIED BY</strong>: <code>dma irq: NOT fired</code> while row 2 still passed. That isolates
+  three things the host double can only check against itself: the <code>INTE0</code> bit,
+  the vector number (<code>DMA_IRQ_0</code> = 11), and the <code>irq_line_of</code> ↔ <code>INTS0</code>
+  line-index coupling — the driver puts every channel on line 0 (<code>kIrqLine</code>),
+  which is a <em>policy</em>, not silicon.</li>
+</ul>
+<h3 id="4-the-dreq-negative-control-the-highest-value-row-on-this-sheet">4. THE DREQ NEGATIVE CONTROL — the highest-value row on this sheet<a class="headerlink" href="#4-the-dreq-negative-control-the-highest-value-row-on-this-sheet" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: rebuild row 2 with <code>TREQ_SEL</code> deliberately off by one. The request id
+  is chip data, so change it in ONE place and let the generator carry it: in
+  <code>chips/raspberrypi/rp2040.yaml</code>, <code>uart0.dma_requests.tx: 20</code> → <code>21</code>
+  (<code>UART0_RX</code>), rebuild, re-flash. Changing it there rather than in the firmware
+  is the point — it proves the id that the board actually emits is the id the
+  transfer obeys.</li>
+<li><strong>LOOK FOR</strong>: <code>dma: FAIL</code>, or the banner with no second line.</li>
+<li><strong>FALSIFIED BY</strong>: it still prints <code>dma via DMA</code>. That would mean the transfer
+  is not request-paced at all, and row 2 proved nothing about the request — it
+  would have proved only that a channel can copy bytes as fast as the bus
+  allows, into a FIFO that overflows.</li>
+<li><strong>WHY IT MATTERS BEYOND THIS FAMILY</strong>: this is the first and only place in the
+  whole DMA design where a request id is ever tested. Claim it as an advance.</li>
+</ul>
+<h3 id="5-configuration-does-not-start-the-channel-the-inferred-claim">5. Configuration does not start the channel — the INFERRED claim<a class="headerlink" href="#5-configuration-does-not-start-the-channel-the-inferred-claim" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: a variant of <code>dma_uart</code> that calls the engine's two halves apart:
+  <code>alloy::hal::dma_impl&lt;board::dma_t&gt;::setup&lt;1&gt;(...)</code>, then <strong>a visible interval</strong>
+  (blink the LED ten times), then <code>::start&lt;1&gt;()</code>, with a recognisable payload.</li>
+<li><strong>LOOK FOR</strong>: nothing on the wire until after the delay, then the whole
+  payload at once.</li>
+<li><strong>FALSIFIED BY</strong>: bytes appearing during the delay. That means writing
+  <code>CH_AL1_CTRL</code> started the channel, i.e. the curation's inference about which
+  registers trigger is wrong in the dangerous direction — and every <code>setup()</code>
+  in this driver is starting a channel while programming it.</li>
+</ul>
+<h3 id="6-stop-really-terminates-and-the-buffer-is-safe-afterwards">6. <code>stop()</code> really terminates, and the buffer is safe afterwards<a class="headerlink" href="#6-stop-really-terminates-and-the-buffer-is-safe-afterwards" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: a variant of <code>dma_uart</code> using <code>write_dma_begin()</code> instead of
+  <code>write_dma()</code> so the wait is yours: a payload of a few kB in RAM (visible
+  seconds at 115200 baud), then <code>chan.stop()</code> mid-flight, then <strong>overwrite the
+  source buffer with a different pattern</strong> and print what still arrives.</li>
+<li><strong>LOOK FOR</strong>: output stopping promptly, and <strong>none of the second pattern</strong> on
+  the wire.</li>
+<li><strong>FALSIFIED BY</strong>: bytes from the second pattern appearing. That is the
+  use-after-free the abort-and-poll sequence exists to close: <code>EN</code> cleared alone
+  only PAUSES, and a channel still draining through the address and data FIFOs
+  is still reading your buffer.</li>
+</ul>
+<h3 id="7-teardown-releases-the-channel-for-a-second-claimant">7. Teardown releases the channel for a second claimant<a class="headerlink" href="#7-teardown-releases-the-channel-for-a-second-claimant" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: destroy the claim (scope exit), then claim the SAME channel again and
+  run a second transfer.</li>
+<li><strong>LOOK FOR</strong>: the second transfer completing normally.</li>
+<li><strong>FALSIFIED BY</strong>: a trap on the second claim (the release path is wrong), or
+  the second transfer never starting (the abort left the channel in a state
+  <code>setup()</code> does not recover from).</li>
+</ul>
+<h3 id="8-a-second-channel-and-the-shared-line">8. A second channel, and the shared line<a class="headerlink" href="#8-a-second-channel-and-the-shared-line" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RUN</strong>: <code>examples/dma_probe</code> (channel 3) and <code>examples/dma_uart</code> (channel 1)
+  are already two different channels through the same engine, but they are two
+  separate flashings. For the real test, extend <code>dma_uart</code> to claim a second
+  channel, arm completion callbacks on both, and run one transfer on each.</li>
+<li><strong>LOOK FOR</strong>: both callbacks firing, each exactly once.</li>
+<li><strong>FALSIFIED BY</strong>: one callback firing twice, or one never firing — the
+  shared-line guard (<code>INTS0</code> bit test) or the per-channel <code>INTR</code> clear is wrong,
+  and the host double's version of that check agrees with the driver by
+  construction.</li>
+</ul>
+<h2 id="what-executing-this-sheet-does-not-license">What executing this sheet does NOT license<a class="headerlink" href="#what-executing-this-sheet-does-not-license" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Nothing about rings.</strong> <code>alloy::dma::ring</code> does not exist on this family and
+  this sheet does not test it. Both capability flags are false, for independent
+  reasons: there is no half-transfer event anywhere in this IP, and a single
+  channel halts at the end of its count with nothing to re-arm it. That refusal
+  is a <em>compile</em> fact, measured rather than asserted — a project that calls
+  <code>uart.rx_ring(buf)</code> or <code>adc.ring(samples, 4)</code> on a Pico fails to build with
+  <em><code>nested requirement 'ring_capable&lt;…&gt;' is not satisfied</code></em>. See
+  <code>docs/design/dma-streams.md</code> §3.4 for the named successor (a one-channel
+  software ping-pong through <code>CH_AL2_WRITE_ADDR_TRIG</code>) and why it was deferred.</li>
+<li><strong>Nothing about peripheral→memory in either direction.</strong> Every row above is
+  memory→peripheral, because that is the only direction any shipped firmware
+  reaches on this family: the PL011 driver has TX DMA hooks and deliberately no
+  RX ones (that header says why — the ring is missing, and the frame-gap event
+  the RX stream needs stands on a request flavour the pinned SVD does not name),
+  and the RP2040 ADC driver has no burst hooks at all. <code>setup()</code>'s
+  <code>periph_to_mem</code> branch — the read/write address swap and <code>INCR_WRITE</code> instead
+  of <code>INCR_READ</code> — is witnessed only by the host double.</li>
+<li><strong>Nothing about the second interrupt line.</strong> <code>DMA_IRQ_1</code> is curated and
+  deliberately unbound; the driver puts every channel on line 0. Rows 3 and 8
+  test line 0 only.</li>
+<li><strong>Nothing about the sniffer, the pacing timers, or the 42 uncurated DREQ ids.</strong></li>
+<li><strong>Nothing about timing.</strong> No row here measures a rate, a latency or a
+  throughput, and the chip data records <code>kernel_clock: ahb</code> with an explicit
+  note that no timing may be derived from it.</li>
+</ul>
+<h2 id="when-you-have-run-it">When you have run it<a class="headerlink" href="#when-you-have-run-it" title="Permanent link">&para;</a></h2>
+<p>Record, in this file: the date, which board, <strong>what you observed with</strong>, and the
+result of each row <em>with the falsifier you actually tried</em> — a row marked OK
+whose negative control was never run is a row that has not been tested. Then
+update the §5 RP2040 row and the phase-6 row in
+<code>docs/design/dma-streams.md</code>, which today both say this sheet is owed.</p>
 
 
 
@@ -2524,7 +2517,7 @@ watching rather than growing.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../adding-a-board/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Adding a board">
+          <a href="../emulation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Emulation">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2534,20 +2527,20 @@ watching rather than growing.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Adding a board
+                Emulation
               </div>
             </div>
           </a>
         
         
           
-          <a href="../escape-hatch/" class="md-footer__link md-footer__link--next" aria-label="Next: The escape hatch">
+          <a href="../firmware-update/" class="md-footer__link md-footer__link--next" aria-label="Next: Firmware update over UART">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The escape hatch
+                Firmware update over UART
               </div>
             </div>
             <div class="md-footer__button md-icon">

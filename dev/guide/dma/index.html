@@ -1,0 +1,3156 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="One portable main.cpp for any microcontroller — a from-scratch C++23 embedded framework.">
+      
+      
+      
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/dma/">
+      
+      
+        <link rel="prev" href="../adc/">
+      
+      
+        <link rel="next" href="../async/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Streaming data without the CPU - alloy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#streaming-data-without-the-cpu" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="alloy" class="md-header__button md-logo" aria-label="alloy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            alloy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Streaming data without the CPU
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Follow system theme"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Follow system theme" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Alloy-Embedded/alloy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Alloy-Embedded/alloy
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../peripherals/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../emulation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ship it
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tools
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/proof/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="alloy" class="md-nav__button md-logo" aria-label="alloy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
+
+    </a>
+    alloy
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Alloy-Embedded/alloy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Alloy-Embedded/alloy
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portable-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portable code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../boards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripherals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-one-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#four-working-shapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Four working shapes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Four working shapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-an-adc-ring-under-a-control-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. An ADC ring under a control loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-a-uart-rx-ring-with-no-per-byte-interrupt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. A UART RX ring, with no per-byte interrupt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-transmit-without-blocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Transmit without blocking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-spi-full-duplex-the-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SPI full duplex — the pair
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-a-ring-two-disciplines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consuming a ring: two disciplines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-your-board-assigns-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When your board assigns nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-the-assignment-is-illegal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When the assignment is illegal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-engine-can-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each engine can do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-board-gives-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each board gives you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-well-proven-and-what-is-still-owed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How well proven, and what is still owed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How well proven, and what is still owed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-this-one-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read this one first
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-witness-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The witness table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-route-is-witnessed-by-halves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A route is witnessed by halves
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sharp-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sharp edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async tasks (coroutines)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Driver libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adding-a-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding a board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing your firmware on a laptop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../escape-hatch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The escape hatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ship it
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ship it
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locking a production unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crash-reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crash reports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../supply-chain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supply chain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The alloy CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vscode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/chip-coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/error-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Error handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/stability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API stability and support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety posture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-one-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#four-working-shapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Four working shapes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Four working shapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-an-adc-ring-under-a-control-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. An ADC ring under a control loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-a-uart-rx-ring-with-no-per-byte-interrupt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. A UART RX ring, with no per-byte interrupt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-transmit-without-blocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Transmit without blocking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-spi-full-duplex-the-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SPI full duplex — the pair
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-a-ring-two-disciplines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consuming a ring: two disciplines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-your-board-assigns-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When your board assigns nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-the-assignment-is-illegal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When the assignment is illegal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-engine-can-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each engine can do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-board-gives-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each board gives you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-well-proven-and-what-is-still-owed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How well proven, and what is still owed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How well proven, and what is still owed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-this-one-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read this one first
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-witness-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The witness table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-route-is-witnessed-by-halves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A route is witnessed by halves
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sharp-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sharp edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="streaming-data-without-the-cpu">Streaming data without the CPU<a class="headerlink" href="#streaming-data-without-the-cpu" title="Permanent link">&para;</a></h1>
+<p>A control loop that has to fetch each ADC sample by hand is a control loop that
+spends its budget on load/store instructions. A Modbus slave that takes an
+interrupt per received byte is a slave whose worst-case latency is set by the
+baud rate, not by the work. DMA is how you get those two costs off the CPU —
+and this page is how you reach it in alloy without typing a single DMAMUX id,
+CHSEL value or DREQ number.</p>
+<p>It is also honest about the other half. DMA is the part of this framework where
+the gap between <em>this compiles</em> and <em>this has been observed working</em> is widest,
+and the gap is different on every engine. The second half of the page is a
+per-board table of what you get, and a per-capability table of what has actually
+been witnessed and by what. If you are putting this in a product, read the
+second half first.</p>
+<hr />
+<h2 id="the-one-idea">The one idea<a class="headerlink" href="#the-one-idea" title="Permanent link">&para;</a></h2>
+<p><strong>A DMA route is a fact the board states and the generator validates. A stream
+is an object you own. The peripheral facade is where the two meet.</strong></p>
+<p>Everything below follows from that.</p>
+<p>You write the route once, in <code>board.json</code>, as a role signal and a channel:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&quot;dma&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;adc.conv&quot;</span><span class="p">:</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;debug_uart.rx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;debug_uart.tx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">&quot;spi.rx&quot;</span><span class="p">:</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&quot;spi.tx&quot;</span><span class="p">:</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">&quot;i2c.rx&quot;</span><span class="p">:</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>That block is <code>boards/nucleo_g071rb/board.json</code>'s, key for key. The key is
+<code>role.signal</code> — the role is one of the <a href="../portable-code/">role names</a> your
+board already wires, the signal is what that peripheral moves. The value names
+a controller and a channel, and <strong>the request id is not in there</strong>: which
+hardware request line serves <code>usart2 rx</code> is the <em>chip's</em> fact, and alloy-devices
+already knows it.</p>
+<p>The generator turns each line into a constant, next to the role bindings in
+your generated <code>board.hpp</code>:</p>
+<div class="language-cpp highlight"><span class="filename">illustrative: an excerpt of the board.hpp the generator writes — you do not type this</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">route</span><span class="o">&lt;</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">dma1_t</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="cm">/*request=*/</span><span class="mi">5</span><span class="o">&gt;</span><span class="w">  </span><span class="n">adc_conv</span><span class="p">{};</span><span class="w">        </span><span class="c1">// serves adc conv</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">route</span><span class="o">&lt;</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">dma1_t</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="cm">/*request=*/</span><span class="mi">52</span><span class="o">&gt;</span><span class="w"> </span><span class="n">debug_uart_rx</span><span class="p">{};</span><span class="w">   </span><span class="c1">// serves usart2 rx</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">route</span><span class="o">&lt;</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">dma1_t</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="cm">/*request=*/</span><span class="mi">53</span><span class="o">&gt;</span><span class="w"> </span><span class="n">debug_uart_tx</span><span class="p">{};</span><span class="w">   </span><span class="c1">// serves usart2 tx</span>
+</span></code></pre></div>
+<p>The request ids <code>5</code>, <code>52</code>, <code>53</code> were looked up, not typed. The same routes are
+also attached to the role's bind type, which is what makes portable code work:
+<code>board::adc</code> knows its own <code>adc.conv</code> route, so <code>adc.ring(storage)</code> needs no
+argument naming a channel, and on a board that assigned nothing the method is
+simply not there.</p>
+<p>So the three spellings you will see are:</p>
+<table>
+<thead>
+<tr>
+<th>Spelling</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>adc.ring(storage)</code>, <code>uart.rx_ring(buf)</code>, <code>spi.transfer_dma(tx, rx)</code></td>
+<td>The normal one. The facade uses the board's route.</td>
+</tr>
+<tr>
+<td><code>alloy::dma::claim(board::dma::debug_uart_tx)</code></td>
+<td>One-shot transfers, where you hold the channel token yourself.</td>
+</tr>
+<tr>
+<td><code>alloy::dma::channel&lt;board::dma_t, 1&gt;::claim()</code></td>
+<td>The escape hatch: a board with a DMA driver but no assignment, or a channel you want for something alloy does not model.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="four-working-shapes">Four working shapes<a class="headerlink" href="#four-working-shapes" title="Permanent link">&para;</a></h2>
+<p>Each recipe below is the shape of a shipped example under <code>examples/</code>, which CI
+builds for every board and (where noted) runs under emulation. The recipes are
+board-specific on purpose — they show the call, not the portability wrapper, so
+that the call is legible; the examples themselves carry the
+<a href="#when-your-board-assigns-nothing">capability probe</a> and the bounded polling
+that a real superloop needs. Every recipe names its example. Go read that whole,
+and run it, rather than retyping the snippet.</p>
+<h3 id="1-an-adc-ring-under-a-control-loop">1. An ADC ring under a control loop<a class="headerlink" href="#1-an-adc-ring-under-a-control-loop" title="Permanent link">&para;</a></h3>
+<p>The compressor-inverter case: conversions land in a buffer by themselves and
+your loop takes <em>hardware-stable halves</em> — the half being filled is never
+visible to you.</p>
+<p>Board line:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">&quot;adc.conv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Code, from <code>examples/adc_stream/src/main.cpp</code> (Renode-proven on both G0 Nucleos):</p>
+<!-- docgate: setup
+#include <span>
+inline void process(std::span<const std::uint16_t>) {}
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/board.hpp&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/dma.hpp&gt;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// 256 samples = 128 per half. Static storage is the lifetime the stream</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// needs, and the reference-taking API pushes toward it.</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">ring_storage</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="o">&gt;</span><span class="w"> </span><span class="n">samples</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">kChannel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="n">board</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">ring</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">ring</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="w"> </span><span class="n">kChannel</span><span class="p">);</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">half</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ring</span><span class="p">.</span><span class="n">take</span><span class="p">();</span><span class="w">  </span><span class="c1">// blocks until stable</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">        </span><span class="n">process</span><span class="p">(</span><span class="n">half</span><span class="p">);</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ring</span><span class="p">.</span><span class="n">missed</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* you fell behind — a half was overwritten */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>take()</code> hands you <code>N/2</code> samples that the engine has finished writing and will
+not touch again until it comes back around. <code>missed()</code> counts every stable half
+you never collected — overrun is counted, never silent.</p>
+<div class="admonition warning">
+<p class="admonition-title"><code>take()</code> spins forever if a boundary can never arrive</p>
+<p>That is deliberate: a ring whose peripheral was never started hangs
+honestly rather than returning an unstable half. In a superloop, poll
+<code>pending()</code> with a spin budget instead. Both shipped ring examples do
+exactly that, and <code>examples/adc_stream</code> prints <code>STUCK</code> and fails its
+emulation leg in seconds rather than wedging the runner.</p>
+</div>
+<h3 id="2-a-uart-rx-ring-with-no-per-byte-interrupt">2. A UART RX ring, with no per-byte interrupt<a class="headerlink" href="#2-a-uart-rx-ring-with-no-per-byte-interrupt" title="Permanent link">&para;</a></h3>
+<p>The Modbus case. Bytes go from the receive register into your buffer by DMA;
+the only interrupt in the path is the UART's IDLE event — the first quiet bit
+time after a byte, i.e. the frame gap.</p>
+<p>Board line:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">&quot;debug_uart.rx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Code, from <code>examples/modbus_rtu_server/src/main.cpp</code> (Renode-proven on <code>nucleo_g071rb</code>):</p>
+<!-- docgate: setup
+#include <span>
+#include <alloy/time.hpp>
+-->
+<!-- docgate: setup-local
+auto uart = board::debug_uart::open({.baud = 115'200});
+struct { bool on_bytes(std::span<const std::uint8_t>) { return true; } } server;
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// 256 bytes = the RTU spec&#39;s largest ADU.</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">ring_storage</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rxbuf</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">ring</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uart</span><span class="p">.</span><span class="n">rx_ring</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">);</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">alloy</span><span class="o">::</span><span class="n">sleep_until_event</span><span class="p">();</span><span class="w">                                  </span><span class="c1">// IDLE on silicon</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ring</span><span class="p">.</span><span class="n">readable</span><span class="p">();</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">bytes</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="n">on_bytes</span><span class="p">(</span><span class="n">bytes</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">ring</span><span class="p">.</span><span class="n">consume</span><span class="p">(</span><span class="n">bytes</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>readable()</code> returns everything written since your last <code>consume()</code>, as one
+contiguous span — at a buffer wrap you get the tail run first and the rest on
+the next call. The write position is computed from the engine's live
+remaining-count register, so nothing runs per byte.</p>
+<h3 id="3-transmit-without-blocking">3. Transmit without blocking<a class="headerlink" href="#3-transmit-without-blocking" title="Permanent link">&para;</a></h3>
+<p>Two spellings, depending on whether you have a scheduler.</p>
+<p>Blocking-free one-shot, from <code>examples/dma_uart/src/main.cpp</code>:</p>
+<!-- docgate: setup
+inline volatile bool g_dma_irq_fired = false;
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">channel</span><span class="o">&lt;</span><span class="n">board</span><span class="o">::</span><span class="n">dma_t</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;::</span><span class="n">claim</span><span class="p">();</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">// Registered BEFORE the transfer: the channel config register may only be</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">// written while the channel is disabled, so the interrupt enables are folded</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">// in at setup.</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">chan</span><span class="p">.</span><span class="n">on_complete</span><span class="p">(</span><span class="o">+</span><span class="p">[](</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="o">*</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">volatile</span><span class="w"> </span><span class="kt">bool</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">},</span><span class="w"> </span><span class="k">const_cast</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_dma_irq_fired</span><span class="p">));</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">msg</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dma via DMA</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">      </span><span class="c1">// in RAM for the memory-side read</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">uart</span><span class="p">.</span><span class="n">write_dma</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">}))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="c1">// bounded refusal, not a hang</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>write_dma</code> is <code>[[nodiscard]]</code> on purpose: the <code>false</code> case is a real
+outcome — an engine whose completion never arrives is bounded and reported,
+never a spin.</p>
+<p>Or awaited from a coroutine, from <code>examples/async_io/src/main.cpp</code> — the route
+spelling, with the channel number nowhere in the file:</p>
+<div class="language-cpp highlight"><span class="filename">illustrative: a coroutine body — co_await needs the enclosing task, see examples/async_io</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">claim</span><span class="p">(</span><span class="n">board</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">debug_uart_tx</span><span class="p">);</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">alloy</span><span class="o">::</span><span class="n">async</span><span class="o">::</span><span class="n">dma_waiter</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">w</span><span class="p">{</span><span class="n">chan</span><span class="p">};</span><span class="w">   </span><span class="c1">// constructed BEFORE the transfer</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">co_await</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">run</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_begin</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_end</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The waiter is constructed before the transfer for the same reason
+<code>on_complete</code> is registered before it: the driver folds the interrupt enable
+in at setup based on whether a completion callback exists, so a waiter that
+registered itself inside the <code>co_await</code> would arm nothing and park forever.</p>
+<h3 id="4-spi-full-duplex-the-pair">4. SPI full duplex — the pair<a class="headerlink" href="#4-spi-full-duplex-the-pair" title="Permanent link">&para;</a></h3>
+<p>A duplex exchange is one operation with two channels, and every interesting
+property of it belongs to the pair rather than to either channel: both are
+claimed in one interrupts-masked section so an overlapping claimant traps
+deterministically, and the receive side is armed and the peripheral's receive
+request raised <strong>before</strong> the transmit side starts — because on a duplex bus the
+first byte comes back while the first byte is still going out.</p>
+<p>Board lines:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">&quot;spi.rx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">&quot;spi.tx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dma1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Code, from <code>examples/spi_read/src/main.cpp</code> (Renode-proven on <code>nucleo_g071rb</code>):</p>
+<!-- docgate: setup-local
+auto spi = board::spi::open({.clock_hz = 1'000'000, .mode = 0});
+-->
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">out</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0xC0</span><span class="p">,</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">,</span><span class="w"> </span><span class="mh">0xEE</span><span class="p">,</span><span class="w"> </span><span class="mh">0x77</span><span class="p">};</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">in</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">spi</span><span class="p">.</span><span class="n">transfer_dma</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="c1">// bounded refusal, not a hang</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Nothing there names a channel, a DMAMUX id or a CHSEL value; the routes ride
+the binder. <code>transfer_dma</code> claims the pair, runs it, waits for both halves —
+a duplex that half-failed did not succeed — and releases both channels when it
+returns.</p>
+<p>The I2C one-shot is the same idea with an explicitly held token, from
+<code>examples/i2c_read/src/main.cpp</code>:</p>
+<div class="language-cpp highlight"><span class="filename">illustrative: `B` is the bind type in the enclosing template — see examples/i2c_read</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">claim</span><span class="p">(</span><span class="k">typename</span><span class="w"> </span><span class="nc">B</span><span class="o">::</span><span class="n">rx_route</span><span class="p">{});</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">in</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bus</span><span class="p">.</span><span class="n">read_dma</span><span class="p">(</span><span class="n">rx</span><span class="p">,</span><span class="w"> </span><span class="n">kAddr</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* … */</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="consuming-a-ring-two-disciplines">Consuming a ring: two disciplines<a class="headerlink" href="#consuming-a-ring-two-disciplines" title="Permanent link">&para;</a></h2>
+<p>One type, two contracts, and they are for different jobs.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>take()</code> / <code>missed()</code> / <code>pending()</code></th>
+<th><code>cursor()</code> / <code>readable()</code> / <code>consume()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shape</td>
+<td>Half-buffer batches</td>
+<td>Byte stream</td>
+</tr>
+<tr>
+<td>Audience</td>
+<td>Control loops (ADC)</td>
+<td>Framed protocols (UART RX)</td>
+</tr>
+<tr>
+<td>Granularity</td>
+<td><code>N/2</code> items at a time</td>
+<td>Any number of items</td>
+</tr>
+<tr>
+<td>Overrun</td>
+<td><strong>Checked.</strong> Every uncollected half counts in <code>missed()</code>.</td>
+<td><strong>Not checked at item granularity.</strong> A writer that laps an idle reader silently overwrites unread items; <code>missed()</code> is still your overrun evidence.</td>
+</tr>
+<tr>
+<td>Blocking</td>
+<td><code>take()</code> blocks; <code>pending()</code> is the non-blocking probe</td>
+<td>Never blocks; an empty span means nothing new</td>
+</tr>
+</tbody>
+</table>
+<p>Both are <strong>thread context only</strong>. <code>on_boundary()</code> and (on a UART ring)
+<code>on_idle()</code> run in interrupt context, and the alloy IRQ contract applies there:
+set a flag or wake a task, nothing else.</p>
+<p>Lifetime is RAII. Constructing the ring claims the channel and starts the
+hardware; destroying it stops the hardware, detaches the events and releases the
+claim, in that order, so no ISR can fire into a dead object and no new claimant
+can grab a channel that is still moving data. The peripheral side of teardown
+belongs to the facade wrapper and runs first — which is why
+<code>uart::rx_stream</code> exists as a wrapper at all, rather than handing you a bare
+ring.</p>
+<p><code>ring_storage&lt;T, N&gt;</code> refuses <code>N</code> that is odd, below 2, or above 65535 at compile
+time. The raw-<code>std::span</code> overloads accept the same buffer without the type
+telling you its lifetime, and trap at run time on the same conditions — that is
+the sharp edge, offered deliberately for callers who have their own storage.</p>
+<hr />
+<h2 id="when-your-board-assigns-nothing">When your board assigns nothing<a class="headerlink" href="#when-your-board-assigns-nothing" title="Permanent link">&para;</a></h2>
+<p>The method is <strong>not there</strong>. That is the whole design: a capability the board or
+the silicon does not have is a compile error naming what you asked for, never a
+link error and never a runtime surprise.</p>
+<p>Portable code asks first. The spelling matters more than it looks:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">[</span><span class="o">&amp;</span><span class="n">uart</span><span class="p">]</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">AdcBind</span><span class="o">&gt;</span><span class="p">(</span><span class="n">AdcBind</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="k">requires</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">AdcBind</span><span class="o">::</span><span class="n">open</span><span class="p">())</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">ring</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="w"> </span><span class="n">kChannel</span><span class="p">);</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">adc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AdcBind</span><span class="o">::</span><span class="n">open</span><span class="p">();</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">ring</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">ring</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="w"> </span><span class="n">kChannel</span><span class="p">);</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">        </span><span class="c1">// …</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">        </span><span class="n">uart</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;adc ring: not available on this board</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">}(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">board</span><span class="o">::</span><span class="n">adc</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">nullptr</span><span class="p">));</span>
+</span></code></pre></div>
+<div class="admonition danger">
+<p class="admonition-title">The generic lambda is load-bearing — do not simplify it away</p>
+<p>A discarded <code>if constexpr</code> branch <strong>outside a template</strong> is still
+name-looked-up and type-checked, so the naive spelling hard-errors on
+exactly the board it exists to skip. Wrapping the probe in a generic lambda
+that takes the bind type as a pointer parameter makes the names dependent,
+which is what lets the branch be discarded. Probe through the <em>handle's</em>
+aliases (<code>typename S::rx_route</code>) rather than through
+<code>board::dma::spi_rx</code>: a missing namespace-scope constant is a hard error,
+not a substitution failure, so it will not fold.</p>
+</div>
+<h2 id="when-the-assignment-is-illegal">When the assignment is illegal<a class="headerlink" href="#when-the-assignment-is-illegal" title="Permanent link">&para;</a></h2>
+<p>The generator refuses at build time and tells you the legal alternatives. These
+are real outputs of <code>alloy board-validate --file …</code> on modified copies of the
+shipped boards:</p>
+<p>Two signals on one channel:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="go">error: dma.spi.tx: dma &#39;spi.tx&#39;: dma1 channel 3 already serves &#39;debug_uart.tx&#39; — one channel moves one stream  (try: 5, 7)</span>
+</span></code></pre></div>
+<p>A channel that does not exist:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="go">error: dma.spi.tx: dma &#39;spi.tx&#39;: dma1 has channels 1..7, not 9  (try: 5, 7)</span>
+</span></code></pre></div>
+<p>A signal the peripheral does not have:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="go">error: dma.spi.miso: dma &#39;spi.miso&#39;: the chip states no DMA request for spi1 &#39;miso&#39;  (try: spi.rx, spi.tx)</span>
+</span></code></pre></div>
+<p>A signal the chip routes nowhere at all — this is the STM32F7 ADC:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="go">error: dma.adc.conv: dma &#39;adc.conv&#39;: the chip states no DMA request for adc1 &#39;conv&#39; — adc1 advertises no DMA requests at all  (try: debug_uart.rx, debug_uart.tx, spi.rx, spi.tx)</span>
+</span></code></pre></div>
+<p>The wrong key for the engine — free routers take <code>channel</code>, ST's stream engines
+take <code>stream</code>:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="go">error: dma.debug_uart.tx: dma &#39;debug_uart.tx&#39;: usart3 &#39;tx&#39; rides a stream engine: the key is &#39;stream&#39; (0-based, ST stream numbering), not &#39;channel&#39; (dma_v1&#39;s 1-based) — legal: {dma1, stream 3}, {dma1, stream 4}  (try: {dma1, stream 3}, {dma1, stream 4})</span>
+</span></code></pre></div>
+<p>A stream that cannot reach that peripheral:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="go">error: dma.debug_uart.tx: dma &#39;debug_uart.tx&#39;: {dma1, stream 2} does not reach usart3 &#39;tx&#39; — the chip&#39;s dma_routes allow only: {dma1, stream 3}, {dma1, stream 4}  (try: {dma1, stream 3}, {dma1, stream 4})</span>
+</span></code></pre></div>
+<p>And when a capability is missing rather than a route, the compile error names
+the capability. Asking for <code>adc.ring()</code> on a Raspberry Pi Pico:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="go">error: no matching function for call to &#39;alloy::adc::handle&lt;…&gt;::ring(alloy::dma::ring_storage&lt;short unsigned int, 256&gt;&amp;, int)&#39;</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="go">note: the required expression &#39;alloy::hal::adc_impl&lt;Inst&gt;::dma_burst_begin(uint8_t{})&#39; is invalid</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="go">note: nested requirement &#39;ring_capable&lt;typename Route::controller, ((unsigned int)Route::channel)&gt;&#39; is not satisfied</span>
+</span></code></pre></div>
+<p>Two named reasons at once: that ADC driver has no DMA hooks, <em>and</em> that engine
+cannot present a ring.</p>
+<div class="admonition warning">
+<p class="admonition-title">An assignment is a promise the driver may not be able to keep</p>
+<p>Validation checks the board statement against the chip's routing data. It
+does not check that the peripheral <em>driver</em> has DMA entry points. Three
+assignments in the shipped boards are inert today for exactly that reason:
+<code>same70_xplained</code>'s <code>spi.rx</code>/<code>spi.tx</code> and <code>i2c.rx</code>/<code>i2c.tx</code> (the Microchip
+SPI and TWIHS drivers have no DMA hooks), and <code>raspberry_pi_pico</code>'s
+<code>adc.conv</code> (no ring on that engine, and no DMA hooks on that ADC driver).
+The build succeeds and the method folds away.</p>
+</div>
+<hr />
+<h2 id="what-each-engine-can-do">What each engine can do<a class="headerlink" href="#what-each-engine-can-do" title="Permanent link">&para;</a></h2>
+<p>Four engine families ship. <code>ring_capable</code> — the concept that gates every ring —
+asks <code>supports_ring</code>, and <code>supports_ring</code> is <strong>not</strong> <code>supports_circular</code>:</p>
+<ul>
+<li><code>supports_circular</code> is a statement about <em>hardware</em>: this engine has a
+  circular mode bit that reloads the count and wraps by itself.</li>
+<li><code>supports_ring</code> is a statement about <em>this engine's code</em>: it can present
+  <code>alloy::dma::ring</code>'s contract, by whatever means.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Families</th>
+<th><code>supports_circular</code></th>
+<th><code>supports_ring</code></th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>st/dma_v1</code></td>
+<td>STM32 G0 (free router + DMAMUX)</td>
+<td>yes</td>
+<td>yes</td>
+<td>The same fact spelled twice.</td>
+</tr>
+<tr>
+<td><code>st/dma_v2</code></td>
+<td>STM32 F4 / F7 (stream engine, CHSEL)</td>
+<td>yes</td>
+<td>yes</td>
+<td>Same.</td>
+</tr>
+<tr>
+<td><code>microchip/xdmac_v1</code></td>
+<td>SAM E70</td>
+<td><strong>no</strong></td>
+<td><strong>yes</strong></td>
+<td>No circular bit exists in the IP at all. A ring is two linked view-0 descriptors ping-ponging the halves. <code>start_m2p_circular_u16</code> is correctly absent.</td>
+</tr>
+<tr>
+<td><code>raspberrypi/dma_v1</code></td>
+<td>RP2040</td>
+<td>no</td>
+<td>no</td>
+<td>A single channel halts at count zero and goes permanently empty; there is no honest degraded ring, so there is none.</td>
+</tr>
+</tbody>
+</table>
+<p>STM32 <strong>G4</strong> is a gap of a different kind: the chip data declares <code>dma1</code>/<code>dma2</code>
+with no channel geometry and no DMAMUX companion, so the driver's <code>mux_t</code>
+requirement is unsatisfiable and every DMA facade method is constrained away on
+that family. 93 G4 parts are in <code>alloy chips</code> and none ships as a board; if you
+clone one, expect the folded-away branch until the chip data grows those keys.</p>
+<h2 id="what-each-board-gives-you">What each board gives you<a class="headerlink" href="#what-each-board-gives-you" title="Permanent link">&para;</a></h2>
+<p>Rows are the boards that ship; the answers were measured by building the
+matching example for each board and reading the linked image, not by reading
+source. Find your board, then read across.</p>
+<table>
+<thead>
+<tr>
+<th>Board</th>
+<th><code>adc.ring</code></th>
+<th><code>uart.rx_ring</code></th>
+<th><code>uart.write_dma</code></th>
+<th><code>spi.transfer_dma</code></th>
+<th><code>i2c.read_dma</code></th>
+<th><code>adc.read_burst</code></th>
+<th><code>pwm.stream_duty</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nucleo_g071rb</code></td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>nucleo_g0b1re</code></td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>nucleo_f722ze</code></td>
+<td>not routable</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no role</td>
+<td>no hooks</td>
+<td>no role</td>
+</tr>
+<tr>
+<td><code>nucleo_f767zi</code></td>
+<td>not routable</td>
+<td>yes</td>
+<td>yes</td>
+<td>no role</td>
+<td>no role</td>
+<td>no hooks</td>
+<td>no role</td>
+</tr>
+<tr>
+<td><code>same70_xplained</code></td>
+<td><strong>yes — never run</strong></td>
+<td>no hooks</td>
+<td>yes</td>
+<td>no hooks</td>
+<td>no hooks</td>
+<td>yes</td>
+<td>no role</td>
+</tr>
+<tr>
+<td><code>raspberry_pi_pico</code></td>
+<td>no ring</td>
+<td>no hooks</td>
+<td>yes</td>
+<td>no role</td>
+<td>no role</td>
+<td>no hooks</td>
+<td>no role</td>
+</tr>
+<tr>
+<td><code>rp2040_zero</code></td>
+<td>no role</td>
+<td>no hooks</td>
+<td>yes</td>
+<td>no role</td>
+<td>no role</td>
+<td>no role</td>
+<td>no role</td>
+</tr>
+<tr>
+<td><code>esp32_devkit</code></td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+</tr>
+<tr>
+<td><code>esp_wrover_kit</code></td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+<td>no DMA</td>
+</tr>
+</tbody>
+</table>
+<p>Every negative cell names <em>which</em> gate failed, because that is the difference
+between four completely different fixes:</p>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>What failed</th>
+<th>What you do about it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>no route</code></td>
+<td>The board file assigns no channel for this signal.</td>
+<td>Add the line to <code>board.json</code>, or pass an explicit route / hand-claimed channel.</td>
+</tr>
+<tr>
+<td><code>not routable</code></td>
+<td>The <strong>chip data</strong> states no request for this signal, so no board file can legally assign it.</td>
+<td>File it against alloy-devices, or use the escape hatch and take responsibility for the request id.</td>
+</tr>
+<tr>
+<td><code>no hooks</code></td>
+<td>The peripheral <strong>driver</strong> has no DMA entry points.</td>
+<td>Write them, or use the polled path. The board may already assign a channel; it is inert.</td>
+</tr>
+<tr>
+<td><code>no ring</code></td>
+<td>The engine cannot present a ring (<code>ring_capable</code> is false).</td>
+<td>This silicon will not do it. Use one-shots.</td>
+</tr>
+<tr>
+<td><code>no role</code></td>
+<td>The board declares no <code>spi</code> / <code>i2c</code> / <code>adc</code> role at all.</td>
+<td>Wire the role in <code>board.json</code> first.</td>
+</tr>
+<tr>
+<td><code>no DMA</code></td>
+<td>The chip has no DMA controller in the data at all.</td>
+<td>Nothing to reach.</td>
+</tr>
+</tbody>
+</table>
+<p>One call is missing from the table on purpose. <code>i2c.write_read_dma()</code> — a
+repeated start under DMA — is a <strong>deleted member</strong> on every board. Calling it is
+a compile error naming the function, and a <code>requires</code> probe on it is false. The
+reason is that <code>CR1.TCIE</code> is deliberately uncurated in alloy-devices' ST I2C
+data, so the write-to-read handoff has no reachable event; a method that could
+only be implemented by spinning on an uncurated bit would be a promise the
+facade cannot keep.</p>
+<p>Two more per-board details the grid cannot hold:</p>
+<ul>
+<li><code>nucleo_g071rb</code> assigns <code>i2c.rx</code> but not <code>i2c.tx</code> (the die offers nine
+  assignable signals for seven channels), so <code>i2c.write_dma</code> on that board needs
+  a hand-claimed channel. <code>nucleo_g0b1re</code> assigns both.</li>
+<li><code>pwm.stream_duty</code> exists only where the timer driver has <code>dma_update_begin</code>
+  <em>and</em> the timer instance publishes an update request — today the STM32 G0
+  general-purpose 16-bit timer only.</li>
+</ul>
+<hr />
+<h2 id="how-well-proven-and-what-is-still-owed">How well proven, and what is still owed<a class="headerlink" href="#how-well-proven-and-what-is-still-owed" title="Permanent link">&para;</a></h2>
+<p>Three words, used precisely, for the rest of this page:</p>
+<ul>
+<li><strong>Renode-proven</strong> — a CI leg runs it on an emulated die. Blocking legs gate
+  the build; experimental legs are <code>continue-on-error</code> while a new board+robot
+  pair earns trust.</li>
+<li><strong>Host-tested</strong> — the real driver code runs over a memory-backed register
+  double on a laptop. This proves sequence and bookkeeping. It proves nothing
+  about whether the register map is right.</li>
+<li><strong>Compiles only</strong> — the branch was selected at compile time and linked.
+  Nothing has observed it move a byte.</li>
+</ul>
+<p>The same three words are used everywhere in these docs, and the framework-wide
+version of the table below — every capability, not just the streaming ones —
+is <strong><a href="../../reference/proof/">What is proven, and how</a></strong>.</p>
+<p>And a footer on all of it, in the words <code>alloy chip-status</code> closes with:
+<strong>none of this is evidence from silicon.</strong> No DMA stream in this framework —
+no ring, no pair, no <code>rx_ring</code> — has ever run on a real part. (The one
+first-party silicon result this project has is the
+<a href="../bus/">bus bridge on a SAM E70</a>; it does not use DMA.)</p>
+<h3 id="read-this-one-first">Read this one first<a class="headerlink" href="#read-this-one-first" title="Permanent link">&para;</a></h3>
+<div class="admonition danger">
+<p class="admonition-title"><code>adc.ring()</code> on <code>same70_xplained</code> compiles, links, and has never been run</p>
+<p>Every other honest gap in this framework fails <strong>loudly</strong> — a compile error
+naming the missing capability. This one does not. The XDMAC ring builds
+clean: the linked image for <code>examples/adc_stream</code> on that board contains the
+stream type and the ping-pong descriptors in <code>.bss</code>, with no fallback
+branch. A reader who checks by compiling will conclude it works.</p>
+<p>What is unproven is the <strong>descriptor layout itself</strong>. What a view-0
+descriptor contains in memory — word order, and the bit packing of its own
+control word — is stated in <strong>no file in either repository</strong>. The register
+curation covers the registers that <em>point at</em> descriptors exhaustively, with
+datasheet provenance; the descriptor structure is not a register and is not
+there. The pinned vendor pack has every XDMAC register bit and zero
+descriptor-structure content.</p>
+<p>The host test (<code>tests/test_xdmac_v1_ring.cpp</code>) runs the real engine over a
+double that genuinely fetches and executes the descriptors. It proves
+linkage, ping-pong parity, cursor arithmetic across the half boundary and
+teardown — <strong>against the driver's own reading of the layout</strong>. It cannot
+prove the reading. If the reading is wrong, every test still passes and the
+first silicon run takes a bus error or writes to a wild address.</p>
+<p>The reading is corroborated by a second, independent implementation
+(Zephyr's SAM XDMAC driver declares the same three words in the same order
+and puts the control word's bits in the same positions). Two independent
+readings agreeing is evidence, not a citation — they can share a misreading
+of one figure.</p>
+<p><strong>Confirm the structure and the UBC bit positions against DS60001527,
+"Linked List Descriptor View 0", before shipping this to hardware.</strong>
+Everything the confirmation touches is one struct and four named constants
+in <code>src/alloy/hal/dma/microchip_xdmac_v1_body.hpp</code>.</p>
+</div>
+<h3 id="the-witness-table">The witness table<a class="headerlink" href="#the-witness-table" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Strongest witness</th>
+<th>What a green run actually asserts</th>
+<th>What only a board can close</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uart.write_dma</code> on STM32 G0</td>
+<td>Renode, blocking CI leg (<code>dma_uart</code>)</td>
+<td>The bytes crossed from RAM to the USART on the programmed channel, and the completion IRQ fired.</td>
+<td>Which peripheral asked — the request id is never witnessed.</td>
+</tr>
+<tr>
+<td><code>adc.ring</code> on STM32 G0</td>
+<td>Renode, blocking CI legs on <code>nucleo_g071rb</code> and <code>nucleo_g0b1re</code> (<code>adc_stream</code>)</td>
+<td>In <code>take()</code> order: the half event arrived before the full event, the full event arrived, and the ring wrapped — with each half pinned to the millivolts fed to that channel, so neither routing nor data can pass by coincidence. Two negative controls verified red.</td>
+<td>DMAMUX request routing (unmodelled). Once-per-boundary half events — the model re-raises the half flag per sample, so <code>missed()</code> is diagnostic under emulation, not evidence. Free-running continuous conversion (a tagged no-op paced by a shim). The event-attach order.</td>
+</tr>
+<tr>
+<td><code>uart.rx_ring</code></td>
+<td>Renode, blocking on <code>nucleo_g071rb</code>; experimental on <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>nucleo_f767zi</code> (<code>modbus_rtu</code>)</td>
+<td>Modbus RTU frames received into the ring with no per-byte ISR, read back by an independent master implementation.</td>
+<td>The request id. And the IDLE wake itself: the pinned USART model does not implement IDLE at all, so under emulation the wakes are SysTick's.</td>
+</tr>
+<tr>
+<td><code>spi.transfer_dma</code> (the pair)</td>
+<td>Renode, blocking on <code>nucleo_g071rb</code>; experimental on <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code> (<code>spi_read</code>)</td>
+<td>The channel/stream <strong>index</strong>, the RX-before-TX arming order, and the receive-request enable — each with a negative control that goes red rather than hanging.</td>
+<td>The request id, on either engine.</td>
+</tr>
+<tr>
+<td>SAM E70 XDMAC completion IRQ</td>
+<td>Renode, experimental CI leg (<code>dma_uart</code>) — against a model <strong>this project had to generate</strong>, because Renode 1.16.1 ships no Microchip DMA model of any kind</td>
+<td>The bytes crossed and the XDMAC interrupt line fired. Two negative controls.</td>
+<td>PERID routing, unwitnessable by construction: the pinned USART model exposes no DMA-request output, so no model can consume one. The model triggers the whole microblock on the enable write and never consults PERID.</td>
+</tr>
+<tr>
+<td><code>i2c.read_dma</code> / <code>i2c.write_dma</code></td>
+<td>Host-tested (<code>tests/test_i2c_dma.cpp</code>, 18 cases over a memory-backed double)</td>
+<td>The emulation leg asserts a <strong>bounded refusal</strong> — it waits for the literal line <code>i2c dma: no transfer</code> — because Renode's model of this IP exposes no DMA request output at all, so nothing can ask the engine to move a byte.</td>
+<td>That a single byte ever moves by DMA on this bus. No leg anywhere witnesses an I2C DMA transfer.</td>
+</tr>
+<tr>
+<td><code>adc.ring</code> on SAM E70 (XDMAC linked-list ring)</td>
+<td>Host-tested — and the host test cannot prove the part that breaks</td>
+<td>Linkage, ping-pong parity, cursor arithmetic across the half boundary, teardown — against the driver's own reading of the descriptor layout.</td>
+<td>The descriptor layout itself. See the box above.</td>
+</tr>
+<tr>
+<td>RP2040 one-shot DMA</td>
+<td><strong>Nothing under emulation, and a leg here would be worse than absent</strong> — Renode reads 0 from unmapped addresses, so a leg would report a finished transfer over a buffer of zeros</td>
+<td>The CI gate reads the linked image and fails if the fallback branch is present. It asserts that the DMA path was <em>compiled in</em>, and nothing about bytes crossing. The behavioural witness is <code>tests/test_rp_dma_v1_latch.cpp</code>: 23 mutations, 20 go red, 3 are named as staying green.</td>
+<td>Everything behavioural. See the <a href="../rp2040-dma-hardware-checklist/">RP2040 DMA hardware checklist</a> — eight RUN / LOOK FOR / FALSIFIED BY rows, <strong>written and never executed</strong>.</td>
+</tr>
+<tr>
+<td><code>pwm.stream_duty</code></td>
+<td>Compiles only</td>
+<td>Nothing. There is no emulation leg and no host test.</td>
+<td>All of it.</td>
+</tr>
+<tr>
+<td><code>alloy::async::ring_waiter</code></td>
+<td>Host-tested (two cases in <code>tests/test_dma_ring.cpp</code>)</td>
+<td>A parked task wakes once per boundary, and a slow consumer resynchronizes.</td>
+<td>All of it, on a target.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="a-route-is-witnessed-by-halves">A route is witnessed by halves<a class="headerlink" href="#a-route-is-witnessed-by-halves" title="Permanent link">&para;</a></h3>
+<p>This is the one sentence to carry into a bring-up:</p>
+<blockquote>
+<p><strong>Emulation proves which channel moved the bytes. Only silicon proves that
+the right peripheral asked for them.</strong></p>
+</blockquote>
+<p>It is measured, not assumed, and on three families with three different
+strengths:</p>
+<ul>
+<li>On the <strong>F7 stream engine</strong> it was measured by adversarial control. Move the
+  model's request wire by one stream and the leg goes red — so the stream index
+  is load-bearing end to end. Delete the channel-select write from the driver
+  and the leg stays <strong>green</strong> — so the request id is not witnessed at all.</li>
+<li>On the <strong>G0</strong> Renode models no DMAMUX whatsoever, and the platform wire and
+  the firmware route both descend from the same <code>board.json</code> statement, so the
+  request half cannot be witnessed even by coincidence.</li>
+<li>On the <strong>SAM E70</strong> it is worse by construction: the USART model exposes no
+  DMA-request output, so there is no wire for any model to consume.</li>
+</ul>
+<p>What that means for you: <strong>the first time you bring up a new board's DMA
+assignment, verify the peripheral is really the source.</strong> Feed a distinctive
+pattern and check that it is what arrives, or perturb the request id in the chip
+data and confirm the transfer <em>stops</em>. The entire framework tests that in
+exactly one place — row 4 of the RP2040 hardware checklist — and that place has
+never been executed.</p>
+<hr />
+<h2 id="sharp-edges">Sharp edges<a class="headerlink" href="#sharp-edges" title="Permanent link">&para;</a></h2>
+<p>The things you would otherwise find at 2 a.m.:</p>
+<div class="admonition warning">
+<p class="admonition-title">Read before your first DMA bring-up</p>
+<ul>
+<li><strong>The SAM E70's memory-side master cannot read embedded flash.</strong> A
+  <code>.rodata</code> source raises a read bus error — found on real silicon. Copy the
+  payload to RAM before any <code>write_dma</code> / <code>transfer_dma</code> on that part. The
+  ST engines read flash fine, so portable code that works on a G0 can break
+  on a SAM E70 for this reason alone.</li>
+<li><strong><code>ring::take()</code> spins forever if no boundary can arrive.</strong> Wrap it in a
+  bounded <code>pending()</code> poll, the way both shipped ring examples do.</li>
+<li><strong><code>ring_storage&lt;T, N&gt;</code> demands an even <code>N</code> in 2..65535</strong> at compile time.
+  The raw-span overloads trap at run time on the same conditions plus an
+  empty buffer.</li>
+<li><strong>A ring stored in a static, holding a span to a shorter-lived buffer, is
+  the corruption scope cannot close.</strong> Taking <code>ring_storage</code> by reference is
+  the countermeasure, which is why that is the default spelling.</li>
+<li><strong><code>take()</code> / <code>readable()</code> / <code>consume()</code> are thread context only.</strong>
+  Callbacks run in interrupt context.</li>
+<li><strong>Teardown order is peripheral request off, then channel stop.</strong> The
+  facade wrappers encode it in member-destruction order; a bare
+  <code>alloy::dma::ring</code> does not get it for free.</li>
+<li><strong>A board's <code>dma:</code> assignment is a promise the driver may not be able to
+  keep.</strong> Three shipped assignments are inert today.</li>
+<li><strong>Register the completion callback before starting a transfer.</strong> The
+  channel's config register may only be written while the channel is
+  disabled, so the interrupt enables are folded in at setup — a callback
+  registered afterwards arms nothing.</li>
+</ul>
+</div>
+<hr />
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Run one.</strong> <code>examples/adc_stream</code>, <code>examples/modbus_rtu_server</code>,
+  <code>examples/spi_read</code>, <code>examples/i2c_read</code>, <code>examples/dma_uart</code>,
+  <code>examples/dma_probe</code>, <code>examples/async_io</code> — every snippet on this page came
+  from one of them, and CI builds all of them for every board.</li>
+<li><strong>Add a route to your own board</strong> — <a href="../adding-a-board/">Adding a board</a>.</li>
+<li><strong>Await a boundary instead of polling one</strong> — <a href="../async/">Async</a>, and
+  <code>alloy::async::ring_waiter</code>.</li>
+<li><strong>See what the legs assert, in their own words</strong> —
+  <a href="../emulation/">Emulation</a>, and the design record this feature came from,
+  <a href="../../design/dma-streams/">DMA streams</a>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../adc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Reading an analog input">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Reading an analog input
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../async/" class="md-footer__link md-footer__link--next" aria-label="Next: Async tasks (coroutines)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Async tasks (coroutines)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Made with the alloy project · docs built with Material for MkDocs
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/Alloy-Embedded/alloy" target="_blank" rel="noopener" title="alloy on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

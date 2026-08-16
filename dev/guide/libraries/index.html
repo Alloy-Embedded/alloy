@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -651,6 +651,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -714,6 +720,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -1053,6 +1143,8 @@
       
         
       
+        
+      
     
     
     
@@ -1113,6 +1205,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1389,6 +1509,8 @@
       
         
       
+        
+      
     
     
     
@@ -1433,6 +1555,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1608,6 +1758,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1625,6 +1861,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1741,8 +1985,9 @@
 
 
 <h1 id="driver-libraries">Driver libraries<a class="headerlink" href="#driver-libraries" title="Permanent link">&para;</a></h1>
-<p>Sensors, displays, clocks and other parts live <strong>outside the framework core</strong>, as small
-header-only libraries you vendor into your project:</p>
+<p>Sensors, displays and clocks — and protocol stacks, a message bus, and the control-plane
+machinery an inverter needs — live <strong>outside the framework core</strong>, as small header-only
+libraries you vendor into your project:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>search<span class="w"> </span>humidity
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">sht31    sensor    Sensirion SHT3x temperature + humidity sensor (I2C)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
@@ -1751,7 +1996,7 @@ header-only libraries you vendor into your project:</p>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">  include it: #include &lt;sht31.hpp&gt;   (namespace alloy::lib)</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">  the build now compiles ./libs/*/include onto the include path</span>
 </span></code></pre></div>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sht31.hpp&gt;</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: needs the driver vendored first — `alloy lib add sht31`</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sht31.hpp&gt;</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">bus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">board</span><span class="o">::</span><span class="n">i2c</span><span class="o">::</span><span class="n">open</span><span class="p">({.</span><span class="n">speed_hz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="p">});</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">alloy</span><span class="o">::</span><span class="n">delay</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
@@ -1772,6 +2017,9 @@ satisfies them, including boards that do not exist yet:</p>
 happen to live in-tree to seed the registry, but nothing about the format requires it — a driver
 in its own git repository is identical in shape.</p>
 <h2 id="what-ships-today">What ships today<a class="headerlink" href="#what-ships-today" title="Permanent link">&para;</a></h2>
+<p>Thirteen libraries, and they are not all the same kind of thing. Half are parts you can buy; the
+other half is application machinery that happens not to belong in the framework core.</p>
+<p><strong>Parts on a bus</strong> — a driver per device, each templated on <code>I2cBus</code>/<code>SpiBus</code>:</p>
 <table>
 <thead>
 <tr>
@@ -1809,14 +2057,84 @@ in its own git repository is identical in shape.</p>
 <tr>
 <td><code>ssd1306</code></td>
 <td>display</td>
-<td>Solomon Systech SSD1306 128×64 OLED (I²C)</td>
+<td>Solomon Systech SSD1306 128×64 monochrome OLED (I²C)</td>
 </tr>
 </tbody>
 </table>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>list<span class="w">                 </span><span class="c1"># browse the registry</span>
+<p><strong>Talking to something else</strong> — protocol stacks over any byte link:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Category</th>
+<th>Reach for it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>modbus</code> 0.5.0</td>
+<td>protocol</td>
+<td>you need Modbus RTU. Sans-IO core, a blocking client (master) and a poll-driven server (slave) over any <code>ByteStream</code> — including a UART behind a <a href="../dma/">DMA ring</a>, which is what its emulation leg runs.</td>
+</tr>
+<tr>
+<td><code>bus</code> 0.3.0</td>
+<td>service</td>
+<td>you want the parts of your firmware to stop calling each other directly. Typed zero-heap pub/sub — per-type topics, private subscriber queues you poll or <code>co_await</code>, latest-value watch cells, and a bridge that extends a topic over a byte link to a second board. <a href="../bus/">Its own guide</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Application machinery</strong> — no device, no wire, just the arithmetic and state that every
+control-loop product ends up rewriting badly:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Category</th>
+<th>Reach for it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ntc</code> 0.1.0</td>
+<td>sensor</td>
+<td>you have a thermistor on a divider. Divider → resistance → temperature (beta, fixed or ln-linear), with open- and short-circuit detection.</td>
+</tr>
+<tr>
+<td><code>meter</code> 0.1.0</td>
+<td>control</td>
+<td>you are measuring AC. RMS, real power as the mean of the instantaneous product, apparent power, power factor and <code>int64</code> energy — single pass, no buffers.</td>
+</tr>
+<tr>
+<td><code>pll</code> 0.1.0</td>
+<td>control</td>
+<td>you must lock to a grid. A SOGI-PLL giving phase, frequency and amplitude from one single-phase voltage sample, with a constant-rotation phase advance for computation delay.</td>
+</tr>
+<tr>
+<td><code>protect</code> 0.1.0</td>
+<td>control</td>
+<td>something must trip. Physical thresholds folded to raw ADC counts <strong>at compile time</strong>, per-limit debounce and hysteresis, and a latched fault word that records every simultaneous fault rather than only the first.</td>
+</tr>
+<tr>
+<td><code>param</code> 0.1.0</td>
+<td>service</td>
+<td>your product has settings. A descriptor table with O(1) reads in the tick, strict or clamped writes, and torn-write-safe ping-pong persistence with deferred commit.</td>
+</tr>
+</tbody>
+</table>
+<p>Those last five are the toolkit a motor-drive or inverter application needs above
+<a href="../pwm/">the PWM bridge</a>, and they are the reason this page is worth reading even if you never
+attach a sensor.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>list<span class="w">                 </span><span class="c1"># browse the registry — the table above, generated</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>info<span class="w"> </span>sht31<span class="w">           </span><span class="c1"># manifest + the concepts it requires</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gp">$ </span>alloy<span class="w"> </span>lib<span class="w"> </span>add<span class="w"> </span>sht31<span class="w">            </span><span class="c1"># vendor into ./libs and wire the build</span>
 </span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">What is proven about them</p>
+<p>All thirteen are <strong>host-tested</strong> against the scriptable doubles, and <code>modbus</code> and <code>bus</code>
+additionally have emulation legs — <code>bus</code> is also the one library in this project with bench
+numbers from a real board. Nothing else here has met a physical part. See
+<a href="../../reference/proof/#libraries">What is proven, and how</a>.</p>
+</div>
 <p><code>add</code> copies the library into <code>./libs/&lt;name&gt;</code>, records it in your <code>alloy.toml</code> under <code>[libs]</code>,
 and the build picks up the include directory. It is <em>vendored</em>, not fetched at build time: your
 project keeps building when a registry entry moves.</p>
@@ -1832,16 +2150,17 @@ project keeps building when a registry entry moves.</p>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sht31&quot;</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Sensirion SHT3x temperature + humidity sensor (I2C)&quot;</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sensor&quot;</span><span class="w">          </span><span class="c1"># sensor | display | actuator | storage | io | comms | rtc</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">[requires]</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">concepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;I2cBus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DelayNs&quot;</span><span class="p">]</span><span class="w">   </span><span class="c1"># the contracts the driver constrains on</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">alloy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=0.1&quot;</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">[headers]</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;include&quot;</span><span class="p">]</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;alloy::lib&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sensor&quot;</span><span class="w">          </span><span class="c1"># sensor · display · rtc · actuator · storage · io · comms</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">                             </span><span class="c1"># · service · control · protocol</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">[requires]</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">concepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;I2cBus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DelayNs&quot;</span><span class="p">]</span><span class="w">   </span><span class="c1"># the contracts the driver constrains on</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">alloy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=0.1&quot;</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="k">[headers]</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;include&quot;</span><span class="p">]</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="n">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;alloy::lib&quot;</span>
 </span></code></pre></div>
 <p>Three habits separate a good alloy driver from a port of vendor sample code:</p>
 <ul>

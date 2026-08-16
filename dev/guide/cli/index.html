@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -649,6 +649,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -709,6 +715,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -944,6 +1034,8 @@
       
         
       
+        
+      
     
     
     
@@ -1004,6 +1096,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1472,6 +1592,8 @@
       
         
       
+        
+      
     
     
     
@@ -1516,6 +1638,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1691,6 +1841,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1708,6 +1944,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2042,8 +2286,12 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 <td>flash/RAM of the last build against the chip's real memories, and whether the image fits its update slot</td>
 </tr>
 <tr>
-<td><code>alloy matrix [--boards a,b]</code> — <strong>JSON</strong></td>
+<td><code>alloy matrix [--boards &lt;id&gt;,&lt;id&gt;]</code> — <strong>JSON</strong></td>
 <td>build this project for <strong>every</strong> board and table the result</td>
+</tr>
+<tr>
+<td><code>alloy symbols [--board &lt;id&gt;]</code></td>
+<td>what is in the last build and <strong>where</strong> — sections with their load vs run addresses, the largest symbols, and any <code>[budget]</code> in <code>alloy.toml</code></td>
 </tr>
 <tr>
 <td><code>alloy frame-audit</code></td>
@@ -2084,6 +2332,23 @@ marked <strong>JSON</strong> emit a versioned envelope on stdout for editors and
 </span></code></pre></div>
 <p>A board that fails to build does not end the sweep — it gets a row with the reason, so one table
 tells you what fits where.</p>
+<p><code>alloy symbols</code> answers the two questions <code>size</code> cannot: <em>where</em> does a section live, and <em>what</em>
+is filling it. The load address (<code>lma</code>) and the run address (<code>vma</code>) differ for anything copied at
+startup, which is how you see that a section is not loaded at all:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>symbols
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">section          size      vma        lma</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">.isr_vector         192  0x08000000 0x08000000</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">.text              2016  0x080000c0 0x080000c0</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="go">.bss                340  0x20000000 0x080008a0  zeroed/reserved, not loaded</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">.noinit              36  0x20000154 0x080008a0  zeroed/reserved, not loaded</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="go">._heap_stack       2048  0x20000178 0x080008a0  zeroed/reserved, not loaded</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="go">largest symbols:</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">   312  0x08000164  .text        main</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">   266  0x080006e4  .text        __udivsi3</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">   196  0x080005c4  .text        Reset_Handler</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">   192  0x08000000  .isr_vector  g_vector_table</span>
+</span></code></pre></div>
 <h2 id="configure-a-board">Configure a board<a class="headerlink" href="#configure-a-board" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2100,6 +2365,10 @@ tells you what fits where.</p>
 <tr>
 <td><code>alloy board-validate [&lt;id&gt;] [--file f\|-]</code> — <strong>JSON</strong></td>
 <td>every problem located, with the pins that <em>would</em> work</td>
+</tr>
+<tr>
+<td><code>alloy product-validate [&lt;name&gt;]</code> — <strong>JSON</strong></td>
+<td>the same, for a product TOML: every problem located, with a way out — see <a href="../products/">Products</a></td>
 </tr>
 <tr>
 <td><code>alloy board-clone &lt;src&gt; &lt;new&gt;</code></td>
@@ -2129,14 +2398,34 @@ checks a configuration <em>before</em> writing it. These verbs are what the
 <h3 id="the-whole-clock-not-just-the-pll">The whole clock, not just the PLL<a class="headerlink" href="#the-whole-clock-not-just-the-pll" title="Permanent link">&para;</a></h3>
 <p><code>--graph</code> answers the question that comes after "what frequency": where the clock goes. Bus
 prescalers, and the kernel clock each peripheral is actually fed — with what that implies.</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>clock<span class="w"> </span>--chip<span class="w"> </span>st/stm32f767<span class="w"> </span>--graph<span class="w"> </span>--profile<span class="w"> </span>pll_180mhz
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">SYSCLK 180 MHz → AHB ÷1 180 MHz → eth</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">                 APB ÷4  45 MHz → usart3   115200 baud → 115089 (0.10% error)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">                 APB2 ÷2 90 MHz</span>
+<p>The verb emits <strong>JSON only</strong> — there is no human-readable renderer and no <code>--text</code> flag. It is
+built for the <a href="../vscode/">VS Code clock view</a> and for scripts; read it with <code>jq</code> or pipe it
+through a few lines of Python.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>clock<span class="w"> </span>--chip<span class="w"> </span>st/stm32f767<span class="w"> </span>--graph<span class="w"> </span>--profile<span class="w"> </span>pll_180mhz
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="go">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="go">  &quot;schema&quot;: &quot;alloy.clock_graph.v1&quot;,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">  &quot;chip&quot;: &quot;st/stm32f767&quot;,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="go">  &quot;profile&quot;: &quot;pll_180mhz&quot;,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="go">  &quot;nodes&quot;: [</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="go">    { &quot;name&quot;: &quot;sysclk&quot;, &quot;label&quot;: &quot;SYSCLK&quot;,        &quot;hz&quot;: 180000000, &quot;parent&quot;: null,     &quot;divider&quot;: null },</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="go">    { &quot;name&quot;: &quot;ahb&quot;,    &quot;label&quot;: &quot;AHB · HCLK&quot;,    &quot;hz&quot;: 180000000, &quot;parent&quot;: &quot;sysclk&quot;, &quot;divider&quot;: 1 },</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="go">    { &quot;name&quot;: &quot;apb&quot;,    &quot;label&quot;: &quot;APB · PCLK&quot;,    &quot;hz&quot;:  45000000, &quot;parent&quot;: &quot;ahb&quot;,    &quot;divider&quot;: 4 },</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="go">    { &quot;name&quot;: &quot;apb2&quot;,   &quot;label&quot;: &quot;APB2 · PCLK2&quot;,  &quot;hz&quot;:  90000000, &quot;parent&quot;: &quot;ahb&quot;,    &quot;divider&quot;: 2 }</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="go">  ],</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="go">  &quot;consumers&quot;: [</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="go">    { &quot;peripheral&quot;: &quot;eth&quot;,    &quot;class&quot;: &quot;eth&quot;,  &quot;node&quot;: &quot;ahb&quot;,  &quot;hz&quot;: 180000000, &quot;notes&quot;: [] },</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="go">    { &quot;peripheral&quot;: &quot;usart3&quot;, &quot;class&quot;: &quot;uart&quot;, &quot;node&quot;: &quot;apb&quot;,  &quot;hz&quot;:  45000000,</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="go">      &quot;notes&quot;: [ { &quot;level&quot;: &quot;info&quot;, &quot;text&quot;: &quot;115200 baud → 115089 (0.10% error)&quot; } ] }</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="go">  ],</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="go">  &quot;unstated&quot;: [&quot;adc123_common&quot;, &quot;dma1&quot;, &quot;dma2&quot;, &quot;flash&quot;, &quot;gpioa&quot;, &quot;…&quot;, &quot;iwdg&quot;, &quot;rcc&quot;]</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="go">}</span>
 </span></code></pre></div>
-<p>The baud error is computed with the driver's own rounding, so it is the error you will measure, not
-a different one. Peripherals whose feed the chip data does not state (an independent watchdog on its
-own oscillator) are listed as unplaceable rather than left out.</p>
+<p>Two fields carry the value. The <code>notes</code> on a consumer are computed with <strong>the driver's own
+rounding</strong>, so a baud error there is the error you will measure, not a different one. And
+<code>unstated</code> is the honest half: peripherals whose feed the chip data does not state (an
+independent watchdog on its own oscillator, a block whose kernel-clock node was never curated)
+are <strong>listed as unplaceable rather than left out</strong>, so a consumer missing from the graph is
+always visible as a gap in the data rather than as silence.</p>
 <h2 id="emulate">Emulate<a class="headerlink" href="#emulate" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2152,11 +2441,21 @@ own oscillator) are listed as unplaceable rather than left out.</p>
 </tr>
 </tbody>
 </table>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>emulate<span class="w"> </span>--board<span class="w"> </span>nucleo_f722ze
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="go">alloy uart_echo ready</span>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>emulate<span class="w"> </span>--board<span class="w"> </span>nucleo_f722ze
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">platform: /…/.alloy/build-tree/nucleo_f722ze/out/nucleo_f722ze.repl</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="go">script:   /…/.alloy/build-tree/nucleo_f722ze/out/nucleo_f722ze.resc</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">uart:     sysbus.usart3</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">…Renode&#39;s own INFO/WARNING lines…</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="go">&lt;your firmware&#39;s banner, then whatever it prints&gt;</span>
 </span></code></pre></div>
+<p>Those three header lines are the whole contract with Renode: they are also exactly what a
+<code>renode-test</code> invocation needs, which is why <code>--emit-only</code> prints them and stops. What follows
+them is your program's own output — the banner in the block above is whichever example you built,
+not something the CLI prints.</p>
 <p>The platform is generated from the same chip data the firmware compiles against, so the emulated
-memory map and UART cannot drift from the real target. See <a href="../emulation/">Emulation</a>.</p>
+memory map and UART cannot drift from the real target. <strong>It works for seven of the nine shipped
+boards</strong>; the two ESP32 boards have no Renode model and <code>alloy emulate</code> refuses them by name
+rather than booting a machine it cannot map. See <a href="../emulation/">Emulation</a>.</p>
 <h2 id="update-a-device-in-the-field">Update a device in the field<a class="headerlink" href="#update-a-device-in-the-field" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2184,8 +2483,8 @@ memory map and UART cannot drift from the real target. See <a href="../emulation
 </tr>
 </tbody>
 </table>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">3</span><span class="w"> </span>--sign<span class="w"> </span>keys/update.key<span class="w"> </span>-o<span class="w"> </span>app_b.img
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>update<span class="w"> </span>--image-b<span class="w"> </span>app_b.img<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0
+<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>image<span class="w"> </span>build/app.elf<span class="w"> </span>--set-version<span class="w"> </span><span class="m">3</span><span class="w"> </span>--sign<span class="w"> </span>keys/update.key<span class="w"> </span>-o<span class="w"> </span>app_b.img
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="gp">$ </span>alloy<span class="w"> </span>update<span class="w"> </span>--image-b<span class="w"> </span>app_b.img<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0
 </span></code></pre></div>
 <p>The full story — slots, trial boots, rollback, signing — is in
 <a href="../firmware-update/">Firmware update</a>.</p>
@@ -2212,9 +2511,9 @@ memory map and UART cannot drift from the real target. See <a href="../emulation
 </tr>
 </tbody>
 </table>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>provision<span class="w"> </span>write<span class="w"> </span>--serial<span class="w"> </span>ALY-0001-A7<span class="w"> </span>--mac<span class="w"> </span><span class="m">02</span>:1a:2b:3c:4d:5e
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">  identity page: 0x08007800 +2048 B (from the slot layout)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">verified by readback: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 0  batch 0</span>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>provision<span class="w"> </span>write<span class="w"> </span>--serial<span class="w"> </span>ALY-0001-A7<span class="w"> </span>--mac<span class="w"> </span><span class="m">02</span>:1a:2b:3c:4d:5e
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">  identity page: 0x08007800 +2048 B (from the slot layout)</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">verified by readback: serial &#39;ALY-0001-A7&#39;  mac 02:1a:2b:3c:4d:5e  hw_rev 0  batch 0</span>
 </span></code></pre></div>
 <p>Identity lives outside both firmware slots, so updates never touch it. <strong>Provision before
 <code>alloy secure apply</code></strong> — locking the part first makes this impossible. The whole production
@@ -2250,7 +2549,7 @@ point: read <a href="../security/">Security</a> before using <code>apply</code> 
 </thead>
 <tbody>
 <tr>
-<td><code>alloy ci-init [--boards a,b] [--all] [--force]</code></td>
+<td><code>alloy ci-init [--boards &lt;id&gt;,&lt;id&gt;] [--all] [--force]</code></td>
 <td>write a GitHub Actions workflow for this project</td>
 </tr>
 </tbody>
@@ -2258,9 +2557,9 @@ point: read <a href="../security/">Security</a> before using <code>apply</code> 
 <p>The framework's CI is what keeps every board building; a project built <em>on</em> alloy starts with
 nothing. This writes the equivalent — validate the boards it defines, then build its sources for
 each board it targets:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>ci-init
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">wrote .github/workflows/alloy.yml</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">  builds on: nucleo_g071rb</span>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>ci-init
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">wrote .github/workflows/alloy.yml</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">  builds on: nucleo_g071rb</span>
 </span></code></pre></div>
 <p>It targets what the project targets, not every supported board; <code>--all</code> widens it. Toolchain steps
 follow the same rule (an ARM-only project gets no ESP download) and are pinned to the versions alloy
@@ -2289,6 +2588,10 @@ itself is tested against.</p>
 <tr>
 <td><code>alloy lib add &lt;name&gt;</code></td>
 <td>vendor into <code>./libs</code> and wire the build</td>
+</tr>
+<tr>
+<td><code>alloy bus {validate,list,manifest}</code></td>
+<td>the wire contract for <code>libs/bus</code> datagrams, from <code>bus.toml</code> — see <a href="../bus/">The message bus</a></td>
 </tr>
 </tbody>
 </table>

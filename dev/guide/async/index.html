@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/guide/async/">
       
       
-        <link rel="prev" href="../peripherals/">
+        <link rel="prev" href="../dma/">
       
       
         <link rel="next" href="../libraries/">
@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -651,6 +651,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -714,6 +720,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -840,6 +930,17 @@
     <span class="md-ellipsis">
       
         SPI, I²C and DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awaiting-a-dma-ring-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Awaiting a DMA ring boundary
       
     </span>
   </a>
@@ -1170,6 +1271,8 @@
       
         
       
+        
+      
     
     
     
@@ -1230,6 +1333,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1506,6 +1637,8 @@
       
         
       
+        
+      
     
     
     
@@ -1550,6 +1683,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1725,6 +1886,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1742,6 +1989,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1827,6 +2082,17 @@
     <span class="md-ellipsis">
       
         SPI, I²C and DMA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awaiting-a-dma-ring-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Awaiting a DMA ring boundary
       
     </span>
   </a>
@@ -2024,7 +2290,7 @@ isn't a constant there.)</p>
 <h2 id="awaiting-drivers">Awaiting drivers<a class="headerlink" href="#awaiting-drivers" title="Permanent link">&para;</a></h2>
 <p>Drivers expose awaitables that suspend until the hardware is ready. The RX interrupt wakes the task
 in <strong>thread context</strong> (never inside the ISR), so your task body is ordinary code:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/uart.hpp&gt;</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: an excerpt of examples/async_io — `uart` and the enclosing task are the rest of that file</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/uart.hpp&gt;</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">uart_reader</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">uart</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rx</span><span class="p">{</span><span class="n">uart</span><span class="p">};</span><span class="w">             </span><span class="c1">// uart = board::debug_uart::open({...})</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
@@ -2041,7 +2307,7 @@ is busy is queued, not dropped. One task reads one UART at a time.</p>
 <p>The bus awaitables suspend for a whole <strong>transfer</strong>, not a byte — the driver's ISR moves every byte
 and the task resumes once, in thread context, when the last one lands. Compare <code>bus.write(...)</code>,
 which spins per byte.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/spi.hpp&gt;</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: four awaits side by side — `co_await` needs the enclosing task, see examples/async_sensor</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/spi.hpp&gt;</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/i2c.hpp&gt;</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/dma.hpp&gt;</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
@@ -2055,6 +2321,24 @@ which spins per byte.</p>
 </span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="k">co_await</span><span class="w"> </span><span class="n">dma</span><span class="p">.</span><span class="n">run</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_begin</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">uart</span><span class="p">.</span><span class="n">write_dma_end</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
 </span></code></pre></div>
+<h3 id="awaiting-a-dma-ring-boundary">Awaiting a DMA ring boundary<a class="headerlink" href="#awaiting-a-dma-ring-boundary" title="Permanent link">&para;</a></h3>
+<p><code>dma_waiter</code> parks a task on one transfer finishing. <code>ring_waiter</code> parks it on the <em>next
+hardware-stable half</em> of a continuously refilling <a href="../dma/">ring</a> — which is what a control loop
+wants, since the transfer never finishes:</p>
+<div class="language-cpp highlight"><span class="filename">illustrative: a task body — `co_await` needs the enclosing task, see examples/async_io</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloy/async/dma.hpp&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">alloy</span><span class="o">::</span><span class="n">dma</span><span class="o">::</span><span class="n">ring_storage</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="o">&gt;</span><span class="w"> </span><span class="n">storage</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adc</span><span class="p">.</span><span class="n">ring</span><span class="p">(</span><span class="n">storage</span><span class="p">);</span><span class="w">           </span><span class="c1">// outlives the task</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">alloy</span><span class="o">::</span><span class="n">async</span><span class="o">::</span><span class="n">ring_waiter</span><span class="w"> </span><span class="n">waiter</span><span class="p">{</span><span class="n">stream</span><span class="p">};</span><span class="w">  </span><span class="c1">// constructed after the ring, same lifetime</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">half</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">co_await</span><span class="w"> </span><span class="n">waiter</span><span class="p">.</span><span class="n">take</span><span class="p">();</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">process</span><span class="p">(</span><span class="n">half</span><span class="p">);</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>A consumer that awaits more slowly than halves go stable does <strong>not</strong> deadlock: it wakes on the
+next boundary, <code>take()</code> resynchronizes to the most recent half, and the skipped ones show up in
+<code>stream.missed()</code>. One waiter per ring, like every other waiter here.</p>
 <p>Three things are worth knowing before you use them:</p>
 <ul>
 <li><strong>The transfer starts inside the <code>co_await</code></strong>, after the task is parked. That closes the
@@ -2088,9 +2372,14 @@ flags the blocking loop waits for.</p>
 <td><code>uart_reader</code></td>
 <td><strong>Host unit tests only</strong>, against a <code>mock_uart</code> double. No example uses it and no emulation leg exercises it; it has never been observed running on a real ISA.</td>
 </tr>
+<tr>
+<td><code>ring_waiter</code></td>
+<td><strong>Host unit tests only</strong> — two cases in <code>tests/test_dma_ring.cpp</code>, covering that a parked task wakes once per boundary and that a slow consumer resynchronizes. No example uses it and no emulation leg exercises it.</td>
+</tr>
 </tbody>
 </table>
-<p>None of it has run on physical silicon — see the README's list of what is not done.</p>
+<p>None of it has run on physical silicon — see the README's list of what is not done, and
+<a href="../../reference/proof/">What is proven, and how</a> for the same split across the whole framework.</p>
 <h2 id="concurrency-doctrine-priorities-preemption-and-what-it-costs">Concurrency doctrine — priorities, preemption, and what it costs<a class="headerlink" href="#concurrency-doctrine-priorities-preemption-and-what-it-costs" title="Permanent link">&para;</a></h2>
 <p>Every evaluation asks the same two questions. The short answers:</p>
 <ul>
@@ -2117,7 +2406,7 @@ task that runs 5 ms without yielding. That is the bargain, in numbers.</p>
 <h3 id="how-these-numbers-were-obtained">How these numbers were obtained<a class="headerlink" href="#how-these-numbers-were-obtained" title="Permanent link">&para;</a></h3>
 <p>Everything below comes from one program — <code>examples/concurrency_probe</code> — run under Renode, gated in
 CI by <code>tests/emulation/concurrency_probe.robot</code>. Reproduce it with:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/concurrency_probe<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>emulate
+<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>examples/concurrency_probe<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>alloy<span class="w"> </span>emulate
 </span></code></pre></div>
 <ul>
 <li><strong>Board:</strong> <code>nucleo_g071rb</code> (STM32G071RB, <strong>Cortex-M0+</strong>, Thumb-1, 16 MHz HSI), built at the
@@ -2476,7 +2765,7 @@ idling and interrupt masking — lives behind the <code>alloy::arch</code> seam,
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../peripherals/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Peripherals">
+          <a href="../dma/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Streaming data without the CPU">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2486,7 +2775,7 @@ idling and interrupt masking — lives behind the <code>alloy::arch</code> seam,
                 Previous
               </span>
               <div class="md-ellipsis">
-                Peripherals
+                Streaming data without the CPU
               </div>
             </div>
           </a>

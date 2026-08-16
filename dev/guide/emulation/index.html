@@ -16,7 +16,7 @@
         <link rel="prev" href="../escape-hatch/">
       
       
-        <link rel="next" href="../firmware-update/">
+        <link rel="next" href="../rp2040-dma-hardware-checklist/">
       
       
         
@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -649,6 +649,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -709,6 +715,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -946,6 +1036,8 @@
       
         
       
+        
+      
     
     
     
@@ -1121,6 +1213,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1389,6 +1509,8 @@
       
         
       
+        
+      
     
     
     
@@ -1433,6 +1555,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1608,6 +1758,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1625,6 +1861,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1746,8 +1990,12 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">platform: /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.repl</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">script:   /…/.alloy/build-tree/nucleo_g071rb/out/nucleo_g071rb.resc</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">uart:     sysbus.usart2</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">alloy uart_echo ready</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">…Renode&#39;s own INFO/WARNING lines…</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">alloy uart_echo ready</span>
 </span></code></pre></div>
+<p>Those three header lines are the whole contract: they are also exactly what a <code>renode-test</code>
+invocation needs, which is why <code>--emit-only</code> prints them and stops. Everything after them is your
+program's output — the banner above is <code>examples/uart_echo</code>'s, not something the CLI prints.</p>
 <p>This is not a simulator of alloy's own making — it is <a href="https://renode.io">Renode</a> driving the
 real instruction set and real peripheral models. What alloy contributes is that <strong>the emulated
 machine is generated from the same chip data the firmware is compiled against</strong>, so the memory
@@ -1771,54 +2019,136 @@ reviewable change.</p>
 </div>
 <h2 id="what-emulation-is-used-for-here">What emulation is used for here<a class="headerlink" href="#what-emulation-is-used-for-here" title="Permanent link">&para;</a></h2>
 <p>An emulator that only answers "did it boot" is a compile check with extra steps. alloy uses it as
-a <strong>behaviour oracle</strong>: every leg below asserts on real UART output produced by real driver code,
-and every one of them is a <em>blocking</em> CI gate.</p>
+a <strong>behaviour oracle</strong>: every leg below asserts on real UART output produced by real driver code.</p>
+<p>Today that is <strong>17 robots run as 32 board+robot pairs</strong> — 24 blocking, 8 experimental — plus five
+oracle legs outside that matrix. A <strong>blocking</strong> leg fails the build when it goes red. An
+<strong>experimental</strong> leg is <code>continue-on-error</code>, which is how a new board+robot pair earns its place;
+read one as "somebody watched this pass", not as "this cannot regress unnoticed".</p>
 <table>
 <thead>
 <tr>
 <th>What is proven</th>
-<th>Boards</th>
+<th>Blocking on</th>
+<th>Also runs (experimental)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Boot to a banner</td>
 <td><code>nucleo_g071rb</code>, <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
+<td></td>
 </tr>
 <tr>
 <td>UART echo round-trip (RX path → loop → TX path)</td>
 <td><code>nucleo_g071rb</code></td>
+<td></td>
 </tr>
 <tr>
-<td>Two concurrent coroutines on the heap-less executor</td>
-<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
+<td>The three-layer peripheral surface — a portable <code>main.cpp</code> whose printed lines are chosen at <em>compile</em> time by generated facts</td>
+<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code></td>
+<td></td>
 </tr>
 <tr>
-<td>I²C driver conformance against a slave on the bus</td>
+<td>I²C driver conformance against a slave on the bus, run both polled <strong>and</strong> interrupt-driven</td>
 <td><code>nucleo_g071rb</code></td>
+<td></td>
 </tr>
 <tr>
-<td>SPI driver conformance</td>
+<td>SPI driver conformance, polled and interrupt-driven</td>
 <td><code>nucleo_g071rb</code></td>
+<td><code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code></td>
+</tr>
+<tr>
+<td><strong>SPI full duplex through the DMA pair</strong> — the channel index, the RX-before-TX arm order and the receive-request enable, each with a negative control</td>
+<td><code>nucleo_g071rb</code></td>
+<td><code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code></td>
 </tr>
 <tr>
 <td>ADC conversion of the <em>right</em> channel</td>
 <td><code>nucleo_g071rb</code></td>
+<td></td>
+</tr>
+<tr>
+<td>ADC analog window comparator</td>
+<td><code>nucleo_g0b1re</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>ADC DMA ring</strong> — half event before full event, full event delivered, ring wrapped, each half pinned to the fed millivolts</td>
+<td><code>nucleo_g071rb</code>, <code>nucleo_g0b1re</code></td>
+<td></td>
 </tr>
 <tr>
 <td>UART transmit driven by DMA</td>
+<td><code>nucleo_g071rb</code></td>
+<td><code>same70_xplained</code> (XDMAC completion IRQ, against a model this project generates)</td>
+</tr>
+<tr>
+<td><strong>Modbus RTU over <code>uart.rx_ring()</code></strong> — the robot plays a byte-level master with an independent CRC-16</td>
+<td><code>nucleo_g071rb</code></td>
+<td><code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>nucleo_f767zi</code></td>
+</tr>
+<tr>
+<td>Two concurrent coroutines on the heap-less executor</td>
+<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
+<td></td>
+</tr>
+<tr>
+<td>A coroutine parked on a <strong>peripheral</strong> is resumed by that peripheral's interrupt</td>
+<td><code>nucleo_g071rb</code></td>
+<td><code>nucleo_f767zi</code></td>
+</tr>
+<tr>
+<td>Microsecond timebase — a 100k-sample monotonicity sweep across tick boundaries, asserted in-band by the firmware itself</td>
+<td><code>nucleo_g071rb</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Concurrency-model conformance (the source of every number in <a href="../async/">Async</a>)</td>
+<td><code>nucleo_g071rb</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Pin interrupts</td>
+<td><code>nucleo_g071rb</code></td>
+<td></td>
+</tr>
+<tr>
+<td>The <a href="../crash-reports/">crash-report</a> loop across <strong>five real boots of one machine</strong></td>
+<td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code></td>
+<td></td>
+</tr>
+<tr>
+<td>The <a href="../bus/">message bus</a> against an independent peer implementation</td>
+<td></td>
 <td><code>nucleo_g071rb</code></td>
 </tr>
 <tr>
 <td>Bootloader verify → jump → recover</td>
 <td><code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code></td>
+<td></td>
 </tr>
 <tr>
 <td>The full <a href="../firmware-update/">update lifecycle</a> + signed-image oracle</td>
 <td><code>nucleo_g071rb</code> (SAME70 runs the install/confirm half)</td>
+<td></td>
+</tr>
+<tr>
+<td>Per-device <a href="../firmware-update/#per-device-identity">factory identity</a>, read by a real product firmware booted out of slot A</td>
+<td><code>nucleo_g071rb</code></td>
+<td></td>
+</tr>
+<tr>
+<td>The <a href="../products/">product</a> dimension — the firmware names its product <em>and</em> its strategy's own arithmetic ran</td>
+<td>one leg per product of a family</td>
+<td></td>
 </tr>
 </tbody>
 </table>
+<p>The rows in bold are the six phases of <a href="../dma/">DMA work</a>; how far each of them is <em>actually</em>
+witnessed differs by engine, and the DMA guide carries that table. The framework-wide version —
+every capability, not just the emulated ones — is
+<a href="../../reference/proof/">What is proven, and how</a>.</p>
 <p>Two of those deserve a note. The async legs cover <strong>two vendors</strong>, which is what turns "the
 coroutine runtime works" from a claim about ST silicon into a claim about the runtime. And the
 driver-conformance legs are designed so they cannot pass by coincidence: the ADC leg feeds
@@ -1828,12 +2158,16 @@ wrong channel prints the wrong counts (an unfed channel prints 0, verified), and
 conversion math.</p>
 <div class="admonition warning">
 <p class="admonition-title">Not every leg is equally strong</p>
-<p>The I²C, SPI, ADC and DMA legs run against <strong>Renode's own</strong> models, so they can genuinely
-contradict a misreading of the reference manual. (The ADC and DMA legs originally ran against
-models this project wrote; both were replaced by Renode's native models.) The SAME70-flash leg
-still runs against a model <em>this project wrote</em> — a self-authored model cannot falsify a
-mistake it shares with the driver. Treat that one as a consistency check, not independent
-proof.</p>
+<p>The I²C, SPI, ADC and STM32 DMA legs run against <strong>Renode's own</strong> models, so they can
+genuinely contradict a misreading of the reference manual. (The ADC and DMA legs originally
+ran against models this project wrote; both were replaced by Renode's native models.) The
+<strong>SAME70 flash and SAME70 XDMAC</strong> legs still run against models <em>this project wrote</em> — a
+self-authored model cannot falsify a mistake it shares with the driver. Treat those two as
+consistency checks, not independent proof.</p>
+<p>And the I²C <strong>DMA</strong> leg asserts a <em>bounded refusal</em>, not a transfer: it waits for the literal
+line <code>i2c dma: no transfer</code>, because Renode's model of that IP exposes no DMA request output
+at all, so nothing can ask the engine to move a byte. That is an honest leg, and it is not
+evidence that I²C DMA works.</p>
 <p>The ADC leg carries two vacuous spots, stated so nobody over-reads it: Renode's <code>STM32G0_ADC</code>
 does not implement <code>ISR.CCRDY</code> (the flag real silicon raises after a <code>CHSELR</code> update — in the
 1.16.1 source, bit 13 is reserved), so the generated <code>.resc</code> hooks the bit into every ISR
@@ -1883,29 +2217,56 @@ contains a space. Run it from a space-free directory (CI does; a checkout under
 peripheral gets no mapping, never a guessed one.</strong> <code>alloy emulate</code> refuses a board it cannot map
 rather than producing a platform that boots into fiction.</p>
 <p>Where a model is genuinely missing but the behaviour is worth proving, alloy ships its own —
-today only the SAME70 EEFC flash controller, an inline Python peripheral emitted into the
-platform file, written against the reference manual. (The STM32G0 ADC and DMA controllers used
-to be in that list; both now use Renode's native models, which is strictly better — a model this
-project wrote cannot falsify a mistake it shares with the driver.)</p>
+today the SAME70 EEFC flash controller and the SAME70 XDMAC, both emitted into the platform file
+and written against the reference manual. (The STM32G0 ADC and DMA controllers used to be in that
+list; both now use Renode's native models, which is strictly better — a model this project wrote
+cannot falsify a mistake it shares with the driver.) The XDMAC model is deliberately narrow: it
+<strong>refuses linked-list mode out loud</strong> rather than pretending to implement it, which is why the
+SAM E70 DMA ring has no leg and cannot honestly have one.</p>
 <p>Known gaps, so you do not go looking:</p>
 <ul>
 <li><strong>RP2040</strong> — this Renode ships no RP2040 peripheral models at all, so those boards are not
-  emulated. Not an alloy gap; it needs a newer Renode.</li>
+  emulated. Not an alloy gap; it needs a newer Renode.
+  <strong>And do not repair it half way.</strong> alloy <em>can</em> already emit an rp2040 platform — <code>cortex-m0</code>
+  and <code>UART.PL011</code> are generic types Renode has — and Renode reads 0 from unmapped addresses.
+  A DMA leg on such a platform would read the RP2040 DMA controller's <code>CTRL</code> as 0 (<code>BUSY</code> low,
+  no error bits) and its <code>TRANS_COUNT</code> as 0, and report a <strong>completed transfer over a
+  fully-written buffer</strong>, having moved nothing. That is a false green, not weak evidence.
+  What stands in for the missing model there is a host double
+  (<code>tests/test_rp_dma_v1_latch.cpp</code>, which proves register-sequence <em>intent</em> and nothing about
+  behaviour) plus an on-hardware sheet:
+  <a href="../rp2040-dma-hardware-checklist/">RP2040 DMA — the on-hardware checklist</a>, <strong>written and not
+  yet executed</strong>.</li>
 <li><strong>STM32G0 flash</strong> — there is no G0 flash-controller model, and the emitter deliberately does not
   invent one. The G0 bootloader legs therefore exercise everything <em>above</em> the flash driver while
   its own register sequences go unchecked. (The F7 legs use Renode's controller; the SAME70 legs
   use a model written here.)</li>
-<li><strong>PWM</strong> — nothing observable comes out over a UART, so there is no meaningful assertion to
-  make. Verified on silicon instead.</li>
+<li><strong>PWM and the motor bridge</strong> — the generated platform does not instantiate a timer at all, so
+  dead time, the break input and the main output enable are unmodelled: running the bridge
+  example under Renode logs the register writes and simulates none of their effects. There is no
+  meaningful assertion to make here, and <strong>there is no silicon result standing in for it either</strong>
+  — see <a href="../pwm/#what-has-actually-been-proven-and-what-has-not">what has and has not been proven</a>
+  before you power a stage.</li>
 <li><strong>I²C bus scan</strong> — a zero-length write (a valid probe on real silicon) is not implemented by
   Renode's I²C model, so the conformance test does a one-byte write plus read instead.</li>
 </ul>
 <h2 id="the-limit-of-the-claim">The limit of the claim<a class="headerlink" href="#the-limit-of-the-claim" title="Permanent link">&para;</a></h2>
 <p>Emulation proves that driver logic drives a <em>faithful model</em> of the peripheral. It does not prove
-timing against real silicon, analog behaviour, or anything a datasheet erratum covers. The
-framework's hardware-validated families are marked as such in <a href="../boards/">Boards</a>; everything
-proven only in emulation says so where it is documented — including the three flash drivers
-behind <a href="../firmware-update/">firmware update</a>.</p>
+timing against real silicon, analog behaviour, or anything a datasheet erratum covers.</p>
+<p>It is also bounded by what Renode models at all, which is narrower than it looks. <code>alloy
+chip-status &lt;chip&gt;</code> reports it per part: on the STM32G0B1RE 23 of 49 curated peripherals have a
+model, on the SAM E70 <strong>3 of 16</strong>, on the RP2040 <strong>1 of 10</strong>, and on the ESP32 <strong>none</strong>. On the ST
+side the gap has a shape worth knowing — a generated platform instantiates no ST timer of any
+kind, and none of CRC, DAC, RTC, LPUART, the device UID, FDCAN or the G0 flash controller either.</p>
+<p>That column is alloy's model table, not the outer limit of Renode: for the timers, the RTC and
+FDCAN, Renode 1.16.1 ships a model that its own stock <code>stm32g0.repl</code> wires up, and alloy declines
+to emit it. <a href="../../reference/proof/#where-no-model-exists-at-all">What is proven, and how</a> splits
+the two cases, because "nothing to instantiate" and "we chose not to" are different answers to
+"could this ever get a leg?".</p>
+<p>Which capability rests on which of those, and what a green leg does <em>not</em> say, is collected in
+one place: <strong><a href="../../reference/proof/">What is proven, and how</a></strong>. Where a peripheral has been run
+on real hardware, the page that owns it says so in its own voice — those are maintainer
+self-reports, not automated results, and there is no hardware CI runner.</p>
 <p>That boundary is the point. Emulation makes the <em>logic</em> a gate that runs on every commit, so the
 scarce resource — time with real hardware — is spent on the things only real hardware can answer.</p>
 
@@ -1962,13 +2323,13 @@ scarce resource — time with real hardware — is spent on the things only real
         
         
           
-          <a href="../firmware-update/" class="md-footer__link md-footer__link--next" aria-label="Next: Firmware update over UART">
+          <a href="../rp2040-dma-hardware-checklist/" class="md-footer__link md-footer__link--next" aria-label="Next: RP2040 DMA — the on-hardware checklist">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Firmware update over UART
+                RP2040 DMA — the on-hardware checklist
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../architecture/" class="md-tabs__link">
+        <a href="../proof/" class="md-tabs__link">
           
   
   
@@ -649,6 +649,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -709,6 +715,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -944,6 +1034,8 @@
       
         
       
+        
+      
     
     
     
@@ -1004,6 +1096,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1282,6 +1402,8 @@
       
         
       
+        
+      
     
     
     
@@ -1329,6 +1451,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1736,6 +1886,95 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1753,6 +1992,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2042,18 +2289,28 @@ contractual support agreement.</p>
 <hr />
 <h2 id="the-public-surface">The public surface<a class="headerlink" href="#the-public-surface" title="Permanent link">&para;</a></h2>
 <h3 id="tier-1-application-headers">Tier 1 — application headers<a class="headerlink" href="#tier-1-application-headers" title="Permanent link">&para;</a></h3>
-<p>Headers under <code>src/alloy/</code> that application code includes directly. These are
-the ones the in-repo examples use, which is also how the list was built:</p>
+<p>Headers under <code>src/alloy/</code> that application code reaches — whether it includes
+them itself or gets them through <code>alloy/board.hpp</code>. The list is every
+application-facing header that ships today; it is checked against
+<code>ls src/alloy/*.hpp</code> rather than against memory, because it drifted once by
+ten names when the peripheral surface grew:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>alloy/board.hpp     alloy/time.hpp      alloy/delay.hpp     alloy/gpio.hpp
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>alloy/uart.hpp      alloy/i2c.hpp       alloy/spi.hpp       alloy/adc.hpp
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>alloy/dac.hpp       alloy/pwm.hpp       alloy/can.hpp       alloy/rtc.hpp
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>alloy/dma.hpp       alloy/irq.hpp       alloy/wdt.hpp       alloy/flash.hpp
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>alloy/log.hpp       alloy/sched.hpp     alloy/fault.hpp     alloy/secure.hpp
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>alloy/ota.hpp       alloy/provision.hpp alloy/concepts.hpp  alloy/fastcode.hpp
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>alloy/async/{task,executor,delay,i2c,spi,dma}.hpp
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>alloy/net/{socket,http,lwip}.hpp        alloy/ota/{signed,uart_transport}.hpp
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>alloy/drivers/…     alloy/dsp/…         alloy/util/…
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>alloy/dac.hpp       alloy/pwm.hpp       alloy/bridge.hpp    alloy/encoder.hpp
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>alloy/tick.hpp      alloy/can.hpp       alloy/rtc.hpp       alloy/dma.hpp
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>alloy/irq.hpp       alloy/wdt.hpp       alloy/wwdt.hpp      alloy/flash.hpp
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>alloy/crc.hpp       alloy/uid.hpp       alloy/log.hpp       alloy/sched.hpp
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>alloy/fault.hpp     alloy/secure.hpp    alloy/ota.hpp       alloy/provision.hpp
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>alloy/concepts.hpp  alloy/fastcode.hpp
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>alloy/async/{task,executor,delay,uart,i2c,spi,dma,event,periodic,waiter}.hpp
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>alloy/net/{socket,http,lwip}.hpp
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>alloy/ota/{signed,uart_transport,crc32}.hpp
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>alloy/drivers/…     alloy/dsp/…         alloy/util/…        alloy/control/…
 </span></code></pre></div>
+<p><code>alloy/bridge.hpp</code>, <code>alloy/encoder.hpp</code> and <code>alloy/tick.hpp</code> are the timer's
+three non-PWM <a href="../peripheral-surface/#personalities-a-block-runs-in-one-mode-at-a-time">personalities</a>;
+<code>alloy/wwdt.hpp</code> is a separate role from <code>alloy/wdt.hpp</code>, not a mode of it.
+All four are taught in the guide and all four are Tier 1.</p>
 <p><code>alloy/board.hpp</code>, <code>alloy/device.hpp</code>, <code>alloy/product.hpp</code>,
 <code>alloy/product_nvm.hpp</code>, <code>alloy/slots.hpp</code>, <code>alloy/ota_key.hpp</code> and
 <code>alloy/bus_messages.hpp</code> have no file in <code>src/alloy</code> at all — codegen writes
@@ -2203,12 +2460,15 @@ has already changed schema since the tag while still calling itself <code>0.3.0<
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">generated 20 file(s) -&gt; .alloy/generated/nucleo_g071rb</span>
 </span></code></pre></div>
 <p>Nothing complained. The generated header now says:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">offsetof</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span><span class="w"> </span><span class="n">ODR</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x40</span><span class="p">);</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: one line of a generated register header, quoted</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">offsetof</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span><span class="w"> </span><span class="n">ODR</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x40</span><span class="p">);</span>
 </span></code></pre></div>
 <p>Every write to that pin now lands on a different register. The firmware builds,
 flashes, and behaves differently on the bench with no version, no warning and
 no diff in your own repository.</p>
 <h3 id="the-pin">The pin<a class="headerlink" href="#the-pin" title="Permanent link">&para;</a></h3>
+<p>The path, the digest and the file count below are <strong>an example</strong> — yours will
+differ, and a digest that does not match this one is not a sign that anything
+is wrong. Only the <em>shape</em> is the claim.</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>alloy<span class="w"> </span>devices
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">database  /opt/alloy-devices</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">version   0.3.0</span>

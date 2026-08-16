@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/peripheral-surface/">
       
       
-        <link rel="prev" href="../chip-coverage/">
+        <link rel="prev" href="../safety/">
       
       
-        <link rel="next" href="../error-handling/">
+        <link rel="next" href="../../design/dma-streams/">
       
       
         
@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../architecture/" class="md-tabs__link">
+        <a href="../proof/" class="md-tabs__link">
           
   
   
@@ -649,6 +649,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -709,6 +715,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -944,6 +1034,8 @@
       
         
       
+        
+      
     
     
     
@@ -1004,6 +1096,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1282,6 +1402,8 @@
       
         
       
+        
+      
     
     
     
@@ -1329,6 +1451,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2247,6 +2397,842 @@
                 
   
   
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-layers-and-the-name-tells-you-which" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three layers, and the name tells you which
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layer-1-the-portable-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1 — the portable config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Layer 1 — the portable config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-admits-values-not-only-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1 admits values, not only fields
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Layer 1 admits values, not only fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-spellings-of-one-fact-cannot-both-be-typed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two spellings of one fact cannot both be typed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layer-2-optsinst-where-absence-is-the-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 2 — opts&lt;Inst&gt;, where absence is the capability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Layer 2 — opts&lt;Inst&gt;, where absence is the capability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#every-layer-2-knob-has-a-scope-and-v1-never-asked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every Layer-2 knob has a SCOPE, and v1 never asked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-naming-rule-that-makes-layer-2-portable-enough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The naming rule that makes Layer 2 portable enough
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#degree-a-generated-number-where-0-means-absent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Degree — a generated number, where 0 means absent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Degree — a generated number, where 0 means absent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#degree-that-is-a-shape-not-a-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Degree that is a shape, not a quantity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#personalities-a-block-runs-in-one-mode-at-a-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Personalities: a block runs in one mode at a time
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Personalities: a block runs in one mode at a time">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-stops-a-program-binding-two-personalities-to-one-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What stops a program binding two personalities to one block
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-keys-because-a-peripheral-is-not-always-the-contested-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two keys, because a peripheral is not always the contested resource
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-facade-claims-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which facade claims what
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-two-halves-cannot-drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two halves cannot drift
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sub-resources-a-thing-inside-the-peripheral-with-its-own-lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sub-resources: a thing inside the peripheral with its own lifetime
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sub-resources: a thing inside the peripheral with its own lifetime">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ask-what-you-actually-got" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ask what you actually got
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failure modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Failure modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-failures-that-are-honestly-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The failures that are honestly runtime
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The rule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-checklist-questions-110" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The checklist (questions 1–10)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#question-0-what-does-the-database-already-know" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Question 0: what does the database already know?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Question 0: what does the database already know?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#questions-15-what-kind-of-thing-is-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions 1–5: what kind of thing is it?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Questions 1–5: what kind of thing is it?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-kind-the-five-questions-have-no-row-for-a-second-block-that-would-fill-a-role-alloy-already-has" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The kind the five questions have no row for: a second BLOCK that would fill a role alloy already has
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#questions-610-which-layer-does-the-knob-live-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions 6–10: which layer does the knob live in?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-a-maximum-comes-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where a maximum comes from
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-transfer-axis-and-the-zephyr-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The transfer axis, and the Zephyr answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-second-axis-who-knows-the-fact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The second axis: who knows the fact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-v3-does-not-decide-and-what-it-has-not-seen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the checklist does not decide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the checklist does not decide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-questions-unchanged-by-the-three-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open questions, unchanged by the three builds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-yet-seen-and-therefore-not-decided" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not yet seen — and therefore not decided
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-data-model-change-would-have-to-say" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a data-model change would have to say
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it costs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What it costs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unmeasured" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unmeasured
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-gives-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it gives up
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First: UART
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-actually-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it actually cost
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What it actually cost">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-deep-configuration-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a deep configuration costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-revision-2-cost-on-top-of-that" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What revision 2 cost on top of that
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-proven-and-how" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is proven, and how
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is proven, and how">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added-at-revision-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added at revision 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#added-at-revision-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added at revision 3 — where each clause of the rule comes from
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#added-by-the-three-built-peripherals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added by the three BUILT peripherals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Added by the three BUILT peripherals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#portability-all-three-examples-every-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portability: all three examples, every board
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cost-zero-for-unused-features-measured-to-the-byte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cost: "zero for unused features", measured to the byte
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history-how-this-rule-was-refuted-twice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History: how this rule was refuted twice
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="History: how this rule was refuted twice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v1-derived-from-uart-and-the-five-things-the-code-changed-about-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1, derived from UART, and the five things the code changed about it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-three-counterexamples-answered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three counterexamples that killed v1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-three-holes-two-now-closed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The holes: four combinations this page did not anticipate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stressing-v2-on-three-features-it-was-not-built-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v2, and the features it was stressed against
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v2, and the features it was stressed against">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-spi-slave-mode-survives-with-one-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. SPI slave mode — survives, with one refinement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-adc-injected-channels-broke-v2-and-is-still-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ADC injected channels — broke v2, and is still open
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-timer-complementary-outputs-with-dead-time-breaks-v2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Timer complementary outputs with dead time — broke v2, and is still open
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -2266,6 +3252,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3023,6 +4017,20 @@
 
 
 <h1 id="the-peripheral-surface">The peripheral surface<a class="headerlink" href="#the-peripheral-surface" title="Permanent link">&para;</a></h1>
+<!-- docgate: ungated — a design record, not a guide: its fences quote driver internals and register-file shapes, and several sketch an API being argued about rather than one that ships. Nothing here is a paste target -->
+
+<div class="admonition note">
+<p class="admonition-title">A design record, not a guide</p>
+<p>This page decided the shape of alloy's peripheral API and then kept the
+argument, including the parts that were wrong — you will find a section
+titled <em>how this rule was refuted twice</em> and another naming the three
+counterexamples that killed the first version. That is deliberate and it is
+what makes it useful to an implementer; it is not what you want if you are
+trying to <em>use</em> a peripheral. For that, start at
+<strong><a href="../../guide/peripherals/">Peripherals</a></strong>. Its numbers are also a snapshot
+of the day it was written — the live ones are in
+<a href="../chip-coverage/">Chip coverage</a>.</p>
+</div>
 <p>Alloy's lead chip just went from 23 to 65 peripherals, 28 of them uncurated, and
 the drivers and config surface for the rest are about to be written. This page
 decides the <em>shape</em> of that surface first, because deciding it after 28 drivers
@@ -6144,7 +7152,7 @@ makes it loud, it does not make it impossible.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../chip-coverage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Chip coverage">
+          <a href="../safety/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Safety posture">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -6154,20 +7162,20 @@ makes it loud, it does not make it impossible.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Chip coverage
+                Safety posture
               </div>
             </div>
           </a>
         
         
           
-          <a href="../error-handling/" class="md-footer__link md-footer__link--next" aria-label="Next: Error handling">
+          <a href="../../design/dma-streams/" class="md-footer__link md-footer__link--next" aria-label="Next: DMA streams — design">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Error handling
+                DMA streams — design
               </div>
             </div>
             <div class="md-footer__button md-icon">

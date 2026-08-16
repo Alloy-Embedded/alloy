@@ -357,7 +357,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/architecture/" class="md-tabs__link">
+        <a href="../../reference/proof/" class="md-tabs__link">
           
   
   
@@ -651,6 +651,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -714,6 +720,90 @@
     
   
     Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
   
 
     
@@ -1109,6 +1199,8 @@
       
         
       
+        
+      
     
     
     
@@ -1169,6 +1261,34 @@
     
   
     Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
   
 
     
@@ -1445,6 +1565,8 @@
       
         
       
+        
+      
     
     
     
@@ -1489,6 +1611,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1664,6 +1814,92 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../design/dma-streams/" class="md-nav__link">
         
@@ -1681,6 +1917,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1909,7 +2153,7 @@ part of the device API).</p>
 <code>&lt;BLOCK&gt;_&lt;REG&gt;_&lt;FIELD&gt;_Pos</code> constants. The two name spaces do not intersect,
 so the include order does not matter. <code>examples/escape_hatch/src/main.cpp</code>
 proves the harder direction:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Deliberately FIRST: if any vendor macro collided, this is what would break.</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: `vendor_device.h` is a CubeMX header this repository does not ship — bringing your own is the point of the page</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Deliberately FIRST: if any vendor macro collided, this is what would break.</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;vendor_device.h&quot;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;vendor_hal.h&quot;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
@@ -1927,7 +2171,7 @@ use it; nothing in the argument depends on the stand-in.</p>
 </div>
 <h3 id="a-bonus-you-get-for-free">A bonus you get for free<a class="headerlink" href="#a-bonus-you-get-for-free" title="Permanent link">&para;</a></h3>
 <p>Both worlds carry the same constants, so make them agree at compile time:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">GPIOA_BASE</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">,</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: `GPIOA_BASE` comes from the vendor header above, not from alloy</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">GPIOA_BASE</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">,</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">              </span><span class="s">&quot;vendor header and alloy-devices disagree about GPIOA&quot;</span><span class="p">);</span>
 </span></code></pre></div>
 <p>If your CMSIS header and the chip database ever disagreed about where a
@@ -1943,7 +2187,7 @@ so nothing has to be ported.</p>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The bridge from C++ is one cast, and the address comes from the database:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">vendor_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">GPIO_TypeDef</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">);</span>
+<div class="language-cpp highlight"><span class="filename">illustrative: `GPIO_TypeDef` and `VENDOR_GPIO_TogglePin` are the vendor HAL&#x27;s, not alloy&#x27;s</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">vendor_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">GPIO_TypeDef</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">alloy</span><span class="o">::</span><span class="n">dev</span><span class="o">::</span><span class="n">gpioa</span><span class="p">.</span><span class="n">base</span><span class="p">);</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">VENDOR_GPIO_TogglePin</span><span class="p">(</span><span class="n">vendor_port</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
 </span></code></pre></div>
 <p>Configure the pin with alloy (<code>board::led</code>), poke it with the vendor function,

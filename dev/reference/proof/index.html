@@ -1,0 +1,2854 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="One portable main.cpp for any microcontroller — a from-scratch C++23 embedded framework.">
+      
+      
+      
+        <link rel="canonical" href="https://alloy-embedded.github.io/alloy/dev/reference/proof/">
+      
+      
+        <link rel="prev" href="../../guide/vscode/">
+      
+      
+        <link rel="next" href="../architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>What is proven, and how - alloy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#what-is-proven-and-how" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="alloy" class="md-header__button md-logo" aria-label="alloy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            alloy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              What is proven, and how
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Follow system theme"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Follow system theme" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Alloy-Embedded/alloy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Alloy-Embedded/alloy
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guide/peripherals/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guide/emulation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ship it
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guide/cli/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tools
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="alloy" class="md-nav__button md-logo" aria-label="alloy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 17H7V7h10m4 4V9h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9v2H7c-1.11 0-2 .89-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2m-6 2h-2v-2h2m2-2H9v6h6z"/></svg>
+
+    </a>
+    alloy
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Alloy-Embedded/alloy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Alloy-Embedded/alloy
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/portable-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portable code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/boards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/peripherals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PWM and motor control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/adc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading an analog input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/dma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming data without the CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async tasks (coroutines)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Driver libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The bus — services talking in messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/adding-a-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding a board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing your firmware on a laptop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/escape-hatch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The escape hatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ship it
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ship it
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/emulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/rp2040-dma-hardware-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RP2040 DMA — the on-hardware checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware update over UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locking a production unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/crash-reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crash reports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/supply-chain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supply chain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The alloy CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/vscode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is proven, and how
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-five-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-actually-runs-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What actually runs, today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-peripherals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core peripherals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-without-the-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Streaming without the CPU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-and-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime and concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shipping-machinery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shipping machinery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-route-is-witnessed-by-halves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A route is witnessed by halves
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-ever-touched-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What has ever touched hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-no-model-exists-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where no model exists at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claims-this-page-cannot-settle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claims this page cannot settle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-any-of-this-yourself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking any of this yourself
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chip-coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../error-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Error handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API stability and support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety posture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design records (not guides)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design records (not guides)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripheral-surface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The peripheral surface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dma-streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DMA streams — design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-five-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-actually-runs-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What actually runs, today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-peripherals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core peripherals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-without-the-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Streaming without the CPU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-and-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime and concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shipping-machinery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shipping machinery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-route-is-witnessed-by-halves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A route is witnessed by halves
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-has-ever-touched-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What has ever touched hardware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-no-model-exists-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where no model exists at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claims-this-page-cannot-settle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claims this page cannot settle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-any-of-this-yourself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking any of this yourself
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="what-is-proven-and-how">What is proven, and how<a class="headerlink" href="#what-is-proven-and-how" title="Permanent link">&para;</a></h1>
+<p>Every other page in this documentation tells you how to use something. This one tells you
+whether to believe it.</p>
+<p>alloy's house rule is that <strong>a claim carries its evidence</strong>. That rule is easy to state and
+tedious to keep, and it is kept in the places where it matters most — driver headers name what
+they cannot prove, robot files name their own vacuous spots, <code>alloy chip-status</code> closes every run
+by reminding you what it is not. This page collects all of it in one table so you do not have to
+go looking, capability by capability, before you commit a product to it.</p>
+<div class="admonition danger">
+<p class="admonition-title">Read this before anything else on this page</p>
+<p><strong>Almost nothing in this framework has been run on physical silicon by this project.</strong>
+There is no hardware CI runner. There is one first-party silicon result — the
+<a href="../../guide/bus/">message bus</a> on a SAM E70 Xplained, with bench numbers — and two driver
+quirks that were <em>found</em> on that same board and are marked <code>SILICON-FOUND</code> in the headers
+that own them. Everything else in these tables is a laptop or an emulator talking.</p>
+<p>What that means if you are shipping a product: the register <strong>sequences</strong> here have been
+exercised hard, and by machines, on every push. What has not been exercised is the <strong>contact
+with the part</strong> — analog behaviour, timing against a real clock, errata, DMA request routing,
+and every claim a datasheet makes that no model implements. Budget a bring-up. The point of
+this page is to tell you where that budget should go, so you spend your scarce hardware time
+on the rows that are weak rather than re-checking the rows a machine already re-checks for
+you on every commit.</p>
+</div>
+<hr />
+<h2 id="the-five-words">The five words<a class="headerlink" href="#the-five-words" title="Permanent link">&para;</a></h2>
+<p>Used precisely, everywhere below and everywhere else in these docs.</p>
+<table>
+<thead>
+<tr>
+<th>Word</th>
+<th>What it means</th>
+<th>What it does <strong>not</strong> mean</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Renode-proven (blocking)</strong></td>
+<td>A CI leg boots real driver code on an emulated die and asserts on real UART output. A red run fails the build.</td>
+<td>It is not silicon. It is exactly as good as Renode's model of that peripheral, and several legs name their own blind spots.</td>
+</tr>
+<tr>
+<td><strong>Renode-proven (experimental)</strong></td>
+<td>The same, but the leg is <code>continue-on-error</code> while a new board+robot pair earns trust.</td>
+<td>A red run here does <strong>not</strong> fail the build. Read it as "someone watched it pass", not "it cannot regress unnoticed".</td>
+</tr>
+<tr>
+<td><strong>Host-tested</strong></td>
+<td>The real driver code runs over a memory-backed register double on a laptop. Proves sequence, ordering and bookkeeping.</td>
+<td>It proves nothing about whether the register map is right. A driver that writes the wrong address passes, because the double accepts whatever it is given.</td>
+</tr>
+<tr>
+<td><strong>Compiles only</strong></td>
+<td>The branch was selected at compile time and linked into an image.</td>
+<td>Nothing has observed it do anything.</td>
+</tr>
+<tr>
+<td><strong>Unwitnessed</strong></td>
+<td>A named claim that nothing available can reach — no model, no double, no leg.</td>
+<td>It is not known to be <strong>false</strong>. It is not known. The distinction matters: an unwitnessed claim is a place to spend bench time, not a bug report.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="what-actually-runs-today">What actually runs, today<a class="headerlink" href="#what-actually-runs-today" title="Permanent link">&para;</a></h2>
+<p>Measured on this tree, not recalled:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host assertions</td>
+<td><strong>640 of 640 passing</strong>, across 47 <code>tests/test_*.cpp</code> files plus 22 more in <code>libs/*/tests/</code>. <code>alloy test --framework</code>, 0.45 s.</td>
+</tr>
+<tr>
+<td>Emulation robots</td>
+<td><strong>17 distinct robots</strong>, run as <strong>32 board+robot pairs</strong> — <strong>24 blocking</strong>, 8 experimental.</td>
+</tr>
+<tr>
+<td>Plus, outside that matrix</td>
+<td>5 more oracle legs: the bootloader end to end on <code>nucleo_g071rb</code>, <code>nucleo_f722ze</code> and <code>same70_xplained</code>; the provisioning oracle; the signed-image + key-rotation oracle. And two product legs (<code>product_demo</code>, one per product of a family).</td>
+</tr>
+<tr>
+<td>Compile breadth</td>
+<td>Every example built for <strong>8 boards</strong> on every push, plus the network examples on the two boards with a MAC.</td>
+</tr>
+<tr>
+<td>Silicon runs</td>
+<td><strong>One</strong>, and it is not in CI. See <a href="#what-has-ever-touched-hardware">What has ever touched hardware</a>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="core-peripherals">Core peripherals<a class="headerlink" href="#core-peripherals" title="Permanent link">&para;</a></h2>
+<p>The <strong>Witness</strong> column is the strongest evidence that exists, and the board it ran on. Where a
+leg has a known blind spot, the blind spot is in the last column, because a leg you over-read is
+worse than no leg.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Witness</th>
+<th>What it asserts</th>
+<th>What it cannot reach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GPIO</strong> out (<code>led.on/off/toggle</code>)</td>
+<td>Renode, blocking — indirectly, through every leg that boots (<code>firmware_boots</code> on <code>nucleo_g071rb</code>, <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code>)</td>
+<td>The port is configured and driven without faulting.</td>
+<td>No leg reads a pin back. Drive strength, speed, open-drain — unwitnessed.</td>
+</tr>
+<tr>
+<td><strong>Pin interrupts</strong> (<code>on_active</code>, <code>take_edge</code>)</td>
+<td>Renode, blocking (<code>pin_irq</code>, <code>nucleo_g071rb</code>)</td>
+<td>Port select, trigger selection and delivery to the right NVIC vector — each verified falsifiable by breaking it in turn.</td>
+<td>The model leaves <code>IMR1</code> unimplemented and delivers whether or not the driver unmasks; and it latches both edge directions in one pending register where the G0 splits them. So "unmasks correctly" and "clears the right pending half" are open until silicon.</td>
+</tr>
+<tr>
+<td><strong>UART</strong> polled read/write</td>
+<td>Renode, blocking (<code>uart_echo_roundtrip</code>, <code>nucleo_g071rb</code>; <code>uart_frame_surface</code> on <code>nucleo_g071rb</code> and <code>nucleo_f722ze</code>)</td>
+<td>An injected line comes back out the TX path, through the real driver, at the configured baud.</td>
+<td>Baud <em>accuracy</em> against a real clock. The emulated clock is not the target's.</td>
+</tr>
+<tr>
+<td><strong>UART</strong> interrupt RX (<code>on_receive</code>)</td>
+<td>Renode, blocking (<code>uart_frame_surface</code>) and first-party silicon via the bus bridge (below)</td>
+<td>The ISR path delivers every byte where the polled path drops them.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>I²C</strong> blocking + <code>write_async</code></td>
+<td>Renode, blocking (<code>i2c_read</code>, <code>nucleo_g071rb</code>) against a <code>DummyI2CSlave</code> at 0x08, run both polled and interrupt-driven</td>
+<td>Addressing, direction, NBYTES, STOP, and the interrupt path moving every byte.</td>
+<td>Clock stretching, arbitration loss, a device that NACKs mid-transfer. A zero-length probe is not implemented by the model, so <code>probe()</code>'s real shape is unwitnessed.</td>
+</tr>
+<tr>
+<td><strong>SPI</strong> blocking + <code>transfer_async</code></td>
+<td>Renode, blocking (<code>spi_read</code>, <code>nucleo_g071rb</code>); experimental on <code>nucleo_g0b1re</code> and <code>nucleo_f722ze</code></td>
+<td>Mode, byte order and full-duplex exchange against a <code>DummySPISlave</code>; the async path clocking the remainder from the ISR.</td>
+<td>The Microchip SPI has no interrupt path at all (no curated IER/IDR/IMR fields), so <code>transfer_async</code> does not exist there — a compile error, not a silent fallback.</td>
+</tr>
+<tr>
+<td><strong>ADC</strong> <code>read()</code></td>
+<td>Renode, blocking (<code>adc_read</code>, <code>nucleo_g071rb</code>)</td>
+<td><em>The right channel.</em> Distinct voltages to distinct channels (1650 mV on ch3, 3300 mV on ch4) and the converted counts asserted (2048, 4095) — converting the wrong channel prints the wrong number, verified.</td>
+<td>Two vacuous spots, stated in the leg: the model does not implement the channel-ready flag, so that poll passes unconditionally through a shim; and the calibration bit is a tagged no-op, so the self-clear poll passes vacuously. Analog accuracy, sample time and reference behaviour: unwitnessed everywhere.</td>
+</tr>
+<tr>
+<td><strong>ADC</strong> analog watchdog</td>
+<td>Renode, blocking (<code>adc_watchdog</code>, <code>nucleo_g0b1re</code>)</td>
+<td>The window comparator trips on a fed voltage outside the configured band, and rearms.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ADC</strong> streaming (<code>ring</code>, <code>read_burst</code>)</td>
+<td>See <a href="#streaming-without-the-cpu">Streaming without the CPU</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>PWM</strong> (<code>set_duty</code>, <code>stream_duty</code>)</td>
+<td><strong>Compiles only</strong></td>
+<td>Nothing.</td>
+<td>Everything. The generated Renode platform does not instantiate a timer at all — <em>checked, not assumed</em>. The prescaler arithmetic, duty-step counts and centre-aligned halving are host-tested; nothing has observed a waveform.</td>
+</tr>
+<tr>
+<td><strong>Bridge</strong> (three-phase complementary)</td>
+<td><strong>Compiles only</strong>, on two families</td>
+<td>Nothing. Dead-time encoding, the CR2 allowlist, the trigger refusal and the torn-frame witness are host-tested with negative controls.</td>
+<td><strong>No <code>alloy::bridge</code> driver has switched a transistor, on any board.</strong> Dead time, break input and main-output-enable are unmodelled. On the F7 the carrier frequency is additionally unverified — see <a href="../../guide/pwm/#what-has-actually-been-proven-and-what-has-not">PWM</a> before you power a stage.</td>
+</tr>
+<tr>
+<td><strong>Timers</strong> — <code>tick</code>, <code>encoder</code></td>
+<td><strong>Host-tested</strong> (<code>tests/test_tick.cpp</code>, <code>tests/test_encoder.cpp</code>)</td>
+<td>Timebase arithmetic and count/delta bookkeeping.</td>
+<td><strong>alloy's emitter maps no Renode model to any ST timer IP</strong>, so no generated platform instantiates one and nothing timer-shaped has an emulation witness on any board. Renode itself is not the wall here: 1.16.1 ships <code>Timers.STM32_Timer</code> and its own stock <code>stm32g0.repl</code> wires ten of them. That model drives NVIC lines and never a pin, so it could witness an update interrupt and never a waveform — but the update interrupt is reachable work, not an impossibility.</td>
+</tr>
+<tr>
+<td><strong>CAN</strong></td>
+<td><strong>Host-tested</strong> (<code>tests/test_can.cpp</code>)</td>
+<td>Filter/accept logic and frame packing.</td>
+<td>No FDCAN model exists. Nothing has put a frame on a bus.</td>
+</tr>
+<tr>
+<td><strong>DAC</strong></td>
+<td><strong>Compiles only</strong> (<code>examples/dac</code> builds)</td>
+<td>Nothing.</td>
+<td>No model, no host test.</td>
+</tr>
+<tr>
+<td><strong>RTC</strong></td>
+<td><strong>Compiles only</strong> (<code>examples/rtc</code> builds)</td>
+<td>Nothing.</td>
+<td>No model, no host test. Calendar arithmetic across a real LSE is unwitnessed.</td>
+</tr>
+<tr>
+<td><strong>Watchdog</strong> (IWDG)</td>
+<td><strong>Compiles only</strong> — a Renode model of the IP exists, but no leg asserts on it</td>
+<td>Nothing.</td>
+<td>Whether a missed feed actually resets the part.</td>
+</tr>
+<tr>
+<td><strong>Window watchdog</strong> (WWDG)</td>
+<td><strong>Host-tested</strong> (<code>tests/test_wwdt.cpp</code>)</td>
+<td>The window arithmetic, against the manual's formula.</td>
+<td>The driver header says it outright: <em>no board was on hand, Renode ships no WWDG model for any STM32, so nothing here has been observed to reset anything.</em></td>
+</tr>
+<tr>
+<td><strong>CRC</strong> unit</td>
+<td><strong>Host-tested</strong> (<code>tests/test_crc.cpp</code>)</td>
+<td>That the block's output is bit-for-bit the CRC-32 every alloy on-flash format already uses — checked against the software implementation.</td>
+<td>The header is explicit: <em>not silicon-witnessed</em>, and Renode's platform carries a bare address tag for the CRC region that reads back zero, so an emulated run would "verify" every image as having checksum <code>0xFFFFFFFF</code>. <strong>Do not add an emulation leg here</strong> — it would be a false green.</td>
+</tr>
+<tr>
+<td><strong>Device UID</strong></td>
+<td><strong>Host-tested</strong> (<code>tests/test_uid.cpp</code>)</td>
+<td>Read shape and byte order.</td>
+<td>No model.</td>
+</tr>
+<tr>
+<td><strong>Flash / NVM / FS</strong></td>
+<td>Mixed — see <a href="../../guide/firmware-update/#what-this-is-proven-against">Firmware update</a></td>
+<td>The bootloader legs exercise everything above the flash driver on three boards.</td>
+<td><strong>None of the three flash drivers has run on silicon.</strong> alloy emits no STM32G0 flash-controller model — the only thing available is Renode's <strong>F4</strong> controller, which its own stock G0 platform maps onto the G0 base address despite the different register layout, and alloy's emitter marks that entry "deliberately absent" rather than assert it — so the G0 driver's own register sequences go unchecked; the F7 legs use Renode's controller; the SAME70 legs use a model <strong>this project wrote</strong>, which cannot falsify a mistake it shares with the driver.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="streaming-without-the-cpu">Streaming without the CPU<a class="headerlink" href="#streaming-without-the-cpu" title="Permanent link">&para;</a></h2>
+<p>DMA is the one area where the answer differs on every engine, so it has its own tables — a
+per-board availability matrix and a per-capability witness table — in
+<strong><a href="../../guide/dma/#how-well-proven-and-what-is-still-owed">Streaming data without the CPU</a></strong>.
+The one-paragraph summary, so you know whether to go and read it:</p>
+<ul>
+<li><code>uart.write_dma</code> and <code>adc.ring</code> on the STM32 G0 are <strong>Renode-proven by blocking legs</strong>, the
+  ring on two boards, with negative controls verified red.</li>
+<li><code>uart.rx_ring</code> and <code>spi.transfer_dma</code> are <strong>Renode-proven blocking</strong> on <code>nucleo_g071rb</code> and
+  experimental on three and two more boards respectively.</li>
+<li><code>i2c.read_dma</code> / <code>write_dma</code> are <strong>host-tested only</strong>, and their emulation leg asserts a
+  <em>bounded refusal</em> rather than a transfer, because Renode's model of that IP exposes no DMA
+  request output. No leg anywhere witnesses an I²C DMA transfer.</li>
+<li>The <strong>SAM E70 ring compiles, links, and has never been run</strong>, against a descriptor layout that
+  is curated in no file in either repository. This is the one honest gap in the framework that
+  does <strong>not</strong> fail loudly, and the DMA guide leads with it.</li>
+<li><strong>RP2040 DMA has no emulation and must not get any</strong> — Renode reads 0 from unmapped addresses,
+  so a leg would report a completed transfer over a buffer of zeros. Its behavioural witness is
+  a host mutation ledger plus the
+  <a href="../../guide/rp2040-dma-hardware-checklist/">on-hardware checklist</a>, <strong>written and never
+  executed</strong>.</li>
+<li><code>pwm.stream_duty</code> and <code>alloy::async::ring_waiter</code>: compiles-only and host-tested respectively.</li>
+</ul>
+<hr />
+<h2 id="runtime-and-concurrency">Runtime and concurrency<a class="headerlink" href="#runtime-and-concurrency" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Witness</th>
+<th>What it asserts</th>
+<th>What it cannot reach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Coroutine executor</strong> (<code>task</code>, <code>executor</code>, <code>delay</code>)</td>
+<td>Renode, blocking (<code>async_runs</code> on <code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code>)</td>
+<td>Two concurrent tasks are actually <em>scheduled</em> — across <strong>two vendors</strong>, which is what turns "the runtime works" from a claim about ST silicon into a claim about the runtime.</td>
+<td>Timing. Stack high-water on a real part under real interrupt load.</td>
+</tr>
+<tr>
+<td><strong>Peripheral awaitables</strong> — <code>spi_master</code>, <code>i2c_master</code>, <code>dma_waiter</code></td>
+<td>Renode, blocking (<code>async_io</code>, <code>nucleo_g071rb</code>); experimental on <code>nucleo_f767zi</code></td>
+<td>A task <strong>suspended and was resumed by the peripheral interrupt</strong> — the leg prints how many times the executor resumed it, and the same I/O done without suspending prints a different number and fails.</td>
+<td>Nothing has run on physical silicon.</td>
+</tr>
+<tr>
+<td><strong><code>uart_reader</code> awaitable</strong></td>
+<td><strong>Host-tested only</strong></td>
+<td>Bookkeeping against a <code>mock_uart</code>.</td>
+<td>No example uses it and no leg exercises it; it has never been observed running on an ISA.</td>
+</tr>
+<tr>
+<td><strong><code>ring_waiter</code></strong></td>
+<td><strong>Host-tested only</strong> (two cases in <code>tests/test_dma_ring.cpp</code>)</td>
+<td>A parked task wakes once per boundary; a slow consumer resynchronizes.</td>
+<td>All of it, on a target.</td>
+</tr>
+<tr>
+<td><strong>Interrupt plumbing</strong> — <code>attach</code>, <code>set_priority</code>, <code>critical_section</code></td>
+<td>Renode, blocking (<code>concurrency_probe</code>, <code>nucleo_g071rb</code>)</td>
+<td>Shared-vector chaining, the handler pool, and that a masked level really is masked while a more-urgent line still fires.</td>
+<td>Latency figures. Every timing number quoted about the executor is emulation arithmetic, not measured on a part.</td>
+</tr>
+<tr>
+<td><strong>Cooperative scheduler</strong> (<code>sched</code>)</td>
+<td><strong>Host-tested</strong> (<code>tests/test_sched.cpp</code>), plus <code>examples/services</code> builds everywhere</td>
+<td>Ordering and deadline bookkeeping.</td>
+<td>No leg.</td>
+</tr>
+<tr>
+<td><strong>DSP / control / filters / FSM / units</strong></td>
+<td><strong>Host-tested</strong> (<code>tests/test_dsp.cpp</code>, <code>test_control.cpp</code>, <code>test_fsm.cpp</code>, <code>test_units.cpp</code>)</td>
+<td>Arithmetic, against fixtures.</td>
+<td>These are pure logic; a host test is close to the strongest witness they can have. Numerical behaviour on a specific FPU is not covered.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="shipping-machinery">Shipping machinery<a class="headerlink" href="#shipping-machinery" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Witness</th>
+<th>What it asserts</th>
+<th>What it cannot reach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Crash reports</strong></td>
+<td>Renode, blocking (<code>crash_report</code> on <code>nucleo_g071rb</code> and <code>nucleo_f722ze</code>)</td>
+<td>The full loop across <strong>five real boots of one machine</strong>: the handler stores the stacked frame in <code>.noinit</code>, resets through <code>SYSRESETREQ</code>, and the next boot reports a real <code>pc</code> — with a consecutive counter that a stale record could not produce.</td>
+<td><strong>Organic fault entry is silicon-only and unwitnessed.</strong> The firmware's own trigger is a software-pended fault; Renode never vectors a real wild jump (it kills the core with the vector table unread). The NVM persistence branch is likewise unwitnessed in emulation.</td>
+</tr>
+<tr>
+<td><strong>Bootloader</strong> — verify → jump → recover</td>
+<td>Renode, blocking (<code>bootloader_boots</code> on <code>nucleo_g071rb</code>, <code>nucleo_f722ze</code>, <code>same70_xplained</code>)</td>
+<td>A packed image is verified, jumped into, and a bad slot is recovered from.</td>
+<td>See the flash row above: on the G0 the flash driver's own register sequences are unchecked, and the SAME70 leg runs against a self-authored model.</td>
+</tr>
+<tr>
+<td><strong>Signed images</strong></td>
+<td>Renode, blocking (<code>signed_boot</code>)</td>
+<td>Three machines, and <strong>the two rejections are the claim</strong>: a tampered payload whose CRCs were repaired is refused, and a perfectly valid signature from another key is refused.</td>
+<td>Key storage. Nothing here defends a device whose flash an attacker can rewrite.</td>
+</tr>
+<tr>
+<td><strong>Factory provisioning</strong></td>
+<td>Renode, blocking (<code>provision</code>)</td>
+<td>A real product firmware, booted out of slot A through the real bootloader, finds and parses the identity record the host tool wrote — so the linker address, the encoder and the parser are the same three facts.</td>
+<td>That the page survives a real field update on real flash.</td>
+</tr>
+<tr>
+<td><strong>Products</strong> (<code>--product</code>)</td>
+<td>Renode, blocking (<code>product_demo</code>, one leg per product)</td>
+<td>The firmware names its product <strong>and its control strategy's own arithmetic ran</strong> — one strategy cannot produce the other's output, so a stale build tree fails here.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>RDP / WRP</strong> (<code>alloy secure</code>)</td>
+<td>Renode, experimental — the <strong>option-byte register interface</strong> on the F7 model, driven by the same write list <code>apply</code> sends to openocd</td>
+<td>A locked register ignores writes, the key sequence unlocks it, the planner's poke list programs the expected value, relocking holds.</td>
+<td><strong>The protection semantics themselves are unwitnessed</strong>: actual readout blocking, the mass erase, RDP2 permanence, WRP refusing an erase, persistence across power cycles. Renode's F7 model has no protection <em>behaviour</em> at all, and its G0 has no flash controller. This gap cannot be closed by emulation, only by a board you are willing to lose.</td>
+</tr>
+<tr>
+<td><strong>Network stack</strong> (lwIP, sockets, HTTP)</td>
+<td><strong>Compiles only</strong> — <code>build-net</code> builds four examples for <code>same70_xplained</code> and <code>nucleo_f767zi</code> (two MAC families)</td>
+<td>Nothing beyond the link.</td>
+<td>No emulation leg, no packet ever sent. <code>tests/test_net.cpp</code> covers the host-side seams only.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="libraries">Libraries<a class="headerlink" href="#libraries" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Witness</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>bus</code></strong> (pub/sub + wire + bridge)</td>
+<td>Renode, experimental (<code>bus_bridge</code>, <code>nucleo_g071rb</code>) <strong>and first-party silicon</strong></td>
+<td>The leg's peer is an <em>independent</em> frame implementation in monitor Python — its own bitwise CRC-32, its own encoder — so a firmware that merely echoed frames could not pass. The pong carries an incrementing count only the service's state can produce. This is also the one library with bench numbers from a real part.</td>
+</tr>
+<tr>
+<td><strong><code>modbus</code></strong> (RTU client + server)</td>
+<td>Renode, blocking (<code>modbus_rtu</code>, <code>nucleo_g071rb</code>); experimental on <code>nucleo_g0b1re</code>, <code>nucleo_f722ze</code>, <code>nucleo_f767zi</code></td>
+<td>The robot plays a byte-level Modbus master. Six host test files cover the sans-IO core, framer, PDU, CRC, client and server.</td>
+</tr>
+<tr>
+<td><strong>Sensor / display / RTC drivers</strong> (<code>bh1750</code>, <code>bme280</code>, <code>ds3231</code>, <code>mpu6050</code>, <code>sht31</code>, <code>ssd1306</code>)</td>
+<td><strong>Host-tested</strong> against testkit doubles</td>
+<td>Register sequences and error paths, including NACK. No part has answered any of them.</td>
+</tr>
+<tr>
+<td><strong>Control plane</strong> (<code>meter</code>, <code>ntc</code>, <code>param</code>, <code>pll</code>, <code>protect</code>)</td>
+<td><strong>Host-tested</strong></td>
+<td>Pure arithmetic and state, which is most of what they are. Nothing has closed a loop on a motor.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="a-route-is-witnessed-by-halves">A route is witnessed by halves<a class="headerlink" href="#a-route-is-witnessed-by-halves" title="Permanent link">&para;</a></h2>
+<p>This is the nuance that costs the most if you meet it for the first time on a bench, and it is
+<strong>measured</strong>, not inferred. It applies to every DMA route on every board.</p>
+<blockquote>
+<p><strong>Emulation proves which channel moved the bytes. Only silicon proves that the right peripheral
+asked for them.</strong></p>
+</blockquote>
+<p>A DMA route has two halves — a channel (or stream) index, and a <em>request id</em> that says which
+peripheral's ready-signal paces that channel. Under emulation the first half is load-bearing and
+the second is not:</p>
+<ul>
+<li>On the <strong>STM32F7 stream engine</strong> this was measured by adversarial control. Move the model's
+  request wire by one stream and the leg goes red — the index is checked end to end. Delete the
+  channel-select write from the driver entirely and the leg stays <strong>green</strong> — the request id is
+  never checked.</li>
+<li>On the <strong>STM32G0</strong> Renode models no request multiplexer at all, and the emulated platform's
+  wiring and the firmware's route both descend from the <em>same</em> <code>board.json</code> statement. Two
+  copies of one assumption cannot falsify each other.</li>
+<li>On the <strong>SAM E70</strong> it is worse by construction: the pinned USART model exposes no DMA-request
+  output, so there is no wire for any model to consume, and the generated DMA model never
+  consults the request id at all.</li>
+</ul>
+<p><strong>What to do about it.</strong> On the first bring-up of a new board's DMA assignment, verify the
+peripheral is really the source: feed a distinctive pattern and check that it is what arrives, or
+perturb the request id in the chip data and confirm the transfer <em>stops</em>. In this entire
+framework that check exists in exactly one place — row 4 of the
+<a href="../../guide/rp2040-dma-hardware-checklist/">RP2040 DMA hardware checklist</a> — and that place has
+never been executed.</p>
+<hr />
+<h2 id="what-has-ever-touched-hardware">What has ever touched hardware<a class="headerlink" href="#what-has-ever-touched-hardware" title="Permanent link">&para;</a></h2>
+<p>Four categories, kept apart on purpose, because "we ran it" and "somebody else ran it" are
+different sentences.</p>
+<p><strong>1. First-party silicon — one result.</strong> <code>examples/bus_bridge</code> and <code>libs/bus</code> on a SAM E70
+Xplained. Round-trip 3.4 ms at 115200 and 1.9 ms at 230400; sustained ~290/s and ~400/s;
+20 messages sent back to back where polled RX delivers 7 and interrupt RX delivers 20. The
+numbers and what moves them are in <a href="../../guide/bus/#what-it-costs-on-a-real-wire-and-how-to-make-it-faster">The message bus</a>.
+Note what it is <em>not</em>: that run uses no DMA path of any kind.</p>
+<p><strong>2. Silicon-found driver quirks — two, both SAM E70, both marked in the header that owns them.</strong></p>
+<ul>
+<li>The XDMAC's memory-side master reads SRAM but <strong>not</strong> embedded flash: a <code>.rodata</code> source raised
+  a read bus error on a real SAM E70 Xplained. (The ST engine reads flash fine, so portable code
+  that works on a G0 can break here for this reason alone.)</li>
+<li>On the Microchip SPI in Variable PS mode, a TDR write with the "no peripheral" chip-select
+  encoding <strong>suppresses SCK entirely</strong> — so every TDR write selects NPCS0 even when the real
+  chip-select is a caller-driven GPIO.</li>
+</ul>
+<p>Both are the good kind of evidence: they were discovered by a part disagreeing with a reading,
+which is exactly what silicon is for.</p>
+<p><strong>3. Inherited hardware claims — attributed, not first-party.</strong> Several clock profiles in the
+device database carry hardware provenance from a <strong>predecessor codebase</strong> ("old-alloy"): the G0's
+<code>pll_64mhz</code> records an order hardware-verified there and validated on two Nucleos; the SAM E70's
+<code>plla_150mhz</code> records a hardware-validated bring-up; the ESP32's boot defaults record a
+hardware-validated blink calibration. One profile carries <code>"silicon_validated": true</code> as data.
+These are real claims by real people about real boards — and they are <strong>not</strong> this project's
+runs. Treat them as you would a well-sourced third-party report.</p>
+<p><strong>4. The landing page's board table.</strong> <a href="../../#supported-boards">Home</a> has a column of
+<code>silicon</code> pills. Those are <strong>maintainer self-reports</strong> from bring-up, not automated and not
+re-checked, and the page says so directly above the table. Where that column and a feature page
+disagree, the feature page wins — and several of them disagree flatly. See
+<a href="#claims-this-page-cannot-settle">the unwitnessed list</a> below.</p>
+<hr />
+<h2 id="where-no-model-exists-at-all">Where no model exists at all<a class="headerlink" href="#where-no-model-exists-at-all" title="Permanent link">&para;</a></h2>
+<p>Emulation can only be as broad as Renode's peripheral coverage, and it is worth knowing the shape
+of that before you plan a validation strategy. <code>alloy chip-status &lt;chip&gt;</code> answers it per part;
+measured on this tree:</p>
+<table>
+<thead>
+<tr>
+<th>Chip</th>
+<th>Curated</th>
+<th>With drivers</th>
+<th><strong>With a Renode model</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>st/stm32g0b1re</code></td>
+<td>49 of 65</td>
+<td>43</td>
+<td><strong>23</strong></td>
+</tr>
+<tr>
+<td><code>st/stm32g071rb</code></td>
+<td>17 of 17</td>
+<td>15</td>
+<td><strong>13</strong></td>
+</tr>
+<tr>
+<td><code>microchip/atsame70q21</code></td>
+<td>16 of 16</td>
+<td>13</td>
+<td><strong>3</strong></td>
+</tr>
+<tr>
+<td><code>raspberrypi/rp2040</code></td>
+<td>10 of 10</td>
+<td>4</td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td><code>espressif/esp32</code></td>
+<td>9 of 9</td>
+<td>4</td>
+<td><strong>0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Read the last column as the ceiling on what emulation can ever assert for that family. On the
+SAM E70 only the flash controller, one USART and the DMA controller are modelled — and two of
+those three are models <strong>this project generated</strong>. On the ESP32 nothing is modelled, which is
+also why <code>alloy emulate</code> refuses those two boards rather than booting them into fiction.</p>
+<p>On the ST side the gap has a shape worth naming: <strong>a generated platform instantiates no ST timer
+of any kind</strong>, and none of CRC, DAC, RTC, LPUART, the device UID, FDCAN or the G0 flash
+controller either. That is precisely the set a motor-control application leans on hardest, and it
+is why the PWM, bridge, tick and encoder rows above say what they say.</p>
+<p>That column is <code>emit/renode.py</code>'s table, and the distinction matters if you are deciding where to
+spend effort. For CRC, DAC, LPUART and the UID there is genuinely nothing to instantiate —
+Renode's own <code>stm32g0.repl</code> carries CRC and DAC as bare address <code>Tag</code>s, which read back zero, and
+carries no LPUART or UID at all. For the <strong>timers, the RTC and FDCAN</strong> Renode does ship a model
+and its own stock platform wires each one up; alloy's emitter declines to emit them. Those three
+are a <em>decision</em>, re-openable by someone who wants a leg, rather than a limit of the emulator —
+though for the timers the available model drives interrupt lines and never a pin, so reopening it
+would buy an update-interrupt assertion and still no waveform. The G0 flash interface is a fourth
+case and the most instructive: Renode's stock <code>stm32g0.repl</code> points its <strong>F4</strong> flash-controller
+model at the G0's base address, a different register layout, and alloy's emitter marks that entry
+"deliberately absent" rather than emit a model it does not believe.</p>
+<hr />
+<h2 id="claims-this-page-cannot-settle">Claims this page cannot settle<a class="headerlink" href="#claims-this-page-cannot-settle" title="Permanent link">&para;</a></h2>
+<p>Marked <strong>unwitnessed</strong> rather than deleted or left standing, per the rule at the top. Each is a
+real disagreement inside this repository that needs a person with a board, not an editor.</p>
+<div class="admonition warning">
+<p class="admonition-title">Unwitnessed — the landing page's <code>silicon</code> column versus the feature pages</p>
+<p><a href="../../#supported-boards">Home</a> reports, as maintainer self-reports, PWM and flash
+working on silicon on the STM32G0, and I²C/ADC/DMA on the SAM E70. Five feature pages state
+the opposite in their own voice:
+<a href="../../guide/pwm/#what-has-actually-been-proven-and-what-has-not">PWM</a> ("never run on
+silicon… no <code>alloy::bridge</code> driver has switched a transistor, on any board"),
+<a href="../../guide/firmware-update/">firmware update</a> ("none of the three flash drivers has run on
+silicon"), <a href="../../guide/async/">async</a> ("none of it has run on physical silicon"),
+<a href="../../guide/crash-reports/">crash reports</a> (organic fault entry: "silicon-only,
+unwitnessed") and <a href="../../guide/security/">security</a> ("not witnessed by alloy on silicon").</p>
+<p>Both cannot be true of the same driver. The most likely reconciliation is that the pills
+describe a <strong>predecessor codebase's</strong> bring-up on those boards — the same lineage the clock
+profiles credit explicitly — and that the current drivers have not been back. That is a
+guess, and this page does not act on guesses. <strong>Until a maintainer settles it, treat the
+feature pages as authoritative</strong>, because they are the narrower and more recent claim.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Unwitnessed — <code>emulation.md</code>'s two loose ends</p>
+<p><a href="../../guide/emulation/">Emulation</a> says PWM is "verified on silicon instead", which the PWM
+page contradicts in the same words as above. It also says hardware-validated families are
+"marked as such in [Boards]", and <a href="../../guide/boards/">Boards</a> marks nothing of the kind —
+its only proof statement is a pointer at the project README. Both are inherited sentences
+that no longer describe the tree; both are flagged rather than rewritten, because deciding
+what they <em>should</em> say is the same maintainer decision as the one above.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Unwitnessed — three board <code>dma:</code> assignments that no driver can consume</p>
+<p><code>same70_xplained</code> assigns DMA channels for SPI and I²C; <code>raspberry_pi_pico</code> assigns one for
+the ADC. In each case the peripheral driver has no DMA entry points, so the assignment is
+inert — the facade folds and the image says so. Board validation accepts them because it
+checks the statement against the <strong>chip's</strong> routing data and never against the <strong>driver's</strong>
+hooks. Whether that should be a validation error is a design call, not a documentation one.
+Until then, an assignment in a board file is not by itself evidence that a capability exists;
+<a href="../../guide/dma/#what-each-board-gives-you">the DMA availability table</a> is.</p>
+</div>
+<hr />
+<h2 id="checking-any-of-this-yourself">Checking any of this yourself<a class="headerlink" href="#checking-any-of-this-yourself" title="Permanent link">&para;</a></h2>
+<p>None of the above needs to be taken on trust — that is rather the point.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>alloy<span class="w"> </span>chip-status<span class="w"> </span>st/stm32g0b1re<span class="w">     </span><span class="c1"># per-peripheral: curated / driver / Renode model / role</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>alloy<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--framework<span class="w">               </span><span class="c1"># the whole host suite, on your laptop</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>alloy<span class="w"> </span>emulate<span class="w"> </span>--board<span class="w"> </span>nucleo_g071rb<span class="w">  </span><span class="c1"># boot your own firmware on the emulated die</span>
+</span></code></pre></div>
+<p>Each robot under <code>tests/emulation/</code> opens with a documentation block written to be read: it says
+what the leg asserts, which negative controls were run against it, and — the part that matters
+here — which of its assertions are vacuous and why. <code>tests/emulation/adc_stream.robot</code> and
+<code>tests/emulation/dma_uart.robot</code> are the two worth reading first, because they are the most
+careful about the difference.</p>
+<p>The CI workflow is the other primary source: <code>.github/workflows/ci.yml</code> carries the board+robot
+matrix, the <code>experimental</code> flag on each pair, and long comments explaining why particular legs
+exist in the form they do.</p>
+<p>And when you quote a result of your own — especially a <strong>red</strong> one — stamp the tree it came from.
+<a href="../../guide/testing/#say-which-tree-you-measured">Testing</a> explains why that is not pedantry: two
+sessions in this project once independently reported, in good faith, that every example failed to
+build at a given commit. The commit was fine.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../guide/vscode/" class="md-footer__link md-footer__link--prev" aria-label="Previous: VS Code extension">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                VS Code extension
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../architecture/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Architecture
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Made with the alloy project · docs built with Material for MkDocs
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/Alloy-Embedded/alloy" target="_blank" rel="noopener" title="alloy on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
