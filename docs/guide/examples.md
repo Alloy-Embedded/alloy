@@ -120,7 +120,7 @@ $ alloy run --board nucleo_f722ze     # flash + monitor
 `dma_probe` is a good tour of the design — it uses **capability checks inside generic lambdas**
 so the same file adapts to whatever the board offers:
 
-```cpp
+```cpp title="illustrative: an excerpt of examples/dma_probe — `HasDma` and `uart` come from the rest of that file"
 [&uart]<class Dma, class Adc = board::adc>(Dma*) {
     if constexpr (HasDma<Dma> && board::caps::adc) {
         auto adc  = Adc::open();

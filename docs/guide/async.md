@@ -62,7 +62,7 @@ isn't a constant there.)
 Drivers expose awaitables that suspend until the hardware is ready. The RX interrupt wakes the task
 in **thread context** (never inside the ISR), so your task body is ordinary code:
 
-```cpp
+```cpp title="illustrative: an excerpt of examples/async_io — `uart` and the enclosing task are the rest of that file"
 #include <alloy/async/uart.hpp>
 
 uart_reader<decltype(uart)> rx{uart};             // uart = board::debug_uart::open({...})
@@ -84,7 +84,7 @@ The bus awaitables suspend for a whole **transfer**, not a byte — the driver's
 and the task resumes once, in thread context, when the last one lands. Compare `bus.write(...)`,
 which spins per byte.
 
-```cpp
+```cpp title="illustrative: four awaits side by side — `co_await` needs the enclosing task, see examples/async_sensor"
 #include <alloy/async/spi.hpp>
 #include <alloy/async/i2c.hpp>
 #include <alloy/async/dma.hpp>
@@ -106,7 +106,7 @@ uart.write_dma_end(chan);
 hardware-stable half* of a continuously refilling [ring](dma.md) — which is what a control loop
 wants, since the transfer never finishes:
 
-```cpp
+```cpp title="illustrative: a task body — `co_await` needs the enclosing task, see examples/async_io"
 #include <alloy/async/dma.hpp>
 
 alloy::dma::ring_storage<std::uint16_t, 256> storage;

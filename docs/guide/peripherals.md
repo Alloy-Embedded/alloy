@@ -29,6 +29,9 @@ to the board.
 An input can report its own edges instead of being polled — what a sensor's DRDY/INT line, a
 button that must not be sampled in a loop, and wake-on-pin all need:
 
+<!-- docgate: setup
+inline volatile bool g_pressed = false;
+-->
 ```cpp
 board::user_button().on_active(+[](void*) { g_pressed = true; });   // ISR context
 ```
@@ -41,6 +44,9 @@ whose polarity belongs to the part, not the board. `clear_on_edge()` stops repor
 Between edges, the handler keeps a **software** count — never the hardware pending bit, so
 reading it can never eat an interrupt:
 
+<!-- docgate: setup-local
+auto btn = board::user_button();
+-->
 ```cpp
 while (btn.take_edge()) { /* once per edge that actually happened */ }
 std::uint32_t total = btn.edges();   // monotonic: you can see that you missed some
@@ -214,9 +220,14 @@ through a claimed channel pair.
 You can still claim a channel by index — that is the escape hatch, for a route the board did not
 declare or a controller signal the facade does not model:
 
+<!-- docgate: setup-local
+std::uint16_t samples[64]{};
+const std::uint16_t wave[64]{};
+-->
 ```cpp
 auto chan = alloy::dma::channel<board::dma_t, 1>::claim();
-adc.read_burst(chan, board::adc_vref_channel, std::span<std::uint16_t>{samples});
+// read_burst is [[nodiscard]]: `false` is a bounded refusal, never a hang.
+if (!adc.read_burst(chan, board::adc_vref_channel, std::span<std::uint16_t>{samples})) { }
 pwm.stream_duty(chan, std::span<const std::uint16_t>{wave});
 ```
 
@@ -230,6 +241,10 @@ Attach a handler to an IRQ line, give it a priority, and dispatch runs it. Sever
 share one vector each attach their own handler and all fire — the portable code never touches an
 `#ifdef` or a vector table:
 
+<!-- docgate: setup
+inline void on_rx(void*) {}
+inline int ctx = 0;
+-->
 ```cpp
 // The line number is a generated fact: device.hpp emits one per instance.
 constexpr auto line = alloy::dev::usart2_t::irq;   // alloy::irq_line{28} on an STM32G0
@@ -248,6 +263,10 @@ given level **or less urgent** (level 0 is the most urgent) — a high-priority 
 running. On Cortex-M3/M4/M7 this uses `BASEPRI`; on Cortex-M0/M0+ and Xtensa (no priority mask) it
 safely degrades to a full mask:
 
+<!-- docgate: setup
+inline int shared = 0;
+inline int update() { return 1; }
+-->
 ```cpp
 {
     alloy::irq::critical_section cs{4};   // mask level 4 and any less-urgent line
@@ -271,6 +290,9 @@ and spins ten times too fast answers yes, and is never reset. `board::window_wat
 asks the harder question — *is anybody running at the right rate?* — by resetting the part on a
 feed that arrives **before** the window opens as readily as on one that never arrives.
 
+<!-- docgate: setup
+inline void control_step() {}
+-->
 ```cpp
 const auto w = board::window_watchdog.start();  // the window the board file declares
 // w.earliest .. w.deadline — what the counter could actually land on

@@ -8,7 +8,7 @@ depending on *who* made the mistake.
 A transfer that can legitimately fail at runtime — an I²C NACK, a stuck bus, a flash program
 error — returns `false`. The caller decides what to do:
 
-```cpp
+```cpp title="illustrative: `i2c` and `data` are yours — the shape is the point"
 if (!i2c.write(0x68, data)) {
     // NACK or bus error — retry, log, or give up
 }
@@ -21,7 +21,7 @@ For calls that want to carry a *reason*, alloy ships a `-fno-exceptions`-safe
 `Result<T, E>` — a cousin of `std::expected` (with `has_value` / `value_or` / `and_then` /
 `transform`) whose misused `value()` traps rather than throws:
 
-```cpp
+```cpp title="illustrative: `config`, `device`, `use` and `log` are yours — `Result` is alloy/util/result.hpp"
 alloy::Result<config, alloy::error> r = device.read_config();
 if (r) {
     use(*r);

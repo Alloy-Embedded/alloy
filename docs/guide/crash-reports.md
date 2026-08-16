@@ -76,6 +76,10 @@ itself in safe mode instead of faulting forever.
 outlive a power cycle — a field unit someone unplugs before the truck arrives — persist it
 on the boot *after* the crash, where flash programming is safe:
 
+<!-- docgate: setup
+#include <alloy/fault.hpp>
+inline constexpr std::uint32_t kCrashPc = 1, kCrashStatus = 2, kCrashTotal = 3;
+-->
 ```cpp
 if (alloy::fault::record crash; alloy::fault::take(crash)) {
     if constexpr (board::caps::nvm) {

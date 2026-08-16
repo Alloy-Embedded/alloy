@@ -110,7 +110,7 @@ $ alloy matrix --products          # boards x products build table
 
 `alloy gen` (or any build) validates the product and emits `<alloy/product.hpp>`:
 
-```cpp
+```cpp title="illustrative: the <alloy/product.hpp> the generator writes for a product tree, quoted"
 namespace product {
 inline constexpr char name[] = "pump_pro";
 inline constexpr char family[] = "fan_drive";
@@ -135,7 +135,7 @@ Params are typed — a `frequency` param is an `alloy::frequency`, not a bare in
 holds physical quantities in base units; unit scaling stays in C++ `constexpr`, never in
 TOML arithmetic. Caps are booleans for `if constexpr`:
 
-```cpp
+```cpp title="illustrative: needs a product tree — `alloy gen` writes <alloy/product.hpp> from products/"
 if constexpr (product::caps::has_night_mode) {
     // compiled only into products that have it — and still type-checked in all of them
 }
@@ -147,7 +147,7 @@ The family names the options; **the app provides the types**. Declare them in na
 `product_strategy` *before* including `<alloy/product.hpp>`, and the generated
 `using control = ::product_strategy::sensorless_foc;` binds the product's choice:
 
-```cpp
+```cpp title="illustrative: needs a product tree — <alloy/product.hpp> is generated from products/, see examples/product_line"
 namespace app {
 template <class S>
 concept control_loop = requires(S s, std::int32_t rpm_target) {

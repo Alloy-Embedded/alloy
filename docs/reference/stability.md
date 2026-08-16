@@ -182,7 +182,7 @@ generated 20 file(s) -> .alloy/generated/nucleo_g071rb
 
 Nothing complained. The generated header now says:
 
-```cpp
+```cpp title="illustrative: one line of a generated register header, quoted"
 static_assert(offsetof(regs, ODR) == 0x40);
 ```
 

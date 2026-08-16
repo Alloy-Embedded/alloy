@@ -138,7 +138,7 @@ drops mid-write.
 
 On the app side that is three lines ([`examples/ota_app`](https://github.com/Alloy-Embedded/alloy/tree/main/examples/ota_app)):
 
-```cpp
+```cpp title="illustrative: `alloy::slots` exists only in a slot-configured project — `alloy build --slot a`, see examples/ota_app"
 using flash_hal = alloy::hal::flash_impl<alloy::slots::flash_ctrl_t>;
 alloy::ota::boot_store<flash_hal> store{flash_hal{}, alloy::slots::store_base,
                                         alloy::slots::store_page_b};
@@ -345,7 +345,7 @@ Firmware reads it in one line, and the read is the *only* operation firmware has
 writer on the device at all, so no firmware bug and no hostile update can rewrite a device's
 identity:
 
-```cpp
+```cpp title="illustrative: `alloy/slots.hpp` exists only in a slot-configured project — `alloy build --slot a`"
 #include <alloy/provision.hpp>
 #include <alloy/slots.hpp>
 

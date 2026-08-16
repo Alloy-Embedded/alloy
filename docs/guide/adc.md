@@ -140,7 +140,7 @@ conversion.
 This is the part most likely to cost you an afternoon, so it is worth stating
 plainly. **Two obvious forms do not work:**
 
-```cpp
+```cpp title="illustrative: neither line compiles — that is what this block is showing"
 // ✗ hard error, not `false`: a requires-expression over a CONCRETE type is
 //   checked eagerly.
 if constexpr (requires { adc.scan(chans, out); }) { … }
@@ -153,6 +153,11 @@ if constexpr (alloy::adc::can_scan<board::adc::instance>) { adc.scan(…); }
 **The working form puts the branch inside a template**, which a generic lambda
 does in one line:
 
+<!-- docgate: setup
+constexpr std::uint8_t channels[] = {0, 1, 3};
+constexpr unsigned n = 3;
+std::uint16_t out[n]{};
+-->
 ```cpp
 [&]<class Bind>(Bind*) {
     auto adc = Bind::open();
@@ -176,6 +181,10 @@ Convert a list of channels **in the order you give, repeats included** — which
 is precisely what a channel bitmap cannot express, and why this exists only on
 parts with a real sequencer:
 
+<!-- docgate: boards nucleo_f722ze -->
+<!-- docgate: setup
+auto adc = board::adc::open();
+-->
 ```cpp
 const std::uint8_t channels[] = {3, 4, 3};
 std::uint16_t values[3];
@@ -226,6 +235,10 @@ its results in **separate data registers** — so a regular sequence streaming t
 DMA is undisturbed by an injected conversion landing in the middle of it. That
 independence is the whole feature.
 
+<!-- docgate: boards nucleo_f722ze -->
+<!-- docgate: setup
+auto adc = board::adc::open();
+-->
 ```cpp
 const std::uint8_t urgent[] = {3, 10};
 auto g = adc.injected(urgent);
@@ -255,6 +268,10 @@ the supported way to sample at a chosen instant.
 For continuous sampling the CPU should not touch, `ring()` hands you
 hardware-stable halves of a caller-owned buffer:
 
+<!-- docgate: setup
+#include <span>
+inline void process(std::span<const std::uint16_t>) {}
+-->
 ```cpp
 alloy::dma::ring_storage<std::uint16_t, 256> storage;
 auto stream = adc.ring(storage);        // uses the board's `adc.conv` route

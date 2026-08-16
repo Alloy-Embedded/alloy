@@ -41,7 +41,7 @@ A vendor CMSIS device header is the opposite: uppercase object-like macros
 so the include order does not matter. `examples/escape_hatch/src/main.cpp`
 proves the harder direction:
 
-```cpp
+```cpp title="illustrative: `vendor_device.h` is a CubeMX header this repository does not ship — bringing your own is the point of the page"
 // Deliberately FIRST: if any vendor macro collided, this is what would break.
 #include "vendor_device.h"
 #include "vendor_hal.h"
@@ -63,7 +63,7 @@ It compiles with `-Wall -Wextra` and no warnings.
 
 Both worlds carry the same constants, so make them agree at compile time:
 
-```cpp
+```cpp title="illustrative: `GPIOA_BASE` comes from the vendor header above, not from alloy"
 static_assert(GPIOA_BASE == alloy::dev::gpioa.base,
               "vendor header and alloy-devices disagree about GPIOA");
 ```
@@ -87,7 +87,7 @@ void VENDOR_GPIO_TogglePin(GPIO_TypeDef* port, uint32_t pin) {
 
 The bridge from C++ is one cast, and the address comes from the database:
 
-```cpp
+```cpp title="illustrative: `GPIO_TypeDef` and `VENDOR_GPIO_TogglePin` are the vendor HAL's, not alloy's"
 auto* vendor_port = reinterpret_cast<GPIO_TypeDef*>(alloy::dev::gpioa.base);
 VENDOR_GPIO_TogglePin(vendor_port, 5);
 ```

@@ -1,5 +1,7 @@
 # DMA streams — design
 
+<!-- docgate: ungated — a decision record, not a guide: its fences are the design under discussion, some of them deliberately showing shapes that were rejected. The user-facing page is guide/dma.md, which IS gated -->
+
 !!! note "Status: design, not shipped"
     This page is the decided design for DMA-fed peripherals — SPI, UART, I2C,
     ADC — across every ARM family alloy ships. Nothing below exists in the tree

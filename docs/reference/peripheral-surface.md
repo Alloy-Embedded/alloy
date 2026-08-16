@@ -1,5 +1,7 @@
 # The peripheral surface
 
+<!-- docgate: ungated — a design record, not a guide: its fences quote driver internals and register-file shapes, and several sketch an API being argued about rather than one that ships. Nothing here is a paste target -->
+
 !!! note "A design record, not a guide"
     This page decided the shape of alloy's peripheral API and then kept the
     argument, including the parts that were wrong — you will find a section

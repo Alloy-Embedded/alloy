@@ -13,7 +13,7 @@ does not publish.
 
 ## Local: the type is the topic
 
-```cpp
+```cpp title="illustrative: needs the bus library vendored first — `alloy lib add bus`"
 #include <bus.hpp>   // alloy lib add bus
 
 struct temp_reading { std::int16_t centi_c; std::uint8_t sensor_id; };
@@ -76,7 +76,7 @@ peer, not a license to change bytes under an id.
 
 ## The bridge
 
-```cpp
+```cpp title="illustrative: `alloy/bus_messages.hpp` is generated from your bus.toml by `alloy gen`"
 #include <alloy/bus_messages.hpp>
 
 alloy::lib::bus::bridge<512> link;

@@ -46,7 +46,7 @@ already knows it.
 The generator turns each line into a constant, next to the role bindings in
 your generated `board.hpp`:
 
-```cpp
+```cpp title="illustrative: an excerpt of the board.hpp the generator writes — you do not type this"
 inline constexpr alloy::dma::route<alloy::dev::dma1_t, 1, /*request=*/5>  adc_conv{};        // serves adc conv
 inline constexpr alloy::dma::route<alloy::dev::dma1_t, 2, /*request=*/52> debug_uart_rx{};   // serves usart2 rx
 inline constexpr alloy::dma::route<alloy::dev::dma1_t, 3, /*request=*/53> debug_uart_tx{};   // serves usart2 tx
@@ -92,6 +92,10 @@ Board line:
 
 Code, from `examples/adc_stream/src/main.cpp` (Renode-proven on both G0 Nucleos):
 
+<!-- docgate: setup
+#include <span>
+inline void process(std::span<const std::uint16_t>) {}
+-->
 ```cpp
 #include <alloy/board.hpp>
 #include <alloy/dma.hpp>
@@ -139,6 +143,14 @@ Board line:
 
 Code, from `examples/modbus_rtu_server/src/main.cpp` (Renode-proven on `nucleo_g071rb`):
 
+<!-- docgate: setup
+#include <span>
+#include <alloy/time.hpp>
+-->
+<!-- docgate: setup-local
+auto uart = board::debug_uart::open({.baud = 115'200});
+struct { bool on_bytes(std::span<const std::uint8_t>) { return true; } } server;
+-->
 ```cpp
 // 256 bytes = the RTU spec's largest ADU.
 alloy::dma::ring_storage<std::uint8_t, 256> rxbuf;
@@ -164,6 +176,9 @@ Two spellings, depending on whether you have a scheduler.
 
 Blocking-free one-shot, from `examples/dma_uart/src/main.cpp`:
 
+<!-- docgate: setup
+inline volatile bool g_dma_irq_fired = false;
+-->
 ```cpp
 auto chan = alloy::dma::channel<board::dma_t, 1>::claim();
 // Registered BEFORE the transfer: the channel config register may only be
@@ -186,7 +201,7 @@ never a spin.
 Or awaited from a coroutine, from `examples/async_io/src/main.cpp` — the route
 spelling, with the channel number nowhere in the file:
 
-```cpp
+```cpp title="illustrative: a coroutine body — co_await needs the enclosing task, see examples/async_io"
 auto chan = alloy::dma::claim(board::dma::debug_uart_tx);
 alloy::async::dma_waiter<decltype(chan)> w{chan};   // constructed BEFORE the transfer
 co_await w.run([&] { uart.write_dma_begin(chan, line); });
@@ -216,6 +231,9 @@ Board lines:
 
 Code, from `examples/spi_read/src/main.cpp` (Renode-proven on `nucleo_g071rb`):
 
+<!-- docgate: setup-local
+auto spi = board::spi::open({.clock_hz = 1'000'000, .mode = 0});
+-->
 ```cpp
 const std::uint8_t out[] = {0xC0, 0xFF, 0xEE, 0x77};
 std::uint8_t in[4] = {};
@@ -232,7 +250,7 @@ returns.
 The I2C one-shot is the same idea with an explicitly held token, from
 `examples/i2c_read/src/main.cpp`:
 
-```cpp
+```cpp title="illustrative: `B` is the bind type in the enclosing template — see examples/i2c_read"
 auto rx = alloy::dma::claim(typename B::rx_route{});
 std::uint8_t in[3] = {};
 if (bus.read_dma(rx, kAddr, in)) { /* … */ }

@@ -42,7 +42,7 @@ descriptors, typed pin-route tables, vector tables and linker scripts into a git
 `.alloy/` tree. Hand-written drivers are selected by an IP **type tag**, so exactly one driver
 serves every chip that shares an IP:
 
-```cpp
+```cpp title="illustrative: the shape of a driver specialisation — `uart_impl` is declared in alloy/hal, not here"
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v4>
 struct uart_impl<Inst> { /* ... */ };

@@ -14,7 +14,7 @@ added sht31 0.1.0 -> ./libs/sht31
   the build now compiles ./libs/*/include onto the include path
 ```
 
-```cpp
+```cpp title="illustrative: needs the driver vendored first — `alloy lib add sht31`"
 #include <sht31.hpp>
 
 auto bus = board::i2c::open({.speed_hz = 100'000});

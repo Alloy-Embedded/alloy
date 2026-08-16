@@ -38,7 +38,7 @@ caller who writes `0x4000` for a quarter should not have to know it.
 
 ### `config`
 
-```cpp
+```cpp title="illustrative: the declaration in alloy/pwm.hpp, quoted"
 struct config {
     std::uint32_t freq_hz = 1'000;
     alignment     align   = alignment::edge;
@@ -51,7 +51,7 @@ timer has one prescaler and one auto-reload behind all four of its channels,
 so opening CH1 at 1 kHz and CH2 at 20 kHz is a contradiction. alloy refuses
 it at `open()` rather than letting the second call silently retune the first:
 
-```cpp
+```cpp title="illustrative: `fan1`/`fan2` are two channels of one timer on a board you would write; no shipped board declares them"
 auto a = board::fan1::open({.freq_hz =  1'000});
 auto b = board::fan2::open({.freq_hz = 20'000});   // traps: same timer
 ```
@@ -141,6 +141,7 @@ is right per-instance without anything in the driver being edited.
 One call opens three phases, their three complements, the dead time between
 them and the break input:
 
+<!-- docgate: boards nucleo_g0b1re -->
 ```cpp
 #include "alloy/board.hpp"
 #include "alloy/bridge.hpp"
@@ -166,7 +167,7 @@ so the bridge is never live carrying a duty nobody chose.
 
 ### `config`
 
-```cpp
+```cpp title="illustrative: the declaration in alloy/bridge.hpp, quoted"
 struct config {
     std::uint32_t  freq_hz      = 20'000;
     dead_time      dead_time    = {};                        // NO DEFAULT
@@ -185,7 +186,7 @@ that is what a three-phase modulator wants.
 `dead_time` is not a `uint32_t` with a `0` default. It is a small type with
 three states, and the unstated one does not compile:
 
-```cpp
+```cpp title="illustrative: three spellings side by side — the third one is the compile error being described"
 using dt = alloy::bridge::dead_time;
 
 dt::ns(500)                          // 500 ns, inserted by the timer
@@ -202,8 +203,12 @@ this" is a different state from "I chose zero", and only the second one builds.
 not always what you asked for — the encoding is piecewise and alloy rounds
 **up**, never down:
 
+<!-- docgate: boards nucleo_g0b1re -->
+<!-- docgate: setup-local
+auto inv = board::bridge::open_checked<board::bridge_defaults>();
+-->
 ```cpp
-inv.dead_time_ns();   // e.g. 507 for a requested 500
+(void)inv.dead_time_ns();   // e.g. 507 for a requested 500
 ```
 
 Too much dead time distorts the waveform. Too little destroys the bridge. The
@@ -215,6 +220,10 @@ The break input switches all six outputs off **in hardware**, with no software
 in the path — that is the whole point of it, and it is why an over-current
 comparator belongs on that pin rather than on an interrupt.
 
+<!-- docgate: boards nucleo_g0b1re -->
+<!-- docgate: setup-local
+auto inv = board::bridge::open_checked<board::bridge_defaults>();
+-->
 ```cpp
 if (inv.faulted()) {
     // The outputs are ALREADY off. The hardware did that before this line ran.
@@ -235,6 +244,11 @@ phases from the new set, one from the old. On a motor that is one vector
 nobody asked for, and it is invisible afterwards because the next frame is
 correct.
 
+<!-- docgate: boards nucleo_g0b1re -->
+<!-- docgate: setup-local
+auto inv = board::bridge::open_checked<board::bridge_defaults>();
+constexpr std::uint16_t d1 = 0x8000, d2 = 0x8000, d3 = 0x8000;
+-->
 ```cpp
 if (!inv.set_duties_coherent(d1, d2, d3)) {
     // A reload happened mid-write. Retry if you care.
@@ -249,7 +263,7 @@ construction and can ignore this entirely and use `set_duty<N>()`.
 
 ### Slowing the update cadence
 
-```cpp
+```cpp title="illustrative: the `update_every` field in place — `config` and `dt` are alloy::bridge names the enclosing file would using-declare"
 auto inv = board::bridge::open_checked<config{
     .freq_hz = 20'000,
     .dead_time = dt::ns(500),
@@ -268,7 +282,7 @@ torque ripple if you did not mean it. Hence the default of 1.
 
 ### `open_checked` vs `open`
 
-```cpp
+```cpp title="illustrative: the same handle two ways, side by side — one file cannot declare both"
 auto inv = board::bridge::open_checked<board::bridge_defaults>();  // prefer
 auto inv = board::bridge::open(cfg);                               // runtime
 ```
@@ -294,6 +308,9 @@ genuinely a runtime value.
 Code compiles on all of them either way — a board with no bridge takes the
 other branch of an `if constexpr`, with no preprocessor anywhere:
 
+<!-- docgate: setup-local
+auto uart = board::debug_uart::open({.baud = 115'200});
+-->
 ```cpp
 if constexpr (board::caps::bridge) {
     auto inv = board::bridge::open_checked<board::bridge_defaults>();

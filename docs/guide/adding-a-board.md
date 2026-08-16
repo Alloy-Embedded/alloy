@@ -124,7 +124,7 @@ never the device.
 Only when a chip has a peripheral IP nobody has curated yet do you write C++: a curated register
 file (data) plus **one driver per IP version**, selected by a type tag:
 
-```cpp
+```cpp title="illustrative: the shape of a driver specialisation — `uart_impl` is declared in alloy/hal, not here"
 template <class Inst>
     requires std::same_as<typename Inst::ip, alloy::ip::st::usart_v4>
 struct uart_impl<Inst> { /* the sequencing behavior, once, for this IP */ };
