@@ -52,6 +52,71 @@ jobs:
         run: |
           uv run --project tools/alloy python -m pytest tools/alloy/tests ../alloy-devices/tests -q
 
+      # The docs are the only artefact in this repo that had no gate, and they
+      # drifted accordingly: two board ids that do not exist, three shipped
+      # verbs missing from the reference, one documented output belonging to no
+      # verb. All of that is checkable in a second. Runs HERE and not in
+      # contract-gates because the CLI is on PATH in this job: the verb list is
+      # scraped from cli.py so the check works without one, and cross-checked
+      # against `alloy --help` when there is one — a scraper that quietly went
+      # stale would pass a dead verb, which is the bug being hunted.
+      - name: every board name, CLI verb, link and anchor in docs/ resolves
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_doc_facts.py -v
+
+      # And the gate proves itself on every run rather than on the day it was
+      # written: four mutations of a scratch copy of docs/ (a dead board, a
+      # dead verb, a dead subcommand, a dangling anchor), each of which must go
+      # red. A gate nobody has watched fail is a decoration.
+      - name: ... and the checker still fires when those things are wrong
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_doc_facts.py --self-test
+
+  # Every ```cpp fence under docs/ must COMPILE. A code sample that does not
+  # compile is a bug, not a typo — four of them shipped on the three pages a
+  # new user reads first, none of them a slip of the finger, every one of them
+  # prose written against a surface that had since moved. Nothing caught them
+  # because nothing ever built them.
+  #
+  # Separate job, not a step on compile-errors: it is ~180 cross-compiles and
+  # wants the xtensa toolchain too, because index.md and getting-started.md
+  # claim their sample builds on ALL NINE boards and that claim is the thing
+  # being checked.
+  doc-snippets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: alloy
+      - uses: actions/checkout@v4
+        with:
+          repository: Alloy-Embedded/alloy-devices
+          path: alloy-devices
+      - uses: astral-sh/setup-uv@v5
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: "14.2.Rel1"
+      - name: cache xtensa toolchain
+        id: xtensa-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.alloy/tools/xtensa-esp-elf
+          key: xtensa-esp-elf-16.1.0_20260609-linux-x86_64
+      - name: install xtensa toolchain
+        if: steps.xtensa-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.alloy/tools && cd ~/.alloy/tools
+          curl -sL -o x.tar.xz "https://github.com/espressif/crosstool-NG/releases/download/esp-16.1.0_20260609/xtensa-esp-elf-16.1.0_20260609-x86_64-linux-gnu.tar.xz"
+          tar xf x.tar.xz && rm x.tar.xz
+      - name: install ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: how much of docs/ is gated, and how much opted out
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_doc_snippets.py --audit
+      - name: every cpp sample in docs/ compiles
+        working-directory: alloy
+        run: uv run --project tools/alloy python scripts/check_doc_snippets.py
+
   # NORTH_STAR guard #7 acceptance test: a wrong pin route must FAIL to compile
   # with a diagnostic that names the pin — the compile-time-error UX can't
   # silently regress into acceptance or an unreadable template dump.

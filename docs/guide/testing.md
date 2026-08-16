@@ -50,7 +50,7 @@ NACKs mid-operation — are genuinely awkward to reproduce on a bench.
 
 `src/app.hpp` holds the logic and names no chip:
 
-```cpp
+```cpp title="illustrative: the scaffold's app.hpp, elided — `alloy new --with-tests` writes the whole of it"
 template <class Bus, class Pin>
     requires alloy::I2cBus<Bus> && alloy::OutputPin<Pin>
 class thermostat {
@@ -61,7 +61,7 @@ class thermostat {
 
 `tests/test_app.cpp` instantiates it against fakes:
 
-```cpp
+```cpp title="illustrative: a host test, built by `alloy test` and not by the firmware toolchain"
 #include "alloy_test.hpp"
 #include "doubles.hpp"
 #include "testkit/mock_bus.hpp"
@@ -112,7 +112,7 @@ freestanding and heapless, and your project's tests are compiled with the firmwa
 
 Two macros:
 
-```cpp
+```cpp title="illustrative: the two macros, not a program"
 ALLOY_TEST(name) { ... }        // self-registering test
 ALLOY_CHECK(expr);              // record a condition
 ALLOY_CHECK_EQ(a, b);           // ... and report both sides on failure
@@ -216,3 +216,46 @@ Being direct, because it is easy to oversell:
 The `scaffold` job does this end to end on every push: scaffolds `--with-tests` out-of-repo, builds
 the firmware, runs the suite, reports coverage, and then **inverts one expectation and demands a red
 run** — a test scaffold that cannot fail is a decoration.
+
+## If you are changing alloy itself
+
+Everything above is about testing *your* firmware. This last section is for contributors: the
+gates that guard the framework, all of them runnable on a laptop, in the order they get cheaper
+to be wrong about.
+
+| Run this | Costs | Fails when |
+|---|---|---|
+| `./scripts/check_contract.sh` | < 1 s | a silicon address is hand-written in `src/`, `libs/` or the generator; a 32-bit mask is built from `1u <<`; a `struct feat` is hand-written; an example uses a preprocessor conditional |
+| `python3 scripts/check_doc_facts.py -v` | ~1 s | a page names a board that is not in `boards/`, an `alloy <verb>` the CLI does not define, or a link/anchor that resolves to nothing |
+| `python3 scripts/check_doc_facts.py --self-test` | ~5 s | that checker has stopped catching a wrong board, a wrong verb, a wrong subcommand or a dangling anchor |
+| `alloy test --framework` | ~30 s | a host unit test regresses (640 assertions today, ASan + UBSan, built `-fno-exceptions -fno-rtti` like the firmware) |
+| `uv run --project tools/alloy python -m pytest tools/alloy/tests -q` | ~10 s | the CLI, the emitters or the board/product validators regress |
+| `mkdocs build --strict` | ~1 s | a docs page has a broken reference mkdocs can see |
+| `python3 scripts/check_doc_snippets.py --audit` | < 1 s | a fence opts out of the compile gate without saying why |
+| `python3 scripts/check_doc_snippets.py` | ~20 min | a `cpp` sample in `docs/` does not compile |
+| `uv run --project tools/alloy python scripts/check_compile_errors.py` | ~2 min | wrong code stops failing to compile, or stops saying *why* |
+| `bash scripts/check_static_limits.sh blink nucleo_g071rb` | ~1 min | an image grows a heap, an exception table, recursion, or an unbounded stack |
+
+The last four need a cross toolchain (`arm-none-eabi-g++` on `PATH`, `alloy setup`) and skip
+themselves with a message if there is none, rather than passing quietly.
+
+### The docs are gated too, and how to opt a snippet out
+
+`check_doc_snippets.py` pulls every ` ```cpp ` fence out of **every page under `docs/`**, drops it
+into a throwaway project and builds it. The default is that a page is checked, so a new page
+arrives checked; pages that claim to build everywhere (`index.md`, `getting-started.md`,
+`portable-code.md`) are built for all nine boards.
+
+Not every fence is a program. When one genuinely is not, say so **in the page**:
+
+| Marker | Means |
+|---|---|
+| ` ```cpp title="illustrative: <why>" ` | not built. The reason is required, and mkdocs renders it as a caption — so the reader is told this block is not a program, which is the point of putting it there rather than in a skip-list nobody reads |
+| `<!-- docgate: setup` … `-->` | file-scope lines the gate injects before the next fence, for a name the page uses but never shows being created |
+| `<!-- docgate: setup-local` … `-->` | the same, as statements inside `main()` — needed when a later fence captures the name in a lambda |
+| `<!-- docgate: boards <id> … -->` | the next fence is a claim about other silicon; hold it to that silicon instead of the page's default board |
+| `<!-- docgate: ungated — <why> -->` | the whole page is out. Two design records use it; every run prints the list with its reason |
+
+`--audit` prints, per page, how many fences are built, how many opted out and how many lean on
+hidden setup. That number is the honest measure of how checked the docs are, so it is worth
+watching rather than growing.
