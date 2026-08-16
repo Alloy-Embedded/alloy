@@ -163,6 +163,16 @@ Two paths. Pick the one that matches what is on your desk.
     That last line is **your firmware's own banner**, produced by the real UART driver writing
     to Renode's model of USART2. Type `q` at the Renode prompt to quit.
 
+    The `…` above is hiding something you will see and should not worry about. On this board
+    that elision is **22 lines** reading `[WARNING] sysbus: … non existing peripheral at
+    0x40021000` — the STM32G0's RCC. Renode has no model for it, and alloy's emitter leaves an
+    unmodelled peripheral **absent** rather than inventing a stub that would answer plausibly
+    and wrongly, so your clock-setup code writes into a hole and Renode says so, loudly, once
+    per access. It is the honesty rule from [Emulation](guide/emulation.md) being noisy at you.
+    The banner arriving after it is the thing that matters: a peripheral your program actually
+    depends on being absent does not produce a warning and a banner, it produces a warning and
+    silence.
+
     Renode has to be findable: put `renode` on your `PATH` or drop an install under
     `~/.alloy/tools/`. `alloy emulate --emit-only` writes the platform and script and stops,
     which is what you want if you drive Renode yourself. See [Emulation](guide/emulation.md).
@@ -290,6 +300,16 @@ usart2: […] t=3s sample=0
 
 `sample=0` is correct here: nothing is driving the emulated ADC pin, and an unfed channel reads
 zero. On a real Nucleo-G071RB it is the conversion of ADC channel 3.
+
+!!! note "One warning in that build is ours, not yours"
+    The first build that opens `board::adc` prints
+    `warning: using value of assignment with 'volatile'-qualified left operand is deprecated
+    [-Wvolatile]`, pointing into `src/alloy/hal/adc/st_adc_v2.hpp` (or `st_adc_g4.hpp` on a G4).
+    It is a framework header, not your `src/main.cpp`, and it does not change what the image
+    does. Mentioned only because it is the first compiler warning a new user meets and there is
+    no way to tell from the message that it is not about something you wrote. Warnings whose
+    path lands under `src/main.cpp` **are** yours — alloy's own doc gate makes exactly that
+    distinction, and so should you.
 
 Two things in that file are worth copying into your own code:
 
